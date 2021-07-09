@@ -1,9 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;900&display=swap');
 
-:root{
-  --text-color: #2c3e50;
-}
-
 html, body,
 header, nav, main, aside, section, article, footer, div,
 h1, h2, h3, h4, h5, h6,
@@ -11,7 +7,7 @@ a, p, span, ul, li, ol, i, strong, button, img, svg {
   margin: 0;
   padding: 0;
   border: none;
-  color: var(--text-color);
+  color: var(--text-900);
   font-family: 'Noto Sans KR', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -40,4 +36,8 @@ ul, li{
   overflow: hidden;
   position:absolute;
   white-space: no-wrap;
+}
+.inner{
+  width: 96%;
+  margin: 0 auto;
 }

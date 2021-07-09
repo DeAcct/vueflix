@@ -23,5 +23,7 @@
 </script>
 
 <style lang="scss" scoped>
-
+    .header{
+        background-color:#fff;
+    }
 </style>
