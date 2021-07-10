@@ -1,17 +1,13 @@
 <template>
-  <vueflix-header></vueflix-header>
+	<router-view></router-view>
 </template>
 
 <script>
-import VueflixHeader from './components/VueflixHeader.vue';
 export default {
-  name: "App",
-  components: {
-    VueflixHeader
-  }
+	name: 'App',
 };
 </script>
 
 <style lang="scss">
-  @import url("./common.css");
+@import url('./common.css');
 </style>

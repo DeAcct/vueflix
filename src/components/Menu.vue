@@ -1,40 +1,50 @@
 <template>
-    <nav class="menu">
-        <ul class="main">
-            <li>
-                <a href="#none">
-                    <i><ion-icon name="home-outline"></ion-icon></i>
-                    <span>홈</span>
-                </a>
-            </li>
-            <li>
-                <a href="#none">
-                    <i><ion-icon name="checkbox-outline"></ion-icon></i>
-                    <span>태그검색</span>
-                </a>
-            </li>
-            <li>
-                <a href="#none">
-                    <i><ion-icon name="file-tray-outline"></ion-icon></i>
-                    <span>내 보관함</span>
-                </a>
-            </li>
-            <li>
-                <a href="#none">
-                    <i><ion-icon name="ellipsis-horizontal-outline"></ion-icon></i>
-                    <span>더보기</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+	<nav class="menu">
+		<ul class="main">
+			<li v-for="(item, index) in items" :key="index">
+				<router-link :to="item.to">
+					<i><ion-icon :name="item.icon"></ion-icon></i>
+					<span>{{ item.item }}</span>
+				</router-link>
+			</li>
+		</ul>
+	</nav>
 </template>
 
 <script>
-  export default {
-    name: "Menu"
-  };
+export default {
+	name: 'Menu',
+	data() {
+		return {
+			items: [
+				{
+					to: '/tagsearch',
+					item: '태그검색',
+					icon: 'checkbox-outline',
+				},
+				{
+					to: '/daily',
+					item: '요일별 신작',
+					icon: 'calendar-outline',
+				},
+				{
+					to: '/recommend',
+					item: '테마추천',
+					icon: 'dice-outline',
+				},
+				{
+					to: '/membership',
+					item: '멤버쉽',
+					icon: 'diamond-outline',
+				},
+			],
+		};
+	},
+};
 </script>
 
 <style lang="scss" scoped>
-
+.main {
+	display: flex;
+}
 </style>

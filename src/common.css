@@ -1,43 +1,77 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;900&display=swap');
 
-html, body,
-header, nav, main, aside, section, article, footer, div,
-h1, h2, h3, h4, h5, h6,
-a, p, span, ul, li, ol, i, strong, button, img, svg {
-  margin: 0;
-  padding: 0;
-  border: none;
-  color: var(--text-900);
-  font-family: 'Noto Sans KR', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html,
+body,
+header,
+nav,
+main,
+aside,
+section,
+article,
+footer,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a,
+p,
+span,
+ul,
+li,
+ol,
+i,
+strong,
+button,
+img,
+svg {
+	margin: 0;
+	padding: 0;
+	border: none;
+	color: var(--text-900);
+	font-family: 'Noto Sans KR', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
-header, nav, main, aside, section, article, footer{
-  display: block;
+header,
+nav,
+main,
+aside,
+section,
+article,
+footer {
+	display: block;
 }
-html{
-    font-size: 0.625em;
+html {
+	font-size: 0.625em;
 }
-a{
-    text-decoration: none;
-    color:inherit;
+a {
+	text-decoration: none;
+	color: inherit;
 }
-button{
-    background-color: transparent;
+button {
+	background-color: transparent;
 }
-ul, li{
-  list-style:none;
+ul,
+li {
+	list-style: none;
 }
-.blind{
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  position:absolute;
-  white-space: no-wrap;
+.blind {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: no-wrap;
 }
-.inner{
-  width: 96%;
-  margin: 0 auto;
+.inner {
+	width: 96%;
+	margin: 0 auto;
+}
+
+h1 {
+	font-size: 10rem;
 }
