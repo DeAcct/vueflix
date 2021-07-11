@@ -1,8 +1,6 @@
 <template>
-	<div>
-		<vueflix-header></vueflix-header>
-		<h1>멤버십</h1>
-	</div>
+	<vueflix-header></vueflix-header>
+	<h1>멤버십</h1>
 </template>
 
 <script>

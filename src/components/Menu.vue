@@ -1,6 +1,6 @@
 <template>
 	<nav class="menu">
-		<ul class="main">
+		<ul class="items">
 			<li v-for="(item, index) in items" :key="index">
 				<router-link :to="item.to">
 					<i><ion-icon :name="item.icon"></ion-icon></i>
@@ -44,7 +44,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.main {
-	display: flex;
+.menu{
+	margin-left: 2.5rem;
+	.items {
+		display: flex;
+
+	}
 }
+
 </style>

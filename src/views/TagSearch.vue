@@ -1,8 +1,6 @@
 <template>
-	<div>
-		<vueflix-header></vueflix-header>
-		<h1>태그검색</h1>
-	</div>
+	<vueflix-header></vueflix-header>
+	<h1>태그검색</h1>
 </template>
 
 <script>

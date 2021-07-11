@@ -1,8 +1,6 @@
 <template>
-	<div>
-		<vueflix-header></vueflix-header>
-		<h1>요일별 신작</h1>
-	</div>
+	<vueflix-header></vueflix-header>
+	<h1>요일별 신작</h1>
 </template>
 
 <script>
