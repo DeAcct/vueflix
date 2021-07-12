@@ -1,9 +1,9 @@
 <template>
 	<nav class="menu">
+		<h2 class="blind">대메뉴</h2>
 		<ul class="items">
-			<li v-for="(item, index) in items" :key="index">
-				<router-link :to="item.to">
-					<i><ion-icon :name="item.icon"></ion-icon></i>
+			<li v-for="(item, index) in items" :key="index" class="item">
+				<router-link :to="`/${item.to}`">
 					<span>{{ item.item }}</span>
 				</router-link>
 			</li>
@@ -18,28 +18,25 @@ export default {
 		return {
 			items: [
 				{
-					to: '/tagsearch',
+					to: 'tagsearch',
 					item: '태그검색',
-					icon: 'checkbox-outline',
 				},
 				{
-					to: '/daily',
+					to: 'daily',
 					item: '요일별 신작',
-					icon: 'calendar-outline',
 				},
 				{
-					to: '/recommend',
+					to: 'recommend',
 					item: '테마추천',
-					icon: 'dice-outline',
 				},
 				{
-					to: '/membership',
+					to: 'membership',
 					item: '멤버쉽',
-					icon: 'diamond-outline',
 				},
 			],
 		};
 	},
+	/*Props 받아서, 불린데이터 조작 후, 클래스 조건부 추가*/
 };
 </script>
 
@@ -48,7 +45,11 @@ export default {
 	margin-left: 2.5rem;
 	.items {
 		display: flex;
-
+		.item{
+			padding: 0 1.5rem;
+			font-size: 1.5rem;
+			font-weight: 700;
+		}
 	}
 }
 

@@ -1,55 +1,18 @@
 <template>
 	<vueflix-header></vueflix-header>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
-	<h1>홈</h1>
+	<main>
+		<Slide></Slide>
+	</main>
 </template>
 
 <script>
-import VueflixHeader from '@/components/VueflixHeader.vue';
+import VueflixHeader from '../components/VueflixHeader.vue';
+import Slide from '../components/Slide.vue';
 export default {
 	name: 'Home',
 	components: {
 		VueflixHeader,
+		Slide
 	},
 };
 </script>
