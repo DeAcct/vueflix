@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700;900&display=swap");
-
+@import url("./color.css");
 html,
 body,
 header,
@@ -36,6 +36,7 @@ svg {
   border: none;
   color: var(--text-900);
   font-family: "Noto Sans KR", sans-serif;
+  letter-spacing: -0.03vw;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
@@ -71,7 +72,7 @@ li {
   height: 1px;
   overflow: hidden;
   position: absolute;
-  white-space: no-wrap;
+  white-space: nowrap;
 }
 .inner {
   padding: 0 5rem;

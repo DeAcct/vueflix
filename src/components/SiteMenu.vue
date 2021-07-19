@@ -6,7 +6,7 @@
         v-for="(item, index) in items"
         :key="index"
         class="item"
-        :class="{ current: item.to === page }"
+        :class="{ current: item.to === currentPage }"
       >
         <router-link :to="`/${item.to}`">
           {{ item.item }}
@@ -40,7 +40,6 @@ export default {
           item: "멤버쉽",
         },
       ],
-      page: this.currentPage,
     };
   },
   /*Props 받아서, 불린데이터 조작 후, 클래스 조건부 추가*/

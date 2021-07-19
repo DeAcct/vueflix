@@ -4,7 +4,9 @@
     <div class="slide-hold">
       <ul class="slide-wrap">
         <li v-for="slide in slides" :key="slide.anime" class="slide-item">
-          <img :src="slide.bg" :alt="slide.anime" class="bg" />
+          <div class="bg">
+            <img :src="slide.bgSet" :alt="slide.anime" class="bgPlace" />
+          </div>
           <div class="slide-info">
             <h3>
               <img
@@ -13,8 +15,8 @@
                 class="ani-logo"
               />
             </h3>
-            <strong>{{ slide.copy }}</strong>
-            <slide-link>{{ slide.button }}</slide-link>
+            <strong class="slide-copy">{{ slide.copy }}</strong>
+            <slide-link :link="slide.link">{{ slide.button }}</slide-link>
           </div>
         </li>
       </ul>
@@ -45,10 +47,16 @@ export default {
       slides: [
         {
           anime: "코바야시네 메이드래곤 S",
-          //bgSet: "https://image.laftel.net/carousel/carousel_tokyo_revengers_w.jpg?Expires=1626685125&Signature=ECdgVrI8luxNjsk7V93Q1oY0dcA1MXVfLXcUSSAIxyWMAsD7Xn4PDvPp-41~iU56fpi~m2BzrjXX~iVn1rgfSDckErwnHKx0rWNq4bRofcEfMeYRFo-M3-x8-z0rydPZOD7zn7QC4-QcWc8vKdyzGEUKPz8EFgwSyCK~fPuMOgatvSuL74UuXQd4azgnSTnoZJv4XmDt0FQLJ9WUIw0FMM~3n~WzaXkV851OwxNcAvrudWvDwAMjq2gPfvzGq7KJOnWMuWPz4Ba2SdoNr~l2kMdzLVzK1WTd-b0m5VsbXg3Y2Rpcyqa~cs-AbsA~u~uCwvKaBN9egiQDb-gBtbiJsQ__&Key-Pair-Id=APKAJMMAKL567BYWKQ5A",
-          aniLogo: "/img/kobayashi.4f809d9c.png",
+          bgSet: "https://source.unsplash.com/2160x880/?landscape",
+          aniLogo: require("../assets/kobayashi.png"),
+          /*
+           서버가 아닌 로커의 이미지 로고를 바인딩할 때는, 
+           경로만 넣을 경우 "경로 텍스트 그 자체"가 꽂히게 된다.
+           require를 넣으면 바르게 들어간다
+          */
           copy: "다시 돌아온 일상 명작",
           button: "보러가기",
+          link: "https://laftel.net/item/40372/코바야시네-메이드래곤-S",
         },
         {
           anime: "사신 도련님과 검은 메이드",
@@ -96,20 +104,45 @@ export default {
       height: fit-content;
       .slide-item {
         position: relative;
-        .bg {
+        .bg::after {
+          position: absolute;
+          width: 100vw;
+          height: 100%;
+          top: 0;
+          content: "";
+          background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.8) 0%,
+            rgba(0, 0, 0, 0) 40%,
+            rgba(0, 0, 0, 0) 60%,
+            rgba(0, 0, 0, 0.8) 100%
+          ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        }
+        .bgPlace {
           display: block;
           width: 100vw;
-          aspect-ratio: 131/55;
+          aspect-ratio: 135/55;
+          /*540/220*/
         }
         .slide-info {
           position: absolute;
+          z-index: 10;
           left: 5rem;
-          bottom: 6rem;
+          bottom: 50%;
+          transform: translateY(50%);
           display: flex;
           flex-direction: column;
           align-items: flex-start;
-          color: #fff;
           font-size: 1.7rem;
+        }
+        .ani-logo {
+          max-width: 30vw;
+          margin-bottom: 2rem;
+        }
+        .slide-copy {
+          margin-bottom: 1.5rem;
+          color: #fff;
+          font-size: 2.3rem;
           text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
         }
       }
