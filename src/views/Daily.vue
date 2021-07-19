@@ -1,15 +1,15 @@
 <template>
-	<vueflix-header></vueflix-header>
-	<h1>요일별 신작</h1>
+  <vueflix-header currentPage="daily"></vueflix-header>
+  <h1>요일별 신작</h1>
 </template>
 
 <script>
-import VueflixHeader from '@/components/VueflixHeader.vue';
+import VueflixHeader from "@/components/VueflixHeader.vue";
 export default {
-	name: 'Daily',
-	components: {
-		VueflixHeader,
-	},
+  name: "Daily",
+  components: {
+    VueflixHeader,
+  },
 };
 </script>
 

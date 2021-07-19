@@ -1,5 +1,5 @@
 module.exports = {
-  outputDir: "./docs",
+  outputDir: './docs',
   chainWebpack: config => {
     config.module
       .rule('vue')
@@ -7,9 +7,9 @@ module.exports = {
       .tap(options => {
         options.compilerOptions = {
           ...options.compilerOptions,
-          isCustomElement: tag => tag.startsWith('ion-')
-        }
-        return options
-      })
-  }
+          isCustomElement: tag => tag.startsWith('ion-'),
+        };
+        return options;
+      });
+  },
 };

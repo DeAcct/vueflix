@@ -1,108 +1,130 @@
 <template>
-	<header class="header" :class="{scroll : isScroll}" @scroll="handleScroll">
-		<div class="inner">
-			<div class="col-left">
-				<h1 class="logo">
-					<router-link to="/">
-						<svg viewBox="0 0 706.49 196.56">
-							<polygon points="61.73 133.18 38.06 0 0 1 35 189.44 91.91 181.89 123.17 0 85.15 0 61.73 133.18"/>
-							<path d="M203,114.39a34.27,34.27,0,0,1-1.28,9.66,22.5,22.5,0,0,1-3.51,7.24,15.45,15.45,0,0,1-5.22,4.47,15.45,15.45,0,0,1-13.49,0,15.26,15.26,0,0,1-5.22-4.47,22.5,22.5,0,0,1-3.51-7.24,34.22,34.22,0,0,1-1.28-9.66V0H133.62V120a65.17,65.17,0,0,0,3.68,22.47A48.84,48.84,0,0,0,148,159.73a47,47,0,0,0,16.68,11,63.35,63.35,0,0,0,43.11,0,46.22,46.22,0,0,0,16.62-11,49.59,49.59,0,0,0,10.6-17.3A65.25,65.25,0,0,0,238.67,120V0H203Z"/>
-							<polygon points="283.27 102.15 330.35 97.11 330.35 64.87 283.27 69.92 283.27 32.2 336.09 32.2 336.09 0 247.57 0 247.57 168.22 337.49 166.04 337.49 131.37 283.27 131.37 283.27 102.15"/>
-							<polygon points="349.14 166.02 384.85 166.02 384.85 104.88 429.82 104.85 429.82 72.65 384.85 72.68 384.85 32.2 438.37 32.2 438.37 0 349.14 0 349.14 166.02"/>
-							<polygon points="481.24 0 445.54 0 445.54 167.96 527.05 173.35 527.05 136.42 481.24 137.03 481.24 0"/>
-							<polygon points="534.5 173.62 571.05 177.51 571.05 0 534.5 0 534.5 173.62"/>
-							<polygon points="666.7 97.81 701.62 1 660.37 0 640.06 68.95 619.75 0 578.47 0 614.22 97.84 582.78 178.76 621.92 183.57 640.76 129.34 661.57 189.22 706.49 196.56 666.7 97.81"/>
-						</svg>
-						<span class="blind">뷰플릭스</span>
-					</router-link>
-				</h1>
-				<Menu v-if="!isMobile"></Menu>
-			</div>
-			<div class="col-right">
-				<SearchBar></SearchBar>
-				<button class="gnb-open" v-if="isMobile">
-					<span class="blind">대메뉴 열기</span>
-					<span></span>
-					<span></span>
-				</button>
-			</div>
-		</div>
-	</header>
+  <header class="header" :class="{ scroll: isScroll }" @scroll="handleScroll">
+    <div class="inner">
+      <div class="col-left">
+        <h1 class="logo">
+          <router-link to="/">
+            <svg viewBox="0 0 706.49 196.56">
+              <polygon
+                points="61.73 133.18 38.06 0 0 1 35 189.44 91.91 181.89 123.17 0 85.15 0 61.73 133.18"
+              />
+              <path
+                d="M203,114.39a34.27,34.27,0,0,1-1.28,9.66,22.5,22.5,0,0,1-3.51,7.24,15.45,15.45,0,0,1-5.22,4.47,15.45,15.45,0,0,1-13.49,0,15.26,15.26,0,0,1-5.22-4.47,22.5,22.5,0,0,1-3.51-7.24,34.22,34.22,0,0,1-1.28-9.66V0H133.62V120a65.17,65.17,0,0,0,3.68,22.47A48.84,48.84,0,0,0,148,159.73a47,47,0,0,0,16.68,11,63.35,63.35,0,0,0,43.11,0,46.22,46.22,0,0,0,16.62-11,49.59,49.59,0,0,0,10.6-17.3A65.25,65.25,0,0,0,238.67,120V0H203Z"
+              />
+              <polygon
+                points="283.27 102.15 330.35 97.11 330.35 64.87 283.27 69.92 283.27 32.2 336.09 32.2 336.09 0 247.57 0 247.57 168.22 337.49 166.04 337.49 131.37 283.27 131.37 283.27 102.15"
+              />
+              <polygon
+                points="349.14 166.02 384.85 166.02 384.85 104.88 429.82 104.85 429.82 72.65 384.85 72.68 384.85 32.2 438.37 32.2 438.37 0 349.14 0 349.14 166.02"
+              />
+              <polygon
+                points="481.24 0 445.54 0 445.54 167.96 527.05 173.35 527.05 136.42 481.24 137.03 481.24 0"
+              />
+              <polygon
+                points="534.5 173.62 571.05 177.51 571.05 0 534.5 0 534.5 173.62"
+              />
+              <polygon
+                points="666.7 97.81 701.62 1 660.37 0 640.06 68.95 619.75 0 578.47 0 614.22 97.84 582.78 178.76 621.92 183.57 640.76 129.34 661.57 189.22 706.49 196.56 666.7 97.81"
+              />
+            </svg>
+            <span class="blind">뷰플릭스</span>
+          </router-link>
+        </h1>
+        <SiteMenu v-if="!isMobile" :currentPage="page"></SiteMenu>
+      </div>
+      <div class="col-right">
+        <SearchBar></SearchBar>
+        <button class="gnb-open" v-if="isMobile">
+          <span class="blind">대메뉴 열기</span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
 </template>
 
 <script>
-import Menu from './Menu.vue';
-import SearchBar from './SearchBar.vue'
+import SiteMenu from "./SiteMenu.vue";
+import SearchBar from "./SearchBar.vue";
 export default {
-	name: 'VueflixHeader',
-	components: {
-		Menu, SearchBar
-	},
-	data() {
-		return {
-			isScroll: false,
-			isMobile: window.innerWidth < 768
-		}
-	},
-	methods: {
-		handleScroll() {
-			this.isScroll = 0 < Math.round(window.scrollY)
-		},
-		checkResolution() {
-			this.isMobile = window.innerWidth < 768
-		}
-	},
-	created() {
-		window.addEventListener("scroll", this.handleScroll)
-		window.addEventListener("resize", this.checkResolution)
-	},
-	unmounted() {
-		window.removeEventListener("scroll", this.handleScroll)
-		window.removeEventListener("resize", this.checkResolution)
-	}
+  name: "VueflixHeader",
+  props: ["currentPage"],
+  components: {
+    SiteMenu,
+    SearchBar,
+  },
+  data() {
+    return {
+      isScroll: false,
+      isMobile: window.innerWidth < 768,
+      page: this.currentPage,
+    };
+  },
+  methods: {
+    handleScroll() {
+      this.isScroll = 0 < Math.round(window.scrollY);
+    },
+    checkResolution() {
+      this.isMobile = window.innerWidth < 768;
+    },
+  },
+  created() {
+    window.addEventListener("scroll", this.handleScroll);
+    window.addEventListener("resize", this.checkResolution);
+  },
+  unmounted() {
+    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("resize", this.checkResolution);
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .header {
-	width: 100%;
-	border-bottom: 1px solid hsla(0, 0%, 100%, 0);
-	-webkit-backdrop-filter: blur(0);
-	backdrop-filter: blur(0);
-	position: fixed;
+  width: 100%;
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0);
+  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0);
+  position: fixed;
+  z-index: 100;
 
-	.inner {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		height: 6rem;
-		.col-left{
-			display: flex;
-			align-items: center;
-			.logo{
-				display: flex;
-				align-items: center;
-				width: 10.8rem;
-				height: 6rem;
-				padding: 0 1.5rem;
-				a{
-					display: flex;
-					align-items: center;
-					width: 100%;
-				}
-			}
-		}
-		.col-right{
-			display: flex;
-		}
-	}
+  .inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 6rem;
+    .col-left {
+      display: flex;
+      align-items: center;
+      .logo {
+        display: flex;
+        align-items: center;
+        width: 6rem;
+        height: 6rem;
+        a {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          fill: #fff;
+          transition: all 250ms ease-out;
+        }
+      }
+    }
+    .col-right {
+      display: flex;
+    }
+  }
 
-	transition: all 250ms ease-out;
-	&.scroll{
-		background-color:hsla(0, 0%, 100%, .5);
-		-webkit-backdrop-filter: blur(10px);
-		backdrop-filter: blur(10px);
-		border-bottom: 1px solid #efefef;
-	}
+  transition: all 250ms ease-out;
+  &.scroll {
+    background-color: hsla(0, 0%, 100%, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #efefef;
+    .col-left .logo a {
+      fill: #000;
+    }
+  }
 }
 </style>

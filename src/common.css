@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700;900&display=swap");
 
 html,
 body,
@@ -31,14 +31,14 @@ legend,
 button,
 img,
 svg {
-	margin: 0;
-	padding: 0;
-	border: none;
-	color: var(--text-900);
-	font-family: 'Noto Sans KR', sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  color: var(--text-900);
+  font-family: "Noto Sans KR", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
 }
 header,
 nav,
@@ -47,33 +47,33 @@ aside,
 section,
 article,
 footer {
-	display: block;
+  display: block;
 }
 html {
-	font-size: 0.625em;
+  font-size: 0.625em;
 }
 a {
-	display: block;
-	text-decoration: none;
-	color: inherit;
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
 button {
-	background-color: transparent;
+  background-color: transparent;
 }
 ul,
 li {
-	list-style: none;
+  list-style: none;
 }
 .blind {
-	clip: rect(0 0 0 0);
-	clip-path: inset(50%);
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-	position: absolute;
-	white-space: no-wrap;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: no-wrap;
 }
 .inner {
-	padding: 0 3.5rem;
-	margin: 0 auto;
+  padding: 0 5rem;
+  margin: 0 auto;
 }

@@ -1,19 +1,19 @@
 <template>
-	<vueflix-header></vueflix-header>
-	<main>
-		<Slide></Slide>
-	</main>
+  <vueflix-header currentPage="home"></vueflix-header>
+  <main>
+    <Slide></Slide>
+  </main>
 </template>
 
 <script>
-import VueflixHeader from '../components/VueflixHeader.vue';
-import Slide from '../components/Slide.vue';
+import VueflixHeader from "../components/VueflixHeader.vue";
+import Slide from "../components/Slide.vue";
 export default {
-	name: 'Home',
-	components: {
-		VueflixHeader,
-		Slide
-	},
+  name: "Home",
+  components: {
+    VueflixHeader,
+    Slide,
+  },
 };
 </script>
 

@@ -1,15 +1,15 @@
 <template>
-	<vueflix-header></vueflix-header>
-	<h1>테마추천</h1>
+  <vueflix-header currentPage="recommend"></vueflix-header>
+  <h1>테마추천</h1>
 </template>
 
 <script>
-import VueflixHeader from '@/components/VueflixHeader.vue';
+import VueflixHeader from "@/components/VueflixHeader.vue";
 export default {
-	name: 'Theme',
-	components: {
-		VueflixHeader,
-	},
+  name: "Theme",
+  components: {
+    VueflixHeader,
+  },
 };
 </script>
 
