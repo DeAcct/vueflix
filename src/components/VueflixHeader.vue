@@ -30,10 +30,10 @@
             <span class="blind">뷰플릭스</span>
           </router-link>
         </h1>
-        <SiteMenu v-if="!isMobile" :currentPage="page"></SiteMenu>
+        <site-menu v-if="!isMobile" :currentPage="page"></site-menu>
       </div>
       <div class="col-right">
-        <SearchBar></SearchBar>
+        <search-bar></search-bar>
         <button class="gnb-open" v-if="isMobile">
           <span class="blind">대메뉴 열기</span>
           <span></span>
