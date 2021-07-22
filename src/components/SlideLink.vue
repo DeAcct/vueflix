@@ -20,6 +20,6 @@ export default {
   justify-content: space-between;
   align-items: center;
   border-radius: 0.3rem;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 </style>

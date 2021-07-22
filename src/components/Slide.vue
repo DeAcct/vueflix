@@ -50,37 +50,45 @@ export default {
           bgSet: "https://source.unsplash.com/2160x880/?landscape",
           aniLogo: require("../assets/kobayashi.png"),
           /*
-           서버가 아닌 로커의 이미지 로고를 바인딩할 때는, 
+           서버가 아닌 로컬의 이미지 로고를 바인딩할 때는, 
            경로만 넣을 경우 "경로 텍스트 그 자체"가 꽂히게 된다.
            require를 넣으면 바르게 들어간다
           */
           copy: "다시 돌아온 일상 명작",
           button: "보러가기",
-          link: "https://laftel.net/item/40372/코바야시네-메이드래곤-S",
+          link: "#none",
         },
         {
           anime: "사신 도련님과 검은 메이드",
-          //bgSet: "https://image.laftel.net/carousel/carousel_hero_sonnyboy_w.jpg?Expires=1626685125&Signature=Mcn369uN68uzu79bVEa5c1BXfcf8izzqJX2zb1BofW2-iPp8FtHPLpTzpUnbOdujHyKgcuPxvDIuGyb8mpBWOmFXTOY-wUrCswYrD0ioW12t-rJ86CkQ2UajF4uI8yLrTgVji85W5Mtq9ngHdW9MSHl9QKKHjTNAHurMZ0G7438TMkfsT3AAPwj8c8uBzzOhcfaVUySyBmSiRL17bvfs7HMkrd3bK6ujVt~R2QRKizorplYIf6YF2GT8cT49Q7hPjbPRqF6c~7EVukLUufogE8~wgQ386BZ-TbAmOaacqjLTIiuA0D2Icy83Iow4F1hiMvnQZoVI5MPGCFuz-MbitA__&Key-Pair-Id=APKAJMMAKL567BYWKQ5A",
-          copy: "가장 가까이 있지만 닿을 수 없는 연인의 이야기",
+          bgSet: "https://source.unsplash.com/2160x880/?anime",
+          aniLogo: require("../assets/blackmaid.png"),
+          copy: "가장 가까이 있지만 닿을 수 없는 사랑 이야기",
           button: "보러가기",
+          link: "#none",
         },
         {
           anime: "하얀 모래의 아쿠아톱",
-          //bgSet: "https://image.laftel.net/carousel/carousel_hero_SMR_w.jpg?Expires=1626685125&Signature=b80kyVG5Ub2pxLXBmIkgffQHuXobQXkrSWwOVgD3jbft-cgxu80yra7PMc6PPCdNV6HSKPhEsI6QDyiJbRHuioKe6~WO3AJmfErK10wpdavVUNelh4ld6AO68LQ-uuP19mPDARO56F7mqY20JBYyF1E1nuPCA2hNsZbnDmWvWqlPdJ5jP6TEd3z7-rYYOMKb2UA5YoQYzKZwArL8av6c~pnLTmi5jhNU-p~k0DAkmAECLXVObdIhSjNCVSgX~KO8zl4R~HeVX51R6kH0JcpF39BM2e2ZrePujCUpFSsNknfeprI1qUBGlp4Xktpx0XSKrSo2Gf9jmfbzfidIZb6OJw__&Key-Pair-Id=APKAJMMAKL567BYWKQ5A",
-          copy: "여름방학, 방구석에서 푸른 바다를 보고싶다면?",
+          bgSet: "https://source.unsplash.com/2160x880/?seaside",
+          aniLogo: require("../assets/aquatop.png"),
+          copy: "방구석 바캉스",
           button: "보러가기",
+          link: "#none",
         },
         {
           anime: "그녀도 여친",
-          //bgSet: "https://image.laftel.net/carousel/carousel_hero_machikado_w.jpg?Expires=1626685125&Signature=nWAagyAFxmgJn1jlhQqXOSaGqCwshJSflRvL4pvfkXNC-UyOOEzPM0lKpbaRkGR6Pu4JsoKs9gI~Es2TI0Q4VNpAp7hIhgyGWNsckUtai7NX6Q0Tz3Ju2dxC8J0flboZTzgr2WCHIZUFz7HoZocBD~kEonik8aRKbsd2Db5Q7yFz9wEsmTQjgWPXGeb44IkMWmm0dAN-1klgvMxS93FernMeaHgCTCzumR2aomx6jru7ISJcENxGqIPj5CZo9EgT1KmERXBEW27FCRIm30qSJU4-ctgtkY2HgwTS9idp~gBz2-sHfHOVDnMn-kk5fdZUg5mhayLM3Endp8bLuDVnrg__&Key-Pair-Id=APKAJMMAKL567BYWKQ5A",
+          bgSet: "https://source.unsplash.com/2160x880/?fireworks",
+          aniLogo: require("../assets/kanokano.png"),
           copy: "그녀도 여친? 그녀도, 여친.",
           button: "보러가기",
+          link: "#none",
         },
         {
           anime: "우리들의 리메이크",
-          //bgSet: "https://image.laftel.net/carousel/carousel_hero_machikado_w.jpg?Expires=1626685125&Signature=nWAagyAFxmgJn1jlhQqXOSaGqCwshJSflRvL4pvfkXNC-UyOOEzPM0lKpbaRkGR6Pu4JsoKs9gI~Es2TI0Q4VNpAp7hIhgyGWNsckUtai7NX6Q0Tz3Ju2dxC8J0flboZTzgr2WCHIZUFz7HoZocBD~kEonik8aRKbsd2Db5Q7yFz9wEsmTQjgWPXGeb44IkMWmm0dAN-1klgvMxS93FernMeaHgCTCzumR2aomx6jru7ISJcENxGqIPj5CZo9EgT1KmERXBEW27FCRIm30qSJU4-ctgtkY2HgwTS9idp~gBz2-sHfHOVDnMn-kk5fdZUg5mhayLM3Endp8bLuDVnrg__&Key-Pair-Id=APKAJMMAKL567BYWKQ5A",
-          copy: "10년 전으로 돌아간다면 어떤 걸 하고싶으세요?",
+          bgSet: "https://source.unsplash.com/2160x880/?sakura",
+          aniLogo: require("../assets/bokutachi.png"),
+          copy: "10년 전으로 돌아간다면",
           button: "보러가기",
+          link: "#none",
         },
       ],
     };
@@ -102,6 +110,7 @@ export default {
       display: flex;
       width: fit-content;
       height: fit-content;
+      transform: translateX(-200vw);
       .slide-item {
         position: relative;
         .bg::after {
@@ -128,7 +137,7 @@ export default {
           position: absolute;
           z-index: 10;
           left: 5rem;
-          bottom: 50%;
+          bottom: 40%;
           transform: translateY(50%);
           display: flex;
           flex-direction: column;
@@ -137,12 +146,15 @@ export default {
         }
         .ani-logo {
           max-width: 30vw;
+          max-height: 20vh;
           margin-bottom: 2rem;
+          color: #fff;
+          font-weight: 500;
         }
         .slide-copy {
           margin-bottom: 1.5rem;
           color: #fff;
-          font-size: 2.3rem;
+          font-size: 2rem;
           text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
         }
       }
