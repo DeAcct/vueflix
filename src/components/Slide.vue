@@ -2,24 +2,26 @@
   <section class="slide">
     <h2 class="blind">애니 추천 슬라이드</h2>
     <div class="slide-hold">
-      <ul class="slide-wrap">
-        <li v-for="slide in slides" :key="slide.anime" class="slide-item">
-          <div class="bg">
-            <img
-              :src="slide.bgSet"
-              :alt="`${slide.anime} 배너`"
-              class="bgPlace"
-            />
-          </div>
-          <div class="slide-info">
-            <h3>
-              <img :src="slide.aniLogo" :alt="slide.anime" class="ani-logo" />
-            </h3>
-            <strong class="slide-copy">{{ slide.copy }}</strong>
-            <slide-link :link="slide.link">{{ slide.button }}</slide-link>
-          </div>
-        </li>
-      </ul>
+      <transition-group class="slide-wrap" tag="ul" name="slide">
+        <template v-for="(slide, index) in slides" :key="slide.anime">
+          <li v-show="index === currentImg" class="slide-item">
+            <div class="bg">
+              <img
+                :src="slide.bgSet"
+                :alt="`${slide.anime} 배너`"
+                class="bgPlace"
+              />
+            </div>
+            <div class="slide-info">
+              <h3>
+                <img :src="slide.aniLogo" :alt="slide.anime" class="ani-logo" />
+              </h3>
+              <strong class="slide-copy">{{ slide.copy }}</strong>
+              <slide-link :link="slide.link">{{ slide.button }}</slide-link>
+            </div>
+          </li>
+        </template>
+      </transition-group>
     </div>
     <div class="slide-remote">
       <button class="prev">
@@ -27,11 +29,6 @@
       </button>
       <button class="next">
         <span class="blind">다음</span>
-      </button>
-    </div>
-    <div class="slide-indi">
-      <button v-for="(slide, index) in slides" :key="index">
-        <span class="blind">{{ slide.anime }}</span>
       </button>
     </div>
   </section>
@@ -91,8 +88,19 @@ export default {
           link: "#none",
         },
       ],
+      currentImg: 0,
     };
   },
+  mounted() {
+    setInterval(() => {
+      console.log(this.currentImg);
+      this.currentImg = this.currentImg + 1;
+      if (this.currentImg > 4) {
+        this.currentImg = 0;
+      }
+    }, 3000);
+  },
+  methods: {},
 };
 </script>
 
@@ -107,12 +115,11 @@ export default {
     overflow: hidden;
     .slide-wrap {
       /*슬라이드 감싸기*/
-      display: flex;
-      width: fit-content;
-      height: fit-content;
-      transform: translateX(-200vw);
+      position: relative;
+      width: 100vw;
+      aspect-ratio: 135/55;
       .slide-item {
-        position: relative;
+        position: absolute;
         .bg::after {
           position: absolute;
           width: 100vw;
@@ -165,6 +172,14 @@ export default {
   }
   .slide-indi {
     position: absolute;
+  }
+  .slide-enter-active,
+  .slide-leave-active {
+    transition: all 500ms ease;
+  }
+  .slide-enter-from,
+  .slide-leave-to {
+    opacity: 0;
   }
 }
 </style>
