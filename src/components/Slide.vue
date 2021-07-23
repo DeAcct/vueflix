@@ -5,15 +5,15 @@
       <ul class="slide-wrap">
         <li v-for="slide in slides" :key="slide.anime" class="slide-item">
           <div class="bg">
-            <img :src="slide.bgSet" :alt="slide.anime" class="bgPlace" />
+            <img
+              :src="slide.bgSet"
+              :alt="`${slide.anime} 배너`"
+              class="bgPlace"
+            />
           </div>
           <div class="slide-info">
             <h3>
-              <img
-                :src="slide.aniLogo"
-                :alt="`${slide.anime} 로고`"
-                class="ani-logo"
-              />
+              <img :src="slide.aniLogo" :alt="slide.anime" class="ani-logo" />
             </h3>
             <strong class="slide-copy">{{ slide.copy }}</strong>
             <slide-link :link="slide.link">{{ slide.button }}</slide-link>
@@ -54,7 +54,7 @@ export default {
            경로만 넣을 경우 "경로 텍스트 그 자체"가 꽂히게 된다.
            require를 넣으면 바르게 들어간다
           */
-          copy: "다시 돌아온 일상 명작",
+          copy: "다시 돌아온 일상물 명작",
           button: "보러가기",
           link: "#none",
         },
