@@ -92,14 +92,23 @@ export default {
     };
   },
   mounted() {
+    /*자동 실행*/
     setInterval(() => {
-      this.currentImg = this.currentImg + 1;
+      this.next();
       if (this.currentImg > 4) {
         this.currentImg = 0;
       }
     }, 3000);
   },
-  methods: {},
+  methods: {
+    /*슬라이드 다음/이전 버튼 관련*/
+    next() {
+      this.currentImg = this.currentImg + 1;
+    },
+    prev() {
+      this.currentImg = this.currentImg - 1;
+    },
+  },
 };
 </script>
 
@@ -137,7 +146,6 @@ export default {
           display: block;
           width: 100vw;
           aspect-ratio: 135/55;
-          /*540/220*/
         }
         .slide-info {
           position: absolute;
@@ -164,6 +172,14 @@ export default {
           text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
         }
       }
+      .slide-enter-active,
+      .slide-leave-active {
+        transition: all 500ms ease;
+      }
+      .slide-enter-from,
+      .slide-leave-to {
+        opacity: 0;
+      }
     }
   }
   .slide-remote {
@@ -171,14 +187,6 @@ export default {
   }
   .slide-indi {
     position: absolute;
-  }
-  .slide-enter-active,
-  .slide-leave-active {
-    transition: all 500ms ease;
-  }
-  .slide-enter-from,
-  .slide-leave-to {
-    opacity: 0;
   }
 }
 </style>
