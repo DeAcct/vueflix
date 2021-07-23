@@ -93,7 +93,6 @@ export default {
   },
   mounted() {
     setInterval(() => {
-      console.log(this.currentImg);
       this.currentImg = this.currentImg + 1;
       if (this.currentImg > 4) {
         this.currentImg = 0;
