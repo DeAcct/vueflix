@@ -1,14 +1,17 @@
 <template>
   <a :href="link" class="slide-link">
     <slot></slot>
-    <ion-icon name="chevron-forward-outline"></ion-icon>
   </a>
 </template>
 
 <script>
 export default {
   name: "SlideLink",
-  props: ["link"],
+  props: {
+    link: {
+      type: String,
+    },
+  },
 };
 </script>
 

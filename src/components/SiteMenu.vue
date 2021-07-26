@@ -19,7 +19,11 @@
 <script>
 export default {
   name: "SiteMenu",
-  props: ["currentPage"],
+  props: {
+    currentPage: {
+      type: String,
+    },
+  },
   data() {
     return {
       items: [
@@ -42,7 +46,6 @@ export default {
       ],
     };
   },
-  /*Props 받아서, 불린데이터 조작 후, 클래스 조건부 추가*/
 };
 </script>
 

@@ -24,12 +24,15 @@
       </transition-group>
     </div>
     <div class="slide-remote">
-      <button class="prev">
+      <button class="remote-btn prev" @click="prev">
         <span class="blind">이전</span>
       </button>
-      <button class="next">
+      <button class="remote-btn next" @click="next">
         <span class="blind">다음</span>
       </button>
+    </div>
+    <div class="slide-indi">
+      <div class="indi-progress"></div>
     </div>
   </section>
 </template>
@@ -47,7 +50,7 @@ export default {
           bgSet: "https://source.unsplash.com/2160x880/?landscape",
           aniLogo: require("../assets/kobayashi.png"),
           /*
-           서버가 아닌 로컬의 이미지 로고를 바인딩할 때는, 
+           서버가 아닌 로컬의 이미지 로고를 바인딩할 때는,
            경로만 넣을 경우 "경로 텍스트 그 자체"가 꽂히게 된다.
            require를 넣으면 바르게 들어간다
           */
@@ -89,24 +92,33 @@ export default {
         },
       ],
       currentImg: 0,
+      slide: undefined,
     };
   },
   mounted() {
     /*자동 실행*/
-    setInterval(() => {
-      this.next();
-      if (this.currentImg > 4) {
-        this.currentImg = 0;
-      }
-    }, 3000);
+    this.slide = setInterval(this.resumeInterval, 3000);
   },
   methods: {
     /*슬라이드 다음/이전 버튼 관련*/
     next() {
+      this.pauseInterval();
+      this.slide = setInterval(this.resumeInterval, 3000);
       this.currentImg = this.currentImg + 1;
     },
     prev() {
+      this.pauseInterval();
+      this.slide = setInterval(this.resumeInterval, 3000);
       this.currentImg = this.currentImg - 1;
+    },
+    resumeInterval() {
+      this.currentImg = this.currentImg + 1;
+      if (this.currentImg > 4) {
+        this.currentImg = 0;
+      }
+    },
+    pauseInterval() {
+      clearInterval(this.slide);
     },
   },
 };
@@ -121,13 +133,16 @@ export default {
     height: fit-content;
     background-color: #000;
     overflow: hidden;
+
     .slide-wrap {
       /*슬라이드 감싸기*/
       position: relative;
       width: 100vw;
       aspect-ratio: 135/55;
+
       .slide-item {
         position: absolute;
+
         .bg::after {
           position: absolute;
           width: 100vw;
@@ -172,6 +187,7 @@ export default {
           text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
         }
       }
+
       .slide-enter-active,
       .slide-leave-active {
         transition: all 500ms ease;
@@ -184,6 +200,18 @@ export default {
   }
   .slide-remote {
     position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    .remote-btn {
+      width: 4.5rem;
+      height: 4.5rem;
+      background-color: #fff;
+    }
   }
   .slide-indi {
     position: absolute;
