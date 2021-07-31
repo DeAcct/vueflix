@@ -64,7 +64,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/kobayashi.e696a2d5.png"
   },
   {
-    "revision": "dc2e0ba1afecbbce8053dfe31932d1c4",
+    "revision": "8ca60d6949402bd36ee6fb32e63b587b",
     "url": "/index.html"
   },
   {
