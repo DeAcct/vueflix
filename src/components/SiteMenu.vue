@@ -61,7 +61,7 @@ export default {
       color: #fff;
 
       &.current {
-        color: #a332d8;
+        color: var(--theme-500);
       }
     }
   }
