@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 const date = new Date();
 const year = date.getFullYear();
 const month = date.getMonth();
-const quarter = (month + 3) / 3;
+const quarter = Math.floor((month + 3) / 3);
 
 const routes = [
   {
