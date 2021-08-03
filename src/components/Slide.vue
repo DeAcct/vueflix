@@ -47,10 +47,7 @@ import SwiperCore, {
   EffectFade,
 } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import "swiper/swiper.scss";
-import "swiper/components/navigation/navigation.scss";
-import "swiper/components/pagination/pagination.scss";
-import "swiper/components/effect-fade/effect-fade.scss";
+import "swiper/swiper-bundle.min.css";
 
 // install Swiper modules
 SwiperCore.use([Autoplay, Pagination, A11y, Navigation, EffectFade]);
