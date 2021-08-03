@@ -1,7 +1,7 @@
 <template>
   <vueflix-header currentPage="home"></vueflix-header>
   <main>
-    <Slide></Slide>
+    <slide />
   </main>
 </template>
 

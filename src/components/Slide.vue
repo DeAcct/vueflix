@@ -1,47 +1,67 @@
 <template>
   <section class="slide">
-    <h2 class="blind">애니 추천 슬라이드</h2>
-    <div class="slide-hold">
-      <transition-group class="slide-wrap" tag="ul" name="slide">
-        <template v-for="(slide, index) in slides" :key="slide.anime">
-          <li v-show="index === currentImg" class="slide-item">
-            <div class="bg">
-              <img
-                :src="slide.bgSet"
-                :alt="`${slide.anime} 배너`"
-                class="bgPlace"
-              />
-            </div>
-            <div class="slide-info">
-              <h3>
-                <img :src="slide.aniLogo" :alt="slide.anime" class="ani-logo" />
-              </h3>
-              <strong class="slide-copy">{{ slide.copy }}</strong>
-              <slide-link :link="slide.link">{{ slide.button }}</slide-link>
-            </div>
-          </li>
-        </template>
-      </transition-group>
-    </div>
-    <div class="slide-remote">
-      <button class="remote-btn prev" @click="prev">
-        <span class="blind">이전</span>
-      </button>
-      <button class="remote-btn next" @click="next">
-        <span class="blind">다음</span>
-      </button>
-    </div>
-    <div class="slide-indi">
-      <div class="indi-progress"></div>
-    </div>
+    <h2 class="blind">이미지 슬라이드</h2>
+    <swiper
+      effect="fade"
+      :scrollbar="{ draggable: true }"
+      :autoplay="{
+        delay: 2500,
+        disableOnInteraction: false,
+      }"
+      :loop="true"
+      navigation
+      :pagination="{ clickable: true }"
+    >
+      <swiper-slide
+        v-for="slide in slides"
+        :key="slide.anime"
+        class="slide-item"
+      >
+        <div class="bg">
+          <img
+            :src="slide.bgSet"
+            :alt="`${slide.anime} 배너`"
+            class="bgPlace"
+          />
+        </div>
+        <div class="slide-info">
+          <h3>
+            <img :src="slide.aniLogo" :alt="slide.anime" class="ani-logo" />
+          </h3>
+          <strong class="slide-copy">{{ slide.copy }}</strong>
+          <vueflix-route-btn :link="slide.link">{{
+            slide.button
+          }}</vueflix-route-btn>
+        </div>
+      </swiper-slide>
+    </swiper>
   </section>
 </template>
-
 <script>
-import SlideLink from "./SlideLink.vue";
+import VueflixRouteBtn from "./VueflixRouteBtn.vue";
+import SwiperCore, {
+  Autoplay,
+  Pagination,
+  A11y,
+  Navigation,
+  EffectFade,
+} from "swiper";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import "swiper/swiper.scss";
+import "swiper/components/navigation/navigation.scss";
+import "swiper/components/pagination/pagination.scss";
+import "swiper/components/effect-fade/effect-fade.scss";
+
+// install Swiper modules
+SwiperCore.use([Autoplay, Pagination, A11y, Navigation, EffectFade]);
+
+// Import Swiper styles
 export default {
-  components: { SlideLink },
-  name: "Slide",
+  components: {
+    Swiper,
+    SwiperSlide,
+    VueflixRouteBtn,
+  },
   data() {
     return {
       slides: [
@@ -95,126 +115,68 @@ export default {
       slide: undefined,
     };
   },
-  mounted() {
-    /*자동 실행*/
-    this.slide = setInterval(this.resumeInterval, 3000);
-  },
-  methods: {
-    /*슬라이드 다음/이전 버튼 관련*/
-    next() {
-      this.pauseInterval();
-      this.slide = setInterval(this.resumeInterval, 3000);
-      this.currentImg = this.currentImg + 1;
-    },
-    prev() {
-      this.pauseInterval();
-      this.slide = setInterval(this.resumeInterval, 3000);
-      this.currentImg = this.currentImg - 1;
-    },
-    resumeInterval() {
-      this.currentImg = this.currentImg + 1;
-      if (this.currentImg > 4) {
-        this.currentImg = 0;
-      }
-    },
-    pauseInterval() {
-      clearInterval(this.slide);
-    },
-  },
 };
 </script>
 
-<style lang="scss" scoped>
-.slide {
-  position: relative;
-  .slide-hold {
-    /*ui 자체*/
-    width: 100vw;
-    height: fit-content;
-    background-color: #000;
-    overflow: hidden;
+<style lang="scss">
+.swiper-container {
+  .swiper-pagination-bullet {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.5);
 
-    .slide-wrap {
-      /*슬라이드 감싸기*/
+    &-active {
+      background: rgba(255, 255, 255, 1);
+    }
+  }
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: rgba(255, 255, 255, 0.5);
+    transition: 150ms ease-out;
+    &:hover {
+      color: rgba(255, 255, 255, 1);
+    }
+    &::after {
+      font-size: 3rem;
+    }
+  }
+  .slide-item {
+    position: relative;
+    .bg {
       position: relative;
-      width: 100vw;
-      aspect-ratio: 135/55;
-
-      .slide-item {
+      height: fit-content;
+      &::before {
         position: absolute;
-
-        .bg::after {
-          position: absolute;
-          width: 100vw;
-          height: 100%;
-          top: 0;
-          content: "";
-          background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0.8) 0%,
-            rgba(0, 0, 0, 0) 40%,
-            rgba(0, 0, 0, 0) 60%,
-            rgba(0, 0, 0, 0.8) 100%
-          ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-        }
-        .bgPlace {
-          display: block;
-          width: 100vw;
-          aspect-ratio: 135/55;
-        }
-        .slide-info {
-          position: absolute;
-          z-index: 10;
-          left: 5rem;
-          bottom: 40%;
-          transform: translateY(50%);
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          font-size: 1.7rem;
-        }
-        .ani-logo {
-          max-width: 30vw;
-          max-height: 20vh;
-          margin-bottom: 2rem;
-          color: #fff;
-          font-weight: 500;
-        }
-        .slide-copy {
-          margin-bottom: 1.5rem;
-          color: #fff;
-          font-size: 2rem;
-          text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-        }
+        width: 100vw;
+        height: 100%;
+        top: 0;
+        content: "";
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.6) 0%,
+          rgba(0, 0, 0, 0.15) 40%,
+          rgba(0, 0, 0, 0.15) 60%,
+          rgba(0, 0, 0, 0.6) 100%
+        );
       }
-
-      .slide-enter-active,
-      .slide-leave-active {
-        transition: all 500ms ease;
-      }
-      .slide-enter-from,
-      .slide-leave-to {
-        opacity: 0;
+      .bgPlace {
+        width: 100vw;
       }
     }
-  }
-  .slide-remote {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-
-    .remote-btn {
-      width: 4.5rem;
-      height: 4.5rem;
-      background-color: #fff;
+    .slide-info {
+      position: absolute;
+      left: 5rem;
+      bottom: 10%;
+      .ani-logo {
+        max-width: 30vw;
+        margin-bottom: 2rem;
+      }
+      .slide-copy {
+        display: block;
+        font-size: 2rem;
+        color: #fff;
+        margin-bottom: 1.5rem;
+      }
     }
-  }
-  .slide-indi {
-    position: absolute;
   }
 }
 </style>
