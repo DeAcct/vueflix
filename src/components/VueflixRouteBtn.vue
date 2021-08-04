@@ -24,7 +24,13 @@ export default {
   justify-content: space-between;
   align-items: center;
   border-radius: 0.3rem;
-  font-size: 1.5rem;
+  font-size: 1.5em;
   width: fit-content;
+}
+@media screen and (max-width: 768px) {
+  .btn {
+    font-size: 1.3em;
+    padding: 0.9rem 1.5rem;
+  }
 }
 </style>
