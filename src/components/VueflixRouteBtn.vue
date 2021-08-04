@@ -1,6 +1,6 @@
 <template>
   <!--상세페이지 뷰(view) 개발완료시 라우터 링크로 전환 예정-->
-  <a :href="link" class="btn">
+  <a :href="link" class="btn" :style="style" @mousedown="interaction">
     <slot></slot>
   </a>
 </template>
@@ -12,20 +12,49 @@ export default {
     link: {
       type: String,
     },
+    bg: {
+      type: String,
+      default: "#fff",
+    },
+    textColor: {
+      type: String,
+      default: "inherit",
+    },
+  },
+  data() {
+    return {
+      style: {
+        backgroundColor: this.bg,
+        color: this.textColor,
+      },
+    };
   },
 };
 </script>
 
 <style lang="scss">
 .btn {
+  position: relative;
   padding: 1rem 1.5rem;
-  background-color: #fff;
+  overflow: hidden;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-radius: 0.3rem;
   font-size: 1.5em;
   width: fit-content;
+  transition: 150ms ease-out;
+  .interaction {
+    position: absolute;
+    width: 0;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    background-color: var(--theme-500);
+    opacity: 0.3;
+  }
 }
 @media screen and (max-width: 768px) {
   .btn {

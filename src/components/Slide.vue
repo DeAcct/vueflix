@@ -198,7 +198,7 @@ export default {
     left: 5rem;
     bottom: 10%;
     .ani-logo {
-      max-width: 60%;
+      width: 70%;
       margin-bottom: 2rem;
     }
     .slide-copy {

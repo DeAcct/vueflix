@@ -4,8 +4,8 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "Vueflix",
-  "short_name": "Vueflix",
+  "name": "뷰플릭스",
+  "short_name": "뷰플릭스",
   "icons": [
     {
       "src": "icons/icon-192x192.png",

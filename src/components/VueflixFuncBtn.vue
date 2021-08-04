@@ -1,6 +1,5 @@
 <template>
-  <!--상세페이지 뷰(view) 개발완료시 라우터 링크로 전환 예정-->
-  <button class="btn">
+  <button class="btn" :style="style">
     <slot></slot>
   </button>
 </template>
@@ -9,9 +8,27 @@
 export default {
   name: "VueflixFuncBtn",
   props: {
-    link: {
+    bg: {
       type: String,
+      default: "#fff",
     },
+    textColor: {
+      type: String,
+      default: "inherit",
+    },
+    border: {
+      type: String,
+      default: "none",
+    },
+  },
+  data() {
+    return {
+      style: {
+        backgroundColor: this.bg,
+        color: this.textColor,
+        border: this.border,
+      },
+    };
   },
 };
 </script>

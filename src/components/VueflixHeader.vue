@@ -70,7 +70,8 @@ export default {
   -webkit-backdrop-filter: blur(0);
   backdrop-filter: blur(0);
   position: fixed;
-  z-index: 100;
+  top: 0;
+  z-index: 50;
 
   .inner {
     display: flex;
@@ -108,6 +109,12 @@ export default {
     .col-left .logo a {
       fill: #000;
     }
+  }
+}
+@media screen and (max-width: 768px) {
+  .header .inner .col-left {
+    margin-left: 50%;
+    transform: translateX(-50%);
   }
 }
 </style>
