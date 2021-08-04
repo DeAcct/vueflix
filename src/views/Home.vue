@@ -10,7 +10,7 @@
     yes="설치"
     :yesFunc="install"
     :noFunc="dismiss"
-    v-if="isModalOpened"
+    v-if="true"
   >
     써보면 압니다. 인생의 절반을 손해본 그 느낌...
   </modal>

@@ -101,6 +101,7 @@ export default {
     background: transparent;
     top: auto;
     bottom: 0;
+    height: auto;
     .modal {
       top: auto;
       bottom: 0;
