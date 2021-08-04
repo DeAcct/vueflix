@@ -29,7 +29,7 @@ export default {
   },
   data() {
     return {
-      isModalOpened: false,
+      isModalOpened: null,
     };
   },
   created() {
@@ -39,12 +39,12 @@ export default {
       console.log("설치 준비됨");
     });
     window.addEventListener("appinstalled", () => {
-      this.isModalOpened = false;
+      this.isModalOpened = null;
     });
   },
   methods: {
     async dismiss() {
-      this.isModalOpened = false;
+      this.isModalOpened = null;
     },
     async install() {
       this.isModalOpened.prompt();

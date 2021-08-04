@@ -16,7 +16,15 @@ if (process.env.NODE_ENV === "production") {
       console.log("New content is downloading.");
     },
     updated() {
-      console.log("New content is available; please refresh.");
+      console.log("New content is available;");
+      caches
+        .keys()
+        .then(names => {
+          for (let name of names) caches.delete(name);
+        })
+        .then(() => {
+          console.log("Content is updated");
+        });
     },
     offline() {
       console.log(
