@@ -20,6 +20,7 @@
 import VueflixHeader from "../components/VueflixHeader.vue";
 import Slide from "../components/Slide.vue";
 import Modal from "../components/Modal.vue";
+import Cookies from "js-cookie";
 export default {
   name: "Home",
   components: {
@@ -35,8 +36,9 @@ export default {
   created() {
     window.addEventListener("beforeinstallprompt", e => {
       e.preventDefault();
-      this.isModalOpened = e;
-      console.log("설치 준비됨");
+      if (Cookies.get("add-to-home-screen") === undefined) {
+        this.isModalOpened = e;
+      }
     });
     window.addEventListener("appinstalled", () => {
       this.isModalOpened = null;
@@ -44,6 +46,7 @@ export default {
   },
   methods: {
     async dismiss() {
+      Cookies.set("add-to-home-screen", null, { expires: 15 });
       this.isModalOpened = null;
     },
     async install() {
