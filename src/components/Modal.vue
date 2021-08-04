@@ -95,4 +95,21 @@ export default {
     }
   }
 }
+
+@media screen and (max-width: 768px) {
+  .bg {
+    background: transparent;
+    top: auto;
+    bottom: 0;
+    .modal {
+      top: auto;
+      bottom: 0;
+      width: 100%;
+      transform: translate(-50%, 0);
+      border-end-end-radius: 0;
+      border-end-start-radius: 0;
+      background-color: var(--text-100);
+    }
+  }
+}
 </style>
