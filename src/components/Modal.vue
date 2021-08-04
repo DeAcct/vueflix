@@ -11,10 +11,16 @@
         <slot></slot>
       </p>
       <div class="cta">
-        <vueflix-func-btn bg="var(--theme-500)" text-color="#fff">
+        <vueflix-func-btn
+          bg="var(--theme-500)"
+          text-color="#fff"
+          @click="yesFunc"
+        >
           {{ yes }}
         </vueflix-func-btn>
-        <vueflix-func-btn bg="var(--theme-100)">{{ no }}</vueflix-func-btn>
+        <vueflix-func-btn bg="var(--theme-100)" @click="noFunc">{{
+          no
+        }}</vueflix-func-btn>
       </div>
     </div>
   </div>
