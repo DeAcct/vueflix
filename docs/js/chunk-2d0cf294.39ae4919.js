@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0cf294"],{6312:function(e,n,a){"use strict";a.r(n);var c=a("7a23"),t=Object(c["g"])("h2",null,"요일별 신작",-1);function r(e,n,a,r,u,d){var i=Object(c["B"])("vueflix-header");return Object(c["t"])(),Object(c["d"])(c["a"],null,[Object(c["g"])(i,{currentPage:"daily"}),t],64)}var u=a("43dd"),d={name:"Daily",components:{VueflixHeader:u["a"]}};d.render=r;n["default"]=d}}]);
+//# sourceMappingURL=chunk-2d0cf294.39ae4919.js.map

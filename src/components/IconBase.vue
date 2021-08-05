@@ -1,18 +1,14 @@
 <template>
-  <!--
-    currentColor를 이용한 아이콘 색상조작
-    |  currentColor값은 상위 요소의 color값을 따른다.
-  -->
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
     :width="width"
     :height="height"
-    viewBox="0 0 24 24"
     :aria-labelledby="iconName"
     role="presentation"
   >
-    <title lang="ko">{{ iconName }} 아이콘</title>
-    <g :fill="iconColor">
+    <title lang="ko">{{ iconName }}</title>
+    <g class="holder">
       <slot></slot>
     </g>
   </svg>
@@ -20,6 +16,7 @@
 
 <script>
 export default {
+  name: "IconBase",
   props: {
     iconName: {
       type: String,
@@ -39,3 +36,10 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+svg {
+  color: inherit;
+  fill: currentColor;
+}
+</style>

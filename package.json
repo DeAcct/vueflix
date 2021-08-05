@@ -19,7 +19,7 @@
     "sass-loader": "10",
     "swiper": "^6.8.1",
     "vue": "^3.0.0",
-    "vue-router": "^4.0.10",
+    "vue-router": "4",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

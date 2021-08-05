@@ -34,7 +34,7 @@ export default {
     };
   },
   created() {
-    window.addEventListener("beforeinstallprompt", e => {
+    window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       if (Cookies.get("add-to-home-screen") === undefined) {
         this.isModalOpened = e;

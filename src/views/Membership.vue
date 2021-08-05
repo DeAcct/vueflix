@@ -1,6 +1,6 @@
 <template>
   <vueflix-header currentPage="membership"></vueflix-header>
-  <h1>멤버십</h1>
+  <h2>멤버십</h2>
 </template>
 
 <script>

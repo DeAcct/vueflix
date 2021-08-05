@@ -1,6 +1,6 @@
 <template>
   <vueflix-header currentPage="recommend"></vueflix-header>
-  <h1>테마추천</h1>
+  <h2>테마추천</h2>
 </template>
 
 <script>

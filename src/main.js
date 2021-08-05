@@ -5,7 +5,7 @@ import "./registerServiceWorker";
 
 const app = createApp(App);
 const DEFAULT_TITLE = "뷰플릭스";
-router.afterEach(to => {
+router.afterEach((to) => {
   nextTick(() => {
     document.title = to.meta.title || DEFAULT_TITLE;
   });

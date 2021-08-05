@@ -11,6 +11,9 @@
         <slot></slot>
       </p>
       <div class="cta">
+        <vueflix-func-btn @click="noFunc">
+          {{ no }}
+        </vueflix-func-btn>
         <vueflix-func-btn
           bg="var(--theme-500)"
           text-color="#fff"
@@ -18,9 +21,6 @@
         >
           {{ yes }}
         </vueflix-func-btn>
-        <vueflix-func-btn bg="var(--theme-100)" @click="noFunc">{{
-          no
-        }}</vueflix-func-btn>
       </div>
     </div>
   </div>

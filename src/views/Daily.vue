@@ -1,6 +1,6 @@
 <template>
   <vueflix-header currentPage="daily"></vueflix-header>
-  <h1>요일별 신작</h1>
+  <h2>요일별 신작</h2>
 </template>
 
 <script>

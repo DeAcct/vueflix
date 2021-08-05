@@ -10,7 +10,8 @@
         <site-menu v-if="!isMobile" :currentPage="page"></site-menu>
       </div>
       <div class="col-right">
-        <search-bar></search-bar>
+        <search-bar />
+        <notification />
         <button class="gnb-open" v-if="isMobile">
           <span class="blind">대메뉴 열기</span>
           <span></span>
@@ -25,6 +26,7 @@
 import SiteMenu from "./SiteMenu.vue";
 import SearchBar from "./SearchBar.vue";
 import Logo from "./Logo.vue";
+import Notification from "./Notification.vue";
 export default {
   name: "VueflixHeader",
   props: {
@@ -36,6 +38,7 @@ export default {
     SiteMenu,
     SearchBar,
     Logo,
+    Notification,
   },
   data() {
     return {
@@ -97,12 +100,15 @@ export default {
     }
     .col-right {
       display: flex;
+      .search-bar {
+        margin-right: 1.5rem;
+      }
     }
   }
 
   transition: all 250ms ease-out;
   &.scroll {
-    background-color: hsla(0, 0%, 100%, 0.9);
+    background-color: hsla(0, 0%, 100%, 0.7);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid #efefef;
@@ -112,9 +118,14 @@ export default {
   }
 }
 @media screen and (max-width: 768px) {
-  .header .inner .col-left {
-    margin-left: 50%;
-    transform: translateX(-50%);
+  .header .inner {
+    .col-left {
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+    .col-right .search-bar {
+      margin-right: 0.5rem;
+    }
   }
 }
 </style>

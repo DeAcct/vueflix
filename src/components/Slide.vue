@@ -151,14 +151,20 @@ export default {
 </script>
 
 <style lang="scss">
-.swiper-pagination-bullet {
-  opacity: 1;
-  background: rgba(255, 255, 255, 0.5);
+.swiper-pagination {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 5rem 4rem;
+  .swiper-pagination-bullet {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.5);
 
-  &-active {
-    background: rgba(255, 255, 255, 1);
+    &-active {
+      background: rgba(255, 255, 255, 1);
+    }
   }
 }
+
 .swiper-button-next,
 .swiper-button-prev {
   color: rgba(255, 255, 255, 0.5);
@@ -198,7 +204,8 @@ export default {
     left: 5rem;
     bottom: 10%;
     .ani-logo {
-      width: 70%;
+      max-width: 30vw;
+      max-height: 15em;
       margin-bottom: 2rem;
     }
     .slide-copy {
@@ -226,9 +233,14 @@ export default {
   .swiper-button-prev {
     display: none;
   }
-  .swiper-pagination-bullet {
-    width: 0.6rem;
-    height: 0.6rem;
+
+  .swiper-pagination {
+    justify-content: center;
+    padding-bottom: 0;
+    .swiper-pagination-bullet {
+      width: 0.6rem;
+      height: 0.6rem;
+    }
   }
 }
 @media screen and (max-width: 1024px) {

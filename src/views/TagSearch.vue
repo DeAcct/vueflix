@@ -1,6 +1,6 @@
 <template>
   <vueflix-header currentPage="tagsearch"></vueflix-header>
-  <h1>태그검색</h1>
+  <h2>태그검색</h2>
 </template>
 
 <script>

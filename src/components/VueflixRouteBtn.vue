@@ -1,6 +1,7 @@
 <template>
   <!--상세페이지 뷰(view) 개발완료시 라우터 링크로 전환 예정-->
-  <a :href="link" class="btn" :style="style" @mousedown="interaction">
+  <a :href="link" class="btn" :style="style">
+    <span class="interaction"> </span>
     <slot></slot>
   </a>
 </template>
@@ -44,17 +45,6 @@ export default {
   font-size: 1.5em;
   width: fit-content;
   transition: 150ms ease-out;
-  .interaction {
-    position: absolute;
-    width: 0;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    aspect-ratio: 1/1;
-    background-color: var(--theme-500);
-    opacity: 0.3;
-  }
 }
 @media screen and (max-width: 768px) {
   .btn {
