@@ -8,6 +8,7 @@
     description="vueflix-app-description"
     title="뷰플릭스 앱 써보실래요?"
     yes="설치"
+    no="다음에"
     :yesFunc="install"
     :noFunc="dismiss"
     v-if="isModalOpened"
