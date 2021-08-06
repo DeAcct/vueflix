@@ -1,15 +1,12 @@
 <template>
-  <vueflix-header currentPage="membership"></vueflix-header>
-  <h2>멤버십</h2>
+  <div class="wrap">
+    <h2>멤버십</h2>
+  </div>
 </template>
 
 <script>
-import VueflixHeader from "@/components/VueflixHeader.vue";
 export default {
   name: "Membership",
-  components: {
-    VueflixHeader,
-  },
 };
 </script>
 

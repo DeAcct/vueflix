@@ -6,7 +6,7 @@
         v-for="(item, index) in items"
         :key="index"
         class="item"
-        :class="{ current: item.to === currentPage }"
+        :class="{ current: item.to === page }"
       >
         <router-link :to="`/${item.to}`">
           {{ item.item }}
@@ -17,13 +17,9 @@
 </template>
 
 <script>
+import { useRoute } from "vue-router";
 export default {
   name: "SiteMenu",
-  props: {
-    currentPage: {
-      type: String,
-    },
-  },
   data() {
     return {
       items: [
@@ -44,6 +40,7 @@ export default {
           item: "멤버쉽",
         },
       ],
+      page: useRoute().name,
     };
   },
 };
@@ -59,14 +56,19 @@ export default {
       font-size: 1.5rem;
       font-weight: 700;
       color: #fff;
+      transition: 150ms ease-out;
 
-      &.current {
-        color: var(--theme-500);
+      &:hover {
+        color: rgba(255, 255, 255, 0.7);
       }
     }
   }
 }
 .fill .items .item {
   color: inherit;
+  .vueflix-active-link,
+  &:hover {
+    color: var(--theme-500);
+  }
 }
 </style>

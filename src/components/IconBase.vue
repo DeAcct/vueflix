@@ -41,5 +41,6 @@ export default {
 svg {
   color: inherit;
   fill: currentColor;
+  transition: 150ms ease-out;
 }
 </style>

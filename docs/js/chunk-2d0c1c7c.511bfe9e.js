@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c1c7c"],{4802:function(e,n,c){"use strict";c.r(n);var r=c("7a23"),t=Object(r["g"])("h2",null,"테마추천",-1);function a(e,n,c,a,u,d){var o=Object(r["B"])("vueflix-header");return Object(r["t"])(),Object(r["d"])(r["a"],null,[Object(r["g"])(o,{currentPage:"recommend"}),t],64)}var u=c("43dd"),d={name:"Theme",components:{VueflixHeader:u["a"]}};d.render=a;n["default"]=d}}]);
-//# sourceMappingURL=chunk-2d0c1c7c.511bfe9e.js.map

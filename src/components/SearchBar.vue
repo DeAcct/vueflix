@@ -135,4 +135,11 @@ export default {
     }
   }
 }
+.fill .search-bar .search-box .icon {
+  color: inherit;
+  &:hover {
+    background-color: var(--theme-100);
+    color: var(--theme-500);
+  }
+}
 </style>

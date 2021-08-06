@@ -32,9 +32,17 @@ export default {
     align-items: center;
     justify-content: center;
     color: #fff;
+    transition: 150ms ease-out;
     &:hover {
       background-color: rgba(255, 255, 255, 0.3);
     }
+  }
+}
+.fill .notification .icon {
+  color: inherit;
+  &:hover {
+    background-color: var(--theme-100);
+    color: var(--theme-500);
   }
 }
 </style>

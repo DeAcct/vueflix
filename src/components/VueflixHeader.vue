@@ -11,11 +11,11 @@
             <logo />
           </router-link>
         </h1>
-        <site-menu v-if="!isMobile" :currentPage="page"></site-menu>
+        <site-menu v-if="!isMobile"></site-menu>
       </div>
       <div class="col-right">
         <search-bar />
-        <notification v-if="page === 'home'" />
+        <notification />
       </div>
     </div>
   </header>
@@ -28,11 +28,6 @@ import Logo from "./Logo.vue";
 import Notification from "./Notification.vue";
 export default {
   name: "VueflixHeader",
-  props: {
-    currentPage: {
-      type: String,
-    },
-  },
   components: {
     SiteMenu,
     SearchBar,
@@ -43,7 +38,7 @@ export default {
     return {
       isScroll: false,
       isMobile: window.innerWidth <= 768,
-      page: this.currentPage,
+      page: this.$route.name,
     };
   },
   methods: {
@@ -53,6 +48,9 @@ export default {
     checkResolution() {
       this.isMobile = window.innerWidth <= 768;
     },
+    getCurrentPage() {
+      return this.$route.name;
+    },
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
@@ -61,6 +59,11 @@ export default {
   unmounted() {
     window.removeEventListener("scroll", this.handleScroll);
     window.removeEventListener("resize", this.checkResolution);
+  },
+  watch: {
+    $route() {
+      this.page = this.getCurrentPage();
+    },
   },
 };
 </script>
@@ -115,7 +118,7 @@ export default {
     border-bottom: 1px solid #efefef;
     .col-left {
       .logo a {
-        fill: var(--text-900);
+        fill: var(--text-800);
       }
     }
   }

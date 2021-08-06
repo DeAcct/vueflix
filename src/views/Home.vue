@@ -1,31 +1,30 @@
 <template>
-  <vueflix-header currentPage="home"></vueflix-header>
-  <main>
-    <slide />
-  </main>
-  <modal
-    label="vueflix-app-info"
-    description="vueflix-app-description"
-    title="뷰플릭스 앱 써보실래요?"
-    yes="설치"
-    no="다음에"
-    :yesFunc="install"
-    :noFunc="dismiss"
-    v-if="isModalOpened"
-  >
-    써보면 압니다. 인생의 절반을 손해본 그 느낌...
-  </modal>
+  <div class="wrap">
+    <main>
+      <slide />
+    </main>
+    <modal
+      label="vueflix-app-info"
+      description="vueflix-app-description"
+      title="뷰플릭스 앱 써보실래요?"
+      yes="설치"
+      no="다음에"
+      :yesFunc="install"
+      :noFunc="dismiss"
+      v-if="isModalOpened"
+    >
+      써보면 압니다. 인생의 절반을 손해본 그 느낌...
+    </modal>
+  </div>
 </template>
 
 <script>
-import VueflixHeader from "../components/VueflixHeader.vue";
 import Slide from "../components/Slide.vue";
 import Modal from "../components/Modal.vue";
 import Cookies from "js-cookie";
 export default {
   name: "Home",
   components: {
-    VueflixHeader,
     Slide,
     Modal,
   },

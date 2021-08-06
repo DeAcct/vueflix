@@ -1,9 +1,31 @@
 <template>
-  <router-view></router-view>
+  <router-view v-slot="{ Component }">
+    <vueflix-header></vueflix-header>
+    <transition name="fade" mode="out-in">
+      <component :is="Component" :key="$route.path"></component>
+    </transition>
+  </router-view>
 </template>
 
-<script></script>
+<script>
+import VueflixHeader from "./components/VueflixHeader.vue";
+export default {
+  name: "App",
+  components: {
+    VueflixHeader,
+  },
+};
+</script>
 
 <style lang="scss">
 @import url("./common.css");
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 100ms ease-out;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

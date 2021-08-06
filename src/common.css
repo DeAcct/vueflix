@@ -34,7 +34,7 @@ svg {
   margin: 0;
   padding: 0;
   border: none;
-  color: var(--text-900);
+  color: var(--text-800);
   font-family: "Noto Sans KR", sans-serif;
   letter-spacing: -0.03vw;
   -webkit-font-smoothing: antialiased;

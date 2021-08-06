@@ -8,7 +8,7 @@ const quarter = Math.floor((month + 3) / 3);
 const routes = [
   {
     path: "/",
-    name: "Home",
+    name: "home",
     component: () => import("@/views/Home"),
     meta: {
       title: "뷰플릭스 - 합법적 애니 스트리밍",
@@ -18,7 +18,7 @@ const routes = [
   },
   {
     path: "/tagsearch",
-    name: "TagSearch",
+    name: "tagsearch",
     component: () => import("@/views/TagSearch"),
     meta: {
       title: "필터로 취향저격 애니찾기",
@@ -26,7 +26,7 @@ const routes = [
   },
   {
     path: "/daily",
-    name: "Daily",
+    name: "daily",
     component: () => import("@/views/Daily"),
     meta: {
       title: `${year}년 ${quarter}분기 신작 애니 편성표`,
@@ -34,7 +34,7 @@ const routes = [
   },
   {
     path: "/recommend",
-    name: "Recommend",
+    name: "recommend",
     component: () => import("@/views/Recommend"),
     meta: {
       title: "테마별 애니 추천",
@@ -42,7 +42,7 @@ const routes = [
   },
   {
     path: "/membership",
-    name: "Membership",
+    name: "membership",
     component: () => import("@/views/Membership"),
     meta: {
       title: "뷰플릭스 멤버십 및 포인트 충전",
@@ -50,7 +50,7 @@ const routes = [
   },
   {
     path: "/notification",
-    name: "NotiAlert",
+    name: "notialert",
     component: () => import("@/views/NotiAlert"),
     meta: {
       title: "알림",
@@ -61,4 +61,5 @@ const routes = [
 export const router = createRouter({
   history: createWebHistory(),
   routes,
+  linkActiveClass: "vueflix-active-link",
 });

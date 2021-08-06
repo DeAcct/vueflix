@@ -1,17 +1,14 @@
 <template>
-  <vueflix-header></vueflix-header>
-  <main>
-    <h2>알림</h2>
-  </main>
+  <div class="wrap">
+    <main>
+      <h2>알림</h2>
+    </main>
+  </div>
 </template>
 
 <script>
-import VueflixHeader from "../components/VueflixHeader.vue";
 export default {
   name: "NotiAlert",
-  components: {
-    VueflixHeader,
-  },
 };
 </script>
 
