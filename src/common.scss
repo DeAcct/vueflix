@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700;900&display=swap");
-@import url("./color.css");
+@import url("./color.scss");
 html,
 body,
 header,
@@ -8,6 +8,8 @@ main,
 aside,
 section,
 article,
+figure,
+figcaption,
 footer,
 div,
 h1,
@@ -29,6 +31,7 @@ fieldset,
 input,
 legend,
 button,
+label,
 img,
 svg {
   margin: 0;
@@ -36,6 +39,7 @@ svg {
   border: none;
   color: var(--text-800);
   font-family: "Noto Sans KR", sans-serif;
+  line-height: 1;
   letter-spacing: -0.03vw;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -72,7 +76,7 @@ img {
   vertical-align: middle;
 }
 .blind {
-  clip: rect(0 0 0 0);
+  clip: rect(1px 1px 1px 1px);
   clip-path: inset(50%);
   width: 1px;
   height: 1px;
@@ -89,6 +93,6 @@ img {
 
 @media screen and (max-width: 768px) {
   .inner {
-    padding: 0 3rem;
+    padding: 0 2rem;
   }
 }

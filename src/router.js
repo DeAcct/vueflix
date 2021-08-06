@@ -49,7 +49,7 @@ const routes = [
     },
   },
   {
-    path: "/notification",
+    path: "/notialert",
     name: "notialert",
     component: () => import("@/views/NotiAlert"),
     meta: {

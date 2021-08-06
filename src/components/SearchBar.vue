@@ -77,37 +77,24 @@ export default {
   display: flex;
   align-items: center;
   width: 3.6rem;
-  height: 3.6rem;
+  height: 4rem;
+  border-radius: 0.3rem;
   overflow: hidden;
+  transition: width 150ms ease-out;
   .search-box {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     align-items: center;
     position: relative;
     width: 30rem;
-    height: 3.6rem;
-    border-radius: 0.3rem;
-
-    .input-area {
-      position: absolute;
-      left: 3.6rem;
-      width: 0;
-      height: 3.6rem;
-    }
-    .placeholder {
-      position: absolute;
-      left: 3.6rem;
-      font-size: 1.2rem;
-    }
+    height: 4rem;
     .icon {
-      position: absolute;
-      left: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       width: 3.6rem;
       height: 3.6rem;
-      display: flex;
       color: #fff;
       cursor: pointer;
       background-color: rgba(255, 255, 255, 0);
@@ -117,17 +104,30 @@ export default {
         background-color: rgba(255, 255, 255, 0.3);
       }
     }
+    .input-area {
+      width: 0;
+      height: 3.6rem;
+      font-size: 1.3rem;
+    }
+    .placeholder {
+      position: absolute;
+      font-size: 1.3rem;
+      cursor: text;
+    }
   }
   &.open {
     width: 30rem;
+    border: 1px solid hsl(0, 0%, 87%);
     .search-box {
       background-color: #fff;
-      border: 1px solid #afafaf;
+      padding: 0 1rem;
       .input-area {
-        width: 26.4rem;
+        width: 23.4rem;
       }
       .placeholder {
-        width: 26.4rem;
+        width: 23.4rem;
+        left: auto;
+        right: 1rem;
       }
       .icon {
         color: inherit;

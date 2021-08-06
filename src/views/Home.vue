@@ -2,6 +2,9 @@
   <div class="wrap">
     <main>
       <slide />
+      <div class="contents">
+        <recent-carousel></recent-carousel>
+      </div>
     </main>
     <modal
       label="vueflix-app-info"
@@ -21,12 +24,14 @@
 <script>
 import Slide from "../components/Slide.vue";
 import Modal from "../components/Modal.vue";
+import RecentCarousel from "../components/RecentCarousel.vue";
 import Cookies from "js-cookie";
 export default {
   name: "Home",
   components: {
     Slide,
     Modal,
+    RecentCarousel,
   },
   data() {
     return {
@@ -56,4 +61,8 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.contents {
+  padding-top: 3.5rem;
+}
+</style>

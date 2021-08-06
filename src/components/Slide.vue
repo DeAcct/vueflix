@@ -196,7 +196,7 @@ export default {
   }
   .slide-info {
     position: absolute;
-    left: 3rem;
+    left: 2rem;
     bottom: 10%;
     .ani-logo {
       max-width: 50vw;

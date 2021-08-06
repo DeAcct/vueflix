@@ -58,7 +58,8 @@ export default {
       color: #fff;
       transition: 150ms ease-out;
 
-      &:hover {
+      &:hover,
+      a:focus {
         color: rgba(255, 255, 255, 0.7);
       }
     }
@@ -67,7 +68,8 @@ export default {
 .fill .items .item {
   color: inherit;
   .vueflix-active-link,
-  &:hover {
+  &:hover,
+  a:focus {
     color: var(--theme-500);
   }
 }

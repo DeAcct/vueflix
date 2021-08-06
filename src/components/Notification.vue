@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/notification" class="notification">
+  <router-link to="/notialert" class="notification">
     <i class="icon" @click="searchBarOpen">
       <icon-base iconName="검색">
         <icon-notification />

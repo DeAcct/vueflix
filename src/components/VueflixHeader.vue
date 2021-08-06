@@ -71,7 +71,7 @@ export default {
 <style lang="scss" scoped>
 .header {
   width: 100%;
-  border-bottom: 1px solid hsla(0, 0%, 100%, 0);
+  border-bottom: 1px solid hsla(0, 0%, 87%, 0);
   -webkit-backdrop-filter: blur(0);
   backdrop-filter: blur(0);
   position: fixed;
@@ -104,6 +104,7 @@ export default {
     }
     .col-right {
       display: flex;
+      align-items: center;
       .notification {
         margin-left: 0.5rem;
       }
@@ -115,7 +116,7 @@ export default {
     background-color: hsla(0, 0%, 100%, 0.7);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid #efefef;
+    border-bottom-color: hsl(0, 0%, 87%);
     .col-left {
       .logo a {
         fill: var(--text-800);

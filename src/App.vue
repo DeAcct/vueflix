@@ -18,7 +18,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url("./common.css");
+@import url("./common.scss");
 
 .fade-enter-active,
 .fade-leave-active {
