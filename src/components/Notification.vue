@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/notification">
+  <router-link to="/notification" class="notification">
     <i class="icon" @click="searchBarOpen">
       <icon-base iconName="검색">
         <icon-notification />
@@ -22,16 +22,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.icon {
-  width: 3.6rem;
-  height: 3.6rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+.notification {
+  display: block;
+  .icon {
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
   }
 }
 </style>

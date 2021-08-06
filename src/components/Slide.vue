@@ -19,14 +19,14 @@
         <div class="bg">
           <picture>
             <source
-              media="(max-width: 767px)"
+              media="(max-width: 1024px)"
               :srcset="slide.bgSet.webpMobile"
             />
             <source
-              media="(max-width: 767px)"
+              media="(max-width: 1024px)"
               :srcset="slide.bgSet.jpegMobile"
             />
-            <source media="(min-width: 768px)" :srcset="slide.bgSet.webp" />
+            <source media="(min-width: 1025px)" :srcset="slide.bgSet.webp" />
             <img
               :src="slide.bgSet.jpeg"
               :alt="`${slide.anime} 배너`"
@@ -153,11 +153,13 @@ export default {
 <style lang="scss">
 .swiper-pagination {
   display: flex;
-  justify-content: flex-end;
-  padding: 0 5rem 4rem;
+  justify-content: center;
+  padding-bottom: 0;
   .swiper-pagination-bullet {
     opacity: 1;
     background: rgba(255, 255, 255, 0.5);
+    width: 0.6rem;
+    height: 0.6rem;
 
     &-active {
       background: rgba(255, 255, 255, 1);
@@ -167,14 +169,7 @@ export default {
 
 .swiper-button-next,
 .swiper-button-prev {
-  color: rgba(255, 255, 255, 0.5);
-  transition: 150ms ease-out;
-  &:hover {
-    color: rgba(255, 255, 255, 1);
-  }
-  &::after {
-    font-size: 3rem;
-  }
+  display: none;
 }
 .slide-item {
   position: relative;
@@ -201,51 +196,63 @@ export default {
   }
   .slide-info {
     position: absolute;
-    left: 5rem;
+    left: 3rem;
     bottom: 10%;
     .ani-logo {
-      max-width: 30vw;
+      max-width: 50vw;
       max-height: 15em;
       margin-bottom: 2rem;
     }
     .slide-copy {
       display: block;
-      font-size: 2em;
+
+      font-size: 1.5em;
       color: #fff;
       margin-bottom: 1.5rem;
     }
   }
 }
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 768px) {
   .slide-item {
     .slide-info {
-      left: 3rem;
+      left: 5rem;
       .ani-logo {
-        max-width: 50%;
-        margin-bottom: 2rem;
+        max-width: 40vw;
+        max-height: 10em;
+        margin-bottom: 3rem;
       }
       .slide-copy {
-        font-size: 1.5em;
+        font-size: 2em;
       }
+    }
+    .bg {
+      height: 70vh;
     }
   }
   .swiper-button-next,
   .swiper-button-prev {
-    display: none;
-  }
-
-  .swiper-pagination {
-    justify-content: center;
-    padding-bottom: 0;
-    .swiper-pagination-bullet {
-      width: 0.6rem;
-      height: 0.6rem;
+    display: block;
+    color: rgba(255, 255, 255, 0.5);
+    transition: 150ms ease-out;
+    &:hover {
+      color: rgba(255, 255, 255, 1);
+    }
+    &::after {
+      font-size: 3rem;
     }
   }
+  .swiper-pagination {
+    justify-content: flex-end;
+    padding: 0 5rem 4rem;
+  }
 }
-@media screen and (max-width: 1024px) {
+@media screen and (min-width: 1025px) {
   .slide-item .slide-info .ani-logo {
-    max-width: 40%;
+    max-width: 30vw;
+    max-height: 18em;
+  }
+  .slide-item .bg {
+    height: fit-content;
   }
 }
 </style>

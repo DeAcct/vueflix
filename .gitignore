@@ -26,3 +26,5 @@ pnpm-debug.log*
 # asset files
 *.ai
 *.xd
+
+CNAME

@@ -1,5 +1,9 @@
 <template>
-  <header class="header" :class="{ scroll: isScroll }" @scroll="handleScroll">
+  <header
+    class="header"
+    :class="{ fill: isScroll || page !== 'home' }"
+    @scroll="handleScroll"
+  >
     <div class="inner">
       <div class="col-left">
         <h1 class="logo">
@@ -11,12 +15,7 @@
       </div>
       <div class="col-right">
         <search-bar />
-        <notification />
-        <button class="gnb-open" v-if="isMobile">
-          <span class="blind">대메뉴 열기</span>
-          <span></span>
-          <span></span>
-        </button>
+        <notification v-if="page === 'home'" />
       </div>
     </div>
   </header>
@@ -43,7 +42,7 @@ export default {
   data() {
     return {
       isScroll: false,
-      isMobile: window.innerWidth < 768,
+      isMobile: window.innerWidth <= 768,
       page: this.currentPage,
     };
   },
@@ -52,7 +51,7 @@ export default {
       this.isScroll = 0 < Math.round(window.scrollY);
     },
     checkResolution() {
-      this.isMobile = window.innerWidth < 768;
+      this.isMobile = window.innerWidth <= 768;
     },
   },
   created() {
@@ -84,6 +83,8 @@ export default {
     .col-left {
       display: flex;
       align-items: center;
+      margin-left: 50%;
+      transform: translateX(-50%);
       .logo {
         display: flex;
         align-items: center;
@@ -100,31 +101,33 @@ export default {
     }
     .col-right {
       display: flex;
-      .search-bar {
-        margin-right: 1.5rem;
+      .notification {
+        margin-left: 0.5rem;
       }
     }
   }
 
   transition: all 250ms ease-out;
-  &.scroll {
+  &.fill {
     background-color: hsla(0, 0%, 100%, 0.7);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid #efefef;
-    .col-left .logo a {
-      fill: #000;
+    .col-left {
+      .logo a {
+        fill: var(--text-900);
+      }
     }
   }
 }
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 769px) {
   .header .inner {
     .col-left {
-      margin-left: 50%;
-      transform: translateX(-50%);
+      margin-left: 0;
+      transform: none;
     }
-    .col-right .search-bar {
-      margin-right: 0.5rem;
+    .col-right .notification {
+      margin-left: 1.5rem;
     }
   }
 }

@@ -3,18 +3,24 @@
     <fieldset>
       <legend class="blind">작품 검색</legend>
       <label for="검색" class="search-box">
+        <i
+          class="icon"
+          @click="searchBarOpen"
+          @focus="searchBarOpen"
+          tabindex="0"
+        >
+          <icon-base iconName="검색">
+            <icon-search />
+          </icon-base>
+        </i>
         <input
           type="text"
           id="검색"
           class="input-area"
           ref="search"
           @input="inputChange"
+          @blur="searchBarClose"
         />
-        <i class="icon" @click="searchBarOpen">
-          <icon-base iconName="검색">
-            <icon-search />
-          </icon-base>
-        </i>
         <span class="placeholder" :class="{ blind: !isOpen }" ref="placeholder">
           제목/제작사/감독으로 검색해보세요
         </span>
@@ -42,6 +48,15 @@ export default {
   methods: {
     searchBarOpen() {
       this.isOpen = !this.isOpen;
+      if (this.isOpen) {
+        this.$refs.search.blur();
+      } else {
+        this.$refs.search.focus();
+      }
+    },
+    searchBarClose() {
+      this.isOpen = false;
+      this.$refs.search.blur();
     },
     inputChange() {
       this.inputValue = this.$refs.search.value;
@@ -87,7 +102,6 @@ export default {
     .icon {
       position: absolute;
       left: 0;
-
       display: flex;
       align-items: center;
       justify-content: center;

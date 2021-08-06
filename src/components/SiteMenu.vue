@@ -66,7 +66,7 @@ export default {
     }
   }
 }
-.scroll .menu .item {
-  color: #000;
+.fill .items .item {
+  color: inherit;
 }
 </style>
