@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d228e54"],{daab:function(n,e,t){"use strict";t.r(e);var a=t("7a23"),c={class:"wrap"},o=Object(a["h"])("h2",null,"멤버십",-1);function i(n,e,t,i,r,u){return Object(a["u"])(),Object(a["e"])("div",c,[o])}t("99af");var r={name:"Membership",data:function(){return{}},mounted:function(){window.addEventListener("deviceorientation",(function(n){console.log("세로(y축)기준 회전값: ".concat(n.gamma,", 가로(x축)기준 회전값: ").concat(n.beta))}))}};r.render=i;e["default"]=r}}]);
+//# sourceMappingURL=chunk-2d228e54.481625bb.js.map

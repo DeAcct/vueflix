@@ -32,7 +32,7 @@ export default {
     align-items: center;
     justify-content: center;
     color: #fff;
-    transition: 150ms ease-out;
+    transition: background-color 150ms ease-out;
     &:hover {
       background-color: rgba(255, 255, 255, 0.3);
     }

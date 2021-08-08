@@ -36,20 +36,20 @@ export default {
 <style lang="scss">
 .btn {
   position: relative;
-  padding: 1rem 1.5rem;
   overflow: hidden;
   display: flex;
+  padding: 1rem 1.5rem;
   justify-content: space-between;
   align-items: center;
   border-radius: 0.3rem;
-  font-size: 1.5em;
+  font-size: 1.3em;
   width: fit-content;
   transition: 150ms ease-out;
 }
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 768px) {
   .btn {
-    font-size: 1.3em;
-    padding: 0.9rem 1.5rem;
+    font-size: 2em;
+    padding: 1.5rem 2rem;
   }
 }
 </style>

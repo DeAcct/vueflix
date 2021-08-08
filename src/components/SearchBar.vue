@@ -117,7 +117,7 @@ export default {
   }
   &.open {
     width: 30rem;
-    border: 1px solid hsl(0, 0%, 87%);
+    border: 1px solid var(--bg-200);
     .search-box {
       background-color: #fff;
       padding: 0 1rem;

@@ -6,7 +6,7 @@
         v-for="(item, index) in items"
         :key="index"
         class="item"
-        :class="{ current: item.to === page }"
+        :class="{ current: item.to === findCurrentPage }"
       >
         <router-link :to="`/${item.to}`">
           {{ item.item }}
@@ -40,8 +40,12 @@ export default {
           item: "멤버쉽",
         },
       ],
-      page: useRoute().name,
     };
+  },
+  computed: {
+    findCurrentPage() {
+      return useRoute().name;
+    },
   },
 };
 </script>

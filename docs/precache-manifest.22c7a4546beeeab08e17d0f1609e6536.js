@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c81705ba8880cc68955c",
-    "url": "/css/app.e42ce7f3.css"
+    "revision": "4fe19050e68d51b62425",
+    "url": "/css/app.c091e590.css"
   },
   {
-    "revision": "152aa2ef81b63c191e11",
-    "url": "/css/chunk-6cf082ce.97f58b23.css"
+    "revision": "85b0f7b67e8186fc4c23",
+    "url": "/css/chunk-3ae02f6f.ee91d3db.css"
   },
   {
     "revision": "e12d97ac4a8ba3a45c45b145b38c87e1",
@@ -44,16 +44,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/aquatop_banner.8692d03a.webp"
   },
   {
-    "revision": "5acba612d84f1b924bc3de6a11f09660",
-    "url": "/img/aquatop_banner_m.5acba612.jpeg"
+    "revision": "084e0960947179c4efa75c22224bfe37",
+    "url": "/img/aquatop_banner_m.084e0960.webp"
   },
   {
-    "revision": "d12b2636855681d8702e0cd1ba90d72d",
-    "url": "/img/aquatop_banner_m.d12b2636.webp"
+    "revision": "49a3bda89c6d330ddb8cf918410fd97d",
+    "url": "/img/aquatop_banner_m.49a3bda8.jpeg"
   },
   {
-    "revision": "4d493a977814521961abe6e449140bf2",
-    "url": "/img/blackmaid.4d493a97.png"
+    "revision": "e6d78b9506a5cf11c2498533d517e396",
+    "url": "/img/blackmaid.e6d78b95.png"
   },
   {
     "revision": "1fdb92cc22fe87a73a3acc7216278039",
@@ -64,12 +64,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/blackmaid_banner.934e9e4b.webp"
   },
   {
-    "revision": "40374e324e6d9f6b5e215a23d735a827",
-    "url": "/img/blackmaid_banner_m.40374e32.webp"
+    "revision": "31a3b16ecbaee39477c2dafdb59250b5",
+    "url": "/img/blackmaid_banner_m.31a3b16e.jpeg"
   },
   {
-    "revision": "e3abfcf5a55aa998a3162aac320055cd",
-    "url": "/img/blackmaid_banner_m.e3abfcf5.jpeg"
+    "revision": "7afa4edc31f88b1faf8dd3efbae587aa",
+    "url": "/img/blackmaid_banner_m.7afa4edc.webp"
   },
   {
     "revision": "720d9d0a0a84c38e503d669d58c88b9d",
@@ -84,12 +84,36 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/bokutachi_banner.d3c86ffb.webp"
   },
   {
-    "revision": "3cf57137d9d8676f0be387131f84b6b4",
-    "url": "/img/bokutachi_banner_m.3cf57137.webp"
+    "revision": "902bc24963c733d802b86eddc82a1a4b",
+    "url": "/img/bokutachi_banner_m.902bc249.jpeg"
   },
   {
-    "revision": "690fcc7c6029c9d8e87431bbece085b9",
-    "url": "/img/bokutachi_banner_m.690fcc7c.jpeg"
+    "revision": "c80c84f1d464faa9f662ab605dfaf3eb",
+    "url": "/img/bokutachi_banner_m.c80c84f1.webp"
+  },
+  {
+    "revision": "9ed7784a9d7f736efa1158c7e9c196a7",
+    "url": "/img/carousel_thumbnail_anohana.9ed7784a.jpg"
+  },
+  {
+    "revision": "b8bb02539c3ed0167e6837818d0f4987",
+    "url": "/img/carousel_thumbnail_jahisama.b8bb0253.jpg"
+  },
+  {
+    "revision": "576f700177f87f432281e3f2261c1650",
+    "url": "/img/carousel_thumbnail_kaguya.576f7001.jpg"
+  },
+  {
+    "revision": "0fac02cec3e557b7950fbeb1438e610d",
+    "url": "/img/carousel_thumbnail_konosubaRed.0fac02ce.jpg"
+  },
+  {
+    "revision": "36058f42dfe66ccd0ec8637324e0b33c",
+    "url": "/img/carousel_thumbnail_necheongko.36058f42.webp"
+  },
+  {
+    "revision": "45e7dcca3a6de492144c86dd395dc156",
+    "url": "/img/carousel_thumbnail_tenslime.45e7dcca.webp"
   },
   {
     "revision": "af25b720c9e46329556f0d79d35642a5",
@@ -104,12 +128,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/kanokano_banner.865165a3.webp"
   },
   {
-    "revision": "1cf11a84796f9e169d67a85a2b2e9ec2",
-    "url": "/img/kanokano_banner_m.1cf11a84.webp"
+    "revision": "657cc49ab02261d5bb589488ab9109ed",
+    "url": "/img/kanokano_banner_m.657cc49a.webp"
   },
   {
-    "revision": "f44e80f37a271fe52e776a8c4eff8e9b",
-    "url": "/img/kanokano_banner_m.f44e80f3.jpeg"
+    "revision": "a3de7158d96e5b3c857f4959987cdd1c",
+    "url": "/img/kanokano_banner_m.a3de7158.jpeg"
   },
   {
     "revision": "e696a2d55fca21a37f7fda1e2a55147a",
@@ -124,20 +148,20 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/kobayashi_banner.3db7f611.webp"
   },
   {
-    "revision": "326283cf06e9b1ac7ed51a5219266f31",
-    "url": "/img/kobayashi_banner_m.326283cf.webp"
+    "revision": "913842a23823a781e7e1670235a827fc",
+    "url": "/img/kobayashi_banner_m.913842a2.webp"
   },
   {
-    "revision": "d17918cf81fbe37fdb9fc48f3c7e2ca0",
-    "url": "/img/kobayashi_banner_m.d17918cf.jpeg"
+    "revision": "c0036c17d337b74822750d67d769e756",
+    "url": "/img/kobayashi_banner_m.c0036c17.jpeg"
   },
   {
-    "revision": "b7c47e7ce97e18e5adc05532585f677c",
+    "revision": "96bbf0ae78757671f50957a130bcfd8e",
     "url": "/index.html"
   },
   {
-    "revision": "c81705ba8880cc68955c",
-    "url": "/js/app.42f7cab9.js"
+    "revision": "4fe19050e68d51b62425",
+    "url": "/js/app.82144c75.js"
   },
   {
     "revision": "23d3fa786733f64e0de2",
@@ -156,12 +180,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/js/chunk-2d0e1478.6da6910f.js"
   },
   {
-    "revision": "96747c85d4ec3be3f46f",
-    "url": "/js/chunk-2d228e54.5078088b.js"
+    "revision": "713527e250d9eb5e60bb",
+    "url": "/js/chunk-2d228e54.481625bb.js"
   },
   {
-    "revision": "152aa2ef81b63c191e11",
-    "url": "/js/chunk-6cf082ce.a3a18890.js"
+    "revision": "85b0f7b67e8186fc4c23",
+    "url": "/js/chunk-3ae02f6f.0117ecd8.js"
   },
   {
     "revision": "687ba19e40f9850cfa44",

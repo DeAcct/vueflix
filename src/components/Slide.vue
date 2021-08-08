@@ -199,7 +199,7 @@ export default {
     left: 2rem;
     bottom: 10%;
     .ani-logo {
-      max-width: 50vw;
+      max-width: 70vw;
       max-height: 15em;
       margin-bottom: 2rem;
     }
@@ -213,6 +213,13 @@ export default {
   }
 }
 @media screen and (min-width: 768px) {
+  .swiper-container-horizontal
+    .swiper-pagination-bullets
+    .swiper-pagination-bullet {
+    width: 0.5vw;
+    height: 0.5vw;
+    margin: 0 0.6rem;
+  }
   .slide-item {
     .slide-info {
       left: 5rem;
@@ -229,9 +236,12 @@ export default {
       height: 70vh;
     }
   }
+}
+@media screen and (min-width: 769px) {
   .swiper-button-next,
   .swiper-button-prev {
-    display: block;
+    display: flex;
+    align-items: center;
     color: rgba(255, 255, 255, 0.5);
     transition: 150ms ease-out;
     &:hover {
@@ -246,6 +256,7 @@ export default {
     padding: 0 5rem 4rem;
   }
 }
+
 @media screen and (min-width: 1025px) {
   .slide-item .slide-info .ani-logo {
     max-width: 30vw;

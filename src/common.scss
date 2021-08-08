@@ -85,14 +85,14 @@ img {
   white-space: nowrap;
 }
 .inner {
-  padding: 0 5rem;
+  padding: 0 2rem;
 }
 *:focus {
   outline: none;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 768px) {
   .inner {
-    padding: 0 2rem;
+    padding: 0 5rem;
   }
 }

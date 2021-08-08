@@ -116,7 +116,7 @@ export default {
     background-color: hsla(0, 0%, 100%, 0.7);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    border-bottom-color: hsl(0, 0%, 87%);
+    border-bottom-color: var(--bg-200);
     .col-left {
       .logo a {
         fill: var(--text-800);
