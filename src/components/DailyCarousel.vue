@@ -1,8 +1,7 @@
-<template>
-  <section class="carousel">
+<!--template>
+  <section class="daily-carousel">
     <div class="head-control">
-      <h2>{{ title }}</h2>
-      <slot></slot>
+      <h2>요일별 신작</h2>
       <div class="btn-wrap">
         <button
           class="prev-btn"
@@ -22,18 +21,24 @@
         </button>
       </div>
     </div>
+    <div class="day-selector">
+      <button
+        v-for="(anime, index) in animeList"
+        :key="index"
+        :class="{ active: anime.day === day }"
+        @click="dayBtnClick($event)"
+      >
+        {{ anime.day }}
+      </button>
+    </div>
     <div class="wrap">
-      <ul class="items" :style="style">
+      <ul class="items">
         <carousel-item
-          v-for="anime in animeList"
+          v-for="anime in filterAnimeList"
           :key="anime.title"
           :title="anime.title"
-          :episode="anime.episode"
           :img="anime.img"
           :url="anime.url"
-          :isMovie="anime.isMovie"
-          :isRecent="isRecent"
-          :progress="anime.progress"
         />
       </ul>
     </div>
@@ -46,7 +51,7 @@ import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 export default {
-  name: "Carousel",
+  name: "DailyCarousel",
   components: {
     CarouselItem,
     IconBase,
@@ -60,74 +65,73 @@ export default {
     type: {
       type: String,
     },
-    title: {
-      type: String,
-    },
   },
   data() {
     return {
-      resolution: window.innerWidth,
-      carouselNumber: 0,
-      shownItems: this.resolution >= 1920 ? 6 : 4,
-      isRecent: this.type === "recent",
+      day: this.getDayString(),
     };
   },
   computed: {
-    style() {
-      return {
-        transform: `translateX(${-this.carouselNumber * this.resolution}px)`,
-      };
-    },
-    carouselLimit() {
-      return Math.round(this.animeList.length / this.shownItems);
-    },
-    nextActive() {
-      return this.carouselNumber < this.carouselLimit - 1;
-    },
-    prevActive() {
-      return this.carouselNumber > 0;
+    filterAnimeList() {
+      const filteredList = this.animeList.filter(
+        (animes) => animes.day === this.day
+      );
+      return filteredList[0].animes;
     },
   },
   methods: {
-    next() {
-      if (this.nextActive) {
-        this.carouselNumber++;
-      } else {
-        return;
+    dayBtnClick(e) {
+      this.day = e.target.textContent;
+    },
+    getDayString() {
+      switch (new Date().getDay()) {
+        case 0:
+          return "일";
+        case 1:
+          return "월";
+        case 2:
+          return "화";
+        case 3:
+          return "수";
+        case 4:
+          return "목";
+        case 5:
+          return "금";
+        default:
+          return "토";
       }
     },
-    prev() {
-      if (this.prevActive) {
-        this.carouselNumber--;
-      } else {
-        return;
-      }
-    },
-  },
-  mounted() {
-    window.addEventListener("resize", () => {
-      this.resolution = window.innerWidth;
-      this.shownItems = this.resolution >= 1920 ? 6 : 4;
-      this.carouselNumber = 0;
-    });
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.carousel {
+.daily-carousel {
   width: 100%;
-  &:not(:first-of-type) {
-    margin-top: 3rem;
-  }
+  margin-top: 3rem;
   .head-control {
     padding: 0 2rem;
     h2 {
       font-size: 1.8rem;
-      margin-right: 2rem;
     }
     .btn-wrap {
       display: none;
+    }
+  }
+  .day-selector {
+    display: flex;
+    height: 3.5rem;
+    margin-left: 2rem;
+    gap: 1rem;
+    button {
+      width: 3.5rem;
+      height: 100%;
+      background-color: var(--bg-300);
+      border-radius: 50%;
+      color: #fff;
+      &.active {
+        background-color: var(--theme-500);
+      }
     }
   }
   .wrap {
@@ -136,8 +140,10 @@ export default {
     position: relative;
     overflow-x: scroll;
     overflow-y: hidden;
-    scrollbar-width: none;
     &::-webkit-scrollbar {
+      display: none;
+    }
+    .btn-wrap {
       display: none;
     }
   }
@@ -146,24 +152,19 @@ export default {
     width: fit-content;
     padding: 0 2rem;
     margin: 0;
-    transition: 300ms ease-out;
   }
 }
 
 @media screen and (min-width: 768px) {
   .carousel {
-    .head-control {
-      padding: 0 5rem;
-      h2 {
-        font-size: 2.3rem;
-      }
-      .btn-wrap {
-        display: none;
-      }
+    h2 {
+      font-size: 2.3rem;
+      padding-left: 5rem;
     }
     .wrap {
       width: 100%;
       margin-top: 1.5rem;
+      scrollbar-width: none;
     }
     .items {
       padding: 0 5rem;
@@ -172,7 +173,6 @@ export default {
 }
 @media screen and (min-width: 1024px) {
   .carousel {
-    position: relative;
     .head-control {
       display: flex;
       justify-content: flex-start;
@@ -182,9 +182,8 @@ export default {
       }
       .btn-wrap {
         display: flex;
-        justify-content: flex-end;
-        flex: 2;
-        gap: 1rem;
+        justify-content: space-between;
+        width: 9rem;
         height: 4rem;
         margin-left: 2rem;
         button {

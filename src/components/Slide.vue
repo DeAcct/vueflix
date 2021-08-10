@@ -216,8 +216,10 @@ export default {
   .swiper-container-horizontal
     .swiper-pagination-bullets
     .swiper-pagination-bullet {
-    width: 0.5vw;
-    height: 0.5vw;
+    width: 1vw;
+    height: 1vw;
+    max-width: 1.5rem;
+    max-height: 1.5rem;
     margin: 0 0.6rem;
   }
   .slide-item {
