@@ -2,7 +2,7 @@
   <section class="carousel">
     <div class="head-control">
       <h2>{{ title }}</h2>
-      <slot></slot>
+      <day-selector @todayString="filterAnimeList" v-if="isDaily" />
       <div class="btn-wrap">
         <button
           class="prev-btn"
@@ -24,17 +24,28 @@
     </div>
     <div class="wrap">
       <ul class="items" :style="style">
-        <carousel-item
-          v-for="anime in animeList"
-          :key="anime.title"
-          :title="anime.title"
-          :episode="anime.episode"
-          :img="anime.img"
-          :url="anime.url"
-          :isMovie="anime.isMovie"
-          :isRecent="isRecent"
-          :progress="anime.progress"
-        />
+        <template v-if="isDaily">
+          <carousel-item
+            v-for="anime in filteredList"
+            :key="anime.title"
+            :title="anime.title"
+            :img="anime.img"
+            :url="anime.url"
+          />
+        </template>
+        <template v-else>
+          <carousel-item
+            v-for="anime in animeList"
+            :key="anime.title"
+            :title="anime.title"
+            :episode="anime.episode"
+            :img="anime.img"
+            :url="anime.url"
+            :isMovie="anime.isMovie"
+            :isRecent="isRecent"
+            :progress="anime.progress"
+          />
+        </template>
       </ul>
     </div>
   </section>
@@ -43,6 +54,7 @@
 <script>
 import CarouselItem from "./CarouselItem.vue";
 import IconBase from "./IconBase.vue";
+import DaySelector from "../components/DaySelector.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 export default {
@@ -52,6 +64,7 @@ export default {
     IconBase,
     IconArrowNext,
     IconArrowPrev,
+    DaySelector,
   },
   props: {
     animeList: {
@@ -70,6 +83,10 @@ export default {
       carouselNumber: 0,
       shownItems: this.resolution >= 1920 ? 6 : 4,
       isRecent: this.type === "recent",
+      isDaily: this.type === "daily",
+      filteredList: this.animeList.filter(
+        (animes) => animes.day === new Date().getDay()
+      ),
     };
   },
   computed: {
@@ -79,10 +96,14 @@ export default {
       };
     },
     carouselLimit() {
-      return Math.round(this.animeList.length / this.shownItems);
+      if (this.isDaily) {
+        return Math.round(this.filteredList.length / this.shownItems);
+      } else {
+        return Math.round(this.animeList.length / this.shownItems);
+      }
     },
     nextActive() {
-      return this.carouselNumber < this.carouselLimit - 1;
+      return this.carouselNumber < this.carouselLimit;
     },
     prevActive() {
       return this.carouselNumber > 0;
@@ -102,6 +123,12 @@ export default {
       } else {
         return;
       }
+    },
+    filterAnimeList(val) {
+      const filteredList = this.animeList.filter(
+        (animes) => animes.day === val
+      );
+      this.filteredList = filteredList[0].animes;
     },
   },
   mounted() {

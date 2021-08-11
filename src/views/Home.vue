@@ -4,8 +4,7 @@
       <slide />
       <div class="contents">
         <carousel :animeList="recentAnime" type="recent" title="최근 본 작품" />
-        <carousel :animeList="dailyAnime" title="요일별 신작">
-          <day-selector />
+        <carousel :animeList="dailyAnime" type="daily" title="요일별 신작">
         </carousel>
       </div>
     </main>
@@ -29,14 +28,12 @@ import Slide from "../components/Slide.vue";
 import Modal from "../components/Modal.vue";
 import Carousel from "../components/Carousel.vue";
 import Cookies from "js-cookie";
-import DaySelector from "../components/DaySelector.vue";
 export default {
   name: "Home",
   components: {
     Slide,
     Modal,
     Carousel,
-    DaySelector,
   },
   data() {
     return {
@@ -151,8 +148,7 @@ export default {
               url: "#none",
             },
             {
-              title:
-                "마기아 레코드 : 마법소녀 마도카&star;마기카 외전 세컨드 시즌",
+              title: "마기아 레코드 : 마법소녀 마도카★마기카 외전 세컨드 시즌",
               img: "",
               url: "#none",
             },

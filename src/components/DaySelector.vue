@@ -4,6 +4,7 @@
       v-for="day in days"
       :key="day"
       :class="{ active: selectedDay === day }"
+      @click="dayBtnClick($event)"
     >
       {{ day }}
     </button>
@@ -21,14 +22,15 @@ export default {
   data() {
     return {
       days: ["월", "화", "수", "목", "금", "토", "일"],
-      selectedDay: this.getDayString(),
+      selectedDay: this.getTodayString(),
     };
   },
   methods: {
     dayBtnClick(e) {
       this.selectedDay = e.target.textContent;
+      this.$emit("todayString", this.selectedDay);
     },
-    getDayString() {
+    getTodayString() {
       switch (new Date().getDay()) {
         case 0:
           return "일";
@@ -47,13 +49,15 @@ export default {
       }
     },
   },
+  mounted() {
+    this.$emit("todayString", this.selectedDay);
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .day-selector {
   display: flex;
-  width: 100%;
   height: 4rem;
   gap: 0.5rem;
   margin-top: 1.5rem;
@@ -65,6 +69,11 @@ export default {
     &.active {
       background-color: var(--theme-500);
     }
+  }
+}
+@media screen and (min-width: 1024px) {
+  .day-selector {
+    margin: 0;
   }
 }
 </style>
