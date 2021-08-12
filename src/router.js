@@ -56,6 +56,15 @@ const routes = [
       title: "알림",
     },
   },
+  {
+    path: "/404",
+    name: "notfound",
+    component: () => import("@/views/NotFound"),
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/404",
+  },
 ];
 
 export const router = createRouter({

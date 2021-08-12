@@ -59,7 +59,6 @@ html {
   font-size: 0.625em;
 }
 a {
-  display: block;
   text-decoration: none;
   color: inherit;
 }
@@ -89,6 +88,9 @@ img {
 }
 *:focus {
   outline: none;
+}
+.line-break {
+  display: block;
 }
 
 @media screen and (min-width: 768px) {

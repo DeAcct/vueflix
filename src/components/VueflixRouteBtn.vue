@@ -45,6 +45,7 @@ export default {
   font-size: 1.3em;
   width: fit-content;
   transition: 150ms ease-out;
+  cursor: pointer;
 }
 @media screen and (min-width: 768px) {
   .btn {

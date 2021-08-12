@@ -99,9 +99,7 @@ export default {
       width: 100%;
       height: 100%;
       font-size: 1.1rem;
-      i {
-        margin-bottom: 0.2rem;
-      }
+      gap: 0.2rem;
       i,
       span {
         color: var(--bg-500);
