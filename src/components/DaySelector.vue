@@ -63,9 +63,12 @@ export default {
   margin-top: 1.5rem;
   button {
     width: 4rem;
+    height: 4rem;
     background-color: var(--bg-300);
     color: #fff;
     border-radius: 50%;
+    font-size: 1.5rem;
+    line-height: 4rem;
     &.active {
       background-color: var(--theme-500);
     }

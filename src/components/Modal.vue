@@ -65,27 +65,25 @@ export default {
 <style lang="scss" scoped>
 .bg {
   position: fixed;
-  z-index: 100;
-  top: 0;
+  z-index: 50;
+  bottom: 5rem;
   width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.3);
+  height: auto;
+  background-color: transparent;
   .modal {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;
-    padding: 2rem 3rem;
-    background-color: #fff;
-    border-radius: 0.6rem;
+    bottom: 0;
+    width: 100%;
+    padding: 3rem 4rem;
+    background-color: var(--text-100);
+    border-radius: 0.6rem 0.6rem 0 0;
     .title {
       font-size: 2.5em;
-      margin-bottom: 0.2em;
+      margin-bottom: 0.5em;
     }
     .description {
-      font-size: 1.3em;
-      margin-bottom: 5em;
+      font-size: 1.5em;
+      margin-bottom: 3em;
     }
     .cta {
       display: flex;
@@ -95,21 +93,27 @@ export default {
     }
   }
 }
+@media screen and (min-width: 768px) {
+  .bg .modal .description {
+    font-size: 1.5em;
+    margin-bottom: 5em;
+  }
+}
 
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 1024px) {
   .bg {
-    background: transparent;
-    top: auto;
-    bottom: 0;
-    height: auto;
+    background-color: rgba(0, 0, 0, 0.3);
+    top: 0;
+    bottom: auto;
+    height: 100vh;
     .modal {
-      top: auto;
-      bottom: 0;
-      width: 100%;
-      transform: translate(-50%, 0);
-      border-end-end-radius: 0;
-      border-end-start-radius: 0;
-      background-color: var(--text-100);
+      width: 500px;
+      top: 50%;
+      bottom: auto;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 0.6rem;
+      background-color: #fff;
     }
   }
 }

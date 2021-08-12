@@ -2,12 +2,7 @@
   <nav class="menu">
     <h2 class="blind">대메뉴</h2>
     <ul class="items">
-      <li
-        v-for="(item, index) in items"
-        :key="index"
-        class="item"
-        :class="{ current: item.to === findCurrentPage }"
-      >
+      <li v-for="(item, index) in items" :key="index" class="item">
         <router-link :to="`/${item.to}`">
           {{ item.item }}
         </router-link>
@@ -17,7 +12,6 @@
 </template>
 
 <script>
-import { useRoute } from "vue-router";
 export default {
   name: "SiteMenu",
   data() {
@@ -41,11 +35,6 @@ export default {
         },
       ],
     };
-  },
-  computed: {
-    findCurrentPage() {
-      return useRoute().name;
-    },
   },
 };
 </script>

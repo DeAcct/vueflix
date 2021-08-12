@@ -1,8 +1,8 @@
 <template>
   <section class="carousel">
     <div class="head-control">
-      <h2>{{ title }}</h2>
-      <day-selector @todayString="filterAnimeList" v-if="isDaily" />
+      <h2><slot></slot></h2>
+      <day-selector @todayString="initAnimeList" v-if="isDaily" />
       <div class="btn-wrap">
         <button
           class="prev-btn"
@@ -73,20 +73,15 @@ export default {
     type: {
       type: String,
     },
-    title: {
-      type: String,
-    },
   },
   data() {
     return {
       resolution: window.innerWidth,
       carouselNumber: 0,
-      shownItems: this.resolution >= 1920 ? 6 : 4,
+      shownItems: this.resolution >= 1920 ? 7 : 4,
       isRecent: this.type === "recent",
       isDaily: this.type === "daily",
-      filteredList: this.animeList.filter(
-        (animes) => animes.day === new Date().getDay()
-      ),
+      filteredList: [],
     };
   },
   computed: {
@@ -97,9 +92,9 @@ export default {
     },
     carouselLimit() {
       if (this.isDaily) {
-        return Math.round(this.filteredList.length / this.shownItems);
+        return Math.floor(this.filteredList.length / this.shownItems);
       } else {
-        return Math.round(this.animeList.length / this.shownItems);
+        return Math.floor(this.animeList.length / this.shownItems);
       }
     },
     nextActive() {
@@ -124,7 +119,8 @@ export default {
         return;
       }
     },
-    filterAnimeList(val) {
+    initAnimeList(val) {
+      this.carouselNumber = 0;
       const filteredList = this.animeList.filter(
         (animes) => animes.day === val
       );
@@ -134,7 +130,7 @@ export default {
   mounted() {
     window.addEventListener("resize", () => {
       this.resolution = window.innerWidth;
-      this.shownItems = this.resolution >= 1920 ? 6 : 4;
+      this.shownItems = this.resolution >= 1920 ? 7 : 4;
       this.carouselNumber = 0;
     });
   },
@@ -145,7 +141,7 @@ export default {
 .carousel {
   width: 100%;
   &:not(:first-of-type) {
-    margin-top: 3rem;
+    margin-top: 2rem;
   }
   .head-control {
     padding: 0 2rem;
@@ -179,6 +175,9 @@ export default {
 
 @media screen and (min-width: 768px) {
   .carousel {
+    &:not(:first-of-type) {
+      margin-top: 3rem;
+    }
     .head-control {
       padding: 0 5rem;
       h2 {
@@ -207,30 +206,33 @@ export default {
       h2 {
         font-size: 2.8rem;
       }
-      .btn-wrap {
-        display: flex;
-        justify-content: flex-end;
-        flex: 2;
-        gap: 1rem;
-        height: 4rem;
-        margin-left: 2rem;
-        button {
-          width: 4rem;
-          height: 4rem;
-          background-color: var(--bg-300);
-          border-radius: 50%;
-          color: #fff;
-          cursor: default;
-          &.active {
-            cursor: pointer;
-            background-color: var(--theme-500);
-          }
-        }
-      }
     }
     .wrap {
       width: 100%;
       margin-top: 2rem;
+    }
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .carousel .head-control .btn-wrap {
+    display: flex;
+    justify-content: flex-end;
+    flex: 2;
+    gap: 1rem;
+    height: 4rem;
+    margin-left: 2rem;
+    button {
+      width: 4rem;
+      height: 4rem;
+      background-color: var(--bg-300);
+      border-radius: 50%;
+      color: #fff;
+      cursor: default;
+      &.active {
+        cursor: pointer;
+        background-color: var(--theme-500);
+      }
     }
   }
 }
