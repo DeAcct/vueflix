@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import NotFound from "@/views/NotFound";
 
 const date = new Date();
 const year = date.getFullYear();
@@ -43,7 +44,7 @@ const routes = [
   {
     path: "/membership",
     name: "membership",
-    component: () => import("@/views/Membership"),
+    component: NotFound,
     meta: {
       title: "뷰플릭스 멤버십 및 포인트 충전",
     },
