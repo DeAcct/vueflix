@@ -57,13 +57,13 @@ const routes = [
     },
   },
   {
-    path: "/404",
+    path: "/notfound",
     name: "notfound",
     component: () => import("@/views/NotFound"),
   },
   {
     path: "/:pathMatch(.*)*",
-    redirect: "/404",
+    redirect: "/notfound",
   },
 ];
 
