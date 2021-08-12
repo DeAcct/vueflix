@@ -44,7 +44,7 @@ const routes = [
   {
     path: "/membership",
     name: "membership",
-    component: NotFound,
+    component: () => import("@/views/Membership"),
     meta: {
       title: "뷰플릭스 멤버십 및 포인트 충전",
     },
@@ -60,7 +60,7 @@ const routes = [
   {
     path: "/notfound",
     name: "notfound",
-    component: () => import("@/views/NotFound"),
+    component: NotFound,
   },
   {
     path: "/:pathMatch(.*)*",
