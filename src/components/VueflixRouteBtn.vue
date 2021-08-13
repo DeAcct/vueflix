@@ -1,9 +1,8 @@
 <template>
-  <!--상세페이지 뷰(view) 개발완료시 라우터 링크로 전환 예정-->
-  <a :href="link" class="btn" :style="style">
+  <router-link :to="link" class="btn" :style="style">
     <span class="interaction"> </span>
     <slot></slot>
-  </a>
+  </router-link>
 </template>
 
 <script>
@@ -45,7 +44,6 @@ export default {
   font-size: 1.3em;
   width: fit-content;
   transition: 150ms ease-out;
-  cursor: pointer;
 }
 @media screen and (min-width: 768px) {
   .btn {

@@ -7,19 +7,21 @@
         </div>
         <button class="thumbnail-play-btn" v-if="isRecent">
           <span class="blind">작품 재생하기</span>
-          <icon-base><icon-play /></icon-base>
+          <icon-base icon-name="재생 버튼"><icon-play /></icon-base>
         </button>
       </div>
-      <a class="description" :href="url">
-        <figcaption class="description-text">
-          <span class="title">{{ title }}</span>
-          <strong class="episode">{{ getEpisode }}</strong>
-        </figcaption>
-        <span class="description-info-btn" v-if="isRecent">
-          <span class="blind">작품 정보 보기</span>
-          <icon-base><icon-info /></icon-base>
-        </span>
-      </a>
+      <figcaption class="description">
+        <a class="description-text" :href="url">
+          <div class="text">
+            <span class="title">{{ title }}</span>
+            <strong class="episode">{{ getEpisode }}</strong>
+          </div>
+          <span class="description-info-btn" v-if="isRecent">
+            <span class="blind">작품 정보 보기</span>
+            <icon-base icon-name="작품 정보 버튼"><icon-info /></icon-base>
+          </span>
+        </a>
+      </figcaption>
     </figure>
   </li>
 </template>
@@ -126,25 +128,32 @@ export default {
     width: 100%;
     justify-content: space-between;
     margin-top: 0.8rem;
-    .description-info-btn {
-      display: block;
-      width: 2rem;
-      height: 2rem;
-      margin-right: 0.5rem;
-      color: var(--bg-500);
-      svg {
-        width: 100%;
-        height: 100%;
-      }
-    }
+
     .description-text {
       font-size: 1.3rem;
       display: flex;
+      justify-content: space-between;
       flex: 1;
-      flex-direction: column;
       gap: 0.5rem;
-      .title {
-        line-height: 1.2;
+      .text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        span,
+        strong {
+          line-height: 1.3;
+        }
+      }
+      .description-info-btn {
+        display: block;
+        width: 2rem;
+        height: 2rem;
+        margin-right: 0.5rem;
+        color: var(--bg-500);
+        svg {
+          width: 100%;
+          height: 100%;
+        }
       }
     }
   }

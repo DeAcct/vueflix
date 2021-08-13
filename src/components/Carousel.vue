@@ -214,7 +214,7 @@ export default {
   }
 }
 
-@media screen and (min-width: 1440px) {
+@media screen and (min-width: 1025px) {
   .carousel .head-control .btn-wrap {
     display: flex;
     justify-content: flex-end;

@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import NotFound from "@/views/NotFound";
 
 const date = new Date();
 const year = date.getFullYear();
@@ -60,7 +59,7 @@ const routes = [
   {
     path: "/notfound",
     name: "notfound",
-    component: NotFound,
+    component: () => import("@/views/NotFound"),
   },
   {
     path: "/:pathMatch(.*)*",

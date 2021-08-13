@@ -3,10 +3,13 @@
     <h2 class="blind">탭메뉴</h2>
     <ul class="items">
       <li v-for="(item, index) in items" :key="index" class="item">
-        <router-link :to="item.to === 'home' ? '/' : `/${item.to}`">
+        <router-link
+          :to="item.to === 'home' ? '/' : `/${item.to}`"
+          @click="haptic"
+        >
           <i>
             <icon-base>
-              <component :is="item.component" :key="item.item" />
+              <component :is="icon(index)" :key="item.item" />
             </icon-base>
           </i>
           <span>
@@ -41,30 +44,44 @@ export default {
         {
           to: "home",
           item: "홈",
-          component: IconHome,
         },
         {
           to: "tagsearch",
           item: "태그검색",
-          component: IconTagSearch,
         },
         {
           to: "daily",
           item: "요일별 신작",
-          component: IconDaily,
         },
         {
           to: "recommend",
           item: "테마추천",
-          component: IconRecommend,
         },
         {
           to: "membership",
           item: "멤버쉽",
-          component: IconMembership,
         },
       ],
     };
+  },
+  methods: {
+    icon(index) {
+      switch (index) {
+        case 0:
+          return "IconHome";
+        case 1:
+          return "IconTagSearch";
+        case 2:
+          return "IconDaily";
+        case 3:
+          return "IconRecommend";
+        default:
+          return "IconMembership";
+      }
+    },
+    haptic() {
+      navigator.vibrate(100);
+    },
   },
 };
 </script>
@@ -79,6 +96,7 @@ export default {
   border-radius: 0.6rem 0.6rem 0 0;
   border: 1px solid var(--bg-100);
   border-bottom: none;
+  overflow: hidden;
   .items {
     display: flex;
     justify-content: space-around;
