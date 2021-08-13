@@ -80,7 +80,7 @@ export default {
       }
     },
     haptic() {
-      navigator.vibrate(100);
+      navigator.vibrate(10);
     },
   },
 };
