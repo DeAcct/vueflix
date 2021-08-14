@@ -409,14 +409,13 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .contents {
-  padding: 2.8rem 0 0;
-  margin-bottom: 5.6rem;
+  padding: 2.8rem 0 5.6rem;
 }
 @media screen and (min-width: 768px) {
   .contents {
-    padding: 3.5rem 0;
+    padding-top: 3.6rem;
   }
 }
 </style>

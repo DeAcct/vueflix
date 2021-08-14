@@ -3,10 +3,7 @@
     <h2 class="blind">탭메뉴</h2>
     <ul class="items">
       <li v-for="(item, index) in items" :key="index" class="item">
-        <router-link
-          :to="item.to === 'home' ? '/' : `/${item.to}`"
-          @click="haptic"
-        >
+        <router-link :to="item.to === 'home' ? '/' : `/${item.to}`">
           <i>
             <icon-base>
               <component :is="icon(index)" :key="item.item" />
@@ -78,9 +75,6 @@ export default {
         default:
           return "IconMembership";
       }
-    },
-    haptic() {
-      navigator.vibrate(10);
     },
   },
 };
