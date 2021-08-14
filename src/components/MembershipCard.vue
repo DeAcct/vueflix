@@ -35,6 +35,9 @@ export default {
     nextPayment: {
       type: String,
     },
+    isActivated: {
+      type: Boolean,
+    },
   },
   components: {
     IconBase,
@@ -42,23 +45,27 @@ export default {
   },
   data() {
     return {
-      deviceX: 90,
-      deviceY: 0,
       style: {
-        transform: `perspective(100px) rotateX(${this.deviceX}deg) rotateY(${this.deviceY}deg)`,
+        transform: "none",
       },
     };
   },
-  created() {
-    window.addEventListener("deviceorientation", function (e) {
-      this.updateOrientation(e);
-    });
-  },
   methods: {
-    updateOrientation(e) {
-      this.deviceX = e.beta;
-      this.deviceY = e.gamma;
+    cardInteraction(e) {
+      this.style = {
+        transform: `
+          perspective(3px) 
+          rotateX(${(e.beta - 0.2) * 0.001}deg)
+          rotateY(${e.gamma * 0.001}deg)  
+        `,
+      };
     },
+  },
+  mounted() {
+    window.addEventListener("deviceorientation", this.cardInteraction);
+  },
+  unmounted() {
+    window.removeEventListener("deviceorientation", this.cardInteraction);
   },
 };
 </script>
@@ -74,6 +81,7 @@ export default {
   background-color: var(--text-500);
   padding: 2rem 3.5rem;
   border-radius: 0.3rem;
+  transition: transform 150ms ease-out;
   .info {
     color: #fff;
     font-size: 1.5rem;

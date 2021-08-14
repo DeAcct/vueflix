@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     handleScroll() {
-      this.isScroll = 0 < Math.round(window.scrollY);
+      setTimeout((this.isScroll = 0 < Math.round(window.scrollY)), 500);
     },
     checkResolution() {
       this.isMobile = window.innerWidth <= 768;
