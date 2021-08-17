@@ -1,9 +1,12 @@
 <template>
   <router-link to="#none" class="membership-card" :style="style">
     <div class="row-top">
-      <div class="row-top-left">
+      <div class="row-top-left" v-if="type==='membership'">
         <strong class="info">{{ cardCompany }}</strong>
-        <p class="info">{{ cardNumber }}</p>
+        <p class="info">{{ encryptCardNumber }}</p>
+      </div>
+      <div class="row-top-left" v-if="type==='point'">
+        <strong class="points">{{formatNumber}}점</strong>
       </div>
       <div class="row-top-right">
         <i class="icon">
@@ -13,7 +16,7 @@
         </i>
       </div>
     </div>
-    <div class="row-bottom">
+    <div class="row-bottom" v-if="type==='membership'">
       <strong class="info">다음 결제일</strong>
       <p class="info">{{ nextPayment }}</p>
     </div>
@@ -38,6 +41,12 @@ export default {
     isActivated: {
       type: Boolean,
     },
+    type: {
+      type: String
+    },
+    point: {
+      type: Number
+    }
   },
   components: {
     IconBase,
@@ -55,11 +64,21 @@ export default {
       this.style = {
         transform: `
           perspective(3px) 
-          rotateX(${(e.beta - 0.2) * 0.001}deg)
+          rotateX(${e.beta * 0.001}deg)
           rotateY(${e.gamma * 0.001}deg)  
         `,
       };
     },
+  },
+  computed: {
+    encryptCardNumber(){
+      const regex = /.(?=.{4})/g;
+      const base = this.cardNumber.replace(regex, "*");
+      return `${base.slice(0,4)}-${base.slice(4,8)}-${base.slice(8,12)}-${base.slice(12,16)}`;
+    },
+    formatNumber(){
+      return String(this.point).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
   },
   mounted() {
     window.addEventListener("deviceorientation", this.cardInteraction);
@@ -78,7 +97,6 @@ export default {
   width: 100%;
   max-width: 37.5rem;
   aspect-ratio: 1.58/1;
-  background-color: var(--text-500);
   padding: 2rem 3.5rem;
   border-radius: 0.3rem;
   transition: transform 150ms ease-out;
@@ -97,6 +115,12 @@ export default {
 
       p {
         font-weight: 300;
+      }
+
+      .points{
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: #fff;
       }
     }
     .row-top-right .icon {

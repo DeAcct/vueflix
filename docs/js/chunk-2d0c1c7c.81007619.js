@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c1c7c"],{4802:function(e,c,n){"use strict";n.r(c);var a=n("7a23"),r={class:"wrap"},t=Object(a["i"])("h2",null,"테마추천",-1);function u(e,c,n,u,i,s){return Object(a["v"])(),Object(a["e"])("div",r,[t])}var i={name:"Theme"};i.render=u;c["default"]=i}}]);
+//# sourceMappingURL=chunk-2d0c1c7c.81007619.js.map
