@@ -68,6 +68,7 @@ export default {
     color: #fff;
     border-radius: 50%;
     font-size: 1.5rem;
+    font-weight: 700;
     line-height: 4rem;
     &.active {
       background-color: var(--theme-500);

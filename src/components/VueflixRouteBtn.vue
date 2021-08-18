@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="link" class="btn" :style="style">
+  <router-link :to="link" class="route-btn" :style="style">
     <span class="interaction"> </span>
     <slot></slot>
   </router-link>
@@ -32,8 +32,8 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.btn {
+<style lang="scss" scoped>
+.route-btn {
   position: relative;
   overflow: hidden;
   display: flex;
@@ -42,11 +42,12 @@ export default {
   align-items: center;
   border-radius: 0.3rem;
   font-size: 1.3em;
+  font-weight: 700;
   width: fit-content;
   transition: 150ms ease-out;
 }
 @media screen and (min-width: 768px) {
-  .btn {
+  .route-btn {
     font-size: 2em;
     padding: 1.5rem 2rem;
   }

@@ -115,6 +115,7 @@ export default {
       i,
       span {
         color: var(--bg-500);
+        font-weight: 500;
       }
       &.vueflix-active-link i,
       &.vueflix-active-link span {

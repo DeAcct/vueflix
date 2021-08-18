@@ -143,6 +143,9 @@ export default {
         strong {
           line-height: 1.3;
         }
+        span {
+          font-weight: 500;
+        }
       }
       .description-info-btn {
         display: block;

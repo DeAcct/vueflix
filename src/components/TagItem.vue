@@ -1,21 +1,20 @@
 <template>
-    <li class="tag-item">
-        <slot></slot>
-    </li>
+  <li class="tag-item">
+    <slot></slot>
+  </li>
 </template>
 <script>
-
 export default {
-    name: "TagItem"
-}
+  name: "TagItem",
+};
 </script>
 
 <style lang="scss" scoped>
-    .tag-item{
-        width: fit-content;
-        border-radius: 0.6rem;
-        padding: 1rem 1.5rem;
-        font-size: 1.5rem;
-        border: 1px solid var(--theme-500);
-    }
+.tag-item {
+  width: fit-content;
+  border-radius: 1.6rem;
+  padding: 0.5rem 0.8rem;
+  font-size: 1.2rem;
+  border: 1px solid var(--bg-300);
+}
 </style>

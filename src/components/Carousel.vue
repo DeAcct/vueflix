@@ -147,7 +147,6 @@ export default {
     padding: 0 2rem;
     h2 {
       font-size: 1.8rem;
-      font-weight: 900;
       margin-right: 2rem;
     }
     .btn-wrap {

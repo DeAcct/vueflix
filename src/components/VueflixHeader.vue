@@ -5,13 +5,13 @@
     @scroll="handleScroll"
   >
     <div class="inner">
-      <div class="col-left" :class="{centered: isHome && isMobile}">
-        <h1 class="logo" :class="{blind: isMobile && !isHome}">
+      <div class="col-left" :class="{ centered: isHome && isMobile }">
+        <h1 class="logo" :class="{ blind: isMobile && !isHome }">
           <router-link to="/">
             <logo />
           </router-link>
         </h1>
-        <h2 :class="{blind: !isMobile || isHome}">{{headString}}</h2>
+        <h2 :class="{ blind: !isMobile || isHome }">{{ headString }}</h2>
         <site-menu v-if="!isMobile"></site-menu>
       </div>
       <div class="col-right">
@@ -39,9 +39,9 @@ export default {
     return {
       isScroll: false,
       isMobile: window.innerWidth <= 768,
-      isHome: this.page === 'home',
+      isHome: this.page === "home",
       page: this.$route.name,
-      headString: undefined
+      headString: undefined,
     };
   },
   methods: {
@@ -66,19 +66,19 @@ export default {
   watch: {
     $route() {
       this.page = this.getCurrentPage();
-      this.isHome = this.page === 'home';
-      switch(this.page){
-        case 'tagsearch':
-          this.headString = '테그검색';
+      this.isHome = this.page === "home";
+      switch (this.page) {
+        case "tagsearch":
+          this.headString = "테그검색";
           break;
-        case 'daily':
-          this.headString = '요일별 신작';
+        case "daily":
+          this.headString = "요일별 신작";
           break;
-        case 'recommend':
-          this.headString = '테마추천';
+        case "recommend":
+          this.headString = "테마추천";
           break;
-        case 'membership':
-          this.headString = '멤버십 및 포인트';
+        case "membership":
+          this.headString = "멤버십 및 포인트";
           break;
       }
     },
@@ -104,7 +104,7 @@ export default {
     .col-left {
       display: flex;
       align-items: center;
-      &.centered{
+      &.centered {
         margin-left: 50%;
         transform: translateX(-50%);
       }
@@ -121,8 +121,9 @@ export default {
           transition: all 250ms ease-out;
         }
       }
-      h2{
+      h2 {
         font-size: 1.8rem;
+        font-weight: 900;
       }
     }
     .col-right {

@@ -32,30 +32,39 @@
       </div-->
       <div class="inner">
         <poster-list></poster-list>
+        <controller></controller>
       </div>
-      <controller></controller>
     </main>
   </div>
 </template>
 
 <script>
 import PosterList from "../components/PosterList.vue";
-import Controller from "../components/Controller.vue"
+import Controller from "../components/Controller.vue";
 export default {
   name: "TagSearch",
   components: {
     PosterList,
-    Controller
-  }
+    Controller,
+  },
 };
 </script>
 
-<style lang="scss">
-  main{
-    padding: 10rem 0 8.6rem;
-    .controller{
-      position:fixed;
-      bottom: 5rem;
-    }
+<style lang="scss" scoped>
+main {
+  padding: 10rem 0 8.6rem;
+  .controller {
+    position: fixed;
+    left: 0;
+    bottom: 5rem;
   }
+}
+
+@media screen and (min-width: 769px) {
+  main .controller {
+    position: fixed;
+    bottom: auto;
+    top: 6rem;
+  }
+}
 </style>
