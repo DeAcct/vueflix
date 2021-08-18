@@ -3,7 +3,7 @@
     <div class="row-top">
       <div class="row-top-left" v-if="type==='membership'">
         <strong class="info">{{ cardCompany }}</strong>
-        <p class="info">{{ encryptCardNumber }}</p>
+        <p class="info">{{ blurCardNumber }}</p>
       </div>
       <div class="row-top-left" v-if="type==='point'">
         <strong class="points">{{formatNumber}}점</strong>
@@ -71,10 +71,8 @@ export default {
     },
   },
   computed: {
-    encryptCardNumber(){
-      const regex = /.(?=.{4})/g;
-      const base = this.cardNumber.replace(regex, "*");
-      return `${base.slice(0,4)}-${base.slice(4,8)}-${base.slice(8,12)}-${base.slice(12,16)}`;
+    blurCardNumber(){
+      return `****-****-****-${this.cardNumber.slice(12,16)}`;
     },
     formatNumber(){
       return String(this.point).replace(/\B(?=(\d{3})+(?!\d))/g, ",");

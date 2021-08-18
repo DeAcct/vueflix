@@ -56,7 +56,7 @@ export default {
         },
         {
           to: "membership",
-          item: "멤버쉽",
+          item: "멤버십",
         },
       ],
     };
