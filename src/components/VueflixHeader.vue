@@ -69,7 +69,7 @@ export default {
       this.isHome = this.page === "home";
       switch (this.page) {
         case "tagsearch":
-          this.headString = "테그검색";
+          this.headString = "태그검색";
           break;
         case "daily":
           this.headString = "요일별 신작";

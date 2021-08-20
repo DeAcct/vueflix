@@ -4,6 +4,7 @@
     viewBox="0 0 24 24"
     :width="width"
     :height="height"
+    :fill="iconColor"
     role="presentation"
   >
     <title lang="ko">{{ iconName }}</title>
