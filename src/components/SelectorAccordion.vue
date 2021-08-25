@@ -8,7 +8,7 @@
           <slot></slot>
         </summary>
         <ul class="sub-tags">
-          <selector-item v-for="selectorItem in selectorItems" :key="selectorItem" :label="selectorItem" />
+          <triple-checkbox v-for="selectorItem in selectorItems" :key="selectorItem" :label="selectorItem" />
         </ul>
       </details>
     </li>
@@ -16,7 +16,7 @@
 
 <script>
 
-import SelectorItem from "./SelectorItem.vue";
+import TripleCheckbox from "./TripleCheckbox.vue";
 import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 export default {
@@ -24,12 +24,12 @@ export default {
     components: {
         IconArrowNext,
         IconBase,
-        SelectorItem,
+        TripleCheckbox,
     },
     props: {
-        selectorItems: {
-            type: Array
-        }
+      selectorItems: {
+          type: Array
+      }
     }
 }
 </script>
@@ -50,7 +50,7 @@ details{
   }
   &[open]{
     summary{
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
       .icon{
         transform: rotate(90deg);
       }
@@ -61,10 +61,5 @@ details{
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  height: 15rem;
-  overflow: scroll;
-  &::-webkit-scrollbar {
-    display: none;
-  }
 }
 </style>

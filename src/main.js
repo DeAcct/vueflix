@@ -1,5 +1,6 @@
 import { router } from "./router";
 import { createApp, nextTick } from "vue";
+
 import App from "./App.vue";
 import "./registerServiceWorker";
 
@@ -10,4 +11,5 @@ router.afterEach((to) => {
     document.title = to.meta.title || DEFAULT_TITLE;
   });
 });
-app.use(router).mount("#app");
+app.use(router);
+app.mount("#app");

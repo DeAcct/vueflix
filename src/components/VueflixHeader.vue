@@ -11,7 +11,7 @@
             <logo />
           </router-link>
         </h1>
-        <h2 :class="{ blind: !isMobile || isHome }">{{ headString }}</h2>
+        <h2 v-if="isMobile && !isHome">{{ headString }}</h2>
         <site-menu v-if="!isMobile"></site-menu>
       </div>
       <div class="col-right">
@@ -95,6 +95,7 @@ export default {
   position: fixed;
   top: 0;
   z-index: 50;
+  user-select: none;
 
   .inner {
     display: flex;

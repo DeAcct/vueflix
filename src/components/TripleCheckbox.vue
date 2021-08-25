@@ -1,19 +1,21 @@
 <template>
-    <input type="checkbox" name="" :id="identify">
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        :width="width"
-        :height="height"
-        :aria-checked="icon.ariaChecked"
-        role="checkbox"
-        @click="changeState"
-    >
-        <component 
-            :is="icon.icon" 
-            :key="icon.icon" 
-        ></component>
-    </svg>
+    <li class="tag">
+        <label :for="label" @click="changeState">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                :aria-checked="icon.ariaChecked"
+                role="checkbox"
+                class="icon"
+            >
+                <component 
+                    :is="icon.icon" 
+                    :key="icon.icon" 
+                ></component>
+            </svg>
+            <span>{{label}}</span>
+        </label>
+    </li>
 </template>
 
 <script>
@@ -21,36 +23,21 @@ import IconExcluded from "./icons/IconExcluded.vue";
 import IconSelected from "./icons/IconSelected.vue";
 import IconNotSelected from "./icons/IconNotSelected.vue";
 export default {
-    name: "ThreeStateToggle",
+    name: "TripleCheckbox",
     components: {
         IconExcluded,
         IconSelected,
         IconNotSelected
     },
     props: {
-        state: {
-            type: String,
-            default: "NOT"
-        },
-        width: {
-            type: [Number, String],
-            default: 24,
-        },
-        height: {
-            type: [Number, String],
-            default: 24,
-        },
-        iconColor: {
-            type: String,
-            default: "currentColor",
-        },
-        identify: {
+        label: {
             type: String
         }
     },
     data(){
         return {
-            icon: this.showIcon(this.state)            
+            state: "NOT",
+            icon: this.showIcon(this.state)
         }
     },
     methods: {
@@ -61,7 +48,7 @@ export default {
                         icon: "IconSelected",
                         ariaChecked:"true",
                     };
-                case "EXCLUDE":
+                case "EXCLUDED":
                     return {
                         icon:"IconExcluded", 
                         ariaChecked:"mixed"
@@ -98,16 +85,31 @@ export default {
     }
 }
 </script>
+
 <style lang="scss" scoped>
-svg {
-  color: inherit;
-  fill: currentColor;
-  transition: 150ms ease-out;
-  &[aria-checked="true"]{
-      color: var(--toggle-true);
+.tag{
+    width: 100%;
+    display:flex;
+    align-items: center;
+    label{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        .icon{
+            width: 2.4rem;
+            height: 2.4rem;
+            &[aria-checked="true"]{
+                fill: var(--toggle-true);
+            }
+            &[aria-checked="mixed"]{
+                fill: var(--toggle-mixed);
+            }
+        }
+        span{
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+    }
   }
-  &[aria-checked="mixed"]{
-      color: var(--toggle-mixed);
-  }
-}
 </style>

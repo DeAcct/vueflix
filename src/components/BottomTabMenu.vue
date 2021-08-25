@@ -91,6 +91,7 @@ export default {
   border: 1px solid var(--bg-100);
   border-bottom: none;
   overflow: hidden;
+  user-select: none;
   .items {
     display: flex;
     justify-content: space-around;

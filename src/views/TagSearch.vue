@@ -1,9 +1,9 @@
 <template>
   <div class="wrap">
     <main>
+      <controller/>
       <div class="inner">
-        <poster-list></poster-list>
-        <controller></controller>
+        <poster-list/>
       </div>
     </main>
   </div>
@@ -17,7 +17,7 @@ export default {
   components: {
     PosterList,
     Controller,
-  },
+  }
 };
 </script>
 
@@ -27,27 +27,30 @@ main {
   .controller {
     position: fixed;
     left: 0;
-    bottom: 0;
-    /*
-    top: calc(100vh - 13.1rem);
-    animation: 300ms ease-in-out 4 alternate gesture-hint;
-    */
   }
 }
 
 @media screen and (min-width: 769px) {
-  main .controller {
-    position: fixed;
-    bottom: auto;
-    top: 6rem;
+  main{
+    display: flex;
+    padding: 0;
+    .controller {
+      position:static;
+      bottom: auto;
+      left: auto;
+      margin-top: 6rem;
+      width: 500px;
+      border-radius: 0;
+      height: calc(100vh - 6rem);
+      max-height: none;
+      animation: none;
+    }
+    .inner{
+      padding-left: 0;
+      flex: 2;
+    }
   }
 }
 
-/*
-@keyframes gesture-hint{
-  to{
-    transform: translateY(-2rem);
-  }
-}
-*/
+
 </style>
