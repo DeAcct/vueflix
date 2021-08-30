@@ -52,13 +52,13 @@
 </template>
 
 <script>
-import CarouselItem from "./CarouselItem.vue";
-import IconBase from "./IconBase.vue";
-import DaySelector from "../components/DaySelector.vue";
-import IconArrowNext from "./icons/IconArrowNext.vue";
-import IconArrowPrev from "./icons/IconArrowPrev.vue";
+import CarouselItem from './CarouselItem.vue';
+import IconBase from './IconBase.vue';
+import DaySelector from '../components/DaySelector.vue';
+import IconArrowNext from './icons/IconArrowNext.vue';
+import IconArrowPrev from './icons/IconArrowPrev.vue';
 export default {
-  name: "Carousel",
+  name: 'Carousel',
   components: {
     CarouselItem,
     IconBase,
@@ -79,8 +79,8 @@ export default {
       resolution: window.innerWidth,
       carouselNumber: 0,
       shownItems: this.resolution >= 1920 ? 7 : 4,
-      isRecent: this.type === "recent",
-      isDaily: this.type === "daily",
+      isRecent: this.type === 'recent',
+      isDaily: this.type === 'daily',
       filteredList: [],
     };
   },
@@ -121,14 +121,12 @@ export default {
     },
     initAnimeList(val) {
       this.carouselNumber = 0;
-      const filteredList = this.animeList.filter(
-        (animes) => animes.day === val
-      );
+      const filteredList = this.animeList.filter(animes => animes.day === val);
       this.filteredList = filteredList[0].animes;
     },
   },
   mounted() {
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       this.resolution = window.innerWidth;
       this.shownItems = this.resolution >= 1920 ? 7 : 4;
       this.carouselNumber = 0;

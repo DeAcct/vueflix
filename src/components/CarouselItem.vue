@@ -1,15 +1,15 @@
 <template>
   <li class="item">
     <figure>
-      <div class="thumbnail" :style="`background:${createThumbnail}`">
+      <a class="thumbnail" :href="url" :style="`background:${createThumbnail}`">
         <div class="progress-bar" v-if="isRecent">
           <div class="progress" :style="`width:${progress}`"></div>
         </div>
-        <button class="thumbnail-play-btn" v-if="isRecent">
+        <div class="thumbnail-play-btn" v-if="isRecent">
           <span class="blind">작품 재생하기</span>
           <icon-base icon-name="재생 버튼"><icon-play /></icon-base>
-        </button>
-      </div>
+        </div>
+      </a>
       <figcaption class="description">
         <a class="description-text" :href="url">
           <div class="text">
@@ -27,11 +27,11 @@
 </template>
 
 <script>
-import IconPlay from "./icons/IconPlay.vue";
-import IconInfo from "./icons/IconInfo.vue";
-import IconBase from "./IconBase.vue";
+import IconPlay from './icons/IconPlay.vue';
+import IconInfo from './icons/IconInfo.vue';
+import IconBase from './IconBase.vue';
 export default {
-  name: "CarouselItem",
+  name: 'CarouselItem',
   components: {
     IconBase,
     IconPlay,
@@ -71,7 +71,7 @@ export default {
       url("${this.img}") center/cover`;
     },
     getEpisode() {
-      return this.isMovie ? "극장판" : this.episode;
+      return this.isMovie ? '극장판' : this.episode;
     },
   },
 };
@@ -95,6 +95,9 @@ export default {
     overflow: hidden;
     .thumbnail-play-btn {
       position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       z-index: 3;
       width: 4rem;
       height: 4rem;
@@ -130,7 +133,7 @@ export default {
     margin-top: 0.8rem;
 
     .description-text {
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       display: flex;
       justify-content: space-between;
       flex: 1;

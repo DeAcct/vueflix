@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: "IconBase",
+  name: 'IconBase',
   props: {
     iconName: {
       type: String,
@@ -31,7 +31,7 @@ export default {
     },
     iconColor: {
       type: String,
-      default: "currentColor",
+      default: 'currentColor',
     },
   },
 };

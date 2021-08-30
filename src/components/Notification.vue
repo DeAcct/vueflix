@@ -9,11 +9,11 @@
 </template>
 
 <script>
-import IconBase from "./IconBase.vue";
-import IconNotification from "./icons/IconNotification.vue";
+import IconBase from './IconBase.vue';
+import IconNotification from './icons/IconNotification.vue';
 
 export default {
-  name: "Notification",
+  name: 'Notification',
   components: {
     IconBase,
     IconNotification,

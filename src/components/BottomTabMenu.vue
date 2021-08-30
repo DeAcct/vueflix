@@ -19,14 +19,14 @@
 </template>
 
 <script>
-import IconBase from "./IconBase.vue";
-import IconHome from "./icons/IconHome.vue";
-import IconTagSearch from "./icons/IconTagSearch.vue";
-import IconDaily from "./icons/IconDaily.vue";
-import IconRecommend from "./icons/IconRecommend.vue";
-import IconMembership from "./icons/IconMembership.vue";
+import IconBase from './IconBase.vue';
+import IconHome from './icons/IconHome.vue';
+import IconTagSearch from './icons/IconTagSearch.vue';
+import IconDaily from './icons/IconDaily.vue';
+import IconRecommend from './icons/IconRecommend.vue';
+import IconMembership from './icons/IconMembership.vue';
 export default {
-  name: "BottomTabMenu",
+  name: 'BottomTabMenu',
   components: {
     IconBase,
     IconHome,
@@ -39,24 +39,24 @@ export default {
     return {
       items: [
         {
-          to: "home",
-          item: "홈",
+          to: 'home',
+          item: '홈',
         },
         {
-          to: "tagsearch",
-          item: "태그검색",
+          to: 'tagsearch',
+          item: '태그검색',
         },
         {
-          to: "daily",
-          item: "요일별 신작",
+          to: 'daily',
+          item: '요일별 신작',
         },
         {
-          to: "recommend",
-          item: "테마추천",
+          to: 'recommend',
+          item: '테마추천',
         },
         {
-          to: "membership",
-          item: "멤버십",
+          to: 'membership',
+          item: '멤버십',
         },
       ],
     };
@@ -65,15 +65,15 @@ export default {
     icon(index) {
       switch (index) {
         case 0:
-          return "IconHome";
+          return 'IconHome';
         case 1:
-          return "IconTagSearch";
+          return 'IconTagSearch';
         case 2:
-          return "IconDaily";
+          return 'IconDaily';
         case 3:
-          return "IconRecommend";
+          return 'IconRecommend';
         default:
-          return "IconMembership";
+          return 'IconMembership';
       }
     },
   },

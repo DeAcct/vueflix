@@ -13,25 +13,25 @@
 
 <script>
 export default {
-  name: "SiteMenu",
+  name: 'SiteMenu',
   data() {
     return {
       items: [
         {
-          to: "tagsearch",
-          item: "태그검색",
+          to: 'tagsearch',
+          item: '태그검색',
         },
         {
-          to: "daily",
-          item: "요일별 신작",
+          to: 'daily',
+          item: '요일별 신작',
         },
         {
-          to: "recommend",
-          item: "테마추천",
+          to: 'recommend',
+          item: '테마추천',
         },
         {
-          to: "membership",
-          item: "멤버십",
+          to: 'membership',
+          item: '멤버십',
         },
       ],
     };
@@ -47,9 +47,11 @@ export default {
     .item {
       padding: 0 1.5rem;
       font-size: 1.5rem;
-      font-weight: 700;
       color: #fff;
       transition: 150ms ease-out;
+      a {
+        font-weight: 700;
+      }
 
       &:hover,
       a:focus {

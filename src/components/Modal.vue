@@ -27,30 +27,30 @@
 </template>
 
 <script>
-import VueflixFuncBtn from "./VueflixFuncBtn.vue";
+import VueflixFuncBtn from './VueflixFuncBtn.vue';
 export default {
   components: { VueflixFuncBtn },
-  name: "Modal",
+  name: 'Modal',
   props: {
     title: {
       type: String,
-      default: "알림",
+      default: '알림',
     },
     label: {
       type: String,
-      default: "뷰플릭스 알림",
+      default: '뷰플릭스 알림',
     },
     description: {
       type: String,
-      default: "알림 내용",
+      default: '알림 내용',
     },
     yes: {
       type: String,
-      default: "확인",
+      default: '확인',
     },
     no: {
       type: String,
-      default: "닫기",
+      default: '닫기',
     },
     yesFunc: {
       type: Function,
