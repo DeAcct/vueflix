@@ -17,6 +17,7 @@
             <option value="ranking">평점 높은</option>
           </select>
         </label>
+        <h3 class="blind">검색 결과</h3>
         <poster-list :list="posterList" />
       </div>
     </main>
@@ -24,10 +25,10 @@
 </template>
 
 <script>
-import PosterList from '../components/PosterList.vue';
-import Controller from '../components/Controller.vue';
+import PosterList from "../components/PosterList.vue";
+import Controller from "../components/Controller.vue";
 export default {
-  name: 'TagSearch',
+  name: "TagSearch",
   components: {
     PosterList,
     Controller,
@@ -37,147 +38,147 @@ export default {
       resultCount: 29,
       posterList: [
         {
-          title: '호리미야',
+          title: "호리미야",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '4월은 너의 거짓말',
+          title: "4월은 너의 거짓말",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '청춘 돼지는 바니걸 선배의 꿈을 꾸지 않는다',
+          title: "청춘 돼지는 바니걸 선배의 꿈을 꾸지 않는다",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '목소리의 형태',
+          title: "목소리의 형태",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '청춘 돼지는 꿈꾸는 소녀의 꿈을 꾸지 않는다',
+          title: "청춘 돼지는 꿈꾸는 소녀의 꿈을 꾸지 않는다",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '역시 내 청춘 러브코메디는 잘못됐다. 완',
+          title: "역시 내 청춘 러브코메디는 잘못됐다. 완",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '역시 내 청춘 러브코메디는 잘못됐다.',
+          title: "역시 내 청춘 러브코메디는 잘못됐다.",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '역시 내 청춘 러브코메디는 잘못됐다. 속',
+          title: "역시 내 청춘 러브코메디는 잘못됐다. 속",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '너의 췌장을 먹고싶어',
+          title: "너의 췌장을 먹고싶어",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '도메스틱한 그녀',
+          title: "도메스틱한 그녀",
           img: undefined,
           isAdult: true,
         },
         {
-          title: '클라나드 에프터 스토리',
+          title: "클라나드 에프터 스토리",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '(자막) 바이올렛 에버가든 : 영원과 자동 수기인형',
+          title: "(자막) 바이올렛 에버가든 : 영원과 자동 수기인형",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '클라나드 1기',
+          title: "클라나드 1기",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '그 남자, 그 여자의 사정',
+          title: "그 남자, 그 여자의 사정",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '이 게임 폐인이 사는 법',
+          title: "이 게임 폐인이 사는 법",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '치하야후루 3기',
+          title: "치하야후루 3기",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '치하야후루 1기',
+          title: "치하야후루 1기",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '리라이프',
+          title: "리라이프",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '언제나 우리의 사랑은 10cm였다.',
+          title: "언제나 우리의 사랑은 10cm였다.",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '치하야후루 2기',
+          title: "치하야후루 2기",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '약캐 토모자키 군',
+          title: "약캐 토모자키 군",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '러브 앤 프로듀서',
+          title: "러브 앤 프로듀서",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '언덕길의 아폴론',
+          title: "언덕길의 아폴론",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '(더빙) 바이올렛 에버가든 : 영원과 자동 수기 인형',
+          title: "(더빙) 바이올렛 에버가든 : 영원과 자동 수기 인형",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '리라이프 FINAL ARC',
+          title: "리라이프 FINAL ARC",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '아라카와 언더 더 브리지 1기',
+          title: "아라카와 언더 더 브리지 1기",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '그 여름',
+          title: "그 여름",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '카시카',
+          title: "카시카",
           img: undefined,
           isAdult: false,
         },
         {
-          title: '어떻게든 되는 나날',
+          title: "어떻게든 되는 나날",
           img: undefined,
           isAdult: false,
         },
@@ -215,8 +216,12 @@ main {
       select {
         font-weight: 500;
         background: transparent;
+        border: 1px solid transparent;
         option {
           font-weight: inherit;
+        }
+        &:focus {
+          border: 1px solid var(--theme-500);
         }
       }
     }
@@ -249,8 +254,7 @@ main {
       flex: 2;
       height: calc(100vh - 6rem);
       overflow-y: scroll;
-      padding: 3rem 4.4rem;
-      margin-right: 0.3rem;
+      padding: 3rem 4.5rem;
     }
   }
 }

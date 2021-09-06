@@ -1,10 +1,10 @@
 <template>
   <router-view v-slot="{ Component }">
     <vueflix-header></vueflix-header>
+    <bottom-tab-menu v-if="isMobile" />
     <transition name="fade" mode="out-in">
       <component :is="Component" :key="$route.path"></component>
     </transition>
-    <bottom-tab-menu v-if="isMobile" />
   </router-view>
 </template>
 

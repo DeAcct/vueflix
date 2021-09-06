@@ -249,11 +249,6 @@ export default {
           day: "금",
           animes: [
             {
-              title: "후르츠 바스켓 더 파이널",
-              img: require("../assets/carousel_thumbnail_fruitbasketfinal.webp"),
-              url: "#none",
-            },
-            {
               title: "달이 이끄는 이세계 여행",
               img: require("../assets/carousel_thumbnail_tsukimichi.webp"),
               url: "#none",
@@ -387,7 +382,7 @@ export default {
     };
   },
   created() {
-    window.addEventListener("beforeinstallprompt", (e) => {
+    window.addEventListener("beforeinstallprompt", e => {
       e.preventDefault();
       if (Cookies.get("add-to-home-screen") === undefined) {
         this.isModalOpened = e;

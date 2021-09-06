@@ -23,12 +23,12 @@
 </template>
 
 <script>
-import SiteMenu from './SiteMenu.vue';
-import SearchBar from './SearchBar.vue';
-import Logo from './Logo.vue';
-import Notification from './Notification.vue';
+import SiteMenu from "./SiteMenu.vue";
+import SearchBar from "./SearchBar.vue";
+import Logo from "./Logo.vue";
+import Notification from "./Notification.vue";
 export default {
-  name: 'VueflixHeader',
+  name: "VueflixHeader",
   components: {
     SiteMenu,
     SearchBar,
@@ -39,7 +39,7 @@ export default {
     return {
       isScroll: false,
       isMobile: window.innerWidth <= 768,
-      isHome: this.page === 'home',
+      isHome: this.page === "home",
       page: this.$route.name,
       headString: undefined,
     };
@@ -56,29 +56,29 @@ export default {
     },
   },
   created() {
-    window.addEventListener('scroll', this.handleScroll);
-    window.addEventListener('resize', this.checkResolution);
+    window.addEventListener("scroll", this.handleScroll);
+    window.addEventListener("resize", this.checkResolution);
   },
   unmounted() {
-    window.removeEventListener('scroll', this.handleScroll);
-    window.removeEventListener('resize', this.checkResolution);
+    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("resize", this.checkResolution);
   },
   watch: {
     $route() {
       this.page = this.getCurrentPage();
-      this.isHome = this.page === 'home';
+      this.isHome = this.page === "home";
       switch (this.page) {
-        case 'tagsearch':
-          this.headString = '태그검색';
+        case "tagsearch":
+          this.headString = "태그검색";
           break;
-        case 'daily':
-          this.headString = '요일별 신작';
+        case "daily":
+          this.headString = "요일별 신작";
           break;
-        case 'recommend':
-          this.headString = '테마추천';
+        case "recommend":
+          this.headString = "테마추천";
           break;
-        case 'membership':
-          this.headString = '멤버십 및 포인트';
+        case "membership":
+          this.headString = "멤버십 및 포인트";
           break;
       }
     },

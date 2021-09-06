@@ -26,4 +26,11 @@ export default {
   gap: 2rem 1rem;
   flex-wrap: wrap;
 }
+@media screen and (min-width: 769px) {
+  .poster-list {
+    display: flex;
+    row-gap: 3rem;
+    flex-wrap: wrap;
+  }
+}
 </style>

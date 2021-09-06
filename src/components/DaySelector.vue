@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: 'DaySelector',
+  name: "DaySelector",
   props: {
     type: {
       type: String,
@@ -21,36 +21,36 @@ export default {
   },
   data() {
     return {
-      days: ['월', '화', '수', '목', '금', '토', '일'],
+      days: ["월", "화", "수", "목", "금", "토", "일"],
       selectedDay: this.getTodayString(),
     };
   },
   methods: {
     dayBtnClick(e) {
       this.selectedDay = e.target.textContent;
-      this.$emit('todayString', this.selectedDay);
+      this.$emit("todayString", this.selectedDay);
     },
     getTodayString() {
       switch (new Date().getDay()) {
         case 0:
-          return '일';
+          return "일";
         case 1:
-          return '월';
+          return "월";
         case 2:
-          return '화';
+          return "화";
         case 3:
-          return '수';
+          return "수";
         case 4:
-          return '목';
+          return "목";
         case 5:
-          return '금';
+          return "금";
         default:
-          return '토';
+          return "토";
       }
     },
   },
   mounted() {
-    this.$emit('todayString', this.selectedDay);
+    this.$emit("todayString", this.selectedDay);
   },
 };
 </script>
@@ -71,7 +71,10 @@ export default {
     font-weight: 700;
     line-height: 4rem;
     &.active {
-      background-color: var(--theme-500);
+      background-color: var(--theme-500) !important;
+    }
+    &:focus {
+      background-color: var(--theme-300);
     }
   }
 }

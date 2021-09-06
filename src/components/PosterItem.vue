@@ -93,9 +93,19 @@ export default {
 @media screen and (min-width: 769px) {
   .poster-item {
     width: calc((100% - 2rem) / 3);
+  }
+}
+@media screen and (min-width: 1300px) {
+  .poster-item {
+    width: calc((100% - 3rem) / 4);
     figure .title {
-      font-size: 1.3rem;
+      font-size: 1.5rem;
     }
+  }
+}
+@media screen and (min-width: 1920px) {
+  .poster-item {
+    width: calc((100% - 4rem) / 5);
   }
 }
 </style>

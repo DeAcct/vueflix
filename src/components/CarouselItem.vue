@@ -27,11 +27,11 @@
 </template>
 
 <script>
-import IconPlay from './icons/IconPlay.vue';
-import IconInfo from './icons/IconInfo.vue';
-import IconBase from './IconBase.vue';
+import IconPlay from "./icons/IconPlay.vue";
+import IconInfo from "./icons/IconInfo.vue";
+import IconBase from "./IconBase.vue";
 export default {
-  name: 'CarouselItem',
+  name: "CarouselItem",
   components: {
     IconBase,
     IconPlay,
@@ -71,7 +71,7 @@ export default {
       url("${this.img}") center/cover`;
     },
     getEpisode() {
-      return this.isMovie ? '극장판' : this.episode;
+      return this.isMovie ? "극장판" : this.episode;
     },
   },
 };
@@ -80,6 +80,7 @@ export default {
 <style lang="scss" scoped>
 .item {
   width: 55vw;
+  height: calc(55vw * 9 / 16 + 6rem);
   margin-right: 1rem;
   figure {
     display: flex;
@@ -125,6 +126,9 @@ export default {
         background-color: var(--theme-500);
       }
     }
+    &:focus {
+      opacity: 0.5;
+    }
   }
   .description {
     display: flex;
@@ -145,9 +149,17 @@ export default {
         span,
         strong {
           line-height: 1.3;
+          font-size: 1.3rem;
+          color: inherit;
         }
         span {
           font-weight: 500;
+        }
+      }
+      &:focus {
+        span,
+        strong {
+          color: var(--theme-500);
         }
       }
       .description-info-btn {
@@ -167,6 +179,7 @@ export default {
 @media all and (min-width: 768px) {
   .item {
     width: 32vw;
+    height: calc(32vw * 9 / 16 + 6rem);
     .thumbnail {
       .thumbnail-play-btn {
         width: 5rem;
@@ -199,6 +212,7 @@ export default {
 @media all and (min-width: 1024px) {
   .item {
     width: 28vw;
+    height: calc(28vw * 9 / 16 + 6rem);
     .thumbnail {
       .thumbnail-play-btn {
         width: 7rem;
@@ -231,6 +245,7 @@ export default {
 @media all and (min-width: 1920px) {
   .item {
     width: 15vw;
+    height: calc(15vw * 9 / 16 + 6rem);
     .thumbnail {
       .thumbnail-play-btn {
         left: calc(7.5vw - 3.5rem);

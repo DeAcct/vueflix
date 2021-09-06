@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0cf294"],{6312:function(n,e,c){"use strict";c.r(e);var a=c("7a23"),r={class:"wrap"},t=Object(a["i"])("h2",null,"요일별 신작",-1);function i(n,e,c,i,u,s){return Object(a["v"])(),Object(a["e"])("div",r,[t])}var u={name:"Daily"};u.render=i;e["default"]=u}}]);
-//# sourceMappingURL=chunk-2d0cf294.f4467bff.js.map
