@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.d3abbace5481b2aca8886bc89ee0007d.js"
+  "/precache-manifest.0f598c94ec8095c8a144706083a68ffd.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "vueflix"});
