@@ -305,7 +305,6 @@ export default {
     initAnimeList(val) {
       const filteredList = this.dailyAnime.filter(animes => animes.day === val);
       this.filteredList = filteredList[0].animes;
-      console.log(this.filteredList);
     },
   },
 };
@@ -318,22 +317,41 @@ main {
   min-height: 100vh;
   .day-selector-holder {
     position: sticky;
+    display: flex;
     top: 6rem;
     padding: 1.5rem 0;
     background-color: var(--bg-100);
   }
   .day-selector {
     width: 100%;
-    justify-content: space-between;
-    gap: 1rem 0;
     margin: 0;
+  }
+  .daily-contents {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+@media screen and (min-width: 769px) {
+  main {
+    .day-selector-holder {
+      justify-content: center;
+      padding: 2rem 0;
+    }
+    .day-selector {
+      width: 50%;
+      justify-content: space-between;
+    }
   }
 }
 @media screen and (min-width: 1300px) {
   .inner {
     width: 1300px;
-    padding: 0;
     margin: 0 auto;
+  }
+}
+@media screen and (min-width: 1920px) {
+  main .day-selector {
+    width: 30%;
   }
 }
 </style>

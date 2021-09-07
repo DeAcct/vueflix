@@ -91,9 +91,10 @@ export default {
     align-items: center;
     justify-content: center;
     width: 100%;
-    aspect-ratio: 16/9;
+    height: calc(55vw / 16 * 9);
     border-radius: 0.3rem;
     overflow: hidden;
+    transition: 150ms ease-out;
     .thumbnail-play-btn {
       position: absolute;
       display: flex;
@@ -141,20 +142,16 @@ export default {
       display: flex;
       justify-content: space-between;
       flex: 1;
-      gap: 0.5rem;
-      .text {
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
-        span,
-        strong {
-          line-height: 1.3;
-          font-size: 1.3rem;
-          color: inherit;
-        }
-        span {
-          font-weight: 500;
-        }
+      span,
+      strong {
+        line-height: 1.3;
+        font-size: 1.3rem;
+        color: inherit;
+        display: block;
+      }
+      span {
+        font-weight: 500;
+        margin-bottom: 0.3rem;
       }
       &:focus {
         span,
@@ -181,6 +178,7 @@ export default {
     width: 32vw;
     height: calc(32vw * 9 / 16 + 6rem);
     .thumbnail {
+      height: calc(32vw / 16 * 9);
       .thumbnail-play-btn {
         width: 5rem;
         height: 5rem;
@@ -212,8 +210,9 @@ export default {
 @media all and (min-width: 1024px) {
   .item {
     width: 28vw;
-    height: calc(28vw * 9 / 16 + 6rem);
+    height: calc(28vw * 9 / 16 + 8rem);
     .thumbnail {
+      height: calc(28vw / 16 * 9);
       .thumbnail-play-btn {
         width: 7rem;
         height: 7rem;
@@ -236,8 +235,10 @@ export default {
         height: 3rem;
       }
       .description-text {
-        font-size: 1.55rem;
-        gap: 0.8rem;
+        span,
+        strong {
+          font-size: 1.5rem;
+        }
       }
     }
   }
@@ -247,6 +248,7 @@ export default {
     width: 15vw;
     height: calc(15vw * 9 / 16 + 6rem);
     .thumbnail {
+      height: calc(15vw / 16 * 9);
       .thumbnail-play-btn {
         left: calc(7.5vw - 3.5rem);
         top: calc(7.5vw * 9 / 16 - 3.5rem);

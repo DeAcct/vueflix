@@ -1,14 +1,14 @@
 <template>
   <li class="vertical-card-item">
-    <figure>
-      <a :href="url">
+    <a :href="url">
+      <figure>
         <div class="img" :style="createImg"></div>
         <div class="text">
           <strong class="title">{{ title }}</strong>
           <p class="genre">{{ genre }}</p>
         </div>
-      </a>
-    </figure>
+      </figure>
+    </a>
   </li>
 </template>
 <script>
@@ -37,31 +37,75 @@ export default {
 <style lang="scss" scoped>
 .vertical-card-item {
   width: 100%;
+  height: 9rem;
   background-color: #fff;
   border-radius: 0.6rem;
-  padding: 1rem;
+  overflow: hidden;
   & + & {
     margin-top: 1rem;
   }
   a {
+    display: block;
+    padding: 1rem;
+  }
+  figure {
     display: flex;
     .img {
-      min-width: 5rem;
-      height: 5rem;
+      min-width: 7rem;
+      height: 7rem;
       border-radius: 0.3rem;
     }
     .text {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: center;
       margin-left: 1rem;
       .title {
         font-size: 1.4rem;
+        line-height: 1.3;
       }
       .genre {
         font-size: 1.2rem;
-        margin-top: 0.5rem;
+        margin-top: 0.7rem;
       }
+    }
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .vertical-card-item {
+    width: calc((100% - 1rem) / 2);
+    height: 12rem;
+    & + & {
+      margin-top: 0;
+    }
+    &:nth-child(2n) {
+      margin-left: 1rem;
+    }
+    &:not(:first-child) {
+      margin-bottom: 1rem;
+    }
+    a {
+      padding: 1.5rem;
+    }
+    figure .img {
+      min-width: 9rem;
+      height: 9rem;
+    }
+  }
+}
+@media screen and (min-width: 1300px) {
+  .vertical-card-item {
+    width: calc((100% - 3rem) / 3);
+    &:nth-child(2n) {
+      margin-left: 0;
+    }
+    &:nth-child(3n + 2),
+    &:nth-child(3n) {
+      margin-left: 1.5rem;
+    }
+    &:not(:first-child) {
+      margin-bottom: 1.5rem;
     }
   }
 }

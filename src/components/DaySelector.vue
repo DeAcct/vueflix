@@ -58,6 +58,7 @@ export default {
 <style lang="scss" scoped>
 .day-selector {
   display: flex;
+  justify-content: space-between;
   height: 4rem;
   gap: 0.5rem;
   margin-top: 1.5rem;
@@ -70,12 +71,18 @@ export default {
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 4rem;
+    transition: 150ms ease-out;
     &.active {
       background-color: var(--theme-500) !important;
     }
     &:focus {
       background-color: var(--theme-300);
     }
+  }
+}
+@media screen and (min-width: 769px) {
+  .day-selector {
+    justify-content: flex-start;
   }
 }
 @media screen and (min-width: 1024px) {
