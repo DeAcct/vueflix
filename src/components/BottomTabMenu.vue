@@ -99,15 +99,17 @@ export default {
   user-select: none;
   .items {
     display: flex;
-    justify-content: space-around;
     align-items: center;
     height: 100%;
     .item {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 20%;
+      width: 20.5%;
       height: 100%;
+    }
+    .item:last-child {
+      width: 18%;
     }
     a {
       display: flex;
