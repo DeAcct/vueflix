@@ -215,12 +215,14 @@ export default {
   methods: {
     touchStart(e) {
       this.oldTouch = e.touches[0].clientY;
+      document.body.style.overflowY = "hidden";
     },
     touchMove(e) {
       if (this.oldTouch > e.touches[0].clientY && !this.isOpen) {
         this.isOpen = true;
       } else if (this.oldTouch <= e.touches[0].clientY && this.isOpen) {
         this.isOpen = false;
+        document.body.style.overflowY = "scroll";
       }
     },
   },
