@@ -1,14 +1,14 @@
 <template>
   <div class="wrap">
-    <div class="user-info">
+    <div class="user-info" v-if="isMyRoot">
       <profile />
       <strong class="nickname">로렘입숨사딸라</strong>
       <i>example1234@example.com</i>
       <div class="history"></div>
+      <router-link to="/my/membership">
+        멤버십(테스트 링크)
+      </router-link>
     </div>
-    <router-link to="/my/membership" v-if="isMyRoot">
-      멤버십(테스트 링크)
-    </router-link>
     <router-view />
   </div>
 </template>

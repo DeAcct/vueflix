@@ -1,6 +1,6 @@
 <template>
   <router-view v-slot="{ Component }">
-    <vueflix-header v-if="!isMobile && isBottomTabVisible" />
+    <vueflix-header />
     <bottom-tab-menu v-if="isMobile && isBottomTabVisible" />
     <transition name="fade" mode="out-in">
       <component :is="Component" :key="$route.path"></component>

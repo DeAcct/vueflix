@@ -18,8 +18,7 @@ App
     ㄴ  NotiAlert
 ㄴ  TagSearch
 ㄴ  Daily
-ㄴ  Recommend
-    ㄴ 테마별 상세페이지 뷰
+ㄴ  Basket (보관함 - 즐겨찾기, 최근 본 목록 등)
 ㄴ  Membership
     ㄴ  Purchase
 ㄴ  상세페이지 뷰(URL형태: vueflix.hyse.kr/[작품 장르]/[작품별 상세페이지])

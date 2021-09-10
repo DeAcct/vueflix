@@ -19,6 +19,5 @@ export default {
 .profile {
   border-radius: 50%;
   overflow: hidden;
-  transition: 150ms ease-out;
 }
 </style>
