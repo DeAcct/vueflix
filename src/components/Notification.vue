@@ -1,7 +1,7 @@
 <template>
   <router-link to="/notialert" class="notification">
     <i class="icon" @click="searchBarOpen">
-      <icon-base iconName="검색">
+      <icon-base iconName="알림">
         <icon-notification />
       </icon-base>
     </i>
@@ -9,11 +9,11 @@
 </template>
 
 <script>
-import IconBase from './IconBase.vue';
-import IconNotification from './icons/IconNotification.vue';
+import IconBase from "./IconBase.vue";
+import IconNotification from "./icons/IconNotification.vue";
 
 export default {
-  name: 'Notification',
+  name: "Notification",
   components: {
     IconBase,
     IconNotification,

@@ -80,7 +80,7 @@ export default {
 <style lang="scss" scoped>
 .item {
   width: 55vw;
-  height: calc(55vw * 9 / 16 + 6rem);
+  height: calc(55vw * 9 / 16 + 8rem);
   margin-right: 1rem;
   figure {
     display: flex;
@@ -176,7 +176,7 @@ export default {
 @media all and (min-width: 768px) {
   .item {
     width: 32vw;
-    height: calc(32vw * 9 / 16 + 6rem);
+    height: calc(32vw * 9 / 16 + 8rem);
     .thumbnail {
       height: calc(32vw / 16 * 9);
       .thumbnail-play-btn {
@@ -246,7 +246,7 @@ export default {
 @media all and (min-width: 1920px) {
   .item {
     width: 15vw;
-    height: calc(15vw * 9 / 16 + 6rem);
+    height: calc(15vw * 9 / 16 + 8rem);
     .thumbnail {
       height: calc(15vw / 16 * 9);
       .thumbnail-play-btn {

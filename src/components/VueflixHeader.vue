@@ -11,8 +11,11 @@
             <logo />
           </router-link>
         </h1>
+        <router-link class="go-back" to="/my" v-if="isPrevVisible">
+          <icon-base iconName="뒤로가기"><icon-arrow-prev /></icon-base>
+        </router-link>
         <h2 v-if="isMobile && !isHome">{{ headString }}</h2>
-        <site-menu v-if="!isMobile"></site-menu>
+        <site-menu v-if="!isMobile" />
       </div>
       <div class="col-right">
         <search-bar />
@@ -25,21 +28,26 @@
 <script>
 import SiteMenu from "./SiteMenu.vue";
 import SearchBar from "./SearchBar.vue";
-import Logo from "./Logo.vue";
 import Notification from "./Notification.vue";
+import Logo from "./Logo.vue";
+import IconBase from "./IconBase.vue";
+import IconArrowPrev from "./icons/IconArrowPrev.vue";
 export default {
   name: "VueflixHeader",
   components: {
     SiteMenu,
     SearchBar,
-    Logo,
     Notification,
+    Logo,
+    IconBase,
+    IconArrowPrev,
   },
   data() {
     return {
       isScroll: false,
       isMobile: window.innerWidth <= 768,
       isHome: this.page === "home",
+      isPrevVisible: this.page === "membership" && this.isMobile,
       page: this.$route.name,
       headString: undefined,
     };
@@ -51,8 +59,8 @@ export default {
     checkResolution() {
       this.isMobile = window.innerWidth <= 768;
     },
-    getCurrentPage() {
-      return this.$route.name;
+    goBack() {
+      return this.$router.go(-1);
     },
   },
   created() {
@@ -65,8 +73,9 @@ export default {
   },
   watch: {
     $route() {
-      this.page = this.getCurrentPage();
+      this.page = this.$route.name;
       this.isHome = this.page === "home";
+      this.isPrevVisible = this.page === "membership" && this.isMobile;
       switch (this.page) {
         case "tagsearch":
           this.headString = "태그검색";
@@ -74,12 +83,17 @@ export default {
         case "daily":
           this.headString = "요일별 신작";
           break;
-        case "recommend":
-          this.headString = "테마추천";
+        case "basket":
+          this.headString = "보관함";
+          break;
+        case "my":
+          this.headString = "MY";
           break;
         case "membership":
-          this.headString = "멤버십 및 포인트";
+          this.headString = "멤버십";
           break;
+        default:
+          this.headString = "";
       }
     },
   },
@@ -90,8 +104,6 @@ export default {
 .header {
   width: 100%;
   border-bottom: 1px solid hsla(0, 0%, 87%, 0);
-  -webkit-backdrop-filter: blur(0);
-  backdrop-filter: blur(0);
   position: fixed;
   top: 0;
   z-index: 50;
@@ -121,6 +133,9 @@ export default {
           fill: #fff;
           transition: all 250ms ease-out;
         }
+      }
+      .go-back {
+        margin-right: 0.5rem;
       }
       h2 {
         font-size: 1.8rem;

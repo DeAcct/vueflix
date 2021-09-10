@@ -1,7 +1,7 @@
 <template>
   <router-view v-slot="{ Component }">
-    <vueflix-header></vueflix-header>
-    <bottom-tab-menu v-if="isMobile" />
+    <vueflix-header v-if="isMobile && isBottomTabVisible" />
+    <bottom-tab-menu v-if="isMobile && isBottomTabVisible" />
     <transition name="fade" mode="out-in">
       <component :is="Component" :key="$route.path"></component>
     </transition>
@@ -20,12 +20,20 @@ export default {
   data() {
     return {
       isMobile: window.innerWidth <= 768,
+      isBottomTabVisible: this.page !== "membership",
+      page: this.$route.name,
     };
   },
   mounted() {
     window.addEventListener("resize", () => {
       this.isMobile = window.innerWidth <= 768;
     });
+  },
+  watch: {
+    $route() {
+      this.page = this.$route.name;
+      this.isBottomTabVisible = this.page !== "membership";
+    },
   },
 };
 </script>

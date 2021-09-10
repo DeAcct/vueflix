@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700;900&display=swap');
-@import url('./color.scss');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700;900&display=swap");
+@import url("./color.scss");
 html,
 body,
 header,
@@ -25,6 +25,7 @@ ul,
 li,
 ol,
 i,
+address,
 strong,
 form,
 fieldset,
@@ -42,7 +43,7 @@ svg {
   padding: 0;
   border: none;
   color: var(--text-800);
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   font-weight: 300;
   line-height: 1;
   letter-spacing: -0.03vw;
@@ -55,6 +56,9 @@ svg {
 ::-moz-selection {
   background-color: var(--theme-500);
   color: #fff;
+}
+:root {
+  --inner-padding: 2rem;
 }
 
 header,
@@ -79,7 +83,8 @@ b {
 html {
   font-size: 0.625em;
 }
-a {
+a,
+address {
   text-decoration: none;
   color: inherit;
 }
@@ -107,8 +112,9 @@ img {
   position: absolute;
   white-space: nowrap;
 }
+
 .inner {
-  padding: 0 2rem;
+  padding: 0 var(--inner-padding);
 }
 *:focus {
   outline: none;
@@ -125,7 +131,7 @@ img {
 }
 
 @media screen and (min-width: 768px) {
-  .inner {
-    padding: 0 5rem;
+  :root {
+    --inner-padding: 5rem;
   }
 }

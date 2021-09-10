@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d215c15"],{c00b:function(n,c,e){"use strict";e.r(c);var t=e("7a23");function u(n,c){return Object(t["v"])(),Object(t["e"])("h2",null,"보관함")}const o={};o.render=u;c["default"]=o}}]);
+//# sourceMappingURL=chunk-2d215c15.bb00a122.js.map

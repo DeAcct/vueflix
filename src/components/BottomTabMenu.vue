@@ -4,10 +4,15 @@
     <ul class="items">
       <li v-for="(item, index) in items" :key="index" class="item">
         <router-link :to="item.to === 'home' ? '/' : `/${item.to}`">
-          <i>
-            <icon-base>
+          <i class="icon">
+            <template v-if="item.to !== 'my'">
+              <icon-base>
+                <component :is="icon(index)" :key="item.item" />
+              </icon-base>
+            </template>
+            <template v-else>
               <component :is="icon(index)" :key="item.item" />
-            </icon-base>
+            </template>
           </i>
           <span>
             {{ item.item }}
@@ -19,44 +24,44 @@
 </template>
 
 <script>
-import IconBase from './IconBase.vue';
-import IconHome from './icons/IconHome.vue';
-import IconTagSearch from './icons/IconTagSearch.vue';
-import IconDaily from './icons/IconDaily.vue';
-import IconRecommend from './icons/IconRecommend.vue';
-import IconMembership from './icons/IconMembership.vue';
+import IconBase from "./IconBase.vue";
+import IconHome from "./icons/IconHome.vue";
+import IconTagSearch from "./icons/IconTagSearch.vue";
+import IconDaily from "./icons/IconDaily.vue";
+import IconBasket from "./icons/IconBasket.vue";
+import Profile from "./Profile.vue";
 export default {
-  name: 'BottomTabMenu',
+  name: "BottomTabMenu",
   components: {
     IconBase,
     IconHome,
     IconTagSearch,
     IconDaily,
-    IconRecommend,
-    IconMembership,
+    IconBasket,
+    Profile,
   },
   data() {
     return {
       items: [
         {
-          to: 'home',
-          item: '홈',
+          to: "home",
+          item: "홈",
         },
         {
-          to: 'tagsearch',
-          item: '태그검색',
+          to: "tagsearch",
+          item: "태그검색",
         },
         {
-          to: 'daily',
-          item: '요일별 신작',
+          to: "daily",
+          item: "요일별 신작",
         },
         {
-          to: 'recommend',
-          item: '테마추천',
+          to: "basket",
+          item: "보관함",
         },
         {
-          to: 'membership',
-          item: '멤버십',
+          to: "my",
+          item: "MY",
         },
       ],
     };
@@ -65,15 +70,15 @@ export default {
     icon(index) {
       switch (index) {
         case 0:
-          return 'IconHome';
+          return "IconHome";
         case 1:
-          return 'IconTagSearch';
+          return "IconTagSearch";
         case 2:
-          return 'IconDaily';
+          return "IconDaily";
         case 3:
-          return 'IconRecommend';
+          return "IconBasket";
         default:
-          return 'IconMembership';
+          return "Profile";
       }
     },
   },
@@ -112,15 +117,21 @@ export default {
       width: 100%;
       height: 100%;
       font-size: 1.1rem;
-      gap: 0.2rem;
-      i,
+      .icon {
+        margin-bottom: 0.2rem;
+      }
+      .icon,
       span {
         color: var(--bg-500);
         font-weight: 500;
       }
-      &.vueflix-active-link i,
+      &.vueflix-active-link .icon,
       &.vueflix-active-link span {
         color: var(--theme-500);
+      }
+      .profile {
+        width: 2.8rem;
+        border: 2px solid transparent;
       }
     }
   }

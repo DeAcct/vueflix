@@ -33,20 +33,30 @@ const routes = [
     },
   },
   {
-    path: "/recommend",
-    name: "recommend",
-    component: () => import("@/views/Recommend"),
+    path: "/basket",
+    name: "basket",
+    component: () => import("@/views/Basket"),
     meta: {
-      title: "테마별 애니 추천",
+      title: "보관함",
     },
   },
   {
-    path: "/membership",
-    name: "membership",
-    component: () => import("@/views/Membership"),
+    path: "/my",
+    name: "my",
+    component: () => import("@/views/My"),
     meta: {
-      title: "뷰플릭스 멤버십 및 포인트 충전",
+      title: "내 뷰플릭스",
     },
+    children: [
+      {
+        path: "membership",
+        name: "membership",
+        component: () => import("@/views/Membership"),
+        meta: {
+          title: "뷰플릭스 멤버십",
+        },
+      },
+    ],
   },
   {
     path: "/notialert",

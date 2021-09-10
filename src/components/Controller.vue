@@ -67,14 +67,14 @@
   </form>
 </template>
 <script>
-import IconBase from './IconBase.vue';
-import IconExcluded from './icons/IconExcluded.vue';
-import IconSelected from './icons/IconSelected.vue';
-import TagItem from './TagItem.vue';
-import SelectorAccordion from './SelectorAccordion.vue';
-import TripleCheckbox from './TripleCheckbox.vue';
+import IconBase from "./IconBase.vue";
+import IconExcluded from "./icons/IconExcluded.vue";
+import IconSelected from "./icons/IconSelected.vue";
+import TagItem from "./TagItem.vue";
+import SelectorAccordion from "./SelectorAccordion.vue";
+import TripleCheckbox from "./TripleCheckbox.vue";
 export default {
-  name: 'Controller',
+  name: "Controller",
   components: {
     IconBase,
     IconExcluded,
@@ -88,113 +88,113 @@ export default {
       isOpen: false,
       selectors: [
         {
-          name: '장르',
+          name: "장르",
           selectorItem: [
-            'BL',
-            'GL 백합',
-            'SF',
-            '개그',
-            '공포',
-            '드라마',
-            '로맨스',
-            '모험',
-            '무협',
-            '미스터리',
-            '범죄',
-            '스릴러',
-            '스포츠',
-            '시대물',
-            '아동',
-            '아이돌',
-            '액션',
-            '음식',
-            '일상',
-            '재난',
-            '추리',
-            '특촬',
-            '판타지',
-            '하렘',
+            "BL",
+            "GL 백합",
+            "SF",
+            "개그",
+            "공포",
+            "드라마",
+            "로맨스",
+            "모험",
+            "무협",
+            "미스터리",
+            "범죄",
+            "스릴러",
+            "스포츠",
+            "시대물",
+            "아동",
+            "아이돌",
+            "액션",
+            "음식",
+            "일상",
+            "재난",
+            "추리",
+            "특촬",
+            "판타지",
+            "하렘",
           ],
         },
         {
-          name: '태그',
+          name: "태그",
           selectorItem: [
-            '가족',
-            '감동',
-            '게임',
-            '동물',
-            '동양풍',
-            '두뇌싸움',
-            '로봇',
-            '루프물',
-            '마법소녀',
-            '먼치킨',
-            '배틀',
-            '뱀파이어',
-            '복수',
-            '삼각관계',
-            '서양풍',
-            '선생님',
-            '성장',
-            '슬픔',
-            '시간여행',
-            '역하렘',
-            '연예인',
-            '열혈',
-            '오타쿠',
-            '요괴 및 괴물',
-            '육아',
-            '이세계',
-            '정치',
-            '좀비',
-            '주체적 여성',
-            '짝사랑',
-            '철학',
-            '퇴마',
-            '학교',
+            "가족",
+            "감동",
+            "게임",
+            "동물",
+            "동양풍",
+            "두뇌싸움",
+            "로봇",
+            "루프물",
+            "마법소녀",
+            "먼치킨",
+            "배틀",
+            "뱀파이어",
+            "복수",
+            "삼각관계",
+            "서양풍",
+            "선생님",
+            "성장",
+            "슬픔",
+            "시간여행",
+            "역하렘",
+            "연예인",
+            "열혈",
+            "오타쿠",
+            "요괴 및 괴물",
+            "육아",
+            "이세계",
+            "정치",
+            "좀비",
+            "주체적 여성",
+            "짝사랑",
+            "철학",
+            "퇴마",
+            "학교",
           ],
         },
         {
-          name: '방영',
-          selectorItem: ['방영중', '완결'],
+          name: "방영",
+          selectorItem: ["방영중", "완결"],
         },
         {
-          name: '제작사',
+          name: "제작사",
           selectorItem: [
-            '본즈',
-            '쿄토애니메이션',
-            '매드하우스',
-            'A-1Pictures',
-            '유포테이블',
-            'WIT Studio',
-            '프로덕션 I.G',
-            'P.A.Works',
-            'J.C.Staff',
-            '샤프트',
-            '동화공방',
-            '스튜디오 딘',
-            '실버 링크',
-            '스튜디오 피에로',
-            'MAPPA',
-            '화이트폭스',
-            '라르케',
-            '트리거',
-            '폴리곤 픽쳐스',
-            '사테라이트',
+            "본즈",
+            "쿄토애니메이션",
+            "매드하우스",
+            "A-1Pictures",
+            "유포테이블",
+            "WIT Studio",
+            "프로덕션 I.G",
+            "P.A.Works",
+            "J.C.Staff",
+            "샤프트",
+            "동화공방",
+            "스튜디오 딘",
+            "실버 링크",
+            "스튜디오 피에로",
+            "MAPPA",
+            "화이트폭스",
+            "라르케",
+            "트리거",
+            "폴리곤 픽쳐스",
+            "사테라이트",
           ],
         },
         {
-          name: '출시타입',
-          selectorItem: ['TVA', '극장판', 'OVA'],
+          name: "출시타입",
+          selectorItem: ["TVA", "극장판", "OVA"],
         },
         {
-          name: '브랜드',
+          name: "브랜드",
           selectorItem: [
-            '애니맥스 플러스',
-            '애니플러스',
-            'KTH',
-            '대원',
-            '기타',
+            "애니맥스 플러스",
+            "애니플러스",
+            "KTH",
+            "대원",
+            "기타",
           ],
         },
       ],
@@ -241,6 +241,10 @@ export default {
   bottom: -51rem;
   animation: 300ms ease-in-out 6 alternate gesture-hint;
   transition: 300ms ease-out;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
   &.open {
     bottom: 0;
   }
@@ -343,14 +347,6 @@ export default {
       strong {
         text-align: left;
       }
-    }
-    &::-webkit-scrollbar {
-      display: block;
-      width: 0.5rem;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--text-300);
-      border-radius: 0.25rem;
     }
   }
 }

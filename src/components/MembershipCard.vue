@@ -24,10 +24,10 @@
 </template>
 
 <script>
-import IconBase from './IconBase.vue';
-import IconArrowNext from './icons/IconArrowNext.vue';
+import IconBase from "./IconBase.vue";
+import IconArrowNext from "./icons/IconArrowNext.vue";
 export default {
-  name: 'MembershipCard',
+  name: "MembershipCard",
   props: {
     cardCompany: {
       type: String,
@@ -55,7 +55,7 @@ export default {
   data() {
     return {
       style: {
-        transform: 'none',
+        transform: "none",
       },
     };
   },
@@ -75,14 +75,14 @@ export default {
       return `****-****-****-${this.cardNumber.slice(12, 16)}`;
     },
     formatNumber() {
-      return String(this.point).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return String(this.point).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
   },
   mounted() {
-    window.addEventListener('deviceorientation', this.cardInteraction);
+    window.addEventListener("deviceorientation", this.cardInteraction);
   },
   unmounted() {
-    window.removeEventListener('deviceorientation', this.cardInteraction);
+    window.removeEventListener("deviceorientation", this.cardInteraction);
   },
 };
 </script>
@@ -93,8 +93,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  max-width: 37.5rem;
-  aspect-ratio: 1.58/1;
+  height: calc((100vw - 4rem) / 1.58);
   padding: 2rem 3.5rem;
   border-radius: 0.3rem;
   transition: transform 150ms ease-out;
@@ -131,6 +130,13 @@ export default {
     p {
       font-weight: 900;
     }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .membership-card {
+    width: 37.5rem;
+    height: calc(37.5rem / 1.58);
   }
 }
 </style>
