@@ -83,10 +83,10 @@ b {
 html {
   font-size: 0.625em;
 }
-a,
-address {
+a {
   text-decoration: none;
   color: inherit;
+  cursor: default;
 }
 i {
   font-style: normal;
@@ -94,7 +94,7 @@ i {
 button {
   border-radius: 0;
   background-color: transparent;
-  cursor: pointer;
+  cursor: default;
 }
 ul,
 li {
@@ -133,5 +133,12 @@ img {
 @media screen and (min-width: 768px) {
   :root {
     --inner-padding: 5rem;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  a,
+  button {
+    cursor: pointer;
   }
 }

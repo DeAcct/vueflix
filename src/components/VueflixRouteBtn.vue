@@ -20,12 +20,17 @@ export default {
       type: String,
       default: "inherit",
     },
+    border: {
+      type: String,
+      default: "1px solid var(--bg-200)",
+    },
   },
   data() {
     return {
       style: {
         backgroundColor: this.bg,
         color: this.textColor,
+        border: this.border,
       },
     };
   },

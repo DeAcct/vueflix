@@ -17,8 +17,8 @@ const routes = [
     },
   },
   {
-    path: "/tagsearch",
-    name: "tagsearch",
+    path: "/tag-search",
+    name: "tag-search",
     component: () => import("@/views/TagSearch"),
     meta: {
       title: "필터로 취향저격 애니찾기",
@@ -54,6 +54,14 @@ const routes = [
         component: () => import("@/views/Membership"),
         meta: {
           title: "뷰플릭스 멤버십",
+        },
+      },
+      {
+        path: "change-profile",
+        name: "change-profile",
+        component: () => import("@/views/ChangeProfile"),
+        meta: {
+          title: "내 프로필 전환하기",
         },
       },
     ],

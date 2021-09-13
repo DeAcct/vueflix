@@ -33,6 +33,7 @@ export default {
     $route() {
       this.page = this.$route.name;
       this.isBottomTabVisible = this.page !== "membership";
+      this.headerVisible = this.page !== "my";
     },
   },
 };

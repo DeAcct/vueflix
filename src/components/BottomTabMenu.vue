@@ -7,11 +7,11 @@
           <i class="icon">
             <template v-if="item.to !== 'my'">
               <icon-base>
-                <component :is="icon(index)" :key="item.item" />
+                <component :is="item.icon" :key="item.item" />
               </icon-base>
             </template>
             <template v-else>
-              <component :is="icon(index)" :key="item.item" />
+              <component :is="item.icon" :key="item.item" />
             </template>
           </i>
           <span>
@@ -46,41 +46,30 @@ export default {
         {
           to: "home",
           item: "홈",
+          icon: "IconHome",
         },
         {
-          to: "tagsearch",
+          to: "tag-search",
           item: "태그검색",
+          icon: "IconTagSearch",
         },
         {
           to: "daily",
           item: "요일별 신작",
+          icon: "IconDaily",
         },
         {
           to: "basket",
           item: "보관함",
+          icon: "IconBasket",
         },
         {
           to: "my",
           item: "MY",
+          icon: "Profile",
         },
       ],
     };
-  },
-  methods: {
-    icon(index) {
-      switch (index) {
-        case 0:
-          return "IconHome";
-        case 1:
-          return "IconTagSearch";
-        case 2:
-          return "IconDaily";
-        case 3:
-          return "IconBasket";
-        default:
-          return "Profile";
-      }
-    },
   },
 };
 </script>

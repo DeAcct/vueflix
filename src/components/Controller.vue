@@ -226,6 +226,10 @@ export default {
       }
     },
   },
+  unmounted() {
+    document.body.style.overflowY = "scroll";
+    /*컨트롤러가 열린 상태에서 페이지가 변경될 경우 스크롤이 불가능한 이슈 해결*/
+  },
 };
 </script>
 <style lang="scss" scoped>

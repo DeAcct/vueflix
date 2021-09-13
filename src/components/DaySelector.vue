@@ -72,6 +72,7 @@ export default {
     font-weight: 700;
     line-height: 4rem;
     transition: 150ms ease-out;
+
     &.active {
       background-color: var(--theme-500) !important;
     }

@@ -38,7 +38,7 @@ export default {
 .vertical-card-item {
   width: 100%;
   height: 9rem;
-  background-color: #fff;
+  background-color: var(--top-item);
   border-radius: 0.6rem;
   overflow: hidden;
   & + & {
@@ -47,6 +47,10 @@ export default {
   a {
     display: block;
     padding: 1rem;
+    transition: 150ms ease-out;
+    &:is(:hover, :focus) {
+      background-color: var(--bg-200);
+    }
   }
   figure {
     display: flex;

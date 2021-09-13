@@ -47,7 +47,13 @@ export default {
       isScroll: false,
       isMobile: window.innerWidth <= 768,
       isHome: this.page === "home",
-      isPrevVisible: this.page === "membership" && this.isMobile,
+      isPrevVisible:
+        this.page !== "home" &&
+        this.page !== "tag-search" &&
+        this.page !== "daily" &&
+        this.page !== "basket" &&
+        this.page !== "my" &&
+        this.isMobile,
       page: this.$route.name,
       headString: undefined,
     };
@@ -75,9 +81,15 @@ export default {
     $route() {
       this.page = this.$route.name;
       this.isHome = this.page === "home";
-      this.isPrevVisible = this.page === "membership" && this.isMobile;
+      this.isPrevVisible =
+        this.page !== "home" &&
+        this.page !== "tag-search" &&
+        this.page !== "daily" &&
+        this.page !== "basket" &&
+        this.page !== "my" &&
+        this.isMobile;
       switch (this.page) {
-        case "tagsearch":
+        case "tag-search":
           this.headString = "태그검색";
           break;
         case "daily":
@@ -91,6 +103,9 @@ export default {
           break;
         case "membership":
           this.headString = "멤버십";
+          break;
+        case "change-profile":
+          this.headString = "프로필 관리";
           break;
         default:
           this.headString = "";
