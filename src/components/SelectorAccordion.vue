@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import TripleCheckbox from './TripleCheckbox.vue';
-import IconBase from './IconBase.vue';
-import IconArrowNext from './icons/IconArrowNext.vue';
+import TripleCheckbox from "./TripleCheckbox.vue";
+import IconBase from "./IconBase.vue";
+import IconArrowNext from "./icons/IconArrowNext.vue";
 export default {
-  name: 'SelectorAccordion',
+  name: "SelectorAccordion",
   components: {
     IconArrowNext,
     IconBase,
@@ -59,10 +59,10 @@ details {
       }
     }
   }
-}
-.sub-tags {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  .sub-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 }
 </style>

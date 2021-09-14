@@ -1,2 +1,2 @@
 (window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0e1478"],{"7a80":function(e,n,t){"use strict";t.r(n);var a=t("7a23"),c={class:"wrap"},i=Object(a["i"])("main",null,[Object(a["i"])("h2",null,"알림")],-1);function r(e,n,t,r,u,l){return Object(a["v"])(),Object(a["e"])("div",c,[i])}var u={name:"NotiAlert"};u.render=r;n["default"]=u}}]);
-//# sourceMappingURL=chunk-2d0e1478.6361fa10.js.map
+//# sourceMappingURL=chunk-2d0e1478.06d5abda.js.map

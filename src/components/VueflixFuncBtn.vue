@@ -47,7 +47,7 @@ export default {
   width: fit-content;
   transition: 150ms ease-out;
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1024px) {
   .func-btn {
     font-size: 2em;
     padding: 1.5rem 2rem;

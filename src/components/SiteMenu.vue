@@ -18,7 +18,7 @@ export default {
     return {
       items: [
         {
-          to: "tagsearch",
+          to: "tag-search",
           item: "태그검색",
         },
         {

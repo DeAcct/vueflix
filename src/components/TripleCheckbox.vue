@@ -1,6 +1,6 @@
 <template>
   <li class="tag">
-    <label :for="label" @click="changeState">
+    <span :for="label" @click="changeState" class="label">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
@@ -11,16 +11,16 @@
         <component :is="icon.icon" :key="icon.icon"></component>
       </svg>
       <span>{{ label }}</span>
-    </label>
+    </span>
   </li>
 </template>
 
 <script>
-import IconExcluded from './icons/IconExcluded.vue';
-import IconSelected from './icons/IconSelected.vue';
-import IconNotSelected from './icons/IconNotSelected.vue';
+import IconExcluded from "./icons/IconExcluded.vue";
+import IconSelected from "./icons/IconSelected.vue";
+import IconNotSelected from "./icons/IconNotSelected.vue";
 export default {
-  name: 'TripleCheckbox',
+  name: "TripleCheckbox",
   components: {
     IconExcluded,
     IconSelected,
@@ -33,48 +33,48 @@ export default {
   },
   data() {
     return {
-      state: 'NOT',
+      state: "NOT",
       icon: this.showIcon(this.state),
     };
   },
   methods: {
     showIcon(state) {
       switch (state) {
-        case 'SELECTED':
+        case "SELECTED":
           return {
-            icon: 'IconSelected',
-            ariaChecked: 'true',
+            icon: "IconSelected",
+            ariaChecked: "true",
           };
-        case 'EXCLUDED':
+        case "EXCLUDED":
           return {
-            icon: 'IconExcluded',
-            ariaChecked: 'mixed',
+            icon: "IconExcluded",
+            ariaChecked: "mixed",
           };
         default:
           return {
-            icon: 'IconNotSelected',
-            ariaChecked: 'false',
+            icon: "IconNotSelected",
+            ariaChecked: "false",
           };
       }
     },
     changeState() {
       switch (this.icon.ariaChecked) {
-        case 'false':
+        case "false":
           this.icon = {
-            icon: 'IconSelected',
-            ariaChecked: 'true',
+            icon: "IconSelected",
+            ariaChecked: "true",
           };
           break;
-        case 'true':
+        case "true":
           this.icon = {
-            icon: 'IconExcluded',
-            ariaChecked: 'mixed',
+            icon: "IconExcluded",
+            ariaChecked: "mixed",
           };
           break;
         default:
           this.icon = {
-            icon: 'IconNotSelected',
-            ariaChecked: 'false',
+            icon: "IconNotSelected",
+            ariaChecked: "false",
           };
           break;
       }
@@ -88,7 +88,7 @@ export default {
   width: 100%;
   display: flex;
   align-items: center;
-  label {
+  .label {
     width: 100%;
     display: flex;
     align-items: center;
@@ -96,10 +96,10 @@ export default {
     .icon {
       width: 2.4rem;
       height: 2.4rem;
-      &[aria-checked='true'] {
+      &[aria-checked="true"] {
         fill: var(--toggle-true);
       }
-      &[aria-checked='mixed'] {
+      &[aria-checked="mixed"] {
         fill: var(--toggle-mixed);
       }
     }
