@@ -12,7 +12,7 @@
           class="profile-item"
           v-for="(profile, index) in profiles"
           :key="profile.name"
-          :class="{ selected: isEditMode && profile.isSelected }"
+          :class="{ selected: isDeleteMode && profile.isSelected }"
           @click="toggleSelected(index)"
         >
           <profile />
@@ -22,14 +22,15 @@
       <div
         class="btn-area"
         :class="{
-          center: isNewProfileMode || isEditMode || profiles.length > 3,
+          center: isNewProfileMode || isDeleteMode || profiles.length > 3,
         }"
       >
         <vueflix-func-btn
           class="new"
           border="1px solid var(--bg-200)"
-          v-if="!isEditMode && profiles.length <= 3"
+          v-if="!isDeleteMode && profiles.length <= 3"
           @click="newProfile"
+          ref="newBtn"
         >
           <i class="icon">
             <icon-base>
@@ -38,6 +39,16 @@
           </i>
           {{ newBtnString }}
         </vueflix-func-btn>
+
+        <vueflix-func-btn
+          class="cancel"
+          border="1px solid var(--bg-200)"
+          v-if="isDeleteMode || isNewProfileMode"
+          @click="cancel"
+        >
+          취소
+        </vueflix-func-btn>
+
         <vueflix-func-btn
           bg="var(--theme-500)"
           border="1px solid var(--theme-500)"
@@ -55,12 +66,15 @@
       </div>
       <input
         type="text"
-        v-model="newProfileName"
         v-show="isNewProfileMode"
         placeholder="새 프로필 이름을 입력하세요"
         class="profile-name-input"
-        ref="profileNameInput"
+        ref="nameInput"
+        @keyup="lengthCheck($event)"
       />
+      <span v-if="isWrongLength && isNewProfileMode" class="warning">
+        너무 길어요
+      </span>
     </div>
   </main>
 </template>
@@ -82,33 +96,28 @@ export default {
   },
   data() {
     return {
-      profiles: [
-        { name: "미야조노 카오리", isSelected: false },
-        { name: "시이나 마시로", isSelected: false },
-        { name: "짱구", isSelected: false },
-      ],
+      profiles: [{ name: "미야조노 카오리", isSelected: false }],
       notSelected: [],
       editBtnString: "편집",
       infoString: "사용할 프로필을 선택하세요",
       newBtnString: "새 프로필",
-      isEditMode: false,
-      newProfileName: "",
+      isDeleteMode: false,
+      isWrongLength: false,
       isNewProfileMode: false,
+      newProfileName: "",
     };
   },
   methods: {
     editProfile() {
-      this.isEditMode = !this.isEditMode;
-      this.editBtnString = this.isEditMode ? "삭제" : "편집";
-      this.infoString = this.isEditMode
-        ? "삭제할 프로필을 선택하세요"
-        : "사용할 프로필을 선택하세요";
-      if (!this.isEditMode && this.notSelected.length >= 1) {
+      this.isDeleteMode = true;
+      this.editBtnString = "삭제";
+      this.infoString = "삭제할 프로필을 선택하세요";
+      if (!this.isDeleteMode && this.notSelected.length >= 1) {
         this.profiles = this.notSelected;
       }
     },
     toggleSelected(index) {
-      if (this.isEditMode) {
+      if (this.isDeleteMode) {
         this.profiles[index].isSelected = !this.profiles[index].isSelected;
       }
       this.notSelected = this.profiles.filter(
@@ -116,25 +125,43 @@ export default {
       );
     },
     newProfile() {
-      this.$refs.profileNameInput.focus();
-      this.infoString = this.isNewProfileMode
-        ? "사용할 프로필을 선택하세요"
-        : "새로 만들 프로필의 이름을 입력하세요";
+      this.isNewProfileMode = true;
+      this.$refs.nameInput.focus();
+      this.infoString = "새로 만들 프로필의 이름을 입력하세요";
       if (this.profiles.length <= 3) {
-        this.isNewProfileMode = !this.isNewProfileMode;
-        this.newBtnString = this.isNewProfileMode ? "추가" : "새 프로필";
-        if (
-          !this.isNewProfileMode &&
-          this.newProfileName.length > 0 &&
-          this.newProfileName.length <= 8
-        ) {
+        this.newBtnString = "추가";
+        if (!this.isNewProfileMode && !this.isWrongLength) {
           this.profiles.push({
             name: this.newProfileName,
             isSelected: false,
           });
         }
-        this.newProfileName = "";
+      } else {
+        return;
       }
+    },
+    cancel() {
+      if (this.isDeleteMode) {
+        this.infoString = "사용할 프로필을 선택하세요";
+        this.editBtnString = "편집";
+        this.isDeleteMode = false;
+        this.profiles = this.profiles.map(profile => ({
+          ...profile,
+          isSelected: false,
+        }));
+      } else {
+        this.infoString = "사용할 프로필을 선택하세요";
+        this.newBtnString = "새 프로필";
+        this.isNewProfileMode = false;
+        this.$refs.nameInput.value = "";
+        this.newProfileName = "";
+        this.isWrongLength = false;
+      }
+    },
+    lengthCheck(e) {
+      const value = e.currentTarget.value;
+      this.newProfileName = value;
+      this.isWrongLength = value.length > 8 || value.length < 0;
     },
   },
 };
@@ -170,31 +197,25 @@ export default {
       display: flex;
       justify-content: center;
       margin-bottom: 3rem;
-      width: 16.4rem;
+      width: 100%;
       flex-wrap: wrap;
       .profile-item {
         display: flex;
         flex-direction: column;
         align-items: center;
         height: 12rem;
-        &:nth-child(2n) {
-          margin-left: 2rem;
-        }
-        &:nth-child(3),
-        &:nth-child(4) {
-          margin-top: 2rem;
+        &:not(:last-child) {
+          margin-right: 2rem;
         }
         .profile {
           border: 2px solid transparent;
           transition: 150ms ease-out;
+          width: 7.2rem;
+          margin-bottom: 1rem;
         }
         &.selected .profile {
           border-color: var(--theme-500);
         }
-      }
-      .profile {
-        width: 7.2rem;
-        margin-bottom: 1rem;
       }
       span {
         width: 5.5rem;
@@ -207,11 +228,13 @@ export default {
     }
     .btn-area {
       display: flex;
+      justify-content: center;
       width: 21rem;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-      &.center {
-        justify-content: center;
+      .func-btn {
+        transition: none;
+      }
+      button:not(:last-child) {
+        margin-right: 1rem;
       }
 
       .icon {
@@ -224,7 +247,8 @@ export default {
           height: 100%;
         }
       }
-      .new {
+      .new,
+      .cancel {
         .icon {
           color: var(--text-900);
         }
@@ -233,21 +257,73 @@ export default {
     .profile-name-input {
       width: 21rem;
       border: 1px solid var(--bg-200);
+      font-size: 1.3rem;
       border-radius: 0.3rem;
       padding: 1rem 1.5rem;
       color: var(--text-900);
+      margin-top: 1.5rem;
+      transition: 150ms ease-out;
       &:focus {
-        border-color: var(--theme-500);
+        box-shadow: 0 0.3rem 0.6rem var(--bg-200);
+      }
+    }
+    .warning {
+      color: var(--theme-500);
+      animation: 300ms ease-in-out 2 alternate shake;
+      margin-top: 0.5rem;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .change-profile {
+    padding-bottom: 0;
+    h2 {
+      font-size: 2rem;
+    }
+    .alert {
+      margin-top: 1.5rem;
+      li {
+        font-size: 1.5rem;
+        font-weight: 500;
+      }
+    }
+    .profiles {
+      .profile-items {
+        .profile-item {
+          height: 18rem;
+          .profile {
+            width: 9rem;
+          }
+        }
+        span {
+          font-size: 1.5rem;
+        }
+      }
+
+      .btn-area {
+        width: 28rem;
+        .icon {
+          width: 2.4rem;
+          height: 2.4rem;
+        }
+      }
+      .profile-name-input {
+        width: 28rem;
+        font-size: 2rem;
+        padding: 1.5rem 2rem;
       }
     }
   }
 }
-@keyframes shake-animation {
+
+@keyframes shake {
   33% {
-    transform: translateX(-2rem);
+    transform: translateX(-1rem);
   }
   66% {
-    transform: translateX(2rem);
+    transform: translateX(1rem);
   }
   100% {
     transform: translateX(0);
