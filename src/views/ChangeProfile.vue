@@ -12,23 +12,18 @@
           class="profile-item"
           v-for="(profile, index) in profiles"
           :key="profile.name"
-          :class="{ selected: isDeleteMode && profile.isSelected }"
-          @click="toggleSelected(index)"
+          :class="{ selected: isEditProfileMode && profile.isSelected }"
+          @click="toggle(index)"
         >
           <profile />
           <span>{{ profile.name }}</span>
         </li>
       </ul>
-      <div
-        class="btn-area"
-        :class="{
-          center: isNewProfileMode || isDeleteMode || profiles.length > 3,
-        }"
-      >
+      <div class="btn-area">
         <vueflix-func-btn
           class="new"
           border="1px solid var(--bg-200)"
-          v-if="!isDeleteMode && profiles.length <= 3"
+          v-if="!isEditProfileMode && profiles.length < 4"
           @click="newProfile"
           ref="newBtn"
         >
@@ -43,7 +38,7 @@
         <vueflix-func-btn
           class="cancel"
           border="1px solid var(--bg-200)"
-          v-if="isDeleteMode || isNewProfileMode"
+          v-if="isNewProfileMode || isEditProfileMode"
           @click="cancel"
         >
           취소
@@ -52,7 +47,7 @@
         <vueflix-func-btn
           bg="var(--theme-500)"
           border="1px solid var(--theme-500)"
-          v-if="!isNewProfileMode"
+          v-if="!isNewProfileMode && profiles.length > 1"
           @click="editProfile"
           textColor="var(--top-item)"
         >
@@ -67,13 +62,17 @@
       <input
         type="text"
         v-show="isNewProfileMode"
-        placeholder="새 프로필 이름을 입력하세요"
+        v-model="newProfileName"
+        @keyup="lengthCheck"
+        placeholder="새 프로필 이름"
         class="profile-name-input"
         ref="nameInput"
-        @keyup="lengthCheck($event)"
       />
-      <span v-if="isWrongLength && isNewProfileMode" class="warning">
+      <span v-if="isOverflow && isNewProfileMode" class="warning">
         너무 길어요
+      </span>
+      <span v-if="isSameName && isNewProfileMode" class="warning">
+        다른 프로필과 같은 이름이에요
       </span>
     </div>
   </main>
@@ -96,72 +95,86 @@ export default {
   },
   data() {
     return {
-      profiles: [{ name: "미야조노 카오리", isSelected: false }],
-      notSelected: [],
-      editBtnString: "편집",
       infoString: "사용할 프로필을 선택하세요",
+      profiles: [{ name: "미야조노 카오리", isSelected: false }],
+      selected: [],
+      editBtnString: "편집",
       newBtnString: "새 프로필",
-      isDeleteMode: false,
-      isWrongLength: false,
-      isNewProfileMode: false,
       newProfileName: "",
+      isNewProfileMode: false,
+      isWrongLength: true,
+      isSameName: false,
+      isOverflow: false,
+      isEditProfileMode: false,
     };
   },
   methods: {
-    editProfile() {
-      this.isDeleteMode = true;
-      this.editBtnString = "삭제";
-      this.infoString = "삭제할 프로필을 선택하세요";
-      if (!this.isDeleteMode && this.notSelected.length >= 1) {
-        this.profiles = this.notSelected;
-      }
-    },
-    toggleSelected(index) {
-      if (this.isDeleteMode) {
-        this.profiles[index].isSelected = !this.profiles[index].isSelected;
-      }
-      this.notSelected = this.profiles.filter(
-        profile => profile.isSelected === false,
-      );
-    },
     newProfile() {
-      this.isNewProfileMode = true;
+      this.isNewProfileMode = !this.isNewProfileMode;
       this.$refs.nameInput.focus();
-      this.infoString = "새로 만들 프로필의 이름을 입력하세요";
-      if (this.profiles.length <= 3) {
-        this.newBtnString = "추가";
-        if (!this.isNewProfileMode && !this.isWrongLength) {
+      this.infoString = this.isNewProfileMode
+        ? "새 프로필 이름을 입력하세요"
+        : this.infoString;
+      this.newBtnString = this.isNewProfileMode ? "추가" : "새 프로필";
+      if (!this.isNewProfileMode) {
+        this.lengthCheck();
+      }
+      if (!this.isNewProfileMode && !this.isWrongLength) {
+        this.profiles.forEach(profile => {
+          this.isSameName = profile.name === this.newProfileName;
+        });
+        if (!this.isSameName) {
           this.profiles.push({
             name: this.newProfileName,
             isSelected: false,
           });
+          this.newProfileName = "";
+        } else {
+          this.isNewProfileMode = true;
         }
-      } else {
-        return;
+      } else if (this.isWrongLength) {
+        this.isNewProfileMode = true;
       }
+    },
+    editProfile() {
+      this.isEditProfileMode = !this.isEditProfileMode;
+      this.editBtnString = this.isEditProfileMode ? "삭제" : "편집";
+      if (
+        !this.isEditProfileMode &&
+        this.profiles.length > this.selected.length
+      ) {
+        this.profiles = this.profiles.filter(profile => !profile.isSelected);
+        this.isEditProfileMode = false;
+      } else if (this.selected.length === 0) {
+        this.isEditProfileMode = true;
+      }
+    },
+    toggle(index) {
+      if (this.isEditProfileMode) {
+        this.profiles[index].isSelected = !this.profiles[index].isSelected;
+        console.log(this.profiles[index]);
+        this.selected = this.profiles.filter(profile => profile.isSelected);
+      }
+    },
+    lengthCheck() {
+      this.isOverflow = this.newProfileName.length > 8;
+      this.isWrongLength = this.isOverflow || this.newProfileName.length === 0;
     },
     cancel() {
-      if (this.isDeleteMode) {
-        this.infoString = "사용할 프로필을 선택하세요";
-        this.editBtnString = "편집";
-        this.isDeleteMode = false;
-        this.profiles = this.profiles.map(profile => ({
-          ...profile,
-          isSelected: false,
-        }));
-      } else {
+      if (this.isNewProfileMode) {
+        if (this.newProfileName) {
+          this.lengthCheck();
+        }
+        this.isNewProfileMode = false;
+        this.$refs.nameInput.blur();
+        this.newProfileName = "";
         this.infoString = "사용할 프로필을 선택하세요";
         this.newBtnString = "새 프로필";
-        this.isNewProfileMode = false;
-        this.$refs.nameInput.value = "";
-        this.newProfileName = "";
-        this.isWrongLength = false;
+        this.isSameName = false;
+      } else {
+        this.isEditProfileMode = false;
+        this.editBtnString = "편집";
       }
-    },
-    lengthCheck(e) {
-      const value = e.currentTarget.value;
-      this.newProfileName = value;
-      this.isWrongLength = value.length > 8 || value.length < 0;
     },
   },
 };

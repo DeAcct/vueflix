@@ -11,15 +11,21 @@
             <logo />
           </router-link>
         </h1>
-        <router-link class="go-back" to="/my" v-if="isPrevVisible">
+        <button
+          class="go-back"
+          @click="goBack"
+          v-if="isPrevVisible"
+          role="link"
+          id="뒤로가기"
+        >
           <icon-base iconName="뒤로가기"><icon-arrow-prev /></icon-base>
-        </router-link>
+        </button>
         <h2 v-if="isMobile && !isHome">{{ headString }}</h2>
         <site-menu v-if="!isMobile" />
       </div>
       <div class="col-right">
         <search-bar />
-        <notification />
+        <notification v-if="isHome" />
       </div>
     </div>
   </header>
