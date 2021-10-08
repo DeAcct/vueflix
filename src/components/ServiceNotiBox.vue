@@ -46,4 +46,14 @@ export default {
     }
   }
 }
+@media screen and (min-width: 1300px) {
+  .service-noti-box {
+    h2 {
+      font-size: 1.8rem;
+    }
+    .service-noti-items .service-noti-item {
+      font-size: 1.5rem;
+    }
+  }
+}
 </style>

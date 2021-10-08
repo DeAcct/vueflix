@@ -303,7 +303,9 @@ export default {
   },
   methods: {
     initAnimeList(val) {
-      const filteredList = this.dailyAnime.filter(animes => animes.day === val);
+      const filteredList = this.dailyAnime.filter(
+        (animes) => animes.day === val
+      );
       this.filteredList = filteredList[0].animes;
     },
   },

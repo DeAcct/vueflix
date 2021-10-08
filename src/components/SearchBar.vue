@@ -56,7 +56,9 @@ export default {
     },
     searchBarClose() {
       this.isOpen = false;
+      this.$refs.search.value = "";
       this.$refs.search.blur();
+      this.$refs.placeholder.textContent = "제목/제작사/감독으로 검색해보세요";
     },
     inputChange() {
       this.inputValue = this.$refs.search.value;
@@ -77,10 +79,9 @@ export default {
   display: flex;
   align-items: center;
   width: 3.6rem;
-  height: 4rem;
-  border-radius: 0.3rem;
+  height: 6rem;
   overflow: hidden;
-  transition: width 150ms ease-out;
+  position: static;
   .search-box {
     display: flex;
     align-items: center;
@@ -105,7 +106,9 @@ export default {
       }
     }
     .input-area {
+      position: absolute;
       width: 0;
+      left: 5.6rem;
       height: 3.6rem;
       font-size: 1.3rem;
     }
@@ -116,17 +119,23 @@ export default {
     }
   }
   &.open {
-    width: 30rem;
-    border: 1px solid var(--bg-200);
+    width: 100%;
+
+    position: absolute;
+    left: 0;
+    top: 0;
     .search-box {
       background-color: #fff;
       padding: 0 1rem;
+      width: 100vw;
+      height: 6rem;
       .input-area {
-        width: 23.4rem;
+        width: calc(100vw - 5.6rem);
+        padding-right: 2rem;
       }
       .placeholder {
-        width: 23.4rem;
-        left: auto;
+        width: 100%;
+        left: 5.6rem;
         right: 1rem;
       }
       .icon {
@@ -140,6 +149,33 @@ export default {
   &:hover {
     background-color: var(--theme-100);
     color: var(--theme-500);
+  }
+}
+@media screen and (min-width: 769px) {
+  .search-bar {
+    transition: width 150ms ease-out;
+    border-radius: 0.3rem;
+    height: 4rem;
+    &.open {
+      border: 1px solid var(--bg-200);
+      position: static;
+      width: 30rem;
+      .search-box {
+        width: 30rem;
+        height: 4rem;
+        background-color: #fff;
+        padding: 0 1rem;
+        .input-area {
+          position: static;
+          width: 23.4rem;
+        }
+        .placeholder {
+          width: 23.4rem;
+          left: auto;
+          right: 1rem;
+        }
+      }
+    }
   }
 }
 </style>

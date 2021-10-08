@@ -111,6 +111,14 @@ export default {
     &:not(:first-child) {
       margin-bottom: 1.5rem;
     }
+    figure .text {
+      .title {
+        font-size: 1.6rem;
+      }
+      .genre {
+        font-size: 1.4rem;
+      }
+    }
   }
 }
 </style>
