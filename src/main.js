@@ -1,5 +1,6 @@
 import { router } from "./router";
 import { createApp, nextTick } from "vue";
+import store from "./store/store";
 
 import App from "./App.vue";
 import "./registerServiceWorker";
@@ -12,4 +13,5 @@ router.afterEach((to) => {
   });
 });
 app.use(router);
+app.use(store);
 app.mount("#app");

@@ -2,7 +2,7 @@
   <section class="carousel">
     <div class="head-control">
       <h2><slot></slot></h2>
-      <day-selector @todayString="initAnimeList" v-if="isDaily" />
+      <day-selector v-if="isDaily" />
       <div class="btn-wrap">
         <button
           class="prev-btn"
@@ -26,7 +26,7 @@
       <ul class="items" :style="style">
         <template v-if="isDaily">
           <carousel-item
-            v-for="anime in filteredList"
+            v-for="anime in dailyShownList"
             :key="anime.title"
             :title="anime.title"
             :img="anime.img"
@@ -52,13 +52,13 @@
 </template>
 
 <script>
-import CarouselItem from './CarouselItem.vue';
-import IconBase from './IconBase.vue';
-import DaySelector from '../components/DaySelector.vue';
-import IconArrowNext from './icons/IconArrowNext.vue';
-import IconArrowPrev from './icons/IconArrowPrev.vue';
+import CarouselItem from "./CarouselItem.vue";
+import IconBase from "./IconBase.vue";
+import DaySelector from "../components/DaySelector.vue";
+import IconArrowNext from "./icons/IconArrowNext.vue";
+import IconArrowPrev from "./icons/IconArrowPrev.vue";
 export default {
-  name: 'Carousel',
+  name: "Carousel",
   components: {
     CarouselItem,
     IconBase,
@@ -79,8 +79,8 @@ export default {
       resolution: window.innerWidth,
       carouselNumber: 0,
       shownItems: this.resolution >= 1920 ? 7 : 4,
-      isRecent: this.type === 'recent',
-      isDaily: this.type === 'daily',
+      isRecent: this.type === "recent",
+      isDaily: this.type === "daily",
       filteredList: [],
     };
   },
@@ -103,6 +103,9 @@ export default {
     prevActive() {
       return this.carouselNumber > 0;
     },
+    dailyShownList() {
+      return this.$store.state.daily.shownList;
+    },
   },
   methods: {
     next() {
@@ -119,14 +122,34 @@ export default {
         return;
       }
     },
-    initAnimeList(val) {
-      this.carouselNumber = 0;
-      const filteredList = this.animeList.filter(animes => animes.day === val);
-      this.filteredList = filteredList[0].animes;
-    },
   },
   mounted() {
-    window.addEventListener('resize', () => {
+    const todayNumber = new Date().getDay();
+    let today;
+    switch (todayNumber) {
+      case 0:
+        today = "일";
+        break;
+      case 1:
+        today = "월";
+        break;
+      case 2:
+        today = "화";
+        break;
+      case 3:
+        today = "수";
+        break;
+      case 4:
+        today = "목";
+        break;
+      case 5:
+        today = "금";
+        break;
+      default:
+        today = "토";
+    }
+    this.$store.commit("daily/changeAnime", today);
+    window.addEventListener("resize", () => {
       this.resolution = window.innerWidth;
       this.shownItems = this.resolution >= 1920 ? 7 : 4;
       this.carouselNumber = 0;

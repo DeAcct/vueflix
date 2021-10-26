@@ -1,13 +1,13 @@
 module.exports = {
   outputDir: "./docs",
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     config.module
       .rule("vue")
       .use("vue-loader")
-      .tap(options => {
+      .tap((options) => {
         options.compilerOptions = {
           ...options.compilerOptions,
-          isCustomElement: tag => tag.startsWith("ion-"),
+          isCustomElement: (tag) => tag.startsWith("ion-"),
         };
         return options;
       });

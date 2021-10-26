@@ -28,7 +28,7 @@ export default {
   methods: {
     dayBtnClick(e) {
       this.selectedDay = e.target.textContent;
-      this.$emit("todayString", this.selectedDay);
+      this.$store.commit("daily/changeAnime", this.selectedDay);
     },
     getTodayString() {
       switch (new Date().getDay()) {
@@ -48,9 +48,6 @@ export default {
           return "토";
       }
     },
-  },
-  mounted() {
-    this.$emit("todayString", this.selectedDay);
   },
 };
 </script>
