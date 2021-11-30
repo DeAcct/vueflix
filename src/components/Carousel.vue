@@ -2,7 +2,7 @@
   <section class="carousel">
     <div class="head-control">
       <h2><slot></slot></h2>
-      <day-selector v-if="isDaily" />
+      <day-selector v-if="isDaily" @dayBtnClick="dailyReset" />
       <div class="btn-wrap">
         <button
           class="prev-btn"
@@ -81,7 +81,6 @@ export default {
       shownItems: this.resolution >= 1920 ? 7 : 4,
       isRecent: this.type === "recent",
       isDaily: this.type === "daily",
-      filteredList: [],
     };
   },
   computed: {
@@ -92,7 +91,9 @@ export default {
     },
     carouselLimit() {
       if (this.isDaily) {
-        return Math.floor(this.filteredList.length / this.shownItems);
+        return Math.floor(
+          this.$store.state.daily.shownList.length / this.shownItems
+        );
       } else {
         return Math.floor(this.animeList.length / this.shownItems);
       }
@@ -111,44 +112,18 @@ export default {
     next() {
       if (this.nextActive) {
         this.carouselNumber++;
-      } else {
-        return;
       }
     },
     prev() {
       if (this.prevActive) {
         this.carouselNumber--;
-      } else {
-        return;
       }
+    },
+    dailyReset() {
+      this.carouselNumber = 0;
     },
   },
   mounted() {
-    const todayNumber = new Date().getDay();
-    let today;
-    switch (todayNumber) {
-      case 0:
-        today = "일";
-        break;
-      case 1:
-        today = "월";
-        break;
-      case 2:
-        today = "화";
-        break;
-      case 3:
-        today = "수";
-        break;
-      case 4:
-        today = "목";
-        break;
-      case 5:
-        today = "금";
-        break;
-      default:
-        today = "토";
-    }
-    this.$store.commit("daily/changeAnime", today);
     window.addEventListener("resize", () => {
       this.resolution = window.innerWidth;
       this.shownItems = this.resolution >= 1920 ? 7 : 4;

@@ -22,32 +22,43 @@ export default {
   data() {
     return {
       days: ["월", "화", "수", "목", "금", "토", "일"],
-      selectedDay: this.getTodayString(),
+      selectedDay: undefined,
     };
   },
   methods: {
     dayBtnClick(e) {
       this.selectedDay = e.target.textContent;
+      this.$emit("dayBtnClick");
       this.$store.commit("daily/changeAnime", this.selectedDay);
     },
-    getTodayString() {
-      switch (new Date().getDay()) {
-        case 0:
-          return "일";
-        case 1:
-          return "월";
-        case 2:
-          return "화";
-        case 3:
-          return "수";
-        case 4:
-          return "목";
-        case 5:
-          return "금";
-        default:
-          return "토";
-      }
-    },
+  },
+  mounted() {
+    const todayNumber = new Date().getDay();
+    let today;
+    switch (todayNumber) {
+      case 0:
+        today = "일";
+        break;
+      case 1:
+        today = "월";
+        break;
+      case 2:
+        today = "화";
+        break;
+      case 3:
+        today = "수";
+        break;
+      case 4:
+        today = "목";
+        break;
+      case 5:
+        today = "금";
+        break;
+      default:
+        today = "토";
+    }
+    this.selectedDay = today;
+    this.$store.commit("daily/changeAnime", today);
   },
 };
 </script>

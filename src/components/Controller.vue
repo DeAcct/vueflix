@@ -345,6 +345,7 @@ export default {
 @media screen and (min-width: 769px) {
   .controller {
     padding: 0 4.7rem 0;
+    bottom: auto;
     .top-row {
       padding-top: 3rem;
       .swipe-indi {

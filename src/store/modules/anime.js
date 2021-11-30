@@ -49,6 +49,73 @@ const state = {
       progress: "95%",
     },
   ],
+  recommendAnime: [
+    {
+      recommendTitle: "방황하는 이 시대의 청춘들에게 바칩니다",
+      list: [
+        {
+          title: "4월은 너의 거짓말",
+          img: require("@/assets/carousel_thumbnail_kimiuso.jpg"),
+          url: "#none",
+        },
+        {
+          title: "SHIROBAKO",
+          img: require("@/assets/carousel_thumbnail_shirobako.jpg"),
+          url: "#none",
+        },
+        {
+          title: "청춘 돼지는 바니걸 선배의 꿈을 꾸지 않는다",
+          img: require("@/assets/carousel_thumbnail_butayarou.jpg"),
+          url: "#none",
+        },
+        {
+          title: "역시 내 청춘 러브코미디는 잘못됐다",
+          img: require("@/assets/carousel_thumbnail_necheongko_title.jpg"),
+          url: "#none",
+        },
+        {
+          title: "후르츠 바스켓 1기",
+          img: require("@/assets/carousel_thumbnail_fruitbasket.webp"),
+          url: "#none",
+        },
+        {
+          title: "바라카몬",
+          img: require("@/assets/carousel_thumbnail_barakamon.webp"),
+          url: "#none",
+        },
+      ],
+    },
+    {
+      recommendTitle: "가슴이 웅장해지는 메카닉",
+      list: [
+        {
+          title: "SSSS.GRIDMAN",
+          img: require("@/assets/carousel_thumbnail_gridman.webp"),
+          url: "#none",
+        },
+        {
+          title: "플래닛 위드",
+          img: require("@/assets/carousel_thumbnail_planetwith.webp"),
+          url: "#none",
+        },
+        {
+          title: "기동전사 건담 디 오리진 1 : 푸른 눈의 캬스발",
+          img: require("@/assets/carousel_thumbnail_gundam.webp"),
+          url: "#none",
+        },
+        {
+          title: "달링 인 더 프랑키스",
+          img: require("@/assets/carousel_thumbnail_dalinginthefranxx.webp"),
+          url: "#none",
+        },
+        {
+          title: "(무삭제) 미소의 대가",
+          img: require("@/assets/carousel_thumbnail_smile.webp"),
+          url: "#none",
+        },
+      ],
+    },
+  ],
 };
 
 export default {

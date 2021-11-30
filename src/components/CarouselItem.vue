@@ -88,6 +88,7 @@ export default {
   }
   .thumbnail {
     position: relative;
+    display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -96,15 +97,11 @@ export default {
     overflow: hidden;
     transition: 150ms ease-out;
     .thumbnail-play-btn {
-      position: absolute;
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 3;
       width: 4rem;
       height: 4rem;
-      left: calc(27.5vw - 2rem);
-      top: calc(27.5vw * 9 / 16 - 2rem);
       border-radius: 50%;
       background-color: rgba(0, 0, 0, 0.5);
       color: #fff;
@@ -117,7 +114,7 @@ export default {
       z-index: 3;
       left: 0.8rem;
       bottom: 0.8rem;
-      width: calc(55vw - 1.6rem);
+      width: calc(100% - 1.6rem);
       height: 0.5rem;
       border-radius: 0.2rem;
       background-color: var(--bg-300);
@@ -141,29 +138,24 @@ export default {
       font-size: 1.1rem;
       display: flex;
       justify-content: space-between;
-      flex: 1;
-      span,
-      strong {
-        line-height: 1.3;
+      width: 100%;
+      .text {
         font-size: 1.3rem;
         color: inherit;
         display: block;
-      }
-      span {
-        font-weight: 500;
-        margin-bottom: 0.3rem;
-      }
-      &:focus {
-        span,
-        strong {
-          color: var(--theme-500);
+        width: 80%;
+        span {
+          font-weight: 500;
+          line-height: 1.3;
+          display: block;
+          margin-bottom: 0.3rem;
         }
       }
       .description-info-btn {
         display: block;
         width: 2rem;
         height: 2rem;
-        margin-right: 0.5rem;
+        min-width: 2rem;
         color: var(--bg-500);
         svg {
           width: 100%;
@@ -182,15 +174,13 @@ export default {
       .thumbnail-play-btn {
         width: 5rem;
         height: 5rem;
-        left: calc(16vw - 2.5rem);
-        top: calc(16vw * 9 / 16 - 2.5rem);
         svg {
           width: 3rem;
           height: 3rem;
         }
       }
       .progress-bar {
-        width: calc(32vw - 2rem);
+        width: calc(100% - 2rem);
         left: 1rem;
         bottom: 1rem;
       }
@@ -216,15 +206,13 @@ export default {
       .thumbnail-play-btn {
         width: 7rem;
         height: 7rem;
-        left: calc(14vw - 3.5rem);
-        top: calc(14vw * 9 / 16 - 3.5rem);
         svg {
           width: 4rem;
           height: 4rem;
         }
       }
       .progress-bar {
-        width: calc(28vw - 3rem);
+        width: calc(100% - 3rem);
         bottom: 1.5rem;
         left: 1.5rem;
       }
@@ -250,15 +238,13 @@ export default {
     .thumbnail {
       height: calc(15vw / 16 * 9);
       .thumbnail-play-btn {
-        left: calc(7.5vw - 3.5rem);
-        top: calc(7.5vw * 9 / 16 - 3.5rem);
         svg {
           width: 4rem;
           height: 4rem;
         }
       }
       .progress-bar {
-        width: calc(15vw - 3rem);
+        width: calc(100% - 3rem);
         bottom: 1.5rem;
         left: 1.5rem;
       }

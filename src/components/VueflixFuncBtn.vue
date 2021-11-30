@@ -1,5 +1,5 @@
 <template>
-  <button class="func-btn" :style="style">
+  <button class="func-btn" :style="style" :type="type">
     <slot></slot>
   </button>
 </template>
@@ -19,6 +19,10 @@ export default {
     border: {
       type: String,
       default: "none",
+    },
+    type: {
+      type: String,
+      default: "button",
     },
   },
   data() {

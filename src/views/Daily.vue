@@ -52,31 +52,6 @@ export default {
     },
   },
   mounted() {
-    const todayNumber = new Date().getDay();
-    let today;
-    switch (todayNumber) {
-      case 0:
-        today = "일";
-        break;
-      case 1:
-        today = "월";
-        break;
-      case 2:
-        today = "화";
-        break;
-      case 3:
-        today = "수";
-        break;
-      case 4:
-        today = "목";
-        break;
-      case 5:
-        today = "금";
-        break;
-      default:
-        today = "토";
-    }
-    this.$store.commit("daily/changeAnime", today);
     window.addEventListener("resize", () => {
       this.resolution = window.innerWidth;
       this.shownItems = this.resolution >= 1920 ? 7 : 4;

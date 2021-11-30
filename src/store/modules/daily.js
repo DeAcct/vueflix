@@ -227,7 +227,7 @@ const state = {
       animes: [
         {
           title:
-            "여성향 게임의 파멸 플래그밖에 없는 악역 영애로 환생해버렸다@. X",
+            "여성향 게임의 파멸 플래그밖에 없는 악역 영애로 환생해버렸다... X",
           img: require("@/assets/carousel_thumbnail_hamehura.webp"),
           url: "#none",
           genre: "판타지 / 개그",

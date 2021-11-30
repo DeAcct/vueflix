@@ -6,7 +6,7 @@
       <li>최소 1개의 프로필이 있어야 해요.</li>
       <li>닉네임은 8글자보다 짧아야 해요.</li>
     </ul>
-    <div class="profiles">
+    <form class="profiles" @submit.prevent="newProfile">
       <ul class="profile-items">
         <li
           class="profile-item"
@@ -26,6 +26,7 @@
           v-if="!isEditProfileMode && profiles.length < 4"
           @click="newProfile"
           ref="newBtn"
+          type="button"
         >
           <i class="icon">
             <icon-base>
@@ -40,6 +41,7 @@
           border="1px solid var(--bg-200)"
           v-if="isNewProfileMode || isEditProfileMode"
           @click="cancel"
+          type="button"
         >
           취소
         </vueflix-func-btn>
@@ -74,7 +76,7 @@
       <span v-if="isSameName && isNewProfileMode" class="warning">
         다른 프로필과 같은 이름이에요
       </span>
-    </div>
+    </form>
   </main>
 </template>
 
@@ -111,7 +113,6 @@ export default {
   methods: {
     newProfile() {
       this.isNewProfileMode = !this.isNewProfileMode;
-      this.$refs.nameInput.focus();
       this.infoString = this.isNewProfileMode
         ? "새 프로필 이름을 입력하세요"
         : this.infoString;
@@ -120,7 +121,7 @@ export default {
         this.lengthCheck();
       }
       if (!this.isNewProfileMode && !this.isWrongLength) {
-        this.profiles.forEach(profile => {
+        this.profiles.forEach((profile) => {
           this.isSameName = profile.name === this.newProfileName;
         });
         if (!this.isSameName) {
@@ -143,17 +144,15 @@ export default {
         !this.isEditProfileMode &&
         this.profiles.length > this.selected.length
       ) {
-        this.profiles = this.profiles.filter(profile => !profile.isSelected);
+        this.profiles = this.profiles.filter((profile) => !profile.isSelected);
         this.isEditProfileMode = false;
-      } else if (this.selected.length === 0) {
-        this.isEditProfileMode = true;
       }
     },
     toggle(index) {
       if (this.isEditProfileMode) {
         this.profiles[index].isSelected = !this.profiles[index].isSelected;
         console.log(this.profiles[index]);
-        this.selected = this.profiles.filter(profile => profile.isSelected);
+        this.selected = this.profiles.filter((profile) => profile.isSelected);
       }
     },
     lengthCheck() {

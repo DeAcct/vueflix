@@ -8,15 +8,13 @@
     role="presentation"
   >
     <title lang="ko">{{ iconName }}</title>
-    <g class="holder">
-      <slot></slot>
-    </g>
+    <slot></slot>
   </svg>
 </template>
 
 <script>
 export default {
-  name: 'IconBase',
+  name: "IconBase",
   props: {
     iconName: {
       type: String,
@@ -31,7 +29,7 @@ export default {
     },
     iconColor: {
       type: String,
-      default: 'currentColor',
+      default: "currentColor",
     },
   },
 };
