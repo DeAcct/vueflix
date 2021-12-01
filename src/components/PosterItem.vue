@@ -37,7 +37,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .poster-item {
-  width: calc((100% - 2rem) / 3);
   figure {
     display: flex;
     flex-direction: column;
@@ -84,7 +83,6 @@ export default {
 }
 @media screen and (min-width: 768px) {
   .poster-item {
-    width: calc((100% - 3rem) / 4);
     figure {
       .img {
         height: calc((100vw - 13rem) / 4 * 1.3);
@@ -97,7 +95,6 @@ export default {
 }
 @media screen and (min-width: 769px) {
   .poster-item {
-    width: calc((100% - 2rem) / 3);
     figure .img {
       height: calc((100vw - 52rem) / 3 * 1.3);
     }
@@ -105,7 +102,6 @@ export default {
 }
 @media screen and (min-width: 1300px) {
   .poster-item {
-    width: calc((100% - 3rem) / 4);
     figure {
       .img {
         height: calc((100vw - 53rem) / 4 * 1.3);
@@ -118,7 +114,6 @@ export default {
 }
 @media screen and (min-width: 1920px) {
   .poster-item {
-    width: calc((100% - 4rem) / 5);
     figure .img {
       height: calc((100vw - 54rem) / 5 * 1.3);
     }

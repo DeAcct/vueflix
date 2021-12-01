@@ -32,33 +32,36 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.basket {
-  .result-number {
-    font-size: 1.3rem;
-  }
-  .basket-items {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding-top: 1.5rem;
-    .basket-item {
-      width: calc((100% - 1rem) / 2);
-      margin: {
-        right: 0;
-        bottom: 2.3rem;
-      }
-    }
+.result-number {
+  font-size: 1.3rem;
+}
+.basket-items {
+  margin-top: 1.5rem;
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-flow: row dense;
+  gap: 2rem 1rem;
+  .basket-item {
+    width: auto;
+    margin: 0;
   }
 }
 
 @media screen and (min-width: 768px) {
-  .basket {
-    .result-number {
-      font-size: 1.5rem;
-    }
-    .basket-items .basket-item {
-      width: calc((100% - 2rem) / 3);
-    }
+  .result-number {
+    font-size: 1.5rem;
+  }
+  .basket-items {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media screen and (min-width: 1024px) {
+  .result-number {
+    font-size: 2rem;
+  }
+  .basket-items {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 </style>

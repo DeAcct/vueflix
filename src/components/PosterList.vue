@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import PosterItem from './PosterItem.vue';
+import PosterItem from "./PosterItem.vue";
 export default {
-  name: 'PosterList',
+  name: "PosterList",
   components: {
     PosterItem,
   },
@@ -22,15 +22,20 @@ export default {
 </script>
 <style lang="scss" scoped>
 .poster-list {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-flow: row dense;
   gap: 2rem 1rem;
-  flex-wrap: wrap;
 }
-@media screen and (min-width: 769px) {
+@media screen and (min-width: 1300px) {
   .poster-list {
-    display: flex;
-    row-gap: 3rem;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem 1.5rem;
+  }
+}
+@media screen and (min-width: 1920px) {
+  .poster-list {
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 </style>

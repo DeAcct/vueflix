@@ -50,6 +50,7 @@ export default {
     position: fixed;
     z-index: 25;
     top: 6rem;
+    max-width: 1024px;
   }
   .fade-enter-active,
   .fade-leave-active {
@@ -59,6 +60,19 @@ export default {
   .fade-leave-to {
     opacity: 0;
     transform: translateY(-2rem);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .basket {
+    padding-top: 14rem;
+    .basket-tab-menu {
+      width: calc(100% - var(--inner-padding) * 2);
+      left: 50%;
+      transform: translateX(-50%);
+      top: 8rem;
+      border-bottom: none;
+    }
   }
 }
 </style>

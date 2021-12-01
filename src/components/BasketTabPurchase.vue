@@ -1,7 +1,7 @@
 <template>
   <div class="inner result">
     <strong class="guide-text">
-      판권이 만료되도 볼 수 있도록 결제한 작품이 아직 없어요
+      판권이 만료되어도 볼 수 있도록 결제한 작품이 아직 없어요
     </strong>
   </div>
 </template>

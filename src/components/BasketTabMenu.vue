@@ -53,6 +53,7 @@ export default {
   .tab-item {
     border-bottom: 0.1rem solid transparent;
     transition: border-bottom-color 100ms ease-out;
+
     &--selected {
       color: var(--theme-500);
       border-bottom-color: var(--theme-500);
@@ -60,6 +61,35 @@ export default {
 
     .func-btn {
       padding: 1.5rem 0 1.4rem;
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .basket-tab-menu {
+    background-color: transparent;
+    padding: 0;
+    justify-content: space-around;
+    .tab-item {
+      border: none;
+      border-radius: 30rem;
+      transition: background-color 150ms ease-out;
+
+      &--selected {
+        color: var(--top-item);
+        background-color: var(--theme-500);
+      }
+
+      &:not(.tab-item--selected):hover {
+        background-color: var(--bg-200);
+      }
+      &:focus {
+        background-color: var(--bg-200);
+      }
+
+      .func-btn {
+        padding: 1rem 1.5rem;
+      }
     }
   }
 }
