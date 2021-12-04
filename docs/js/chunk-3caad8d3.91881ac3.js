@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-3caad8d3"],{"8bb8":function(n,t,e){"use strict";e("e801")},"8c21":function(n,t,e){"use strict";e.r(t);var c=e("7a23");function a(n,t,e,a,u,i){return Object(c["z"])(),Object(c["g"])("div",null,Object(c["K"])(n.$route.params.id),1)}var u={name:"anime",mounted:function(){document.title=this.$route.params.id}},i=(e("8bb8"),e("6b0d")),o=e.n(i);const d=o()(u,[["render",a],["__scopeId","data-v-6561e04c"]]);t["default"]=d},e801:function(n,t,e){}}]);
-//# sourceMappingURL=chunk-3caad8d3.91881ac3.js.map
