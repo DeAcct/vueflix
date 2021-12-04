@@ -74,17 +74,7 @@ export default {
     goBack() {
       return this.$router.go(-1);
     },
-  },
-  created() {
-    window.addEventListener("scroll", this.handleScroll);
-    window.addEventListener("resize", this.checkResolution);
-  },
-  unmounted() {
-    window.removeEventListener("scroll", this.handleScroll);
-    window.removeEventListener("resize", this.checkResolution);
-  },
-  watch: {
-    $route() {
+    init() {
       this.page = this.$route.name;
       this.isHome = this.page === "home";
       this.isPrevVisible =
@@ -116,6 +106,22 @@ export default {
         default:
           this.headString = "";
       }
+    },
+  },
+  mounted() {
+    this.init();
+  },
+  created() {
+    window.addEventListener("scroll", this.handleScroll);
+    window.addEventListener("resize", this.checkResolution);
+  },
+  unmounted() {
+    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("resize", this.checkResolution);
+  },
+  watch: {
+    $route() {
+      this.init();
     },
   },
 };

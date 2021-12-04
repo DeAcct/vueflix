@@ -12,9 +12,12 @@ const routes = [
     component: () => import("@/views/Home"),
     meta: {
       title: "뷰플릭스 - 합법적 애니 스트리밍",
-      description:
-        "당당하게 애니 볼 땐, 뷰플릭스! 고전 명작부터 이번 분기 화제작까지 모든 애니를 고화질로 스트리밍할 수 있는 곳은 이곳 뿐.",
     },
+  },
+  {
+    path: "/anime/:id",
+    name: "anime",
+    component: () => import("@/views/Anime"),
   },
   {
     path: "/tag-search",

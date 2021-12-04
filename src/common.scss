@@ -135,6 +135,9 @@ summary {
 .line-break {
   display: block;
 }
+#app {
+  overflow: hidden;
+}
 
 @media screen and (min-width: 768px) {
   :root {

@@ -58,6 +58,7 @@ import SwiperCore, {
 } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper-bundle.min.css";
+import { mapState } from "vuex";
 
 // install Swiper modules
 SwiperCore.use([Autoplay, Pagination, A11y, Navigation, EffectFade]);
@@ -71,82 +72,12 @@ export default {
   },
   data() {
     return {
-      slides: [
-        {
-          anime: "코바야시네 메이드래곤 S",
-          bgSet: {
-            webp: require("../assets/kobayashi_banner.webp"),
-            jpeg: require("../assets/kobayashi_banner.jpeg"),
-            webpMobile: require("../assets/kobayashi_banner_m.webp"),
-            jpegMobile: require("../assets/kobayashi_banner_m.jpeg"),
-          },
-          aniLogo: require("../assets/kobayashi.png"),
-          /*
-           서버가 아닌 로컬의 이미지 로고를 바인딩할 때는,
-           경로만 넣을 경우 "경로 텍스트 그 자체"가 꽂히게 된다.
-           require를 넣으면 바르게 들어간다
-          */
-          copy: "다시 돌아온 일상물 다크호스",
-          button: "보러가기",
-          link: "#none",
-        },
-        {
-          anime: "사신 도련님과 검은 메이드",
-          bgSet: {
-            webp: require("../assets/blackmaid_banner.webp"),
-            jpeg: require("../assets/blackmaid_banner.jpeg"),
-            webpMobile: require("../assets/blackmaid_banner_m.webp"),
-            jpegMobile: require("../assets/blackmaid_banner_m.jpeg"),
-          },
-          aniLogo: require("../assets/blackmaid.png"),
-          copy: "사회적 거리두기의 모범",
-          button: "보러가기",
-          link: "#none",
-        },
-        {
-          anime: "하얀 모래의 아쿠아톱",
-          bgSet: {
-            webp: require("../assets/aquatop_banner.webp"),
-            jpeg: require("../assets/aquatop_banner.jpeg"),
-            webpMobile: require("../assets/aquatop_banner_m.webp"),
-            jpegMobile: require("../assets/aquatop_banner_m.jpeg"),
-          },
-          aniLogo: require("../assets/aquatop.png"),
-          copy: "방구석 바캉스",
-          button: "보러가기",
-          link: "#none",
-        },
-        {
-          anime: "그녀도 여친",
-          bgSet: {
-            webp: require("../assets/kanokano_banner.webp"),
-            jpeg: require("../assets/kanokano_banner.jpeg"),
-            webpMobile: require("../assets/kanokano_banner_m.webp"),
-            jpegMobile: require("../assets/kanokano_banner_m.jpeg"),
-          },
-          aniLogo: require("../assets/kanokano.png"),
-          copy: "뇌를 정지합니다. 정지하겠습니다.",
-          button: "보러가기",
-          link: "#none",
-        },
-        {
-          anime: "우리들의 리메이크",
-          bgSet: {
-            webp: require("../assets/bokutachi_banner.webp"),
-            jpeg: require("../assets/bokutachi_banner.jpeg"),
-            webpMobile: require("../assets/bokutachi_banner_m.webp"),
-            jpegMobile: require("../assets/bokutachi_banner_m.jpeg"),
-          },
-          aniLogo: require("../assets/bokutachi.png"),
-          copy: "10년 전으로 돌아간다면",
-          button: "보러가기",
-          link: "#none",
-        },
-      ],
       currentImg: 0,
-      slide: undefined,
     };
   },
+  computed: mapState({
+    slides: (state) => state.anime.slides,
+  }),
 };
 </script>
 
