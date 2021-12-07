@@ -10,18 +10,18 @@
       <button class="overflow-btn" title="더보기 메뉴"></button>
     </div>
     <div class="anime-info">
-      <div class="poster loading-target">
+      <div :class="['poster', 'loading-target', { 'poster--loaded': poster }]">
         <img :src="poster" :alt="`${title} 포스터`" />
       </div>
       <div class="col-right">
-        <div>
-          <p
-            :class="[
-              'sub-info',
-              'loading-target',
-              { 'sub-info--loaded': type && rating },
-            ]"
-          >
+        <div
+          :class="[
+            'row-top',
+            'loading-target',
+            { 'row-top--loaded': type && rating && title },
+          ]"
+        >
+          <p class="sub-info">
             <span class="division-pipe">
               {{ type }}
             </span>
@@ -32,14 +32,18 @@
               {{ isEnd ? "완결" : "방영중" }}
             </span>
           </p>
-          <h2 :class="['title', 'loading-target', { 'title--loaded': title }]">
+          <h2 class="title">
             {{ title }}
           </h2>
         </div>
-        <div>
-          <ul
-            :class="['genres', 'loading-target', { 'genres--loaded': genres }]"
-          >
+        <div
+          :class="[
+            'row-bottom',
+            'loading-target',
+            { 'row-bottom--loaded': genres && starRatingAvg },
+          ]"
+        >
+          <ul class="genres">
             <li
               v-for="genre in genres"
               :key="genre"
@@ -48,15 +52,7 @@
               {{ genre }}
             </li>
           </ul>
-          <p
-            :class="[
-              'star-rating',
-              'loading-target',
-              { 'star-rating--loaded': starRatingAvg },
-            ]"
-          >
-            별점 {{ starRatingAvg }}
-          </p>
+          <p class="star-rating">별점 {{ starRatingAvg }}</p>
         </div>
       </div>
     </div>
@@ -166,12 +162,16 @@ export default {
       width: 7.5rem;
       height: calc(7.5rem / 3 * 4);
       overflow: hidden;
-
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         font-size: 0.1rem;
+        opacity: 0;
+        transition: opacity 150ms ease-out;
+      }
+      &--loaded img {
+        opacity: 1;
       }
     }
     .col-right {
@@ -179,6 +179,18 @@ export default {
       flex-direction: column;
       justify-content: space-between;
       margin-left: 1rem;
+      .row-top {
+        color: transparent;
+        width: 45vw;
+        height: 4rem;
+        transition: 150ms ease-out;
+        &--loaded {
+          width: auto;
+          color: var(--top-item);
+          background: transparent;
+          animation: none;
+        }
+      }
       .division-pipe {
         color: inherit;
         font-size: 1.2rem;
@@ -191,46 +203,39 @@ export default {
       .sub-info {
         display: flex;
         align-items: center;
-        color: transparent;
-        &--loaded {
-          color: var(--top-item);
-          animation: none;
-          background: transparent;
-        }
+        color: inherit;
       }
       .title {
-        color: transparent;
+        color: inherit;
         font-size: 1.7rem;
         margin-top: 0.7rem;
+      }
+      .row-bottom {
+        color: transparent;
+        transition: 150ms ease-out;
+        width: 5rem;
+        height: 3rem;
         &--loaded {
           color: var(--top-item);
-          animation: none;
+          width: auto;
+          height: auto;
           background: transparent;
+          animation: none;
         }
       }
       .genres {
         display: flex;
         align-items: center;
-        color: transparent;
+        color: inherit;
         .genre {
           color: inherit;
           font-size: 1.1rem;
         }
-        &--loaded {
-          background: transparent;
-          animation: none;
-          color: var(--top-item);
-        }
       }
       .star-rating {
-        color: transparent;
+        color: inherit;
         font-size: 1.1rem;
         margin-top: 0.7rem;
-        &--loaded {
-          background: transparent;
-          animation: none;
-          color: var(--top-item);
-        }
       }
     }
   }
