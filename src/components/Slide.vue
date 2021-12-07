@@ -16,39 +16,37 @@
         :key="slide.anime"
         class="slide-item"
       >
-        <div class="bg">
-          <picture>
-            <source
-              media="(max-width: 1024px)"
-              :srcset="slide.bgSet.webpMobile"
-            />
-            <source
-              media="(max-width: 1024px)"
-              :srcset="slide.bgSet.jpegMobile"
-            />
-            <source media="(min-width: 1025px)" :srcset="slide.bgSet.webp" />
-            <img
-              :src="slide.bgSet.jpeg"
-              :alt="`${slide.anime} 배너`"
-              class="bgPlace"
-            />
-          </picture>
-        </div>
-        <div class="slide-info">
-          <h3>
-            <img :src="slide.aniLogo" :alt="slide.anime" class="ani-logo" />
-          </h3>
-          <strong class="slide-copy">{{ slide.copy }}</strong>
-          <vueflix-route-btn :link="slide.link">{{
-            slide.button
-          }}</vueflix-route-btn>
-        </div>
+        <router-link :to="slide.link">
+          <div class="bg">
+            <picture>
+              <source
+                media="(max-width: 1024px)"
+                :srcset="slide.bgSet.webpMobile"
+              />
+              <source
+                media="(max-width: 1024px)"
+                :srcset="slide.bgSet.jpegMobile"
+              />
+              <source media="(min-width: 1025px)" :srcset="slide.bgSet.webp" />
+              <img
+                :src="slide.bgSet.jpeg"
+                :alt="`${slide.anime} 배너`"
+                class="bgPlace"
+              />
+            </picture>
+          </div>
+          <div class="slide-info">
+            <h3>
+              <img :src="slide.aniLogo" :alt="slide.anime" class="ani-logo" />
+            </h3>
+            <strong class="slide-copy">{{ slide.copy }}</strong>
+          </div>
+        </router-link>
       </swiper-slide>
     </swiper>
   </section>
 </template>
 <script>
-import VueflixRouteBtn from "./VueflixRouteBtn.vue";
 import SwiperCore, {
   Autoplay,
   Pagination,
@@ -68,7 +66,6 @@ export default {
   components: {
     Swiper,
     SwiperSlide,
-    VueflixRouteBtn,
   },
   data() {
     return {

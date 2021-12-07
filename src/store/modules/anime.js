@@ -132,7 +132,6 @@ const state = {
        require를 넣으면 바르게 들어간다
       */
       copy: "다시 돌아온 일상물 다크호스",
-      button: "보러가기",
       link: "/anime/코바야시네 메이드래곤 S",
     },
     {
@@ -145,7 +144,6 @@ const state = {
       },
       aniLogo: require("@/assets/blackmaid.png"),
       copy: "사회적 거리두기의 모범",
-      button: "보러가기",
       link: "/anime/사신 도련님과 검은 메이드",
     },
     {
@@ -158,7 +156,6 @@ const state = {
       },
       aniLogo: require("@/assets/aquatop.png"),
       copy: "방구석 바캉스인 줄 알았더니 미생 애니판",
-      button: "보러가기",
       link: "/anime/하얀 모래의 아쿠아톱 part 1",
     },
     {
@@ -171,7 +168,6 @@ const state = {
       },
       aniLogo: require("@/assets/kanokano.png"),
       copy: "뇌를 정지합니다! 정지하겠습니다!",
-      button: "보러가기",
       link: "/anime/그녀도 여친",
     },
     {
@@ -184,7 +180,6 @@ const state = {
       },
       aniLogo: require("@/assets/bokutachi.png"),
       copy: "10년 전으로 돌아간다면",
-      button: "보러가기",
       link: "/anime/우리들의 리메이크",
     },
   ],

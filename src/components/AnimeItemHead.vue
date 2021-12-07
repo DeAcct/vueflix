@@ -1,7 +1,7 @@
 <template>
   <div class="anime-item-head inner">
     <h1 class="blind">뷰플릭스</h1>
-    <div class="navigation">
+    <div class="navigation" v-if="isMobile">
       <button class="back" @click="goBack">
         <icon-base iconName="뒤로가기">
           <icon-arrow-prev></icon-arrow-prev>
@@ -111,10 +111,17 @@ export default {
       type: Number,
     },
   },
+  created() {
+    window.addEventListener("resize", this.checkResolution);
+  },
+  unmounted() {
+    window.removeEventListener("resize", this.checkResolution);
+  },
   data() {
     return {
       wannaSeeBool: false,
       starRatingBool: false,
+      isMobile: window.innerWidth <= 768,
     };
   },
   methods: {
@@ -126,6 +133,9 @@ export default {
     },
     starRatingToggle() {
       this.starRatingBool = !this.starRatingBool;
+    },
+    checkResolution() {
+      this.isMobile = window.innerWidth <= 768;
     },
   },
 };
@@ -159,6 +169,8 @@ export default {
 
       img {
         width: 100%;
+        height: 100%;
+        object-fit: cover;
         font-size: 0.1rem;
       }
     }
@@ -187,12 +199,10 @@ export default {
         }
       }
       .title {
-        width: 10rem;
         color: transparent;
         font-size: 1.7rem;
         margin-top: 0.7rem;
         &--loaded {
-          width: auto;
           color: var(--top-item);
           animation: none;
           background: transparent;

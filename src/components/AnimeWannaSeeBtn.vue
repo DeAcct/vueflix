@@ -28,6 +28,7 @@ export default {
 
 <style lang="scss" scoped>
 .anime-interact-btn {
+  user-select: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,11 +45,11 @@ export default {
     margin-bottom: 0.1rem;
   }
   &:active {
-    opacity: 0.8;
+    opacity: 0.6;
   }
   &--on .icon {
-    color: var(--theme-500);
-    stroke: var(--theme-500);
+    color: var(--anime-wanna-see-icon);
+    stroke: var(--anime-wanna-see-icon);
   }
 }
 </style>
