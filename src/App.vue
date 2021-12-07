@@ -32,13 +32,15 @@ export default {
     });
   },
   watch: {
-    $route(to) {
+    $route(to, from) {
       this.page = this.$route.name;
       this.isBottomTabVisible = this.page !== "membership";
       document.title = this.$route.meta.title || process.env.VUE_APP_KR_NAME;
       this.isNotAnimeView = this.page !== "anime";
       if (this.isMobile && to.name === "anime") {
-        this.transitionName = "anime-view";
+        this.transitionName = "anime-to";
+      } else if (this.isMobile && from.name === "anime") {
+        this.transitionName = "anime-from";
       } else {
         this.transitionName = "fade";
       }
@@ -50,22 +52,30 @@ export default {
 <style lang="scss" scoped>
 @import url("./common.scss");
 .fade-enter-active,
-.fade-leave-active {
+.fade-leave-active,
+.anime-to-enter-active,
+.anime-to-leave-active,
+.anime-from-enter-active,
+.anime-from-leave-active {
   transition: all 100ms ease-out;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
 
-.anime-view-enter-active,
-.anime-view-leave-active {
-  transition: all 100ms ease-out;
-}
-.anime-view-enter-from {
+.anime-to-enter-from {
   transform: translateX(100vw);
 }
-.anime-view-leave-to {
+.anime-to-leave-to {
   opacity: 0;
+}
+
+.anime-from-enter-from {
+  opacity: 0;
+}
+.anime-from-leave-to {
+  transform: translateX(100vw);
 }
 </style>

@@ -35,5 +35,10 @@
   --toggle-true: hsl(209, 100%, 50%);
   --toggle-mixed: var(--theme-500);
 
+  --anime-item-head: hsl(288, 79%, 7%);
+
+  --anime-poster-load-700: var(--anime-item-head);
+  --anime-poster-load-500: hsl(288, 79%, 10%);
+
   --top-item: #fff;
 }

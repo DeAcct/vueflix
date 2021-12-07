@@ -165,7 +165,6 @@ export default {
           this.lengthCheck();
         }
         this.isNewProfileMode = false;
-        this.$refs.nameInput.blur();
         this.newProfileName = "";
         this.infoString = "사용할 프로필을 선택하세요";
         this.newBtnString = "새 프로필";
