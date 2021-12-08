@@ -15,16 +15,17 @@
       </div>
     </main>
     <modal
-      label="vueflix-app-info"
-      description="vueflix-app-description"
-      title="뷰플릭스 앱 써보실래요?"
-      yes="설치"
-      no="다음에"
+      type="yes-no"
       :yesFunc="install"
       :noFunc="dismiss"
-      v-if="isModalOpened"
+      :class="[{ show: isModalOpened }]"
     >
-      뷰플릭스를 더 빠르고 편리하게 이용할 수 있어요!
+      <template v-slot:title>뷰플릭스 앱 써보실래요?</template>
+      <template v-slot:description>
+        홈 화면에서 더 빠르게 만나볼 수 있어요
+      </template>
+      <template v-slot:no-string>나중에</template>
+      <template v-slot:yes-string>설치</template>
     </modal>
   </div>
 </template>
@@ -77,6 +78,14 @@ export default {
 <style lang="scss" scoped>
 .contents {
   padding: 2.8rem 0 5.6rem;
+}
+.bg {
+  bottom: 0;
+  transform: translateY(50rem);
+  transition: 150ms ease-out;
+  &.show {
+    transform: translateY(0);
+  }
 }
 @media screen and (min-width: 768px) {
   .contents {

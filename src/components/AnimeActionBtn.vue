@@ -1,6 +1,12 @@
 <template>
   <button
-    :class="['anime-interact-btn', { 'anime-interact-btn--on': isEnabled }]"
+    :class="[
+      'anime-interact-btn',
+      { 'anime-interact-btn--wanna-see': isEnabled && type === 'wanna-see' },
+      {
+        'anime-interact-btn--star-rating': isEnabled && type === 'star-rating',
+      },
+    ]"
   >
     <icon-base iconName="ddd" class="icon">
       <slot name="icon"></slot>
@@ -21,6 +27,9 @@ export default {
     isEnabled: {
       type: Boolean,
       default: false,
+    },
+    type: {
+      type: String,
     },
   },
 };
@@ -47,9 +56,13 @@ export default {
   &:active {
     opacity: 0.6;
   }
-  &--on .icon {
+  &--wanna-see .icon {
     color: var(--anime-wanna-see-icon);
     stroke: var(--anime-wanna-see-icon);
+  }
+  &--star-rating .icon {
+    color: var(--point-500);
+    stroke: var(--point-500);
   }
 }
 </style>

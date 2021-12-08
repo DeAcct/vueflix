@@ -1,12 +1,17 @@
 <template>
   <li class="item">
     <figure>
-      <a class="thumbnail" :href="url" :style="`background:${createThumbnail}`">
+      <a
+        class="thumbnail"
+        :href="url"
+        :style="`background:${createThumbnail}`"
+        :title="`${title} 썸네일`"
+      >
         <div class="progress-bar" v-if="isRecent">
           <div class="progress" :style="`width:${progress}`"></div>
         </div>
         <div class="thumbnail-play-btn" v-if="isRecent">
-          <span class="blind">작품 재생하기</span>
+          <span class="blind">{{ title }} 재생하기</span>
           <icon-base icon-name="재생 버튼"><icon-play /></icon-base>
         </div>
       </a>

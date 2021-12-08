@@ -57,12 +57,26 @@
       </div>
     </div>
     <div class="anime-interact-btn-area">
-      <anime-wanna-see-btn @click="wannaSeeToggle" :isEnabled="wannaSeeBool">
+      <anime-action-btn
+        @click="wannaSeeToggle"
+        :isEnabled="wannaSeeBool"
+        type="wanna-see"
+      >
         <template v-slot:icon>
           <icon-wanna-see />
         </template>
         <template v-slot:label>보고싶다</template>
-      </anime-wanna-see-btn>
+      </anime-action-btn>
+      <anime-action-btn
+        @click="starModalOpen"
+        :isEnabled="isUserRated"
+        type="star-rating"
+      >
+        <template v-slot:icon>
+          <icon-star-rating />
+        </template>
+        <template v-slot:label>별점주기</template>
+      </anime-action-btn>
     </div>
   </div>
 </template>
@@ -70,14 +84,16 @@
 <script>
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
-import AnimeWannaSeeBtn from "./AnimeWannaSeeBtn.vue";
+import AnimeActionBtn from "./AnimeActionBtn.vue";
 import IconWannaSee from "./icons/IconWannaSee.vue";
+import IconStarRating from "./icons/IconStarRating.vue";
 export default {
   components: {
     IconBase,
     IconArrowPrev,
-    AnimeWannaSeeBtn,
+    AnimeActionBtn,
     IconWannaSee,
+    IconStarRating,
   },
   name: "AnimeItemHead",
   props: {
@@ -98,6 +114,9 @@ export default {
     isEnd: {
       type: Boolean,
     },
+    isUserRated: {
+      type: Boolean,
+    },
 
     genres: {
       type: Array,
@@ -116,7 +135,6 @@ export default {
   data() {
     return {
       wannaSeeBool: false,
-      starRatingBool: false,
       isMobile: window.innerWidth <= 768,
     };
   },
@@ -127,11 +145,11 @@ export default {
     wannaSeeToggle() {
       this.wannaSeeBool = !this.wannaSeeBool;
     },
-    starRatingToggle() {
-      this.starRatingBool = !this.starRatingBool;
-    },
     checkResolution() {
       this.isMobile = window.innerWidth <= 768;
+    },
+    starModalOpen() {
+      this.$emit("starModalOpened");
     },
   },
 };
