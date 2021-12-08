@@ -121,7 +121,7 @@ export default {
       align-items: center;
       justify-content: space-between;
       .stars {
-        width: 40vw;
+        width: 50vw;
         .star {
           fill: var(--bg-300);
           &--filled {
