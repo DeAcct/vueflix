@@ -119,6 +119,7 @@ export default {
       width: 100%;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       .stars {
         width: 40vw;
         .star {
@@ -129,7 +130,6 @@ export default {
         }
       }
       .rating-reset-btn {
-        margin-left: 1rem;
         padding-bottom: 0.3rem;
         color: var(--text-900);
         font-size: 1.2rem;
