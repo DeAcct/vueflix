@@ -2,8 +2,11 @@
   <router-view v-slot="{ Component }">
     <vueflix-header v-if="isNotAnimeView || !isMobile" />
     <bottom-tab-menu v-if="isMobile && isBottomTabVisible && isNotAnimeView" />
-    <transition :name="transitionName" mode="out-in">
+    <transition :name="transitionName">
       <component :is="Component" :key="$route.path"></component>
+    </transition>
+    <transition name="toast-show">
+      <toast v-if="toastShown">{{ toastText }}</toast>
     </transition>
   </router-view>
 </template>
@@ -11,11 +14,14 @@
 <script>
 import VueflixHeader from "./components/VueflixHeader.vue";
 import BottomTabMenu from "./components/BottomTabMenu.vue";
+import Toast from "./components/Toast.vue";
+import { mapState } from "vuex";
 export default {
   name: "App",
   components: {
     VueflixHeader,
     BottomTabMenu,
+    Toast,
   },
   data() {
     return {
@@ -46,6 +52,10 @@ export default {
       }
     },
   },
+  computed: mapState({
+    toastText: (state) => state.toast.text,
+    toastShown: (state) => state.toast.isShown,
+  }),
 };
 </script>
 
@@ -58,6 +68,7 @@ export default {
 .anime-from-enter-active,
 .anime-from-leave-active {
   transition: all 100ms ease-out;
+  transform-origin: top;
 }
 
 .fade-enter-from,
@@ -66,7 +77,8 @@ export default {
 }
 
 .anime-to-enter-from {
-  transform: translateX(100vw);
+  transform: scaleY(0);
+  opacity: 0;
 }
 .anime-to-leave-to {
   opacity: 0;
@@ -76,6 +88,24 @@ export default {
   opacity: 0;
 }
 .anime-from-leave-to {
-  transform: translateX(100vw);
+  opacity: 0;
+  transform: scaleY(0);
+}
+
+.toast {
+  position: fixed;
+  bottom: 7rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.toast-show-enter-active .toast-show-leave-active {
+  transition: all 150ms ease-out cubic-bezier(0.5, 0, 0.5, 1.3);
+}
+
+.toast-show-enter-from,
+.toast-show-leave-to {
+  transform: translateY(5rem);
+  opacity: 0;
 }
 </style>

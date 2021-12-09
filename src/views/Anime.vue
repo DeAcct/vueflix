@@ -10,12 +10,15 @@
       :starRatingAvg="animeInfo.starRating"
       @starModalOpened="starModalOpen"
       :isUserRated="myRating !== 0"
+      @overflowMenuOpened="overflowMenuOpen"
     />
     <modal
+      title="별점주기 창"
       type="star"
+      :noFunc="starModalCancel"
       @starChanged="starModalClose"
       :rating="myRating"
-      :class="[{ show: isStarRatingOpened }]"
+      :class="[{ show: isStarRatingOpened }, 'optional-show']"
     >
       <template v-slot:title>이 멋진 애니에 별점을!</template>
       <template v-slot:description>
@@ -24,6 +27,12 @@
       <template v-slot:no-string>취소</template>
       <template v-slot:yes-string>별점 저장</template>
     </modal>
+    <action-sheet
+      :class="[{ show: isOverflowMenuOpened }, 'optional-show']"
+      title="더보기"
+      :actions="actions"
+      :close="close"
+    />
   </div>
 </template>
 <script>
@@ -38,9 +47,10 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import AnimeItemHead from "../components/AnimeItemHead.vue";
 import Modal from "../components/Modal.vue";
+import ActionSheet from "../components/ActionSheet.vue";
 
 export default {
-  components: { AnimeItemHead, Modal },
+  components: { AnimeItemHead, Modal, ActionSheet },
   name: "anime",
   mounted() {
     document.title = `${this.$route.params.id} 다시보기`;
@@ -48,9 +58,20 @@ export default {
   },
   data() {
     return {
-      animeInfo: [],
+      animeInfo: this.animeInit(),
       myRating: 0,
       isStarRatingOpened: false,
+      isOverflowMenuOpened: false,
+      actions: [
+        {
+          text: "공유하기",
+          method: this.openSystemShare,
+        },
+        {
+          text: "관심없음",
+          method: this.notInterested,
+        },
+      ],
     };
   },
   methods: {
@@ -88,18 +109,72 @@ export default {
       this.myRating = get;
       this.isStarRatingOpened = false;
     },
+    starModalCancel() {
+      this.isStarRatingOpened = false;
+    },
+    overflowMenuOpen() {
+      this.isOverflowMenuOpened = true;
+    },
+    close() {
+      this.isOverflowMenuOpened = false;
+    },
+    async openSystemShare() {
+      try {
+        await navigator.share({
+          title: document.title,
+          text: `뷰플릭스에서 ${this.animeInfo.name}을 다시 즐겨보세요!`,
+          url: `https://vueflix.hyse.kr/anime/${this.animeInfo.name}`,
+        });
+        console.log("ddd");
+        this.close();
+      } catch {
+        this.close();
+        this.$store.commit("toast/changeToastMeta", {
+          isShown: true,
+          text: "공유하기 토스트를 불러오는데 실패했어요",
+        });
+        await this.delay(3000);
+        this.$store.commit("toast/changeToastMeta", {
+          isShown: false,
+          text: "",
+        });
+      }
+    },
+    delay(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .anime {
-  .bg {
+  .optional-show {
+    opacity: 0;
     bottom: 0;
-    transform: translateY(50rem);
-    transition: 150ms ease-out;
+    transform: translateY(100vh);
+    transition: all 150ms ease-out;
     &.show {
+      opacity: 1;
       transform: translateY(0);
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .anime {
+    .anime-item-head {
+      margin-top: 6.1rem;
+    }
+    .optional-show {
+      display: none;
+      transform: none;
+      transition: 150ms ease-out;
+      &.show {
+        display: block;
+      }
     }
   }
 }

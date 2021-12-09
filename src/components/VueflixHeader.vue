@@ -180,9 +180,7 @@ export default {
 
   transition: all 250ms ease-out;
   &.fill {
-    background-color: hsla(0, 0%, 100%, 0.7);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    background-color: var(--top-item);
     border-bottom-color: var(--bg-100);
     .col-left {
       .logo a {

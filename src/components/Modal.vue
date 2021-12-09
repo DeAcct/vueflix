@@ -1,6 +1,7 @@
 <template>
-  <div class="bg">
-    <div class="modal" role="dialog">
+  <div class="modal">
+    <button class="shadow" @click="noFunc" title="닫기"></button>
+    <div class="action-area" role="dialog">
       <h2 class="title"><slot name="title"></slot></h2>
       <p class="description">
         <slot name="description"></slot>
@@ -48,7 +49,6 @@ export default {
   props: {
     title: {
       type: String,
-      default: "알림",
     },
     type: {
       type: String,
@@ -91,13 +91,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.bg {
+.modal {
   position: fixed;
   z-index: 50;
   width: 100vw;
   height: auto;
-  background-color: transparent;
-  .modal {
+  .shadow {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+  }
+  .action-area {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -121,7 +126,7 @@ export default {
       align-items: center;
       justify-content: space-between;
       .stars {
-        width: 50vw;
+        width: 50%;
         .star {
           fill: var(--bg-300);
           &--filled {
@@ -145,19 +150,21 @@ export default {
   }
 }
 @media screen and (min-width: 768px) {
-  .bg .modal .description {
+  .modal .action-area .description {
     font-size: 1.5em;
     margin-bottom: 5em;
   }
 }
 
 @media screen and (min-width: 1024px) {
-  .bg {
-    background-color: rgba(0, 0, 0, 0.3);
+  .modal {
     top: 0;
     bottom: auto;
     height: 100vh;
-    .modal {
+    .shadow {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+    .action-area {
       width: 500px;
       top: 50%;
       bottom: auto;

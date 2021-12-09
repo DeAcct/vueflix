@@ -4,10 +4,14 @@
     <div class="navigation" v-if="isMobile">
       <button class="back" @click="goBack">
         <icon-base iconName="뒤로가기">
-          <icon-arrow-prev></icon-arrow-prev>
+          <icon-arrow-prev />
         </icon-base>
       </button>
-      <button class="overflow-btn" title="더보기 메뉴"></button>
+      <button class="overflow-btn" @click="openOverflowMenu">
+        <icon-base iconName="더보기 메뉴">
+          <icon-overflow />
+        </icon-base>
+      </button>
     </div>
     <div class="anime-info">
       <div :class="['poster', 'loading-target', { 'poster--loaded': poster }]">
@@ -52,7 +56,9 @@
               {{ genre }}
             </li>
           </ul>
-          <p class="star-rating">별점 {{ starRatingAvg }}</p>
+          <p class="star-rating">
+            별점 {{ starRatingAvg ? starRatingAvg.toFixed(1) : "" }}
+          </p>
         </div>
       </div>
     </div>
@@ -84,18 +90,20 @@
 <script>
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
+import IconOverflow from "./icons/IconOverflow.vue";
 import AnimeActionBtn from "./AnimeActionBtn.vue";
 import IconWannaSee from "./icons/IconWannaSee.vue";
 import IconStarRating from "./icons/IconStarRating.vue";
 export default {
+  name: "AnimeItemHead",
   components: {
     IconBase,
     IconArrowPrev,
+    IconOverflow,
     AnimeActionBtn,
     IconWannaSee,
     IconStarRating,
   },
-  name: "AnimeItemHead",
   props: {
     title: {
       type: String,
@@ -151,6 +159,9 @@ export default {
     starModalOpen() {
       this.$emit("starModalOpened");
     },
+    openOverflowMenu() {
+      this.$emit("overflowMenuOpened");
+    },
   },
 };
 </script>
@@ -166,8 +177,14 @@ export default {
   }
   .navigation {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     .back {
+      color: #fff;
+      width: 2.4rem;
+      height: 2.4rem;
+    }
+    .overflow-btn {
       color: #fff;
       width: 2.4rem;
       height: 2.4rem;
@@ -188,8 +205,11 @@ export default {
         opacity: 0;
         transition: opacity 150ms ease-out;
       }
-      &--loaded img {
-        opacity: 1;
+      &--loaded {
+        animation: none;
+        img {
+          opacity: 1;
+        }
       }
     }
     .col-right {

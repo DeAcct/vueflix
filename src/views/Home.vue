@@ -45,7 +45,7 @@ export default {
   },
   data() {
     return {
-      isModalOpened: null,
+      isModalOpened: false,
     };
   },
   created() {
@@ -79,8 +79,8 @@ export default {
 .contents {
   padding: 2.8rem 0 5.6rem;
 }
-.bg {
-  bottom: 0;
+.modal {
+  bottom: 5.6rem;
   transform: translateY(50rem);
   transition: 150ms ease-out;
   &.show {
@@ -90,6 +90,16 @@ export default {
 @media screen and (min-width: 768px) {
   .contents {
     padding-top: 3.6rem;
+  }
+  .modal {
+    display: none;
+    top: 0;
+    bottom: auto;
+    transform: none;
+    transition: 150ms ease-out;
+    &.show {
+      display: block;
+    }
   }
 }
 </style>
