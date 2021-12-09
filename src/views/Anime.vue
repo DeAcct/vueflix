@@ -12,6 +12,7 @@
       :isUserRated="myRating !== 0"
       @overflowMenuOpened="overflowMenuOpen"
     />
+
     <modal
       title="별점주기 창"
       type="star"
@@ -31,7 +32,7 @@
       :class="[{ show: isOverflowMenuOpened }, 'optional-show']"
       title="더보기"
       :actions="actions"
-      :close="close"
+      :close="actionSheetClose"
     />
   </div>
 </template>
@@ -115,8 +116,13 @@ export default {
     overflowMenuOpen() {
       this.isOverflowMenuOpened = true;
     },
-    close() {
+    actionSheetClose() {
       this.isOverflowMenuOpened = false;
+    },
+    delay(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
     },
     async openSystemShare() {
       try {
@@ -125,10 +131,9 @@ export default {
           text: `뷰플릭스에서 ${this.animeInfo.name}을 다시 즐겨보세요!`,
           url: `https://vueflix.hyse.kr/anime/${this.animeInfo.name}`,
         });
-        console.log("ddd");
-        this.close();
+        this.actionSheetClose();
       } catch {
-        this.close();
+        this.actionSheetClose();
         this.$store.commit("toast/changeToastMeta", {
           isShown: true,
           text: "공유하기 토스트를 불러오는데 실패했어요",
@@ -140,9 +145,15 @@ export default {
         });
       }
     },
-    delay(ms) {
-      return new Promise((resolve) => {
-        setTimeout(resolve, ms);
+    async notInterested() {
+      this.$store.commit("toast/changeToastMeta", {
+        isShown: true,
+        text: "취향에 반영했어요",
+      });
+      await this.delay(3000);
+      this.$store.commit("toast/changeToastMeta", {
+        isShown: false,
+        text: "",
       });
     },
   },

@@ -67,7 +67,7 @@ export default {
 .anime-to-leave-active,
 .anime-from-enter-active,
 .anime-from-leave-active {
-  transition: all 100ms ease-out;
+  transition: all 150ms ease-out;
   transform-origin: top;
 }
 
@@ -77,7 +77,7 @@ export default {
 }
 
 .anime-to-enter-from {
-  transform: scaleY(0);
+  transform: translateY(-5rem);
   opacity: 0;
 }
 .anime-to-leave-to {
@@ -89,7 +89,7 @@ export default {
 }
 .anime-from-leave-to {
   opacity: 0;
-  transform: scaleY(0);
+  transform: translateY(-5rem);
 }
 
 .toast {

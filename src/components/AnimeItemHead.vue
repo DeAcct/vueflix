@@ -1,7 +1,7 @@
 <template>
-  <div class="anime-item-head inner">
+  <div class="anime-item-head">
     <h1 class="blind">뷰플릭스</h1>
-    <div class="navigation" v-if="isMobile">
+    <div class="navigation inner" v-if="isMobile">
       <button class="back" @click="goBack">
         <icon-base iconName="뒤로가기">
           <icon-arrow-prev />
@@ -13,7 +13,7 @@
         </icon-base>
       </button>
     </div>
-    <div class="anime-info">
+    <div class="anime-info inner">
       <div :class="['poster', 'loading-target', { 'poster--loaded': poster }]">
         <img :src="poster" :alt="`${title} 포스터`" />
       </div>
@@ -62,7 +62,7 @@
         </div>
       </div>
     </div>
-    <div class="anime-interact-btn-area">
+    <div class="anime-interact-btn-area inner">
       <anime-action-btn
         @click="wannaSeeToggle"
         :isEnabled="wannaSeeBool"
@@ -83,6 +83,9 @@
         </template>
         <template v-slot:label>별점주기</template>
       </anime-action-btn>
+    </div>
+    <div class="continue-play-bg">
+      <button class="continue-play-btn">1화 무료보기</button>
     </div>
   </div>
 </template>
@@ -171,10 +174,8 @@ export default {
   width: 100%;
   min-height: 24rem;
   background-color: var(--anime-item-head);
-  padding: {
-    top: 2rem;
-    bottom: 2rem;
-  }
+  padding-top: 2rem;
+
   .navigation {
     display: flex;
     justify-content: space-between;
@@ -194,8 +195,8 @@ export default {
     display: flex;
     margin-top: 3rem;
     .poster {
-      width: 7.5rem;
-      height: calc(7.5rem / 3 * 4);
+      min-width: 9rem;
+      height: calc(9rem / 3 * 4);
       overflow: hidden;
       img {
         width: 100%;
@@ -245,8 +246,9 @@ export default {
       }
       .title {
         color: inherit;
-        font-size: 1.7rem;
+        font-size: 1.5rem;
         margin-top: 0.7rem;
+        line-height: 1.3;
       }
       .row-bottom {
         color: transparent;
@@ -280,9 +282,26 @@ export default {
   .anime-interact-btn-area {
     width: 100%;
     display: flex;
-    margin-top: 1.5rem;
+    margin: {
+      top: 1.5rem;
+    }
     .anime-interact-btn {
       width: 50%;
+    }
+  }
+
+  .continue-play-bg {
+    width: 100%;
+    padding: 1.5rem var(--inner-padding);
+    .continue-play-btn {
+      width: 100%;
+      height: 100%;
+      padding: 1.5rem 0;
+      background-color: var(--theme-500);
+      border-radius: 0.3rem;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.5rem;
     }
   }
 

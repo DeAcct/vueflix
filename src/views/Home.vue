@@ -81,7 +81,7 @@ export default {
 }
 .modal {
   bottom: 5.6rem;
-  transform: translateY(50rem);
+  transform: translateY(100vh);
   transition: 150ms ease-out;
   &.show {
     transform: translateY(0);
