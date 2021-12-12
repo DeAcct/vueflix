@@ -48,7 +48,8 @@
             </span>
           </p>
           <h2 class="title">
-            {{ title }}
+            진정한 동료가 아니라고 용사 파티에서 쫓겨났기 때문에, 변경에서
+            슬로우 라이프 하기로 했습니다
           </h2>
         </div>
         <div
@@ -363,37 +364,6 @@ export default {
       padding: 0;
       margin-top: 0;
       height: fit-content;
-      .col-right {
-        justify-content: flex-start;
-        margin-left: 2.5rem;
-        .division-pipe {
-          font-size: 1.5rem;
-          font-weight: 500;
-        }
-        .title {
-          font-size: 3rem;
-          font-weight: 900;
-          margin-top: 1.5rem;
-        }
-        .row-top {
-          height: auto;
-        }
-        .row-bottom {
-          margin-top: 9rem;
-        }
-        .genres .genre {
-          font-size: 1.6rem;
-          font-weight: 700;
-        }
-        .star-rating-number {
-          font-size: 1.6rem;
-          font-weight: 500;
-          margin: {
-            top: 1.5rem;
-            bottom: 1.5rem;
-          }
-        }
-      }
       .poster {
         position: relative;
         width: 26rem;
@@ -408,13 +378,52 @@ export default {
           padding: 1.2rem 0 1.4rem;
         }
       }
+      .col-right {
+        flex: 1;
+        justify-content: space-between;
+        margin-left: 2.5rem;
+        .division-pipe {
+          font-size: 1.5rem;
+          font-weight: 500;
+        }
+        .title {
+          font-size: 3rem;
+          font-weight: 900;
+          margin-top: 1.5rem;
+        }
+        .row-top {
+          height: auto;
+        }
+        .row-bottom {
+          width: 40rem;
+          margin-bottom: 8rem;
+          &:not(.row-bottom--loaded) {
+            .star-interaction {
+              opacity: 0;
+            }
+          }
+        }
+        .genres .genre {
+          font-size: 1.6rem;
+          font-weight: 700;
+        }
+        .star-rating-number {
+          font-size: 1.6rem;
+          font-weight: 500;
+          margin: {
+            top: 1.5rem;
+            bottom: 1.5rem;
+          }
+        }
+      }
     }
     .continue-play-bg {
-      width: 30rem;
+      width: 20rem;
       align-self: flex-end;
       padding: 0;
-      margin-bottom: 5rem;
+      margin-bottom: 3rem;
       .continue-play-btn {
+        width: 20rem;
         border-radius: 3rem;
         font-size: 2rem;
       }
