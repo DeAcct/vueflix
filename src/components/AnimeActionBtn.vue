@@ -51,9 +51,9 @@ export default {
     stroke-width: 0.2rem;
     stroke-linejoin: round;
     width: 2rem;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.2rem;
   }
-  &:active {
+  &:active .icon {
     opacity: 0.6;
   }
   &--wanna-see .icon {
@@ -63,6 +63,20 @@ export default {
   &--star-rating .icon {
     color: var(--point-500);
     stroke: var(--point-500);
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .anime-interact-btn {
+    flex-direction: row;
+    justify-content: center;
+    font-size: 1.5rem;
+    .icon {
+      margin: {
+        bottom: 0;
+        right: 0.6rem;
+      }
+    }
   }
 }
 </style>

@@ -7,6 +7,7 @@ const mutations = {
   changeToastMeta(state, payload) {
     state.isShown = payload.isShown;
     state.text = payload.text;
+    console.log(payload);
   },
 };
 

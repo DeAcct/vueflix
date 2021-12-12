@@ -16,6 +16,17 @@
     <div class="anime-info inner">
       <div :class="['poster', 'loading-target', { 'poster--loaded': poster }]">
         <img :src="poster" :alt="`${title} 포스터`" />
+        <anime-action-btn
+          @click="wannaSeeToggle"
+          :isEnabled="wannaSeeBool"
+          type="wanna-see"
+          v-if="!isMobile"
+        >
+          <template v-slot:icon>
+            <icon-wanna-see />
+          </template>
+          <template v-slot:label>보고싶다</template>
+        </anime-action-btn>
       </div>
       <div class="col-right">
         <div
@@ -56,13 +67,19 @@
               {{ genre }}
             </li>
           </ul>
-          <p class="star-rating">
+          <p class="star-rating-number">
             별점 {{ starRatingAvg ? starRatingAvg.toFixed(1) : "" }}
           </p>
+          <star-interaction
+            :rating="myRating"
+            v-if="!notPC"
+            textColor="#fff"
+            @starChanged="starChanged"
+          />
         </div>
       </div>
     </div>
-    <div class="anime-interact-btn-area inner">
+    <div class="anime-interact-btn-area inner" v-if="notPC">
       <anime-action-btn
         @click="wannaSeeToggle"
         :isEnabled="wannaSeeBool"
@@ -95,6 +112,7 @@ import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconOverflow from "./icons/IconOverflow.vue";
 import AnimeActionBtn from "./AnimeActionBtn.vue";
+import StarInteraction from "./StarInteraction.vue";
 import IconWannaSee from "./icons/IconWannaSee.vue";
 import IconStarRating from "./icons/IconStarRating.vue";
 export default {
@@ -104,6 +122,7 @@ export default {
     IconArrowPrev,
     IconOverflow,
     AnimeActionBtn,
+    StarInteraction,
     IconWannaSee,
     IconStarRating,
   },
@@ -136,6 +155,9 @@ export default {
       //별점 평균 prop
       type: Number,
     },
+    myRating: {
+      type: Number,
+    },
   },
   created() {
     window.addEventListener("resize", this.checkResolution);
@@ -147,6 +169,7 @@ export default {
     return {
       wannaSeeBool: false,
       isMobile: window.innerWidth <= 768,
+      notPC: window.innerWidth <= 1080,
     };
   },
   methods: {
@@ -158,6 +181,7 @@ export default {
     },
     checkResolution() {
       this.isMobile = window.innerWidth <= 768;
+      this.notPC = window.innerWidth <= 1080;
     },
     starModalOpen() {
       this.$emit("starModalOpened");
@@ -165,16 +189,16 @@ export default {
     openOverflowMenu() {
       this.$emit("overflowMenuOpened");
     },
+    starChanged(e) {
+      this.$emit("starChanged", e);
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .anime-item-head {
-  width: 100%;
-  min-height: 24rem;
   background-color: var(--anime-item-head);
-  padding-top: 2rem;
 
   .navigation {
     display: flex;
@@ -231,12 +255,15 @@ export default {
         }
       }
       .division-pipe {
+        display: flex;
+        align-items: center;
         color: inherit;
         font-size: 1.2rem;
         &:not(:last-child):after {
           content: "|";
-          margin: 0 0.3rem;
-          font-size: inherit;
+          margin: 0 0.5rem;
+          font-size: 1.2rem;
+          font-weight: 300;
         }
       }
       .sub-info {
@@ -268,11 +295,13 @@ export default {
         align-items: center;
         color: inherit;
         .genre {
+          display: flex;
+          align-items: center;
           color: inherit;
           font-size: 1.1rem;
         }
       }
-      .star-rating {
+      .star-rating-number {
         color: inherit;
         font-size: 1.1rem;
         margin-top: 0.7rem;
@@ -321,6 +350,74 @@ export default {
     }
     to {
       background-position-x: 200%;
+    }
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .anime-item-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 calc((100% - 118rem) / 2);
+    .anime-info {
+      padding: 0;
+      margin-top: 0;
+      height: fit-content;
+      .col-right {
+        justify-content: flex-start;
+        margin-left: 2.5rem;
+        .division-pipe {
+          font-size: 1.5rem;
+          font-weight: 500;
+        }
+        .title {
+          font-size: 3rem;
+          font-weight: 900;
+          margin-top: 1.5rem;
+        }
+        .row-top {
+          height: auto;
+        }
+        .row-bottom {
+          margin-top: 9rem;
+        }
+        .genres .genre {
+          font-size: 1.6rem;
+          font-weight: 700;
+        }
+        .star-rating-number {
+          font-size: 1.6rem;
+          font-weight: 500;
+          margin: {
+            top: 1.5rem;
+            bottom: 1.5rem;
+          }
+        }
+      }
+      .poster {
+        position: relative;
+        width: 26rem;
+        height: calc(26rem / 3 * 4);
+        overflow: initial;
+        box-shadow: 0 0 3rem var(--box-shadow);
+        .anime-interact-btn {
+          position: absolute;
+          bottom: 0;
+          background-color: var(--anime-item-head);
+          width: 100%;
+          padding: 1.2rem 0 1.4rem;
+        }
+      }
+    }
+    .continue-play-bg {
+      width: 30rem;
+      align-self: flex-end;
+      padding: 0;
+      margin-bottom: 5rem;
+      .continue-play-btn {
+        border-radius: 3rem;
+        font-size: 2rem;
+      }
     }
   }
 }

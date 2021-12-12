@@ -11,6 +11,8 @@
       @starModalOpened="starModalOpen"
       :isUserRated="myRating !== 0"
       @overflowMenuOpened="overflowMenuOpen"
+      :myRating="myRating"
+      @starChanged="starChanged"
     />
 
     <modal
@@ -133,7 +135,6 @@ export default {
         });
         this.actionSheetClose();
       } catch {
-        this.actionSheetClose();
         this.$store.commit("toast/changeToastMeta", {
           isShown: true,
           text: "공유하기 토스트를 불러오는데 실패했어요",
@@ -143,6 +144,7 @@ export default {
           isShown: false,
           text: "",
         });
+        this.actionSheetClose();
       }
     },
     async notInterested() {
@@ -156,12 +158,20 @@ export default {
         text: "",
       });
     },
+    starChanged(e) {
+      this.myRating = e;
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .anime {
+  .anime-item-head {
+    width: 100%;
+    min-height: 24rem;
+    padding-top: 2rem;
+  }
   .optional-show {
     opacity: 0;
     bottom: 0;
@@ -178,6 +188,14 @@ export default {
   .anime {
     .anime-item-head {
       margin-top: 6.1rem;
+    }
+  }
+}
+@media screen and (min-width: 1080px) {
+  .anime {
+    .anime-item-head {
+      padding-top: 10rem;
+      height: 40rem;
     }
     .optional-show {
       display: none;
