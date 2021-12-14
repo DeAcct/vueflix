@@ -1,5 +1,5 @@
 <template>
-  <div class="anime">
+  <div class="anime" :style="`min-height: ${deviceHeight}px`">
     <anime-item-head
       :title="animeInfo.name"
       :poster="animeInfo.poster"
@@ -14,7 +14,21 @@
       :myRating="myRating"
       @starChanged="starChanged"
     />
-
+    <div class="anime-useful-widget">
+      <arrow-link-btn
+        v-for="usefulWidget in usefulWidgets"
+        :to="usefulWidget.href"
+        :key="usefulWidget.text"
+        :icon="usefulWidget.icon"
+      >
+        <template v-slot:icon>
+          <component :is="usefulWidget.icon" />
+        </template>
+        <template v-slot:text>
+          {{ usefulWidget.text }}
+        </template>
+      </arrow-link-btn>
+    </div>
     <modal
       title="별점주기 창"
       type="star"
@@ -51,17 +65,31 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import AnimeItemHead from "../components/AnimeItemHead.vue";
 import Modal from "../components/Modal.vue";
 import ActionSheet from "../components/ActionSheet.vue";
+import ArrowLinkBtn from "../components/ArrowLinkBtn.vue";
+import IconReview from "../components/icons/IconReview.vue";
+import IconInfo from "../components/icons/IconInfo.vue";
 
 export default {
-  components: { AnimeItemHead, Modal, ActionSheet },
+  components: {
+    AnimeItemHead,
+    Modal,
+    ActionSheet,
+    ArrowLinkBtn,
+    IconReview,
+    IconInfo,
+  },
   name: "anime",
   mounted() {
     document.title = `${this.$route.params.id} 다시보기`;
     this.animeInit();
+    window.addEventListener("resize", () => {
+      this.deviceHeight = window.innerHeight;
+    });
   },
   data() {
     return {
-      animeInfo: this.animeInit(),
+      deviceHeight: window.innerHeight,
+      animeInfo: {},
       myRating: 0,
       isStarRatingOpened: false,
       isOverflowMenuOpened: false,
@@ -73,6 +101,18 @@ export default {
         {
           text: "관심없음",
           method: this.notInterested,
+        },
+      ],
+      usefulWidgets: [
+        {
+          text: "작품 정보",
+          icon: "IconInfo",
+          href: "#none",
+        },
+        {
+          text: "리뷰",
+          icon: "IconReview",
+          href: "#none",
         },
       ],
     };
@@ -101,6 +141,7 @@ export default {
       try {
         const posterURL = await getDownloadURL(posterRef);
         this.animeInfo = { ...rawData, poster: posterURL };
+        console.log(this.animeInfo);
       } catch {
         console.error("포스터 정보가 존재하지 않습니다");
       }
@@ -167,6 +208,7 @@ export default {
 
 <style lang="scss" scoped>
 .anime {
+  background-color: var(--bg-100);
   .anime-item-head {
     width: 100%;
     min-height: 24rem;
@@ -181,6 +223,9 @@ export default {
       opacity: 1;
       transform: translateY(0);
     }
+  }
+  .anime-useful-widget {
+    margin-bottom: 1rem;
   }
 }
 

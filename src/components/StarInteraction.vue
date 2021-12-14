@@ -8,6 +8,7 @@
         @click="starClicked(index)"
         :class="['star', { 'star--filled': index * 0.5 < rating }]"
         role="button"
+        :title="`${index * 0.5}점`"
       />
     </svg>
     <button

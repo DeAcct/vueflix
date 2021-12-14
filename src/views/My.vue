@@ -36,30 +36,17 @@
       </div>
       <div class="my-cards-wrap">
         <div class="my-cards" v-for="(myCard, index) in myCards" :key="index">
-          <router-link
-            class="my-card inner"
+          <arrow-link-btn
             v-for="item in myCard"
-            :key="item.name"
-            :to="item.href"
+            :key="item.text"
+            :to="item.to"
+            :icon="item.icon"
           >
-            <div class="col-left">
-              <i class="icon" v-if="item.icon">
-                <icon-base>
-                  <component :is="item.icon" />
-                </icon-base>
-              </i>
-              <span>
-                {{ item.name }}
-              </span>
-            </div>
-            <div class="col-right">
-              <i class="icon">
-                <icon-base>
-                  <icon-arrow-next />
-                </icon-base>
-              </i>
-            </div>
-          </router-link>
+            <template v-slot:icon>
+              <component :is="item.icon" />
+            </template>
+            <template v-slot:text>{{ item.text }}</template>
+          </arrow-link-btn>
         </div>
       </div>
     </main>
@@ -71,21 +58,20 @@
 import Profile from "../components/Profile.vue";
 import VueflixRouteBtn from "../components/VueflixRouteBtn.vue";
 import VueflixFuncBtn from "../components/VueflixFuncBtn.vue";
-import IconBase from "../components/IconBase.vue";
+import ArrowLinkBtn from "../components/ArrowLinkBtn.vue";
 import IconMembership from "../components/icons/IconMembership";
-import IconArrowNext from "../components/icons/IconArrowNext.vue";
 import IconAccount from "../components/icons/IconAccount";
 import IconNotification from "../components/icons/IconNotification.vue";
+
 export default {
   components: {
     Profile,
     VueflixRouteBtn,
-    IconBase,
+    VueflixFuncBtn,
+    ArrowLinkBtn,
     IconMembership,
-    IconArrowNext,
     IconNotification,
     IconAccount,
-    VueflixFuncBtn,
   },
   data() {
     return {
@@ -93,45 +79,45 @@ export default {
       myCards: [
         [
           {
-            name: "멤버십 및 포인트",
+            text: "멤버십 및 포인트",
             icon: "IconMembership",
-            href: "/my/membership",
+            to: "/my/membership",
           },
         ],
         [
           {
-            name: "계정 설정",
+            text: "계정 설정",
             icon: "IconAccount",
-            href: "#none",
+            to: "#none",
           },
           {
-            name: "알림 설정",
+            text: "알림 설정",
             icon: "IconNotification",
-            href: "#none",
+            to: "#none",
           },
         ],
         [
           {
-            name: "쿠폰 등록",
-            href: "#none",
+            text: "쿠폰 등록",
+            to: "#none",
           },
           {
-            name: "이용 내역",
-            href: "#none",
+            text: "이용 내역",
+            to: "#none",
           },
         ],
         [
           {
-            name: "이미지 캐시 초기화",
-            href: "#none",
+            text: "이미지 캐시 초기화",
+            to: "#none",
           },
           {
-            name: "고객센터",
-            href: "#none",
+            text: "고객센터",
+            to: "#none",
           },
           {
-            name: "버전 정보",
-            href: "#none",
+            text: "버전 정보",
+            to: "#none",
           },
         ],
       ],
@@ -208,34 +194,6 @@ export default {
 .my-cards {
   margin-top: 0.8rem;
   overflow: hidden;
-  .my-card {
-    padding: 1.5rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--top-item);
-    .icon {
-      display: flex;
-      align-items: center;
-      width: 1.8rem;
-      height: 1.8rem;
-    }
-    .col-left {
-      display: flex;
-      align-items: center;
-      .icon {
-        margin-right: 0.8rem;
-      }
-      span {
-        font-size: 1.2rem;
-        font-weight: 500;
-      }
-    }
-  }
-}
-@media screen and (min-width: 768px) {
-  .my-cards .my-card .col-left span {
-    font-size: 1.4rem;
-  }
 }
 
 @media screen and (min-width: 1024px) {
@@ -276,15 +234,6 @@ export default {
   }
   .my-cards .my-card {
     padding: 2rem 5rem;
-    .icon {
-      width: 2.4rem;
-      height: 2.4rem;
-    }
-    .col-left {
-      span {
-        font-size: 1.5rem;
-      }
-    }
   }
 }
 

@@ -65,7 +65,7 @@ export default {
     .action-item {
       border-top: 1px solid var(--text-200);
       button {
-        padding: 1.4rem 0 1.5rem;
+        padding: 1.6rem 0 1.7rem;
         font-size: 1.3rem;
         font-weight: 500;
       }

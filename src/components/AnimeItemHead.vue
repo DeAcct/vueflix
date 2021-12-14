@@ -1,5 +1,5 @@
 <template>
-  <div class="anime-item-head">
+  <div class="anime-item-head" :style="useBg">
     <h1 class="blind">뷰플릭스</h1>
     <div class="navigation inner" v-if="isMobile">
       <button class="back" @click="goBack">
@@ -14,7 +14,10 @@
       </button>
     </div>
     <div class="anime-info inner">
-      <div :class="['poster', 'loading-target', { 'poster--loaded': poster }]">
+      <div
+        :class="['poster', 'loading-target', { 'poster--loaded': poster }]"
+        v-if="!isMobile"
+      >
         <img :src="poster" :alt="`${title} 포스터`" />
         <anime-action-btn
           @click="wannaSeeToggle"
@@ -193,13 +196,19 @@ export default {
       this.$emit("starChanged", e);
     },
   },
+  computed: {
+    useBg() {
+      let bg = `
+        background: linear-gradient(var(--anime-item-head-opacity-700), var(--anime-item-head-opacity-500)), url(${this.poster}) center/cover;
+      `;
+      return bg;
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .anime-item-head {
-  background-color: var(--anime-item-head);
-
   .navigation {
     display: flex;
     justify-content: space-between;
@@ -238,17 +247,22 @@ export default {
       }
     }
     .col-right {
+      width: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      margin-left: 1rem;
+      align-items: center;
       .row-top {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         color: transparent;
         width: 45vw;
         height: 4rem;
         transition: 150ms ease-out;
         &--loaded {
           width: auto;
+          height: auto;
           color: var(--top-item);
           background: transparent;
           animation: none;
@@ -273,15 +287,19 @@ export default {
       }
       .title {
         color: inherit;
-        font-size: 1.5rem;
+        font-size: 2rem;
         margin-top: 0.7rem;
         line-height: 1.3;
       }
       .row-bottom {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         color: transparent;
         transition: 150ms ease-out;
         width: 5rem;
         height: 3rem;
+        margin-top: 1.5rem;
         &--loaded {
           color: var(--top-item);
           width: auto;
@@ -303,7 +321,8 @@ export default {
       }
       .star-rating-number {
         color: inherit;
-        font-size: 1.1rem;
+        font-size: 1.5rem;
+        font-weight: 500;
         margin-top: 0.7rem;
       }
     }
@@ -356,6 +375,7 @@ export default {
 
 @media screen and (min-width: 1080px) {
   .anime-item-head {
+    background: var(--anime-item-head);
     display: flex;
     justify-content: space-between;
     padding: 0 calc((100% - 118rem) / 2);
