@@ -64,4 +64,9 @@ export default {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+@media screen and (min-width: 1920px) {
+  .basket-items {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
 </style>

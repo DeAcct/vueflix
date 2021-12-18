@@ -15,6 +15,7 @@
       class="rating-reset-btn"
       @click="ratingReset"
       :style="`color: ${textColor}; border-bottom-color:${textColor};`"
+      :disabled="rating === 0"
     >
       별점 초기화
     </button>
@@ -83,12 +84,23 @@ export default {
     color: var(--text-900);
     font-size: 1.2rem;
     border-bottom: var(--text-900) solid 1px;
+    &:disabled {
+      color: var(--text-200) !important;
+    }
   }
 }
 
 @media screen and (min-width: 1080px) {
-  .star-interaction .stars .star {
-    cursor: pointer;
+  .star-interaction {
+    .stars .star {
+      cursor: pointer;
+    }
+    .rating-reset-btn {
+      &:disabled {
+        opacity: 0;
+        cursor: auto;
+      }
+    }
   }
 }
 </style>

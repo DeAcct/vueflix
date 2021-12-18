@@ -28,5 +28,22 @@
       "sizes": "512x512",
       "type": "image/png"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "태그검색",
+      "url": "/tag-search",
+      "description": "필터로 취향저격 애니찾기"
+    },
+    {
+      "name": "요일별 신작",
+      "url": "/daily",
+      "description": "이번 분기 애니 편성표"
+    },
+    {
+      "name": "보관함",
+      "url": "/basket",
+      "description": "슬기로운 애니생활을 위한 나만의 공간"
+    }
   ]
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="anime-item-head" :style="useBg">
+  <div class="anime-item-head" :style="posterBg">
     <h1 class="blind">뷰플릭스</h1>
     <div class="navigation inner" v-if="isMobile">
       <button class="back" @click="goBack">
@@ -16,7 +16,7 @@
     <div class="anime-info inner">
       <div
         :class="['poster', 'loading-target', { 'poster--loaded': poster }]"
-        v-if="!isMobile"
+        v-if="!notPC"
       >
         <img :src="poster" :alt="`${title} 포스터`" />
         <anime-action-btn
@@ -197,8 +197,8 @@ export default {
     },
   },
   computed: {
-    useBg() {
-      let bg = `
+    posterBg() {
+      const bg = `
         background: linear-gradient(var(--anime-item-head-opacity-700), var(--anime-item-head-opacity-500)), url(${this.poster}) center/cover;
       `;
       return bg;
@@ -290,11 +290,9 @@ export default {
         font-size: 2rem;
         margin-top: 0.7rem;
         line-height: 1.3;
+        text-align: center;
       }
       .row-bottom {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         color: transparent;
         transition: 150ms ease-out;
         width: 5rem;
@@ -310,7 +308,6 @@ export default {
       }
       .genres {
         display: flex;
-        align-items: center;
         color: inherit;
         .genre {
           display: flex;
@@ -357,25 +354,25 @@ export default {
     animation: loading-animation 1000ms ease infinite;
     background: linear-gradient(
       135deg,
-      var(--anime-poster-load-700),
-      var(--anime-poster-load-500)
+      rgba(255, 255, 255, 0.025),
+      rgba(255, 255, 255, 0.05)
     );
     background-size: 200%;
     background-repeat: repeat-x;
   }
-  @keyframes loading-animation {
-    from {
-      background-position-x: 0%;
-    }
-    to {
-      background-position-x: 200%;
-    }
+}
+@keyframes loading-animation {
+  from {
+    background-position-x: 0%;
+  }
+  to {
+    background-position-x: 200%;
   }
 }
 
 @media screen and (min-width: 1080px) {
   .anime-item-head {
-    background: var(--anime-item-head);
+    background: var(--anime-item-head) !important;
     display: flex;
     justify-content: space-between;
     padding: 0 calc((100% - 118rem) / 2);
@@ -400,6 +397,7 @@ export default {
       .col-right {
         flex: 1;
         justify-content: space-between;
+        align-items: flex-start;
         margin-left: 2.5rem;
         .division-pipe {
           font-size: 1.5rem;
@@ -408,14 +406,17 @@ export default {
         .title {
           font-size: 3rem;
           font-weight: 900;
+          text-align: left;
           margin-top: 1.5rem;
         }
         .row-top {
           height: auto;
+          align-items: flex-start;
         }
         .row-bottom {
           width: 40rem;
           margin-bottom: 8rem;
+          align-items: flex-start;
           &:not(.row-bottom--loaded) {
             .star-interaction {
               opacity: 0;
@@ -446,6 +447,16 @@ export default {
         border-radius: 3rem;
         font-size: 2rem;
       }
+    }
+    .loading-target {
+      animation: loading-animation 1000ms ease infinite;
+      background: linear-gradient(
+        135deg,
+        var(--anime-poster-load-700),
+        var(--anime-poster-load-500)
+      );
+      background-size: 200%;
+      background-repeat: repeat-x;
     }
   }
 }

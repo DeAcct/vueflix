@@ -19,6 +19,7 @@
       :yesFunc="install"
       :noFunc="dismiss"
       :class="[{ show: isModalOpened }]"
+      v-if="isModalOpened"
     >
       <template v-slot:title>뷰플릭스 앱 써보실래요?</template>
       <template v-slot:description>
@@ -92,14 +93,10 @@ export default {
     padding-top: 3.6rem;
   }
   .modal {
-    display: none;
     top: 0;
     bottom: auto;
     transform: none;
     transition: 150ms ease-out;
-    &.show {
-      display: block;
-    }
   }
 }
 </style>
