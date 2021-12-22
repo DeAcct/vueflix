@@ -24,7 +24,7 @@
         <site-menu v-if="!isMobile" />
       </div>
       <div class="col-right">
-        <search-bar />
+        <search-bar v-if="page !== 'reviews'" />
         <notification v-if="isHome" />
       </div>
     </div>

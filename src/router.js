@@ -18,6 +18,13 @@ const routes = [
     path: "/anime/:id",
     name: "anime",
     component: () => import("@/views/Anime"),
+    children: [
+      {
+        path: "reviews",
+        name: "reviews",
+        component: () => import("@/views/Reviews"),
+      },
+    ],
   },
   {
     path: "/tag-search",

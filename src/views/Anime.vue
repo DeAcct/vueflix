@@ -1,6 +1,7 @@
 <template>
-  <div class="anime" :style="`min-height: ${deviceHeight}px`">
+  <div class="anime" :style="`min-height: ${deviceHeight}px`" v-if="isSub">
     <anime-item-head
+      :isScroll="isScroll"
       :title="animeInfo.name"
       :poster="animeInfo.poster"
       :type="animeInfo.type"
@@ -14,7 +15,7 @@
       :myRating="myRating"
       @starChanged="starChanged"
     />
-    <div class="anime-useful-widget">
+    <div class="anime-useful-widget" v-if="!isPC">
       <arrow-link-btn
         v-for="usefulWidget in usefulWidgets"
         :to="usefulWidget.href"
@@ -28,6 +29,13 @@
           {{ usefulWidget.text }}
         </template>
       </arrow-link-btn>
+    </div>
+
+    <div class="episode-and-review-widget">
+      <episodes
+        :episodesData="animeInfo.episode"
+        :episodesNumber="animeNumber"
+      />
     </div>
     <modal
       title="별점주기 창"
@@ -51,6 +59,7 @@
       :close="actionSheetClose"
     />
   </div>
+  <router-view v-else />
 </template>
 <script>
 import {
@@ -63,6 +72,7 @@ import {
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import AnimeItemHead from "../components/AnimeItemHead.vue";
+import Episodes from "../components/Episodes";
 import Modal from "../components/Modal.vue";
 import ActionSheet from "../components/ActionSheet.vue";
 import ArrowLinkBtn from "../components/ArrowLinkBtn.vue";
@@ -72,6 +82,7 @@ import IconInfo from "../components/icons/IconInfo.vue";
 export default {
   components: {
     AnimeItemHead,
+    Episodes,
     Modal,
     ActionSheet,
     ArrowLinkBtn,
@@ -85,11 +96,24 @@ export default {
     window.addEventListener("resize", () => {
       this.deviceHeight = window.innerHeight;
     });
+    window.addEventListener("resize", () => {
+      this.isPC = window.innerWidth <= 768;
+    });
+    window.addEventListener("scroll", this.handleScroll);
+  },
+  unmounted() {
+    window.removeEventListener("resize", () => {
+      this.deviceHeight = window.innerHeight;
+    });
+    window.removeEventListener("resize", () => {
+      this.isPC = window.innerWidth <= 768;
+    });
   },
   data() {
     return {
       deviceHeight: window.innerHeight,
       animeInfo: {},
+      animeNumber: "",
       myRating: 0,
       isStarRatingOpened: false,
       isOverflowMenuOpened: false,
@@ -112,12 +136,19 @@ export default {
         {
           text: "리뷰",
           icon: "IconReview",
-          href: "#none",
+          href: `${this.$route.params.id}/reviews`,
         },
       ],
+      isSub: this.$route.name === "anime",
+      isPC: window.innerWidth >= 1080,
+      isScroll: false,
     };
   },
   methods: {
+    handleScroll() {
+      console.log("dd");
+      this.isScroll = 0 < Math.round(window.scrollY);
+    },
     async getRawData() {
       const db = getFirestore();
       const animeRef = collection(db, "anime");
@@ -141,7 +172,7 @@ export default {
       try {
         const posterURL = await getDownloadURL(posterRef);
         this.animeInfo = { ...rawData, poster: posterURL };
-        console.log(this.animeInfo);
+        this.animeNumber = this.animeInfo.episode.length;
       } catch {
         console.error("포스터 정보가 존재하지 않습니다");
       }
@@ -212,7 +243,6 @@ export default {
   .anime-item-head {
     width: 100%;
     min-height: 24rem;
-    padding-top: 2rem;
   }
   .optional-show {
     opacity: 0;

@@ -2,7 +2,7 @@
   <router-view v-slot="{ Component }">
     <vueflix-header v-if="isNotAnimeView || !isMobile" />
     <bottom-tab-menu v-if="isMobile && isBottomTabVisible && isNotAnimeView" />
-    <transition :name="transitionName">
+    <transition name="fade">
       <component :is="Component" :key="$route.path"></component>
     </transition>
     <transition name="toast-show">
@@ -26,10 +26,9 @@ export default {
   data() {
     return {
       isMobile: window.innerWidth <= 768,
-      isBottomTabVisible: this.page !== "membership",
+      isBottomTabVisible: this.page !== "membership" && this.page !== "reviews",
       page: this.$route.name,
       isNotAnimeView: this.page !== "anime",
-      transitionName: "fade",
     };
   },
   mounted() {
@@ -40,7 +39,9 @@ export default {
   watch: {
     $route(to, from) {
       this.page = this.$route.name;
-      this.isBottomTabVisible = this.page !== "membership";
+      console.log(this.$route.name);
+      this.isBottomTabVisible =
+        this.page !== "membership" && this.page !== "reviews";
       document.title = this.$route.meta.title || process.env.VUE_APP_KR_NAME;
       this.isNotAnimeView = this.page !== "anime";
       if (this.isMobile && to.name === "anime") {
@@ -74,22 +75,6 @@ export default {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-
-.anime-to-enter-from {
-  transform: translateY(-5rem);
-  opacity: 0;
-}
-.anime-to-leave-to {
-  opacity: 0;
-}
-
-.anime-from-enter-from {
-  opacity: 0;
-}
-.anime-from-leave-to {
-  opacity: 0;
-  transform: translateY(-5rem);
 }
 
 .toast {

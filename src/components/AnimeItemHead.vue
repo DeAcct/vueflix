@@ -1,12 +1,18 @@
 <template>
   <div class="anime-item-head" :style="posterBg">
-    <h1 class="blind">뷰플릭스</h1>
-    <div class="navigation inner" v-if="isMobile">
-      <button class="back" @click="goBack">
-        <icon-base iconName="뒤로가기">
-          <icon-arrow-prev />
-        </icon-base>
-      </button>
+    <h1 class="blind" v-if="notPC">뷰플릭스</h1>
+    <div
+      :class="['navigation', 'inner', { 'navigation--scrolled': isScroll }]"
+      v-if="isMobile"
+    >
+      <div class="col-left">
+        <button class="back" @click="goBack">
+          <icon-base iconName="뒤로가기">
+            <icon-arrow-prev />
+          </icon-base>
+        </button>
+        <strong class="scroll-title">{{ title }}</strong>
+      </div>
       <button class="overflow-btn" @click="openOverflowMenu">
         <icon-base iconName="더보기 메뉴">
           <icon-overflow />
@@ -130,6 +136,10 @@ export default {
     IconStarRating,
   },
   props: {
+    isScroll: {
+      type: Boolean,
+    },
+
     title: {
       type: String,
     },
@@ -210,23 +220,51 @@ export default {
 <style lang="scss" scoped>
 .anime-item-head {
   .navigation {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 6rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .back {
-      color: #fff;
-      width: 2.4rem;
+    .col-left {
+      display: flex;
+      align-items: center;
       height: 2.4rem;
+      .scroll-title {
+        margin-left: 0.5rem;
+        font-size: 1.7rem;
+        height: 2.4rem;
+        color: #fff;
+        opacity: 0;
+        transition: opacity 150ms ease-out;
+        //말줄임표 처리
+        width: 70vw;
+        line-height: 2.4rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
+
+    .back,
     .overflow-btn {
       color: #fff;
       width: 2.4rem;
       height: 2.4rem;
     }
+
+    &--scrolled {
+      background-color: var(--anime-item-head);
+      box-shadow: 0 0.1rem 1.2rem rgba(0, 0, 0, 0.3);
+      .col-left .scroll-title {
+        opacity: 1;
+      }
+    }
   }
   .anime-info {
     display: flex;
-    margin-top: 3rem;
+    padding-top: 7rem;
     .poster {
       min-width: 9rem;
       height: calc(9rem / 3 * 4);
@@ -293,6 +331,9 @@ export default {
         text-align: center;
       }
       .row-bottom {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         color: transparent;
         transition: 150ms ease-out;
         width: 5rem;
