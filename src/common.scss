@@ -136,6 +136,25 @@ summary {
   display: block;
 }
 
+.loading-target {
+  animation: loading-animation 1000ms ease infinite;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.025),
+    rgba(255, 255, 255, 0.05)
+  );
+  background-size: 200%;
+  background-repeat: repeat-x;
+}
+@keyframes loading-animation {
+  from {
+    background-position-x: 0%;
+  }
+  to {
+    background-position-x: 200%;
+  }
+}
+
 @media screen and (min-width: 768px) {
   :root {
     --inner-padding: 5rem;

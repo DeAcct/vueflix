@@ -4,7 +4,12 @@
       <figure>
         <div class="col-left">
           <div class="thumbnail">
-            <img :src="thumbnailURL" :alt="`${title} 썸네일`" />
+            <img
+              :data-url="thumbnailURL"
+              :alt="`${title} 썸네일`"
+              v-intersection-lazy
+              :ref="`thumbnail-${index}`"
+            />
           </div>
           <div class="episode-info">
             <figcaption class="title">{{ index }}화 {{ title }}</figcaption>
@@ -22,7 +27,6 @@
 <script>
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import IconBase from "../components/IconBase.vue";
-
 export default {
   name: "EpisodeCard",
   props: {
@@ -47,11 +51,21 @@ export default {
       thumbnailURL: "",
     };
   },
-  async mounted() {
-    const storage = getStorage();
-    const thumbnailRef = ref(storage, this.thumbnail);
-    const URL = await getDownloadURL(thumbnailRef);
-    this.thumbnailURL = URL;
+  mounted() {
+    this.useURL();
+  },
+  methods: {
+    async useURL() {
+      const storage = getStorage();
+      const thumbnailRef = ref(storage, this.thumbnail);
+      const URL = await getDownloadURL(thumbnailRef);
+      const $img = this.$refs[`thumbnail-${this.index}`];
+      if ($img.getBoundingClientRect().top <= window.innerHeight) {
+        $img.src = URL;
+      } else {
+        this.thumbnailURL = URL;
+      }
+    },
   },
 };
 </script>
@@ -59,7 +73,7 @@ export default {
 <style lang="scss" scoped>
 .episode-card {
   &:not(:last-child) {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
   .episode-item {
     display: block;

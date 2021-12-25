@@ -33,8 +33,11 @@
 
     <div class="episode-and-review-widget">
       <episodes
-        :episodesData="animeInfo.episode"
-        :episodesNumber="animeNumber"
+        v-for="(part, index) in animeInfo.parts"
+        :episodesData="part"
+        :key="index"
+        :id="part.part"
+        ref="episodes"
       />
     </div>
     <modal
@@ -146,7 +149,6 @@ export default {
   },
   methods: {
     handleScroll() {
-      console.log("dd");
       this.isScroll = 0 < Math.round(window.scrollY);
     },
     async getRawData() {
@@ -168,11 +170,13 @@ export default {
     async animeInit() {
       const storage = getStorage();
       const rawData = await this.getRawData();
-      const posterRef = ref(storage, rawData.poster);
+      const posterRef = ref(
+        storage,
+        `${this.$route.params.id}/${rawData.poster}`
+      );
       try {
         const posterURL = await getDownloadURL(posterRef);
         this.animeInfo = { ...rawData, poster: posterURL };
-        this.animeNumber = this.animeInfo.episode.length;
       } catch {
         console.error("포스터 정보가 존재하지 않습니다");
       }

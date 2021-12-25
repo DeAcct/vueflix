@@ -118,7 +118,7 @@ const state = {
   ],
   slides: [
     {
-      anime: "코바야시네 메이드래곤 S",
+      anime: "코바야시네 메이드래곤",
       bgSet: {
         webp: require("@/assets/kobayashi_banner.webp"),
         jpeg: require("@/assets/kobayashi_banner.jpeg"),
@@ -132,7 +132,7 @@ const state = {
        require를 넣으면 바르게 들어간다
       */
       copy: "다시 돌아온 일상물 다크호스",
-      link: "/anime/코바야시네 메이드래곤 S",
+      link: "/anime/코바야시네 메이드래곤",
     },
     {
       anime: "사신 도련님과 검은 메이드",

@@ -1,16 +1,17 @@
 <template>
   <div class="episodes">
-    <div class="episodes-number inner">
-      <strong>에피소드 ({{ episodesNumber }})</strong>
+    <div class="parts-number inner">
+      <strong>{{ episodesData.part }}</strong>
     </div>
     <ul class="episode-cards">
       <episode-card
-        v-for="(episode, index) in episodesData"
+        v-for="(episode, index) in episodesData.episodes"
         :key="episode.title"
         :title="episode.title"
         :date="episode.date"
-        :thumbnail="episode.thumbnail"
+        :thumbnail="`${this.$route.params.id}/${episode.thumbnail}`"
         :index="index + 1"
+        :ref="`episodeCard${index}`"
       />
     </ul>
   </div>
@@ -25,10 +26,10 @@ export default {
   },
   props: {
     episodesData: {
-      type: Array,
+      type: Object,
     },
-    episodesNumber: {
-      type: [Number, String],
+    id: {
+      type: String,
     },
   },
 };
@@ -37,7 +38,10 @@ export default {
 <style lang="scss" scoped>
 .episodes {
   background-color: var(--top-item);
-  .episodes-number {
+  .parts-number {
+    position: sticky;
+    z-index: 50;
+    top: 5.95rem;
     background-color: var(--top-item);
     padding: {
       top: 1.5rem;

@@ -6,6 +6,9 @@ import { initializeApp } from "firebase/app";
 import App from "./App.vue";
 import "./registerServiceWorker";
 
+import { IntersectionLazy } from "./directives/IntersectionLazy";
+import { RippleEffect } from "./directives/RippleEffect";
+
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
@@ -22,4 +25,6 @@ const app = createApp(App);
 
 app.use(router);
 app.use(store);
+app.directive("intersection-lazy", IntersectionLazy);
+app.directive("ripple-effect", RippleEffect);
 app.mount("#app");

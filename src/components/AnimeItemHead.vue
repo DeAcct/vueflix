@@ -1,5 +1,5 @@
 <template>
-  <div class="anime-item-head" :style="posterBg">
+  <header class="anime-item-head" :style="posterBg">
     <h1 class="blind" v-if="notPC">뷰플릭스</h1>
     <div
       :class="['navigation', 'inner', { 'navigation--scrolled': isScroll }]"
@@ -111,9 +111,9 @@
       </anime-action-btn>
     </div>
     <div class="continue-play-bg">
-      <button class="continue-play-btn">1화 무료보기</button>
+      <button class="continue-play-btn" v-ripple-effect>1화 무료보기</button>
     </div>
-  </div>
+  </header>
 </template>
 
 <script>
@@ -124,6 +124,7 @@ import AnimeActionBtn from "./AnimeActionBtn.vue";
 import StarInteraction from "./StarInteraction.vue";
 import IconWannaSee from "./icons/IconWannaSee.vue";
 import IconStarRating from "./icons/IconStarRating.vue";
+
 export default {
   name: "AnimeItemHead",
   components: {
@@ -221,12 +222,15 @@ export default {
 .anime-item-head {
   .navigation {
     position: fixed;
+    z-index: 100;
     top: 0;
     width: 100%;
     height: 6rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: 150ms ease-out;
+    overflow: hidden;
     .col-left {
       display: flex;
       align-items: center;
@@ -237,7 +241,8 @@ export default {
         height: 2.4rem;
         color: #fff;
         opacity: 0;
-        transition: opacity 150ms ease-out;
+        transform: translateX(2rem);
+        transition: transform 150ms ease-out, opacity 150ms ease-out;
         //말줄임표 처리
         width: 70vw;
         line-height: 2.4rem;
@@ -256,9 +261,9 @@ export default {
 
     &--scrolled {
       background-color: var(--anime-item-head);
-      box-shadow: 0 0.1rem 1.2rem rgba(0, 0, 0, 0.3);
       .col-left .scroll-title {
         opacity: 1;
+        transform: translateX(0);
       }
     }
   }
@@ -389,25 +394,6 @@ export default {
       font-weight: 700;
       font-size: 1.5rem;
     }
-  }
-
-  .loading-target {
-    animation: loading-animation 1000ms ease infinite;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.025),
-      rgba(255, 255, 255, 0.05)
-    );
-    background-size: 200%;
-    background-repeat: repeat-x;
-  }
-}
-@keyframes loading-animation {
-  from {
-    background-position-x: 0%;
-  }
-  to {
-    background-position-x: 200%;
   }
 }
 
