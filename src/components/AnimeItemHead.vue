@@ -77,7 +77,7 @@
             </li>
           </ul>
           <p class="star-rating-number">
-            별점 {{ starRatingAvg ? starRatingAvg.toFixed(1) : "" }}
+            평균 {{ starRatingAvg ? starRatingAvg.toFixed(1) : "" }}점
           </p>
           <star-interaction
             :rating="myRating"
@@ -111,7 +111,7 @@
       </anime-action-btn>
     </div>
     <div class="continue-play-bg">
-      <button class="continue-play-btn" v-ripple-effect>1화 무료보기</button>
+      <button class="continue-play-btn">1화 무료보기</button>
     </div>
   </header>
 </template>

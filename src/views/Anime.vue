@@ -261,6 +261,13 @@ export default {
   .anime-useful-widget {
     margin-bottom: 1rem;
   }
+  .episode-and-review-widget {
+    .episodes {
+      &:not(:last-child) {
+        margin-bottom: 1rem;
+      }
+    }
+  }
 }
 
 @media screen and (min-width: 768px) {

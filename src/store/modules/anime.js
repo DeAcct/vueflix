@@ -147,7 +147,7 @@ const state = {
       link: "/anime/사신 도련님과 검은 메이드",
     },
     {
-      anime: "하얀 모래의 아쿠아톱 part 1",
+      anime: "하얀 모래의 아쿠아톱",
       bgSet: {
         webp: require("@/assets/aquatop_banner.webp"),
         jpeg: require("@/assets/aquatop_banner.jpeg"),
@@ -156,7 +156,7 @@ const state = {
       },
       aniLogo: require("@/assets/aquatop.png"),
       copy: "방구석 바캉스인 줄 알았더니 미생 애니판",
-      link: "/anime/하얀 모래의 아쿠아톱 part 1",
+      link: "/anime/하얀 모래의 아쿠아톱",
     },
     {
       anime: "그녀도 여친",

@@ -1,9 +1,14 @@
 <template>
   <div class="episodes">
-    <div class="parts-number inner">
-      <strong>{{ episodesData.part }}</strong>
-    </div>
-    <ul class="episode-cards">
+    <button class="part-info inner" @click="widgetToggle">
+      <i :class="['open-icon', { 'open-icon--widget-opened': isWidgetOpen }]">
+        <icon-base>
+          <icon-arrow-next />
+        </icon-base>
+      </i>
+      <strong class="part-title">{{ episodesData.part }}</strong>
+    </button>
+    <ul :class="['episode-widget', { 'episode-widget--opened': isWidgetOpen }]">
       <episode-card
         v-for="(episode, index) in episodesData.episodes"
         :key="episode.title"
@@ -18,11 +23,15 @@
 </template>
 
 <script>
+import IconBase from "./IconBase.vue";
+import IconArrowNext from "./icons/IconArrowNext.vue";
 import EpisodeCard from "./EpisodeCard.vue";
 export default {
   name: "Episodes",
   components: {
     EpisodeCard,
+    IconBase,
+    IconArrowNext,
   },
   props: {
     episodesData: {
@@ -32,16 +41,29 @@ export default {
       type: String,
     },
   },
+  data() {
+    return {
+      isWidgetOpen: true,
+    };
+  },
+  methods: {
+    widgetToggle() {
+      this.isWidgetOpen = !this.isWidgetOpen;
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .episodes {
   background-color: var(--top-item);
-  .parts-number {
+  .part-info {
     position: sticky;
+    top: 6rem;
     z-index: 50;
-    top: 5.95rem;
+    display: flex;
+    width: 100%;
+    align-items: center;
     background-color: var(--top-item);
     padding: {
       top: 1.5rem;
@@ -49,9 +71,30 @@ export default {
     }
     font-size: 1.3rem;
     border-bottom: 1px solid var(--bg-100);
+    .open-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.8rem;
+      height: 1.8rem;
+      transition: 150ms linear;
+      &--widget-opened {
+        transform: rotate(90deg);
+      }
+    }
+    .part-title {
+      margin-left: 0.5rem;
+    }
   }
-  .episode-cards {
-    padding: 2rem 0;
+  .episode-widget {
+    padding: 0;
+    height: 0;
+    overflow: hidden;
+    transition: 150ms linear;
+    &--opened {
+      padding: 2rem 0;
+      height: auto;
+    }
   }
 }
 </style>
