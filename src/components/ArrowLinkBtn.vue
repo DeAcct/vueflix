@@ -31,7 +31,7 @@ export default {
   },
   props: {
     icon: {
-      type: String,
+      type: [Boolean, String],
     },
   },
 };
@@ -75,7 +75,7 @@ export default {
     }
     .col-left {
       span {
-        font-size: 1.5rem;
+        font-size: 2rem;
       }
     }
   }

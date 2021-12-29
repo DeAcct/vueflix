@@ -142,6 +142,7 @@ export default {
   flex-direction: column;
   align-items: center;
   background-color: var(--top-item);
+  border-radius: 0 0 0.6rem 0.6rem;
   .my-profile {
     display: flex;
     flex-direction: column;
@@ -193,6 +194,7 @@ export default {
 }
 .my-cards {
   margin-top: 0.8rem;
+  border-radius: 0.6rem;
   overflow: hidden;
 }
 
@@ -232,7 +234,7 @@ export default {
       }
     }
   }
-  .my-cards .my-card {
+  .my-cards .arrow-link-btn {
     padding: 2rem 5rem;
   }
 }
@@ -265,7 +267,7 @@ export default {
       &:first-child {
         margin-top: 0;
       }
-      .my-card {
+      .arrow-link-btn {
         padding: 2rem 3rem;
       }
     }

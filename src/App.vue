@@ -39,7 +39,6 @@ export default {
   watch: {
     $route(to, from) {
       this.page = this.$route.name;
-      console.log(this.$route.name);
       this.isBottomTabVisible =
         this.page !== "membership" && this.page !== "reviews";
       document.title = this.$route.meta.title || process.env.VUE_APP_KR_NAME;

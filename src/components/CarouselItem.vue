@@ -1,12 +1,13 @@
 <template>
   <li class="item">
     <figure>
-      <a
-        class="thumbnail"
-        :href="url"
-        :style="`background:${createThumbnail}`"
-        :title="`${title} 썸네일`"
-      >
+      <a class="thumbnail" :href="url" :title="`${title} 썸네일`">
+        <img
+          :data-url="img"
+          :alt="`${title}썸네일`"
+          class="img"
+          v-intersection-lazy
+        />
         <div class="progress-bar" v-if="isRecent">
           <div class="progress" :style="`width:${progress}`"></div>
         </div>
@@ -66,15 +67,6 @@ export default {
     },
   },
   computed: {
-    createThumbnail() {
-      return `linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.15) 0%,
-        rgba(0, 0, 0, 0) 50%,
-        rgba(0, 0, 0, 0.15) 100%
-      ),
-      url("${this.img}") center/cover`;
-    },
     getEpisode() {
       return this.isMovie ? "극장판" : this.episode;
     },
@@ -101,6 +93,13 @@ export default {
     border-radius: 0.3rem;
     overflow: hidden;
     transition: 150ms ease-out;
+    .img {
+      position: absolute;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
     .thumbnail-play-btn {
       display: flex;
       justify-content: center;

@@ -29,10 +29,11 @@ export default {
   border-radius: 0.6rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  box-shadow: 0 0.2rem 0.4rem var(--bg-200);
   h2 {
     font-size: 1.5rem;
     color: var(--theme-500);
+    margin-bottom: 1rem;
   }
   .service-noti-items {
     display: flex;

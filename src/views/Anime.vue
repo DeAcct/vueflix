@@ -14,24 +14,50 @@
       @overflowMenuOpened="overflowMenuOpen"
       :myRating="myRating"
       @starChanged="starChanged"
+      class="widget"
     />
-    <div class="anime-useful-widget" v-if="!isPC">
-      <arrow-link-btn
-        v-for="usefulWidget in usefulWidgets"
-        :to="usefulWidget.href"
-        :key="usefulWidget.text"
-        :icon="usefulWidget.icon"
-      >
+    <div class="anime-useful-widget widget" v-if="!isPC">
+      <ul class="info">
+        <li class="inner">
+          <strong class="title"> 줄거리 </strong>
+          <p
+            :class="[
+              'text',
+              'loading-target',
+              { 'text--loaded': animeInfo.summary },
+            ]"
+          >
+            {{ animeInfo.summary }}
+          </p>
+        </li>
+        <li class="inner">
+          <strong class="title"> 제작사 </strong>
+          <p
+            :class="[
+              'text',
+              'loading-target',
+              { 'text--loaded': animeInfo.summary },
+            ]"
+          >
+            <span
+              v-for="madeBy in animeInfo.madeBy"
+              :key="madeBy"
+              class="division-pipe"
+            >
+              {{ madeBy }}
+            </span>
+          </p>
+        </li>
+      </ul>
+      <arrow-link-btn :to="`${$route.params.id}/reviews`" :icon="true">
         <template v-slot:icon>
-          <component :is="usefulWidget.icon" />
+          <icon-review />
         </template>
-        <template v-slot:text>
-          {{ usefulWidget.text }}
-        </template>
+        <template v-slot:text>리뷰</template>
       </arrow-link-btn>
     </div>
 
-    <div class="episode-and-review-widget">
+    <div class="episode-and-review-widget widget">
       <episodes
         v-for="(part, index) in animeInfo.parts"
         :episodesData="part"
@@ -80,7 +106,6 @@ import Modal from "../components/Modal.vue";
 import ActionSheet from "../components/ActionSheet.vue";
 import ArrowLinkBtn from "../components/ArrowLinkBtn.vue";
 import IconReview from "../components/icons/IconReview.vue";
-import IconInfo from "../components/icons/IconInfo.vue";
 
 export default {
   components: {
@@ -90,7 +115,6 @@ export default {
     ActionSheet,
     ArrowLinkBtn,
     IconReview,
-    IconInfo,
   },
   name: "anime",
   mounted() {
@@ -130,16 +154,14 @@ export default {
           method: this.notInterested,
         },
       ],
-      usefulWidgets: [
+      infos: [
         {
-          text: "작품 정보",
-          icon: "IconInfo",
-          href: "#none",
+          title: "줄거리",
+          text: this.animeInfo ? this.animeInfo.summary : "",
         },
         {
-          text: "리뷰",
-          icon: "IconReview",
-          href: `${this.$route.params.id}/reviews`,
+          title: "제작사",
+          text: this.animeInfo ? this.animeInfo.madeBy : "",
         },
       ],
       isSub: this.$route.name === "anime",
@@ -177,6 +199,7 @@ export default {
       try {
         const posterURL = await getDownloadURL(posterRef);
         this.animeInfo = { ...rawData, poster: posterURL };
+        console.log(this.animeInfo);
       } catch {
         console.error("포스터 정보가 존재하지 않습니다");
       }
@@ -243,10 +266,16 @@ export default {
 
 <style lang="scss" scoped>
 .anime {
+  display: flex;
+  flex-direction: column;
   background-color: var(--bg-100);
+  .widget {
+    margin-bottom: 1rem;
+  }
   .anime-item-head {
     width: 100%;
     min-height: 24rem;
+    border-radius: 0 0 0.6rem 0.6rem;
   }
   .optional-show {
     opacity: 0;
@@ -259,13 +288,61 @@ export default {
     }
   }
   .anime-useful-widget {
-    margin-bottom: 1rem;
+    border-radius: 0.6rem;
+    overflow: hidden;
+    box-shadow: 0 0.2rem 0.4rem var(--bg-200);
+    .info {
+      background-color: var(--top-item);
+      & > li {
+        padding: {
+          top: 1.8rem;
+          bottom: 1.8rem;
+        }
+      }
+      & > li:not(:last-child) {
+        border-bottom: 1px solid var(--bg-100);
+      }
+      .title {
+        display: block;
+        font-size: 1.4rem;
+        margin-bottom: 0.5rem;
+      }
+      .text {
+        display: flex;
+        font-size: 1.2rem;
+        line-height: 1.3;
+        height: 2.6rem;
+        &--loaded {
+          height: auto;
+          background: transparent;
+          animation: none;
+        }
+      }
+    }
+    .arrow-link-btn {
+      background-color: var(--bg-100);
+    }
   }
   .episode-and-review-widget {
     .episodes {
       &:not(:last-child) {
         margin-bottom: 1rem;
       }
+    }
+  }
+  .loading-target {
+    background-image: linear-gradient(135deg, var(--bg-200), var(--bg-100));
+  }
+  .division-pipe {
+    display: flex;
+    align-items: center;
+    color: inherit;
+    font-size: 1.2rem;
+    &:not(:last-child):after {
+      content: "|";
+      margin: 0 0.5rem;
+      font-size: 1.2rem;
+      font-weight: 300;
     }
   }
 }

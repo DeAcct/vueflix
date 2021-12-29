@@ -2,7 +2,12 @@
   <li class="vertical-card-item">
     <a :href="url">
       <figure>
-        <div class="img" :style="createImg"></div>
+        <img
+          :data-url="img"
+          :alt="`${title}썸네일`"
+          class="img"
+          v-intersection-lazy
+        />
         <div class="text">
           <strong class="title">{{ title }}</strong>
           <p class="genre">{{ genre }}</p>
@@ -27,11 +32,6 @@ export default {
       type: String,
     },
   },
-  computed: {
-    createImg() {
-      return `background: url(${this.img}) center/cover`;
-    },
-  },
 };
 </script>
 <style lang="scss" scoped>
@@ -41,6 +41,7 @@ export default {
   background-color: var(--top-item);
   border-radius: 0.6rem;
   overflow: hidden;
+  box-shadow: 0 0.2rem 0.4rem var(--bg-200);
   & + & {
     margin-top: 1rem;
   }
@@ -55,9 +56,10 @@ export default {
   figure {
     display: flex;
     .img {
-      min-width: 7rem;
+      width: 7rem;
       height: 7rem;
       border-radius: 0.3rem;
+      object-fit: cover;
     }
     .text {
       display: flex;
@@ -93,7 +95,7 @@ export default {
       padding: 1.5rem;
     }
     figure .img {
-      min-width: 9rem;
+      width: 9rem;
       height: 9rem;
     }
   }

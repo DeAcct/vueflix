@@ -383,7 +383,7 @@ export default {
 
   .continue-play-bg {
     width: 100%;
-    padding: 1.5rem var(--inner-padding);
+    padding: 1.5rem var(--inner-padding) 2rem;
     .continue-play-btn {
       width: 100%;
       height: 100%;
@@ -474,16 +474,6 @@ export default {
         border-radius: 3rem;
         font-size: 2rem;
       }
-    }
-    .loading-target {
-      animation: loading-animation 1000ms ease infinite;
-      background: linear-gradient(
-        135deg,
-        var(--anime-poster-load-700),
-        var(--anime-poster-load-500)
-      );
-      background-size: 200%;
-      background-repeat: repeat-x;
     }
   }
 }

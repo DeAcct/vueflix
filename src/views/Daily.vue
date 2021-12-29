@@ -2,12 +2,18 @@
   <div class="wrap">
     <main>
       <service-noti-box :notiItems="NotiItems" />
-      <div class="inner">
-        <div class="day-selector-holder">
+      <div>
+        <div
+          :class="[
+            'day-selector-holder',
+            'inner',
+            { 'day-selector-holder--scrolled': isScroll },
+          ]"
+        >
           <day-selector />
         </div>
         <h3 class="blind">애니 목록</h3>
-        <div class="daily-new-content">
+        <div class="daily-new-content inner">
           <ul class="daily-contents">
             <vertical-card-item
               v-for="anime in dailyShownList"
@@ -43,6 +49,7 @@ export default {
           noti: "<러브 라이브! 슈퍼스타!!> 6화는 일본 현지 방영 일정으로 인해 휴방되었습니다. 서비스 이용에 참고 부탁드리겠습니다.",
         },
       ],
+      isScroll: false,
     };
   },
   computed: {
@@ -56,6 +63,12 @@ export default {
       this.shownItems = this.resolution >= 1920 ? 7 : 4;
       this.carouselNumber = 0;
     });
+    window.addEventListener("scroll", this.handleScroll);
+  },
+  methods: {
+    handleScroll() {
+      setTimeout((this.isScroll = 0 < Math.round(window.scrollY)), 500);
+    },
   },
 };
 </script>
@@ -69,8 +82,19 @@ main {
     position: sticky;
     display: flex;
     top: 6rem;
-    padding: 1.5rem 0;
+    padding: {
+      top: 1.5rem;
+      bottom: 1.5rem;
+    }
+    margin: {
+      top: 0.4rem;
+      bottom: 0.4rem;
+    }
     background-color: var(--bg-100);
+    transition: box-shadow 150ms ease-out;
+    &--scrolled {
+      box-shadow: 0 0.4rem 0.8rem var(--bg-200);
+    }
   }
   .day-selector {
     width: 100%;

@@ -57,9 +57,11 @@ export default {
 <style lang="scss" scoped>
 .episodes {
   background-color: var(--top-item);
+  border-radius: 0.6rem;
+  box-shadow: 0 0.2rem 0.4rem var(--bg-200);
   .part-info {
     position: sticky;
-    top: 6rem;
+    top: 5.9rem;
     z-index: 50;
     display: flex;
     width: 100%;
@@ -70,7 +72,7 @@ export default {
       bottom: 1.5rem;
     }
     font-size: 1.3rem;
-    border-bottom: 1px solid var(--bg-100);
+    border-radius: 0.6rem;
     .open-icon {
       display: flex;
       align-items: center;
@@ -91,9 +93,16 @@ export default {
     height: 0;
     overflow: hidden;
     transition: 150ms linear;
+    .episode-card {
+      transition: 150ms linear;
+      opacity: 0;
+    }
     &--opened {
-      padding: 2rem 0;
+      padding: 0 0 2rem;
       height: auto;
+      .episode-card {
+        opacity: 1;
+      }
     }
   }
 }
