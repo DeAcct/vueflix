@@ -103,6 +103,9 @@ export default {
         case "change-profile":
           this.headString = "프로필 관리";
           break;
+        case "reviews":
+          this.headString = "리뷰";
+          break;
         default:
           this.headString = "";
       }

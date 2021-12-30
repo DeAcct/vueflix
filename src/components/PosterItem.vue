@@ -43,11 +43,11 @@ export default {
     .img {
       display: flex;
       align-items: flex-start;
-      background-color: #ddd;
       width: 100%;
       height: calc((100vw - 6rem) / 3 * 1.3);
       border-radius: 0.3rem;
       margin-bottom: 0.5rem;
+      box-shadow: 0 0.2rem 0.4rem var(--bg-200);
       .icons {
         width: 100%;
         position: relative;

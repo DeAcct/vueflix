@@ -7,16 +7,10 @@
           <strong class="nickname">미야조노 카오리</strong>
           <i class="email">example1234@example.com</i>
           <div class="btn-area">
-            <vueflix-route-btn link="/my/change-profile">
+            <vueflix-route-btn to="/my/change-profile" class="btn--profile">
               프로필 관리
             </vueflix-route-btn>
-            <vueflix-func-btn
-              bg="var(--theme-500)"
-              textColor="var(--top-item)"
-              border="1px solid var(--theme-500)"
-            >
-              로그아웃
-            </vueflix-func-btn>
+            <vueflix-func-btn class="btn--logout">로그아웃</vueflix-func-btn>
           </div>
         </div>
         <div class="history-items">
@@ -143,6 +137,7 @@ export default {
   align-items: center;
   background-color: var(--top-item);
   border-radius: 0 0 0.6rem 0.6rem;
+  box-shadow: 0 0.2rem 0.4rem var(--bg-200);
   .my-profile {
     display: flex;
     flex-direction: column;
@@ -162,6 +157,15 @@ export default {
     }
     .btn-area {
       display: flex;
+      .btn {
+        &--profile {
+          background-color: var(--top-item);
+        }
+        &--logout {
+          background-color: var(--theme-500);
+          color: #fff;
+        }
+      }
       button {
         margin-left: 1rem;
       }
@@ -192,10 +196,18 @@ export default {
     }
   }
 }
+.my-cards-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 .my-cards {
   margin-top: 0.8rem;
   border-radius: 0.6rem;
   overflow: hidden;
+  box-shadow: 0 0.2rem 0.4rem var(--bg-200);
+  width: 100%;
 }
 
 @media screen and (min-width: 1024px) {
@@ -204,6 +216,7 @@ export default {
   }
   .top {
     padding: 12rem 0 6rem;
+    box-shadow: none;
     .my-profile {
       .profile {
         width: 9rem;
@@ -256,13 +269,10 @@ export default {
   .my-cards-wrap {
     flex: 2;
     padding: 6rem 0 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 
     .my-cards {
       width: 75%;
+      max-width: 108rem;
       margin-top: 2.5rem;
       &:first-child {
         margin-top: 0;

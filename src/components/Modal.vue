@@ -12,14 +12,17 @@
         @starChanged="starChanged"
       />
       <div class="cta" v-if="type !== 'star'">
-        <vueflix-func-btn @click="noFunc" v-if="type === 'yes-no'">
+        <vueflix-func-btn
+          @click="noFunc"
+          v-if="type === 'yes-no'"
+          class="btn--later"
+        >
           <slot name="no-string"></slot>
         </vueflix-func-btn>
         <vueflix-func-btn
-          bg="var(--theme-500)"
-          text-color="#fff"
           @click="yesFunc"
           v-if="type === 'yes-no' || type === 'alert'"
+          class="btn--install"
         >
           <slot name="yes-string"></slot>
         </vueflix-func-btn>
@@ -97,6 +100,15 @@ export default {
       width: 100%;
       justify-content: flex-end;
       gap: 0.5em;
+      .btn {
+        &--later {
+          background-color: var(--top-item);
+        }
+        &--install {
+          background-color: var(--theme-500);
+          color: var(--top-item);
+        }
+      }
     }
   }
 }

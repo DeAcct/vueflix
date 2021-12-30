@@ -54,13 +54,15 @@ export default {
     border-bottom: 0.1rem solid transparent;
     transition: border-bottom-color 100ms ease-out;
 
-    &--selected {
-      color: var(--theme-500);
-      border-bottom-color: var(--theme-500);
-    }
-
-    .func-btn {
+    .btn {
       padding: 1.5rem 0 1.4rem;
+      box-shadow: none;
+    }
+    &--selected {
+      border-bottom-color: var(--theme-500);
+      .btn {
+        color: var(--theme-500);
+      }
     }
   }
 }
@@ -75,9 +77,16 @@ export default {
       border-radius: 30rem;
       transition: background-color 150ms ease-out;
 
+      .btn {
+        display: block;
+        padding: 1rem 1.5rem;
+        font-size: 1.8rem;
+      }
       &--selected {
-        color: var(--top-item);
         background-color: var(--theme-500);
+        .btn {
+          color: var(--top-item);
+        }
       }
 
       &:not(.tab-item--selected):hover {

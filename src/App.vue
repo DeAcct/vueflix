@@ -59,8 +59,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-@import url("./common.scss");
+<style lang="scss">
+@import "./common.scss";
 .fade-enter-active,
 .fade-leave-active,
 .anime-to-enter-active,

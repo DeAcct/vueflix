@@ -16,7 +16,7 @@
       @starChanged="starChanged"
       class="widget"
     />
-    <div class="anime-useful-widget widget" v-if="!isPC">
+    <div class="anime-useful-widget widget">
       <ul class="info">
         <li class="inner">
           <strong class="title"> 줄거리 </strong>
@@ -57,7 +57,7 @@
       </arrow-link-btn>
     </div>
 
-    <div class="episode-and-review-widget widget">
+    <div class="episodes-widget widget">
       <episodes
         v-for="(part, index) in animeInfo.parts"
         :episodesData="part"
@@ -123,18 +123,13 @@ export default {
     window.addEventListener("resize", () => {
       this.deviceHeight = window.innerHeight;
     });
-    window.addEventListener("resize", () => {
-      this.isPC = window.innerWidth <= 768;
-    });
     window.addEventListener("scroll", this.handleScroll);
   },
   unmounted() {
     window.removeEventListener("resize", () => {
       this.deviceHeight = window.innerHeight;
     });
-    window.removeEventListener("resize", () => {
-      this.isPC = window.innerWidth <= 768;
-    });
+    window.removeEventListener("scroll", this.handleScroll);
   },
   data() {
     return {
@@ -165,7 +160,6 @@ export default {
         },
       ],
       isSub: this.$route.name === "anime",
-      isPC: window.innerWidth >= 1080,
       isScroll: false,
     };
   },
@@ -199,7 +193,6 @@ export default {
       try {
         const posterURL = await getDownloadURL(posterRef);
         this.animeInfo = { ...rawData, poster: posterURL };
-        console.log(this.animeInfo);
       } catch {
         console.error("포스터 정보가 존재하지 않습니다");
       }
@@ -323,7 +316,7 @@ export default {
       background-color: var(--bg-100);
     }
   }
-  .episode-and-review-widget {
+  .episodes-widget {
     .episodes {
       &:not(:last-child) {
         margin-bottom: 1rem;

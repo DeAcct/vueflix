@@ -1,5 +1,5 @@
 <template>
-  <main class="change-profile">
+  <main class="change-profile" :style="`min-height: ${deviceHeight}px;`">
     <h2>{{ infoString }}</h2>
     <ul class="alert">
       <li>4개 이하의 프로필만 만들 수 있어요.</li>
@@ -21,7 +21,7 @@
       </ul>
       <div class="btn-area">
         <vueflix-func-btn
-          class="new"
+          class="btn--new"
           border="1px solid var(--bg-200)"
           v-if="!isEditProfileMode && profiles.length < 4"
           @click="newProfile"
@@ -37,7 +37,7 @@
         </vueflix-func-btn>
 
         <vueflix-func-btn
-          class="cancel"
+          class="btn--cancel"
           border="1px solid var(--bg-200)"
           v-if="isNewProfileMode || isEditProfileMode"
           @click="cancel"
@@ -47,6 +47,7 @@
         </vueflix-func-btn>
 
         <vueflix-func-btn
+          class="btn--edit"
           bg="var(--theme-500)"
           border="1px solid var(--theme-500)"
           v-if="!isNewProfileMode && profiles.length > 1"
@@ -108,7 +109,18 @@ export default {
       isSameName: false,
       isOverflow: false,
       isEditProfileMode: false,
+      deviceHeight: window.innerHeight,
     };
+  },
+  mounted() {
+    window.addEventListener("resize", () => {
+      this.deviceHeight = window.innerHeight;
+    });
+  },
+  unmounted() {
+    window.removeEventListener("resize", () => {
+      this.deviceHeight = window.innerHeight;
+    });
   },
   methods: {
     newProfile() {
@@ -184,7 +196,6 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 12rem 2rem 5.6rem;
-  min-height: 100vh;
   h2 {
     font-weight: 700;
   }
@@ -241,9 +252,6 @@ export default {
       display: flex;
       justify-content: center;
       width: 21rem;
-      .func-btn {
-        transition: none;
-      }
       button:not(:last-child) {
         margin-right: 1rem;
       }
@@ -258,10 +266,17 @@ export default {
           height: 100%;
         }
       }
-      .new,
-      .cancel {
-        .icon {
-          color: var(--text-900);
+      .btn {
+        &--new,
+        &--cancel {
+          background-color: var(--top-item);
+          .icon {
+            color: var(--text-900);
+          }
+        }
+        &--edit {
+          background-color: var(--theme-500);
+          color: var(--top-item);
         }
       }
     }

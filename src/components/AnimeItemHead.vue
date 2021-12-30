@@ -111,12 +111,15 @@
       </anime-action-btn>
     </div>
     <div class="continue-play-bg">
-      <button class="continue-play-btn">1화 무료보기</button>
+      <vueflix-func-btn class="btn--continue-play">
+        1화 무료보기
+      </vueflix-func-btn>
     </div>
   </header>
 </template>
 
 <script>
+import VueflixFuncBtn from "./VueflixFuncBtn.vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconOverflow from "./icons/IconOverflow.vue";
@@ -128,6 +131,7 @@ import IconStarRating from "./icons/IconStarRating.vue";
 export default {
   name: "AnimeItemHead",
   components: {
+    VueflixFuncBtn,
     IconBase,
     IconArrowPrev,
     IconOverflow,
@@ -384,7 +388,7 @@ export default {
   .continue-play-bg {
     width: 100%;
     padding: 1.5rem var(--inner-padding) 2rem;
-    .continue-play-btn {
+    .btn--continue-play {
       width: 100%;
       height: 100%;
       padding: 1.5rem 0;
@@ -393,6 +397,7 @@ export default {
       color: #fff;
       font-weight: 700;
       font-size: 1.5rem;
+      box-shadow: none;
     }
   }
 }
@@ -469,7 +474,7 @@ export default {
       align-self: flex-end;
       padding: 0;
       margin-bottom: 3rem;
-      .continue-play-btn {
+      .btn--continue-play {
         width: 20rem;
         border-radius: 3rem;
         font-size: 2rem;
