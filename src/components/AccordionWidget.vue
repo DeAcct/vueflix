@@ -1,33 +1,27 @@
 <template>
-  <li class="selector">
+  <div class="accordion-widget">
     <details>
       <summary>
         <i class="icon">
           <icon-base width="2rem" height="2rem"><icon-arrow-next /></icon-base>
         </i>
-        <slot></slot>
+        <slot name="title"></slot>
       </summary>
       <ul class="sub-tags">
-        <triple-checkbox
-          v-for="selectorItem in selectorItems"
-          :key="selectorItem"
-          :label="selectorItem"
-        />
+        <slot name="content"></slot>
       </ul>
     </details>
-  </li>
+  </div>
 </template>
 
 <script>
-import TripleCheckbox from "./TripleCheckbox.vue";
 import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 export default {
-  name: "SelectorAccordion",
+  name: "AccordionWidget",
   components: {
     IconArrowNext,
     IconBase,
-    TripleCheckbox,
   },
   props: {
     selectorItems: {
@@ -42,12 +36,12 @@ details {
   summary {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     font-size: 1.5rem;
     font-weight: 700;
     .icon {
       width: 2rem;
       height: 2rem;
+      margin-right: 0.5rem;
       transition: 150ms ease-out;
     }
   }
@@ -62,7 +56,6 @@ details {
   .sub-tags {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
   }
 }
 </style>

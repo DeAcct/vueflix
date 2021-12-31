@@ -1,5 +1,5 @@
 <template>
-  <form class="controller" :class="{ open: isOpen }">
+  <form class="controller" :class="{ 'controller--open': isOpen }">
     <div
       class="top-row"
       @touchstart="touchStart($event)"
@@ -46,32 +46,43 @@
         <label for="quarter">
           분기
           <select name="quarter" id="quarter">
-            <option v-for="quarter in 4" :key="`${quarter}분기`"
-              >{{ quarter }}분기</option
-            >
+            <option v-for="quarter in 4" :key="`${quarter}분기`">
+              {{ quarter }}분기
+            </option>
           </select>
         </label>
       </fieldset>
       <fieldset>
         <legend class="blind">세부 태그</legend>
         <ul class="selectors">
-          <selector-accordion
+          <li
             v-for="selector in selectors"
             :key="selector.name"
-            :selectorItems="selector.selectorItem"
-            >{{ selector.name }}</selector-accordion
+            class="selector"
           >
+            <accordion-widget>
+              <template v-slot:title>{{ selector.name }}</template>
+              <template v-slot:content>
+                <triple-checkbox
+                  v-for="selectorItem in selector.selectorItem"
+                  :key="selectorItem"
+                  :label="selectorItem"
+                />
+              </template>
+            </accordion-widget>
+          </li>
         </ul>
       </fieldset>
     </div>
   </form>
 </template>
+
 <script>
 import IconBase from "./IconBase.vue";
 import IconExcluded from "./icons/IconExcluded.vue";
 import IconSelected from "./icons/IconSelected.vue";
 import TagItem from "./TagItem.vue";
-import SelectorAccordion from "./SelectorAccordion.vue";
+import AccordionWidget from "./AccordionWidget.vue";
 import TripleCheckbox from "./TripleCheckbox.vue";
 export default {
   name: "Controller",
@@ -80,7 +91,7 @@ export default {
     IconExcluded,
     IconSelected,
     TagItem,
-    SelectorAccordion,
+    AccordionWidget,
     TripleCheckbox,
   },
   data() {
@@ -232,11 +243,11 @@ export default {
   },
 };
 </script>
+
 <style lang="scss" scoped>
 .controller {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
   width: 100%;
   padding: 0 2rem 7.5rem;
   background-color: var(--text-100);
@@ -251,7 +262,7 @@ export default {
   &::-webkit-scrollbar {
     display: none;
   }
-  &.open {
+  &--open {
     bottom: 0;
   }
   .top-row {
@@ -263,11 +274,12 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2.5rem;
+    margin-bottom: 2rem;
     .swipe-indi {
       width: 5rem;
       height: 0.5rem;
       border-radius: 0.25rem;
+      margin-bottom: 2rem;
       background-color: var(--text-300);
     }
     strong {
@@ -282,10 +294,15 @@ export default {
     flex-direction: column;
     border-bottom: 2px solid var(--text-300);
     padding-bottom: 2rem;
-    gap: 1rem;
+    margin-bottom: 2rem;
     .tags-container {
       display: flex;
-      gap: 0.5rem;
+      &:not(:last-child) {
+        margin-bottom: 1rem;
+      }
+      .icon {
+        margin-right: 0.5rem;
+      }
       &.selected .icon {
         color: var(--toggle-true);
       }
@@ -295,14 +312,18 @@ export default {
       .tags {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.3rem;
+        .tag-item:not(:last-child) {
+          margin-right: 0.5rem;
+        }
       }
     }
   }
   .general-selector {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    .tag:not(:last-child) {
+      margin-bottom: 1rem;
+    }
   }
   fieldset:not(:last-child) {
     padding-bottom: 2rem;
@@ -339,7 +360,12 @@ export default {
   .selectors {
     display: flex;
     flex-direction: column;
-    gap: 1.8rem;
+    .selector:not(:last-child) {
+      margin-bottom: 1.5rem;
+    }
+    .tag:not(:last-child) {
+      margin-bottom: 0.7rem;
+    }
   }
 }
 @media screen and (min-width: 769px) {

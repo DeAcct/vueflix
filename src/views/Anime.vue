@@ -1,5 +1,5 @@
 <template>
-  <div class="anime" :style="`min-height: ${deviceHeight}px`" v-if="isSub">
+  <div class="anime" :style="`min-height: ${deviceHeight}px`" v-if="!isSub">
     <anime-item-head
       :isScroll="isScroll"
       :title="animeInfo.name"
@@ -88,7 +88,7 @@
       :close="actionSheetClose"
     />
   </div>
-  <router-view v-else />
+  <router-view v-else :myRating="myRating" />
 </template>
 <script>
 import {
@@ -159,7 +159,7 @@ export default {
           text: this.animeInfo ? this.animeInfo.madeBy : "",
         },
       ],
-      isSub: this.$route.name === "anime",
+      isSub: this.$route.name !== "anime",
       isScroll: false,
     };
   },

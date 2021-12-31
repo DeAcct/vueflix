@@ -92,10 +92,10 @@ export default {
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     .icon {
       width: 2.4rem;
       height: 2.4rem;
+      margin-right: 0.5rem;
       &[aria-checked="true"] {
         fill: var(--toggle-true);
       }
