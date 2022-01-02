@@ -79,66 +79,49 @@
           <p class="star-rating-number">
             평균 {{ starRatingAvg ? starRatingAvg.toFixed(1) : "" }}점
           </p>
-          <star-interaction
-            :rating="myRating"
-            v-if="!notPC"
-            textColor="#fff"
-            @starChanged="starChanged"
-          />
         </div>
       </div>
     </div>
-    <div class="anime-interact-btn-area inner" v-if="notPC">
+    <div class="anime-interact-btn-area inner"></div>
+    <div class="continue-play-bg">
       <anime-action-btn
         @click="wannaSeeToggle"
         :isEnabled="wannaSeeBool"
         type="wanna-see"
+        v-if="notPC"
+        label="보고싶다"
       >
         <template v-slot:icon>
           <icon-wanna-see />
         </template>
-        <template v-slot:label>보고싶다</template>
       </anime-action-btn>
-      <anime-action-btn
-        @click="starModalOpen"
-        :isEnabled="isUserRated"
-        type="star-rating"
-      >
-        <template v-slot:icon>
-          <icon-star-rating />
-        </template>
-        <template v-slot:label>별점주기</template>
-      </anime-action-btn>
-    </div>
-    <div class="continue-play-bg">
-      <vueflix-func-btn class="btn--continue-play">
-        1화 무료보기
-      </vueflix-func-btn>
+      <vueflix-btn class="btn--continue-play" component="button" :icon="true">
+        <template v-slot:icon><icon-play /></template>
+        <template v-slot:text>1화 무료보기</template>
+      </vueflix-btn>
     </div>
   </header>
 </template>
 
 <script>
-import VueflixFuncBtn from "./VueflixFuncBtn.vue";
+import VueflixBtn from "./VueflixBtn.vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconOverflow from "./icons/IconOverflow.vue";
 import AnimeActionBtn from "./AnimeActionBtn.vue";
-import StarInteraction from "./StarInteraction.vue";
 import IconWannaSee from "./icons/IconWannaSee.vue";
-import IconStarRating from "./icons/IconStarRating.vue";
+import IconPlay from "./icons/IconPlay.vue";
 
 export default {
   name: "AnimeItemHead",
   components: {
-    VueflixFuncBtn,
+    VueflixBtn,
     IconBase,
     IconArrowPrev,
     IconOverflow,
     AnimeActionBtn,
-    StarInteraction,
     IconWannaSee,
-    IconStarRating,
+    IconPlay,
   },
   props: {
     isScroll: {
@@ -264,7 +247,7 @@ export default {
     }
 
     &--scrolled {
-      background-color: var(--anime-item-head);
+      background-color: var(--anime-item-head-500);
       .col-left .scroll-title {
         opacity: 1;
         transform: translateX(0);
@@ -380,21 +363,24 @@ export default {
     margin: {
       top: 1.5rem;
     }
-    .anime-interact-btn {
-      width: 50%;
-    }
   }
 
   .continue-play-bg {
+    display: flex;
+    justify-content: space-between;
     width: 100%;
     padding: 1.5rem var(--inner-padding) 2rem;
-    .btn--continue-play {
-      width: 100%;
-      height: 100%;
-      padding: 1.5rem 0;
-      background-color: var(--theme-500);
+
+    .anime-interact-btn {
+      width: 22%;
       border-radius: 0.3rem;
-      color: #fff;
+    }
+
+    .btn {
+      width: 75%;
+      padding: 1.2rem 0;
+      background-color: var(--bg-100);
+      border-radius: 0.3rem;
       font-weight: 700;
       font-size: 1.5rem;
       box-shadow: none;
@@ -404,7 +390,7 @@ export default {
 
 @media screen and (min-width: 1080px) {
   .anime-item-head {
-    background: var(--anime-item-head) !important;
+    background: var(--anime-item-head-500) !important;
     display: flex;
     justify-content: space-between;
     padding: 0 calc((100% - 118rem) / 2);
@@ -421,7 +407,7 @@ export default {
         .anime-interact-btn {
           position: absolute;
           bottom: 0;
-          background-color: var(--anime-item-head);
+          background-color: var(--anime-item-head-500);
           width: 100%;
           padding: 1.2rem 0 1.4rem;
         }
@@ -462,10 +448,7 @@ export default {
         .star-rating-number {
           font-size: 1.6rem;
           font-weight: 500;
-          margin: {
-            top: 1.5rem;
-            bottom: 1.5rem;
-          }
+          margin-top: 1.5rem;
         }
       }
     }
@@ -478,6 +461,8 @@ export default {
         width: 20rem;
         border-radius: 3rem;
         font-size: 2rem;
+        background-color: var(--theme-500);
+        color: #fff;
       }
     }
   }

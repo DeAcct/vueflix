@@ -63,7 +63,6 @@
         :episodesData="part"
         :key="index"
         :id="part.part"
-        ref="episodes"
       />
     </div>
     <modal
@@ -350,6 +349,7 @@ export default {
 @media screen and (min-width: 1080px) {
   .anime {
     .anime-item-head {
+      border-radius: 0;
       padding-top: 10rem;
       height: 40rem;
     }

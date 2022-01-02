@@ -30,16 +30,20 @@
         </label>
       </div>
     </form>
-    <vueflix-func-btn @click="moreKeyword">{{ moreBtnText }}</vueflix-func-btn>
+    <vueflix-btn @click="moreKeyword" component="button">
+      <template v-slot:text>
+        {{ moreBtnText }}
+      </template>
+    </vueflix-btn>
   </div>
 </template>
 
 <script>
-import VueflixFuncBtn from "./VueflixFuncBtn.vue";
+import VueflixBtn from "./VueflixBtn.vue";
 export default {
   name: "KeyworkReview",
   components: {
-    VueflixFuncBtn,
+    VueflixBtn,
   },
   data() {
     return {

@@ -11,20 +11,24 @@
           <strong class="length">{{ reviewData.length || 0 }}/300</strong>
           <p v-if="!reviewDataValid" class="too-long-alert">너무 길어요!</p>
         </div>
-        <vueflix-func-btn :disabled="!reviewDataSubmitAble" @click="submit">
-          등록
-        </vueflix-func-btn>
+        <vueflix-btn
+          :disabled="!reviewDataSubmitAble"
+          @click="submit"
+          component="button"
+        >
+          <template v-slot:text> 등록 </template>
+        </vueflix-btn>
       </div>
     </div>
   </form>
 </template>
 
 <script>
-import VueflixFuncBtn from "./VueflixFuncBtn.vue";
+import VueflixBtn from "./VueflixBtn.vue";
 export default {
   name: "NewReview",
   components: {
-    VueflixFuncBtn,
+    VueflixBtn,
   },
   data() {
     return {

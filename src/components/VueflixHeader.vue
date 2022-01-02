@@ -112,6 +112,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.isHome);
     this.init();
   },
   created() {

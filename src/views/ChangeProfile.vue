@@ -20,47 +20,43 @@
         </li>
       </ul>
       <div class="btn-area">
-        <vueflix-func-btn
+        <vueflix-btn
           class="btn--new"
           border="1px solid var(--bg-200)"
           v-if="!isEditProfileMode && profiles.length < 4"
           @click="newProfile"
           ref="newBtn"
           type="button"
+          component="button"
+          :icon="true"
         >
-          <i class="icon">
-            <icon-base>
-              <icon-plus />
-            </icon-base>
-          </i>
-          {{ newBtnString }}
-        </vueflix-func-btn>
+          <template v-slot:icon><icon-plus /></template>
+          <template v-slot:text>{{ newBtnString }}</template>
+        </vueflix-btn>
 
-        <vueflix-func-btn
+        <vueflix-btn
           class="btn--cancel"
           border="1px solid var(--bg-200)"
           v-if="isNewProfileMode || isEditProfileMode"
           @click="cancel"
           type="button"
+          component="button"
         >
-          취소
-        </vueflix-func-btn>
+          <template v-slot:text>취소</template>
+        </vueflix-btn>
 
-        <vueflix-func-btn
+        <vueflix-btn
           class="btn--edit"
           bg="var(--theme-500)"
           border="1px solid var(--theme-500)"
           v-if="!isNewProfileMode && profiles.length > 1"
           @click="editProfile"
-          textColor="var(--top-item)"
+          component="button"
+          :icon="true"
         >
-          <i class="icon">
-            <icon-base>
-              <icon-remove />
-            </icon-base>
-          </i>
-          {{ editBtnString }}
-        </vueflix-func-btn>
+          <template v-slot:icon><icon-remove /></template>
+          <template v-slot:text>{{ editBtnString }}</template>
+        </vueflix-btn>
       </div>
       <input
         type="text"
@@ -83,16 +79,14 @@
 
 <script>
 import Profile from "../components/Profile.vue";
-import VueflixFuncBtn from "../components/VueflixFuncBtn.vue";
-import IconBase from "../components/IconBase.vue";
+import VueflixBtn from "../components/VueflixBtn.vue";
 import IconPlus from "../components/icons/IconPlus.vue";
 import IconRemove from "../components/icons/IconRemove.vue";
 export default {
   name: "ChangeProfile",
   components: {
     Profile,
-    VueflixFuncBtn,
-    IconBase,
+    VueflixBtn,
     IconPlus,
     IconRemove,
   },

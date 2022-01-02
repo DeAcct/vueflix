@@ -7,10 +7,16 @@
           <strong class="nickname">미야조노 카오리</strong>
           <i class="email">example1234@example.com</i>
           <div class="btn-area">
-            <vueflix-route-btn to="/my/change-profile" class="btn--profile">
-              프로필 관리
-            </vueflix-route-btn>
-            <vueflix-func-btn class="btn--logout">로그아웃</vueflix-func-btn>
+            <vueflix-btn
+              to="/my/change-profile"
+              class="btn--profile"
+              component="router-link"
+            >
+              <template v-slot:text>프로필 관리</template>
+            </vueflix-btn>
+            <vueflix-btn class="btn--logout" component="button">
+              <template v-slot:text>로그아웃</template>
+            </vueflix-btn>
           </div>
         </div>
         <div class="history-items">
@@ -51,7 +57,7 @@
 <script>
 import Profile from "../components/Profile.vue";
 import VueflixRouteBtn from "../components/VueflixRouteBtn.vue";
-import VueflixFuncBtn from "../components/VueflixFuncBtn.vue";
+import VueflixBtn from "../components/VueflixBtn.vue";
 import ArrowLinkBtn from "../components/ArrowLinkBtn.vue";
 import IconMembership from "../components/icons/IconMembership";
 import IconAccount from "../components/icons/IconAccount";
@@ -61,7 +67,7 @@ export default {
   components: {
     Profile,
     VueflixRouteBtn,
-    VueflixFuncBtn,
+    VueflixBtn,
     ArrowLinkBtn,
     IconMembership,
     IconNotification,

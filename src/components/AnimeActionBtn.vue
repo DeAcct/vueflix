@@ -3,15 +3,15 @@
     :class="[
       'anime-interact-btn',
       { 'anime-interact-btn--wanna-see': isEnabled && type === 'wanna-see' },
-      {
-        'anime-interact-btn--star-rating': isEnabled && type === 'star-rating',
-      },
     ]"
+    :title="label"
   >
-    <icon-base iconName="ddd" class="icon">
+    <icon-base iconName="label" class="icon">
       <slot name="icon"></slot>
     </icon-base>
-    <slot name="label"></slot>
+    <span class="label">
+      <slot name="label"></slot>
+    </span>
   </button>
 </template>
 
@@ -31,6 +31,9 @@ export default {
     type: {
       type: String,
     },
+    label: {
+      type: String,
+    },
   },
 };
 </script>
@@ -39,30 +42,21 @@ export default {
 .anime-interact-btn {
   user-select: none;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  font-size: 1.1rem;
+  background-color: var(--top-item);
   color: var(--top-item);
-  font-weight: 500;
   transition: opacity 150ms ease-out;
   .icon {
     color: transparent;
-    stroke: var(--top-item);
+    stroke: var(--text-900);
     stroke-width: 0.2rem;
     stroke-linejoin: round;
-    width: 2rem;
-    margin-bottom: 0.2rem;
-  }
-  &:active .icon {
-    opacity: 0.6;
+    width: 4.8rem;
   }
   &--wanna-see .icon {
-    color: var(--anime-wanna-see-icon);
+    fill: var(--anime-wanna-see-icon);
     stroke: var(--anime-wanna-see-icon);
-  }
-  &--star-rating .icon {
-    color: var(--point-500);
-    stroke: var(--point-500);
   }
 }
 
@@ -72,10 +66,22 @@ export default {
     justify-content: center;
     font-size: 1.5rem;
     .icon {
+      width: 2.4rem;
+      stroke: var(--top-item);
       margin: {
         bottom: 0;
         right: 0.6rem;
       }
+    }
+    &--wanna-see .icon {
+      stroke: var(--anime-wanna-see-icon);
+    }
+    .label {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
     }
   }
 }

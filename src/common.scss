@@ -113,8 +113,8 @@ summary {
 .blind {
   clip: rect(1px 1px 1px 1px);
   clip-path: inset(50%);
-  width: 1px;
-  height: 1px;
+  width: 1px !important;
+  height: 1px !important;
   overflow: hidden;
   position: absolute;
   white-space: nowrap;
@@ -155,8 +155,7 @@ summary {
   justify-content: center;
   align-items: center;
   border-radius: 0.3rem;
-  font-size: 1.3em;
-  font-weight: 700;
+
   width: fit-content;
   transition: 150ms ease-out;
   box-shadow: 0 0.2rem 0.4rem var(--bg-200);
@@ -164,6 +163,23 @@ summary {
   &:active {
     box-shadow: 0 0.2rem 0.4rem transparent;
     opacity: 0.9;
+  }
+  .icon {
+    color: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    margin-right: 0.7rem;
+  }
+  .text {
+    color: inherit;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    font-size: 1.4rem;
+    font-weight: 700;
   }
 }
 
@@ -183,9 +199,8 @@ summary {
 }
 
 @media screen and (min-width: 1024px) {
-  .func-btn {
-    font-size: 2em;
-    padding: 1.5rem 2rem;
+  .btn .text {
+    font-size: 1.7rem;
   }
 }
 

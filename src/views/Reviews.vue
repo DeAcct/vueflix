@@ -38,7 +38,7 @@ export default {
 
 <style lang="scss" scoped>
 .reviews {
-  padding-top: 7rem;
+  padding: 7rem 0 2rem;
   background-color: var(--bg-100);
   .widget:not(:last-child) {
     margin-bottom: 1rem;

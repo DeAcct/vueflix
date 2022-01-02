@@ -12,31 +12,31 @@
         @starChanged="starChanged"
       />
       <div class="cta" v-if="type !== 'star'">
-        <vueflix-func-btn
+        <vueflix-btn
           @click="noFunc"
           v-if="type === 'yes-no'"
           class="btn--later"
         >
-          <slot name="no-string"></slot>
-        </vueflix-func-btn>
-        <vueflix-func-btn
+          <template v-slot:text><slot name="no-string" /></template>
+        </vueflix-btn>
+        <vueflix-btn
           @click="yesFunc"
           v-if="type === 'yes-no' || type === 'alert'"
           class="btn--install"
         >
-          <slot name="yes-string"></slot>
-        </vueflix-func-btn>
+          <template v-slot:text><slot name="yes-string" /></template>
+        </vueflix-btn>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import VueflixFuncBtn from "./VueflixFuncBtn.vue";
+import VueflixBtn from "./VueflixBtn.vue";
 import StarInteraction from "./StarInteraction.vue";
 export default {
   components: {
-    VueflixFuncBtn,
+    VueflixBtn,
     StarInteraction,
   },
   name: "Modal",
@@ -69,7 +69,7 @@ export default {
 <style lang="scss" scoped>
 .modal {
   position: fixed;
-  z-index: 50;
+  z-index: 100;
   width: 100vw;
   height: auto;
   .shadow {
@@ -77,6 +77,7 @@ export default {
     bottom: 0;
     width: 100%;
     height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
   }
   .action-area {
     display: flex;

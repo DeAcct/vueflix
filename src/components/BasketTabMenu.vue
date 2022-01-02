@@ -5,17 +5,17 @@
       :key="tabItem.text"
       :class="[{ 'tab-item--selected': tabItem.selected }, 'tab-item']"
     >
-      <vueflix-func-btn @click="changeSelected" bg="transparent">
-        {{ tabItem.text }}
-      </vueflix-func-btn>
+      <vueflix-btn @click="changeSelected" bg="transparent" component="button">
+        <template v-slot:text>{{ tabItem.text }}</template>
+      </vueflix-btn>
     </li>
   </ul>
 </template>
 <script>
-import VueflixFuncBtn from "./VueflixFuncBtn.vue";
+import VueflixBtn from "./VueflixBtn.vue";
 export default {
   components: {
-    VueflixFuncBtn,
+    VueflixBtn,
   },
   data() {
     return {
