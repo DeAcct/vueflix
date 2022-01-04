@@ -112,7 +112,7 @@ const routes = [
         name: "by-email",
         component: () => import("@/views/ByEmail"),
         meta: {
-          title: "이메일로 계속하기",
+          title: "이메일로 로그인",
           appBar: false,
           bottomTabMenu: false,
         },
@@ -121,6 +121,21 @@ const routes = [
         path: "sign-up",
         name: "sign-up",
         component: () => import("@/views/SignUp"),
+        meta: {
+          title: "이메일로 가입",
+          appBar: false,
+          bottomTabMenu: false,
+        },
+      },
+      {
+        path: "another",
+        name: "another",
+        component: () => import("@/views/OtherSignUp"),
+        meta: {
+          title: "다른 방법으로 계속하기",
+          appBar: false,
+          bottomTabMenu: false,
+        },
       },
     ],
   },

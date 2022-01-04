@@ -45,7 +45,7 @@
             v-if="isAuthMain"
             class="btn--another"
           >
-            <template v-slot:text>다른 방법으로 로그인</template>
+            <template v-slot:text>다른 방법으로 계속하기</template>
           </vueflix-btn>
         </div>
       </div>
