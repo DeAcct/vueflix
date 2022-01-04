@@ -2,24 +2,30 @@
   <div class="wrap">
     <main class="my" v-if="isMyRoot">
       <div class="top">
-        <div class="my-profile">
-          <profile />
-          <strong class="nickname">미야조노 카오리</strong>
-          <i class="email">example1234@example.com</i>
+        <div :class="['my-profile', { 'my-profile--logged-in': true }]">
+          <div class="profile-img">
+            <router-link to="/my/change-profile">
+              <profile />
+            </router-link>
+            <strong class="nickname">
+              {{ user ? user.displayName : "아직 로그인하지 않았어요" }}
+            </strong>
+            <i class="email" v-if="user">{{ user.email }}</i>
+          </div>
           <div class="btn-area">
             <vueflix-btn
-              to="/my/change-profile"
-              class="btn--profile"
-              component="router-link"
+              class="btn"
+              component="button"
+              to="/auth"
+              @click="route"
             >
-              <template v-slot:text>프로필 관리</template>
-            </vueflix-btn>
-            <vueflix-btn class="btn--logout" component="button">
-              <template v-slot:text>로그아웃</template>
+              <template v-slot:text>
+                {{ user ? "로그아웃" : "로그인" }}
+              </template>
             </vueflix-btn>
           </div>
         </div>
-        <div class="history-items">
+        <div class="history-items" v-if="user">
           <router-link to="#none" class="history-item">
             <strong>66</strong>
             <span>별점</span>
@@ -35,7 +41,30 @@
         </div>
       </div>
       <div class="my-cards-wrap">
-        <div class="my-cards" v-for="(myCard, index) in myCards" :key="index">
+        <template v-if="user">
+          <div
+            class="my-cards"
+            v-for="(myCard, index) in myCardLoggedin"
+            :key="index"
+          >
+            <arrow-link-btn
+              v-for="item in myCard"
+              :key="item.text"
+              :to="item.to"
+              :icon="item.icon"
+            >
+              <template v-slot:icon>
+                <component :is="item.icon" />
+              </template>
+              <template v-slot:text>{{ item.text }}</template>
+            </arrow-link-btn>
+          </div>
+        </template>
+        <div
+          class="my-cards"
+          v-for="(myCard, index) in myCardGeneral"
+          :key="index"
+        >
           <arrow-link-btn
             v-for="item in myCard"
             :key="item.text"
@@ -55,8 +84,10 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { getAuth, signOut } from "firebase/auth";
+
 import Profile from "../components/Profile.vue";
-import VueflixRouteBtn from "../components/VueflixRouteBtn.vue";
 import VueflixBtn from "../components/VueflixBtn.vue";
 import ArrowLinkBtn from "../components/ArrowLinkBtn.vue";
 import IconMembership from "../components/icons/IconMembership";
@@ -66,17 +97,24 @@ import IconNotification from "../components/icons/IconNotification.vue";
 export default {
   components: {
     Profile,
-    VueflixRouteBtn,
     VueflixBtn,
     ArrowLinkBtn,
     IconMembership,
     IconNotification,
     IconAccount,
   },
+  computed: {
+    ...mapState({
+      user: (state) => state.auth.user,
+    }),
+  },
+  mounted() {
+    console.log(this.user);
+  },
   data() {
     return {
       isMyRoot: this.$route.name === "my",
-      myCards: [
+      myCardLoggedin: [
         [
           {
             text: "멤버십 및 포인트",
@@ -106,6 +144,8 @@ export default {
             to: "#none",
           },
         ],
+      ],
+      myCardGeneral: [
         [
           {
             text: "이미지 캐시 초기화",
@@ -122,6 +162,16 @@ export default {
         ],
       ],
     };
+  },
+  methods: {
+    async route() {
+      if (this.user) {
+        const auth = getAuth();
+        await signOut(auth);
+      } else {
+        this.$router.push("auth");
+      }
+    },
   },
 };
 </script>
@@ -145,9 +195,11 @@ export default {
   border-radius: 0 0 0.6rem 0.6rem;
   box-shadow: 0 0.2rem 0.4rem var(--bg-200);
   .my-profile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    .profile-img {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
     .profile {
       width: 7.2rem;
       margin-bottom: 1.6rem;
@@ -163,17 +215,16 @@ export default {
     }
     .btn-area {
       display: flex;
+      justify-content: center;
       .btn {
-        &--profile {
-          background-color: var(--top-item);
-        }
-        &--logout {
-          background-color: var(--theme-500);
-          color: #fff;
-        }
+        margin: 0;
+        background-color: var(--theme-500);
+        color: #fff;
       }
-      button {
-        margin-left: 1rem;
+    }
+    &--logged-in {
+      .nickname {
+        color: var(--bg-300);
       }
     }
   }

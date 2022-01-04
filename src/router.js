@@ -4,16 +4,6 @@ const date = new Date();
 const year = date.getFullYear();
 const month = date.getMonth();
 const quarter = Math.floor((month + 3) / 3);
-
-/*
-appBar: {
-  backIcon: Boolean,
-  title: String,
-  notiIcon: Boolean,
-  searchIcon: Boolean
-}
-
-*/
 const routes = [
   {
     path: "/",
@@ -21,27 +11,17 @@ const routes = [
     component: () => import("@/views/Home"),
     meta: {
       title: "뷰플릭스 - 합법적 애니 스트리밍",
-      appBar: {
-        visible: true,
-        backIcon: false,
-        title: "",
-        logo: true,
-        notiIcon: true,
-        searchIcon: true,
-      },
+      appBar: true,
+      bottomTabMenu: true,
     },
   },
   {
     path: "/anime/:id",
     name: "anime",
     component: () => import("@/views/Anime"),
-    appBar: {
-      visible: false,
-      backIcon: false,
-      title: "리뷰",
-      logo: false,
-      notiIcon: false,
-      searchIcon: false,
+    meta: {
+      appBar: false,
+      bottomTabMenu: false,
     },
     children: [
       {
@@ -49,14 +29,8 @@ const routes = [
         name: "reviews",
         component: () => import("@/views/Reviews"),
         meta: {
-          appBar: {
-            visible: true,
-            backIcon: true,
-            title: "리뷰",
-            logo: false,
-            notiIcon: false,
-            searchIcon: false,
-          },
+          appBar: true,
+          bottomTabMenu: false,
         },
       },
     ],
@@ -67,9 +41,8 @@ const routes = [
     component: () => import("@/views/TagSearch"),
     meta: {
       title: "필터로 취향저격 애니찾기",
-      appBar: {
-        title: "태그검색",
-      },
+      appBar: true,
+      bottomTabMenu: true,
     },
   },
   {
@@ -78,7 +51,8 @@ const routes = [
     component: () => import("@/views/Daily"),
     meta: {
       title: `${year}년 ${quarter}분기 신작 애니 편성표`,
-      appBar: "요일별 신작",
+      appBar: true,
+      bottomTabMenu: true,
     },
   },
   {
@@ -87,7 +61,8 @@ const routes = [
     component: () => import("@/views/Basket"),
     meta: {
       title: "보관함",
-      appBar: "보관함",
+      appBar: true,
+      bottomTabMenu: true,
     },
   },
   {
@@ -96,7 +71,8 @@ const routes = [
     component: () => import("@/views/My"),
     meta: {
       title: "내 뷰플릭스",
-      appBar: "MY",
+      appBar: true,
+      bottomTabMenu: true,
     },
     children: [
       {
@@ -105,7 +81,8 @@ const routes = [
         component: () => import("@/views/Membership"),
         meta: {
           title: "뷰플릭스 멤버십",
-          appBar: "멤버십",
+          appBar: true,
+          bottomTabMenu: false,
         },
       },
       {
@@ -113,9 +90,37 @@ const routes = [
         name: "change-profile",
         component: () => import("@/views/ChangeProfile"),
         meta: {
-          title: "내 프로필 전환하기",
-          appBar: "프로필 관리",
+          title: "내 프로필사진 편집하기",
+          appBar: true,
+          bottomTabMenu: false,
         },
+      },
+    ],
+  },
+  {
+    path: "/auth",
+    name: "auth",
+    component: () => import("@/views/Auth"),
+    meta: {
+      title: "회원가입 / 로그인",
+      appBar: false,
+      bottomTabMenu: false,
+    },
+    children: [
+      {
+        path: "by-email",
+        name: "by-email",
+        component: () => import("@/views/ByEmail"),
+        meta: {
+          title: "이메일로 계속하기",
+          appBar: false,
+          bottomTabMenu: false,
+        },
+      },
+      {
+        path: "sign-up",
+        name: "sign-up",
+        component: () => import("@/views/SignUp"),
       },
     ],
   },
@@ -125,12 +130,18 @@ const routes = [
     component: () => import("@/views/NotiAlert"),
     meta: {
       title: "알림",
+      appBar: false,
+      bottomTabMenu: false,
     },
   },
   {
     path: "/notfound",
     name: "notfound",
     component: () => import("@/views/NotFound"),
+    meta: {
+      appBar: true,
+      bottomTabMenu: false,
+    },
   },
   {
     path: "/:pathMatch(.*)*",

@@ -1,7 +1,7 @@
 <template>
   <router-view v-slot="{ Component }">
-    <vueflix-header v-if="isNotAnimeView || !isMobile" />
-    <bottom-tab-menu v-if="isMobile && isBottomTabVisible && isNotAnimeView" />
+    <vueflix-header v-if="headerVisible" />
+    <bottom-tab-menu v-if="bottomTabMenuVisible" />
     <transition name="fade">
       <component :is="Component" :key="$route.path"></component>
     </transition>
@@ -12,6 +12,9 @@
 </template>
 
 <script>
+//회원가입 구현하기
+
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import VueflixHeader from "./components/VueflixHeader.vue";
 import BottomTabMenu from "./components/BottomTabMenu.vue";
 import Toast from "./components/Toast.vue";
@@ -23,26 +26,34 @@ export default {
     BottomTabMenu,
     Toast,
   },
-  data() {
-    return {
-      isMobile: window.innerWidth <= 768,
-      isBottomTabVisible: this.page !== "membership" && this.page !== "reviews",
-      page: this.$route.name,
-      isNotAnimeView: this.page !== "anime",
-    };
-  },
   mounted() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      this.$store.commit("auth/setUser", user);
+    });
+    this.init();
     window.addEventListener("resize", () => {
       this.isMobile = window.innerWidth <= 768;
     });
   },
+  data() {
+    return {
+      headerVisible: this.$route.meta.appBar || !this.isMobile,
+      bottomTabMenuVisible: this.$route.meta.bottomTabMenu && this.isMobile,
+      isMobile: window.innerWidth <= 768,
+    };
+  },
+  methods: {
+    init() {
+      this.headerVisible = this.$route.meta.appBar || !this.isMobile;
+      this.bottomTabMenuVisible =
+        this.$route.meta.bottomTabMenu && this.isMobile;
+      document.title = this.$route.meta.title || process.env.VUE_APP_KR_NAME;
+    },
+  },
   watch: {
     $route(to, from) {
-      this.page = this.$route.name;
-      this.isBottomTabVisible =
-        this.page !== "membership" && this.page !== "reviews";
-      document.title = this.$route.meta.title || process.env.VUE_APP_KR_NAME;
-      this.isNotAnimeView = this.page !== "anime";
+      this.init();
       if (this.isMobile && to.name === "anime") {
         this.transitionName = "anime-to";
       } else if (this.isMobile && from.name === "anime") {

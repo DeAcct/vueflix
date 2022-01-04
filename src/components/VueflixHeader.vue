@@ -20,11 +20,11 @@
         >
           <icon-base iconName="뒤로가기"><icon-arrow-prev /></icon-base>
         </button>
-        <h2 v-if="isMobile && !isHome">{{ headString }}</h2>
+        <h2 v-if="isMobile && !isHome" class="title">{{ headString }}</h2>
         <site-menu v-if="!isMobile" />
       </div>
       <div class="col-right">
-        <search-bar v-if="page !== 'reviews'" />
+        <search-bar v-if="isSearchVisible" />
         <notification v-if="isHome" />
       </div>
     </div>
@@ -52,6 +52,7 @@ export default {
     return {
       isScroll: false,
       isMobile: window.innerWidth <= 768,
+      isSearchVisible: false,
       isHome: this.page === "home",
       isPrevVisible:
         this.page !== "home" &&
@@ -72,11 +73,12 @@ export default {
       this.isMobile = window.innerWidth <= 768;
     },
     goBack() {
-      return this.$router.go(-1);
+      this.$router.go(-1);
     },
     init() {
       this.page = this.$route.name;
       this.isHome = this.page === "home";
+      this.isSearchVisible = this.page !== "reviews" && this.page !== "auth";
       this.isPrevVisible =
         this.page !== "home" &&
         this.page !== "tag-search" &&
@@ -106,13 +108,15 @@ export default {
         case "reviews":
           this.headString = "리뷰";
           break;
+        case "auth":
+          this.headString = "로그인";
+          break;
         default:
           this.headString = "";
       }
     },
   },
   mounted() {
-    console.log(this.isHome);
     this.init();
   },
   created() {
@@ -166,9 +170,12 @@ export default {
         }
       }
       .go-back {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-right: 0.5rem;
       }
-      h2 {
+      .title {
         font-size: 1.8rem;
         font-weight: 900;
       }

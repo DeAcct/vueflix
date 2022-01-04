@@ -2,29 +2,32 @@
   <main class="not-found">
     <h2>404 Not Found</h2>
     <i class="icon">
-      <img src="../assets/NotFoundAqua.svg" alt="처량하게 우는 캐릭터" />
+      <img
+        src="../assets/NotFoundAqua.svg"
+        alt="처량하게 우는 코노스바 아쿠아"
+      />
     </i>
     <p>
       <span class="line-break"> 뭔가 잘못 찾아오신 것 같아요ㅠㅠ </span>
       <span class="line-break"> 대신 이 캐릭터가 나오는 애니는 어떠세요? </span>
     </p>
-    <div class="goto-btn">
-      <vueflix-route-btn bg="var(--theme-500)" textColor="#fff" link="#none">
-        보러가기
-      </vueflix-route-btn>
-      <vueflix-route-btn bg="#fff" textColor="inherit" link="/">
-        홈으로
-      </vueflix-route-btn>
+    <div class="btn-area">
+      <vueflix-btn to="#none" component="router-link" class="btn--go">
+        <template v-slot:text>보러가기</template>
+      </vueflix-btn>
+      <vueflix-btn to="/" component="router-link" class="btn--home">
+        <template v-slot:text>홈으로</template>
+      </vueflix-btn>
     </div>
   </main>
 </template>
 
 <script>
-import VueflixRouteBtn from "../components/VueflixRouteBtn.vue";
+import VueflixBtn from "../components/VueflixBtn.vue";
 export default {
   name: "NotFound",
   components: {
-    VueflixRouteBtn,
+    VueflixBtn,
   },
 };
 </script>
@@ -62,9 +65,20 @@ export default {
     font-size: 2rem;
     margin-bottom: 1.5rem;
   }
-  .goto-btn {
+  .btn-area {
     display: flex;
-    gap: 1rem;
+    .btn {
+      &--go {
+        background-color: var(--theme-500);
+        color: #fff;
+      }
+      &--home {
+        background-color: var(--top-item);
+      }
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
+    }
   }
 }
 @media screen and (min-width: 768px) {

@@ -1,4 +1,5 @@
 <template>
+  <!--사진바꾸기용으로 용도변경 예정-->
   <main class="change-profile" :style="`min-height: ${deviceHeight}px;`">
     <h2>{{ infoString }}</h2>
     <ul class="alert">
