@@ -1,6 +1,6 @@
 <template>
   <section
-    :class="['slide', 'loading-target', { 'slide-loaded': slideImgLoaded }]"
+    :class="['slide', 'loading-target', { 'slide--loaded': slideImgLoaded }]"
   >
     <h2 class="blind">이미지 슬라이드</h2>
     <swiper

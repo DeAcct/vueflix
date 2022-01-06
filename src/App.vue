@@ -12,8 +12,6 @@
 </template>
 
 <script>
-//회원가입 구현하기
-
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import VueflixHeader from "./components/VueflixHeader.vue";
 import BottomTabMenu from "./components/BottomTabMenu.vue";
@@ -61,6 +59,9 @@ export default {
       } else {
         this.transitionName = "fade";
       }
+    },
+    isMobile() {
+      this.init();
     },
   },
   computed: mapState({

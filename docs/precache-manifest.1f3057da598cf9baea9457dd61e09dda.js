@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/404.html"
   },
   {
-    "revision": "d5ff915a3302ec99f29b",
+    "revision": "ffa40ce34aebcf956fdc",
     "url": "/css/app.851f3a64.css"
   },
   {
@@ -22,10 +22,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "d954608db29c4df67048",
     "url": "/css/chunk-0ee3bc82.e86f0a55.css"
-  },
-  {
-    "revision": "44ab6686a3439401f62f",
-    "url": "/css/chunk-1e419258.aeca3d6b.css"
   },
   {
     "revision": "7214eb11fa06c7b3f1d8",
@@ -58,6 +54,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "718a04495279d80a62e6",
     "url": "/css/chunk-8fa35c5c.d32f22f7.css"
+  },
+  {
+    "revision": "a31e5a5621ae6eed099b",
+    "url": "/css/chunk-b89a18f0.aeca3d6b.css"
   },
   {
     "revision": "d2a0d867e9eec996d107",
@@ -312,12 +312,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/carousel_thumbnail_vanitas.a10c05c9.webp"
   },
   {
-    "revision": "e213a3ab3d39c893c9095c0d5ee3e8db",
+    "revision": "828e4c363648fdfd5ec3ad716e108b42",
     "url": "/index.html"
   },
   {
-    "revision": "d5ff915a3302ec99f29b",
-    "url": "/js/app.44c832c2.js"
+    "revision": "ffa40ce34aebcf956fdc",
+    "url": "/js/app.de2b5691.js"
   },
   {
     "revision": "50b5188d40bb1fdff4d3",
@@ -334,10 +334,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "d954608db29c4df67048",
     "url": "/js/chunk-0ee3bc82.8d889ffc.js"
-  },
-  {
-    "revision": "44ab6686a3439401f62f",
-    "url": "/js/chunk-1e419258.adfd7b50.js"
   },
   {
     "revision": "7214eb11fa06c7b3f1d8",
@@ -378,6 +374,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "718a04495279d80a62e6",
     "url": "/js/chunk-8fa35c5c.394edf33.js"
+  },
+  {
+    "revision": "a31e5a5621ae6eed099b",
+    "url": "/js/chunk-b89a18f0.5b716e4f.js"
   },
   {
     "revision": "d2a0d867e9eec996d107",
