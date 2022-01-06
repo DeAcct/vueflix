@@ -93,7 +93,6 @@ export default {
       this.isMobile = window.innerWidth <= 1024;
     },
     goBack() {
-      console.log("as");
       this.$router.go(-1);
     },
     async getBg() {
@@ -102,8 +101,8 @@ export default {
       try {
         const bgURL = await getDownloadURL(posterRef);
         this.bgURL = bgURL;
-      } catch {
-        console.error("포스터 정보가 존재하지 않습니다");
+      } catch (err) {
+        console.error(err);
       }
     },
   },

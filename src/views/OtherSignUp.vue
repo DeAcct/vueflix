@@ -3,7 +3,7 @@
     <vueflix-btn
       component="button"
       :icon="true"
-      :type="button"
+      type="button"
       to="/auth/by-email"
       class="btn--google"
       @click="googleContinue"
@@ -15,7 +15,7 @@
       <vueflix-btn
         component="button"
         :icon="true"
-        :type="button"
+        type="button"
         to="/auth/sign-up"
         class="btn--facebook"
         @click="facebookContinue"
@@ -51,7 +51,6 @@ export default {
       nickname: "",
       email: "",
       password: "",
-      googleIcon: require("../assets/google_icon.png"),
     };
   },
   methods: {

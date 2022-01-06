@@ -1,5 +1,7 @@
 <template>
-  <section class="slide">
+  <section
+    :class="['slide', 'loading-target', { 'slide-loaded': slideImgLoaded }]"
+  >
     <h2 class="blind">이미지 슬라이드</h2>
     <swiper
       effect="fade"
@@ -12,34 +14,41 @@
       :pagination="{ clickable: true }"
     >
       <swiper-slide
-        v-for="slide in slides"
-        :key="slide.anime"
+        v-for="slideItem in slideList"
+        :key="slideItem.anime"
         class="slide-item"
       >
-        <router-link :to="slide.link">
+        <router-link :to="`/anime/${slideItem.title}`">
           <div class="bg">
             <picture>
               <source
                 media="(max-width: 1024px)"
-                :srcset="slide.bgSet.webpMobile"
+                :srcset="slideItem.imgSet.mWebpURL"
               />
               <source
                 media="(max-width: 1024px)"
-                :srcset="slide.bgSet.jpegMobile"
+                :srcset="slideItem.imgSet.mJpegURL"
               />
-              <source media="(min-width: 1025px)" :srcset="slide.bgSet.webp" />
+              <source
+                media="(min-width: 1025px)"
+                :srcset="slideItem.imgSet.pcWebpURL"
+              />
               <img
-                :src="slide.bgSet.jpeg"
-                :alt="`${slide.anime} 배너`"
+                :src="slideItem.imgSet.pcJpegURL"
+                :alt="`${slideItem.title} 배너`"
                 class="bgPlace"
               />
             </picture>
           </div>
           <div class="slide-info">
             <h3>
-              <img :src="slide.aniLogo" :alt="slide.anime" class="ani-logo" />
+              <img
+                :src="slideItem.imgSet.aniLogo"
+                :alt="slideItem.title"
+                class="ani-logo"
+              />
             </h3>
-            <strong class="slide-copy">{{ slide.copy }}</strong>
+            <strong class="slide-copy">{{ slideItem.copy }}</strong>
           </div>
         </router-link>
       </swiper-slide>
@@ -47,6 +56,9 @@
   </section>
 </template>
 <script>
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+
 import SwiperCore, {
   Autoplay,
   Pagination,
@@ -55,13 +67,10 @@ import SwiperCore, {
   EffectFade,
 } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/vue";
+SwiperCore.use([Autoplay, Pagination, A11y, Navigation, EffectFade]);
 import "swiper/swiper-bundle.min.css";
 import { mapState } from "vuex";
 
-// install Swiper modules
-SwiperCore.use([Autoplay, Pagination, A11y, Navigation, EffectFade]);
-
-// Import Swiper styles
 export default {
   components: {
     Swiper,
@@ -70,15 +79,93 @@ export default {
   data() {
     return {
       currentImg: 0,
+      slideList: [],
+      slideImgLoaded: false,
     };
   },
-  computed: mapState({
-    slides: (state) => state.anime.slides,
-  }),
+  computed: {
+    ...mapState({
+      slides: (state) => state.anime.slides,
+    }),
+  },
+  mounted() {
+    this.slideItemInit();
+  },
+  methods: {
+    async getRawData() {
+      const db = getFirestore();
+      const animeCollection = collection(db, "anime");
+      try {
+        const querySnapshot = await getDocs(animeCollection);
+        return querySnapshot;
+      } catch {
+        console.error("통신문제");
+      }
+    },
+    async slideItemInit() {
+      const rawData = await this.getRawData();
+
+      const getSlideURL = async (identifier) => {
+        const storage = getStorage();
+
+        const pcWebp = ref(storage, `slideImg/${identifier}_banner.webp`);
+        const pcWebpURL = await getDownloadURL(pcWebp);
+
+        const pcJpeg = ref(storage, `slideImg/${identifier}_banner.jpeg`);
+        const pcJpegURL = await getDownloadURL(pcJpeg);
+
+        const mobileWebp = ref(storage, `slideImg/${identifier}_banner_m.webp`);
+        const mobileWebpURL = await getDownloadURL(mobileWebp);
+
+        const mobileJpeg = ref(storage, `slideImg/${identifier}_banner_m.jpeg`);
+        const mobileWebpJpeg = await getDownloadURL(mobileJpeg);
+
+        const aniLogoRef = ref(storage, `slideImg/${identifier}.png`);
+        const aniLogo = await getDownloadURL(aniLogoRef);
+
+        return {
+          pcWebpURL: pcWebpURL,
+          pcJpegURL: pcJpegURL,
+          mWebpURL: mobileWebpURL,
+          mJpegURL: mobileWebpJpeg,
+          aniLogo: aniLogo,
+        };
+      };
+
+      let slideList = rawData.docs.map((doc) => ({
+        title: doc.id,
+        imgSet: doc.data().slideIdentifier,
+        copy: doc.data().copy,
+      }));
+
+      const imgList = await Promise.all(
+        slideList.map((doc) => {
+          return getSlideURL(doc.imgSet);
+        })
+      );
+
+      slideList = slideList.map((slide, index) => ({
+        ...slide,
+        imgSet: imgList[index],
+      }));
+
+      this.slideList = slideList;
+      this.slideImgLoaded = true;
+    },
+  },
 };
 </script>
 
 <style lang="scss">
+.slide {
+  min-height: 50vh;
+  background-image: linear-gradient(90deg, var(--text-900), var(--text-800));
+  transition: opacity 150ms ease-out;
+  &--loaded {
+    min-height: auto;
+    background: transparent;
+  }
+}
 .swiper-pagination {
   display: flex;
   justify-content: center;
@@ -133,7 +220,6 @@ export default {
     }
     .slide-copy {
       display: block;
-
       font-size: 1.5em;
       color: #fff;
       margin-bottom: 1.5rem;
