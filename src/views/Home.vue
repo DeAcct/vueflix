@@ -81,9 +81,9 @@ export default {
   padding: 2.8rem 0 5.6rem;
 }
 .modal {
-  bottom: 5.6rem;
-  transform: translateY(100vh);
   transition: 150ms ease-out;
+  transform: translateY(100vh);
+  bottom: 5.6rem;
   &.show {
     transform: translateY(0);
   }

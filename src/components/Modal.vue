@@ -16,6 +16,7 @@
           @click="noFunc"
           v-if="type === 'yes-no'"
           class="btn--later"
+          component="button"
         >
           <template v-slot:text><slot name="no-string" /></template>
         </vueflix-btn>
@@ -23,6 +24,7 @@
           @click="yesFunc"
           v-if="type === 'yes-no' || type === 'alert'"
           class="btn--install"
+          component="button"
         >
           <template v-slot:text><slot name="yes-string" /></template>
         </vueflix-btn>
