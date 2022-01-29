@@ -1,7 +1,11 @@
 <template>
   <form class="new-review">
     <div class="input-area inner">
-      <star-interaction @starChanged="starChanged" :rating="starScore" />
+      <star-interaction
+        @starChanged="starChanged"
+        :rating="starScore"
+        :disabled="!isLoggedIn"
+      />
       <textarea
         :placeholder="placeholder"
         class="new-review-area"

@@ -6,11 +6,6 @@
       <p class="description">
         <slot name="description"></slot>
       </p>
-      <star-interaction
-        :rating="rating"
-        v-if="type === 'star'"
-        @starChanged="starChanged"
-      />
       <div class="cta" v-if="type !== 'star'">
         <vueflix-btn
           @click="noFunc"
@@ -35,11 +30,9 @@
 
 <script>
 import VueflixBtn from "./VueflixBtn.vue";
-import StarInteraction from "./StarInteraction.vue";
 export default {
   components: {
     VueflixBtn,
-    StarInteraction,
   },
   name: "Modal",
   props: {

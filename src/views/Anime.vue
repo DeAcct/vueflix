@@ -69,22 +69,6 @@
       </div>
     </main>
     <modal
-      title="별점주기 창"
-      type="star"
-      :noFunc="starModalCancel"
-      @starChanged="starModalClose"
-      :rating="myRating"
-      v-if="isStarRatingOpened"
-      :class="[{ show: isStarRatingOpened }, 'optional-show']"
-    >
-      <template v-slot:title>이 멋진 애니에 별점을!</template>
-      <template v-slot:description>
-        별을 누르면 그만큼의 별점을 줄 수 있어요
-      </template>
-      <template v-slot:no-string>취소</template>
-      <template v-slot:yes-string>별점 저장</template>
-    </modal>
-    <modal
       title="로그인 필요 알림"
       type="yes-no"
       :yesFunc="gotoLogin"

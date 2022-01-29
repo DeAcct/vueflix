@@ -23,6 +23,10 @@ export default {
     rating: {
       type: Number,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -42,7 +46,11 @@ export default {
   },
   methods: {
     starClicked(index) {
-      this.$emit("starChanged", (index + 1) * 0.5);
+      if (!this.disabled) {
+        this.$emit("starChanged", (index + 1) * 0.5);
+      } else {
+        return;
+      }
     },
   },
 };

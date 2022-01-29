@@ -1,6 +1,10 @@
 <template>
   <div class="star-interaction">
-    <star-graph @starChanged="starChanged" :rating="rating" />
+    <star-graph
+      @starChanged="starChanged"
+      :rating="rating"
+      :disabled="!!disabled"
+    />
     <button
       class="rating-reset-btn"
       @click="ratingReset"
@@ -23,6 +27,9 @@ export default {
     textColor: {
       type: String,
       default: "inherit",
+    },
+    disabled: {
+      type: [Boolean, Object],
     },
   },
   components: {
