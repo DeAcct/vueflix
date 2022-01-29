@@ -57,16 +57,14 @@ export default {
     async googleContinue() {
       const auth = getAuth();
       const provider = new GoogleAuthProvider();
-      signInWithPopup(auth, provider).then(() => {
-        this.router.push("/my");
-      });
+      await signInWithPopup(auth, provider);
+      this.$router.go(-2);
     },
     async facebookContinue() {
       const auth = getAuth();
       const provider = new FacebookAuthProvider();
-      signInWithPopup(auth, provider).then(() => {
-        this.router.push("/my");
-      });
+      await signInWithPopup(auth, provider);
+      this.$router.go(-2);
     },
   },
 };

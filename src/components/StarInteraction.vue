@@ -46,10 +46,9 @@ export default {
   align-self: flex-end;
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
 
   .rating-reset-btn {
+    margin-right: 1rem;
     padding-bottom: 0.3rem;
     color: var(--text-900);
     font-size: 1.2rem;

@@ -1,7 +1,9 @@
 <template>
-  <div :class="['keyword-review', 'inner', { 'keyword-review--open': isOpen }]">
+  <section
+    :class="['keyword-review', 'inner', { 'keyword-review--open': isOpen }]"
+  >
     <h2 class="title">키워드 리뷰</h2>
-    <p class="description">눌러서 평가해 보세요! (중복 선택 가능)</p>
+    <p class="description">짧게 평가할 수 있어요! (중복 선택 가능)</p>
     <form class="keyword-items">
       <div
         v-for="(keywordItem, index) in keywordItems"
@@ -11,9 +13,10 @@
         <input
           type="checkbox"
           name="keyword"
-          class="blind"
+          class="blind keyword-skell"
           :id="`keyword-${index}`"
           @change="onKeywordChange(index, $event)"
+          :disabled="!isLoggedIn"
         />
         <label class="keyword-item" :for="`keyword-${index}`">
           <span class="keyword-text">
@@ -35,7 +38,7 @@
         {{ moreBtnText }}
       </template>
     </vueflix-btn>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -44,6 +47,11 @@ export default {
   name: "KeyworkReview",
   components: {
     VueflixBtn,
+  },
+  props: {
+    isLoggedIn: {
+      type: [Boolean, Object],
+    },
   },
   data() {
     return {
@@ -116,6 +124,8 @@ export default {
 
 <style lang="scss" scoped>
 .keyword-review {
+  width: 100%;
+  max-width: 1080px;
   position: relative;
   box-shadow: 0 0.2rem 0.4rem var(--bg-200);
   background-color: var(--top-item);
@@ -143,7 +153,7 @@ export default {
     transform: translateX(-50%);
     background-color: var(--theme-500);
     color: #fff;
-    border-radius: 1.65rem;
+    border-radius: 2rem;
   }
   &--open {
     height: auto;
@@ -186,6 +196,7 @@ export default {
       span {
         position: absolute;
       }
+
       .keyword-text {
         display: flex;
         align-items: center;

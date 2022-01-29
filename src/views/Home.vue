@@ -18,7 +18,7 @@
       type="yes-no"
       :yesFunc="install"
       :noFunc="dismiss"
-      :class="[{ show: isModalOpened }]"
+      :class="{ show: isModalOpened }"
       v-if="isModalOpened"
     >
       <template v-slot:title>뷰플릭스 앱 써보실래요?</template>

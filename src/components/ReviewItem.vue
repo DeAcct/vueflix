@@ -9,7 +9,8 @@
     <p class="content">
       <slot name="content"></slot>
     </p>
-    <div class="danger-area">
+    <div class="interact-area">
+      <p class="date">{{ date }}</p>
       <button>신고</button>
       <button>삭제</button>
     </div>
@@ -26,6 +27,9 @@ export default {
   props: {
     rating: {
       type: Number,
+    },
+    date: {
+      type: String,
     },
   },
 };
@@ -53,20 +57,28 @@ export default {
     margin-bottom: 0.5rem;
   }
   .content {
+    white-space: pre-line;
+    word-break: break-all;
     font-size: 1.2rem;
     line-height: 1.3;
     margin-bottom: 1rem;
   }
-  .danger-area {
+  .interact-area {
+    display: flex;
+    align-items: center;
+    .date {
+      font-size: 1.1rem;
+      margin-right: 0.5rem;
+    }
     button {
       color: var(--text-700);
       font-size: 1.1rem;
       font-weight: 500;
       &:not(:last-child) {
-        margin-right: 0.2rem;
+        margin-right: 0.4rem;
         &::after {
           content: "|";
-          margin-left: 0.2rem;
+          margin-left: 0.4rem;
         }
       }
     }

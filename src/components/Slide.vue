@@ -98,39 +98,38 @@ export default {
       try {
         const querySnapshot = await getDocs(animeCollection);
         return querySnapshot;
-      } catch {
-        console.error("통신문제");
+      } catch (e) {
+        console.error(e);
       }
+    },
+    async getSlideURL(identifier) {
+      const storage = getStorage();
+
+      const pcWebp = ref(storage, `slideImg/${identifier}_banner.webp`);
+      const pcWebpURL = await getDownloadURL(pcWebp);
+
+      const pcJpeg = ref(storage, `slideImg/${identifier}_banner.jpeg`);
+      const pcJpegURL = await getDownloadURL(pcJpeg);
+
+      const mobileWebp = ref(storage, `slideImg/${identifier}_banner_m.webp`);
+      const mobileWebpURL = await getDownloadURL(mobileWebp);
+
+      const mobileJpeg = ref(storage, `slideImg/${identifier}_banner_m.jpeg`);
+      const mobileWebpJpeg = await getDownloadURL(mobileJpeg);
+
+      const aniLogoRef = ref(storage, `slideImg/${identifier}.png`);
+      const aniLogo = await getDownloadURL(aniLogoRef);
+
+      return {
+        pcWebpURL: pcWebpURL,
+        pcJpegURL: pcJpegURL,
+        mWebpURL: mobileWebpURL,
+        mJpegURL: mobileWebpJpeg,
+        aniLogo: aniLogo,
+      };
     },
     async slideItemInit() {
       const rawData = await this.getRawData();
-
-      const getSlideURL = async (identifier) => {
-        const storage = getStorage();
-
-        const pcWebp = ref(storage, `slideImg/${identifier}_banner.webp`);
-        const pcWebpURL = await getDownloadURL(pcWebp);
-
-        const pcJpeg = ref(storage, `slideImg/${identifier}_banner.jpeg`);
-        const pcJpegURL = await getDownloadURL(pcJpeg);
-
-        const mobileWebp = ref(storage, `slideImg/${identifier}_banner_m.webp`);
-        const mobileWebpURL = await getDownloadURL(mobileWebp);
-
-        const mobileJpeg = ref(storage, `slideImg/${identifier}_banner_m.jpeg`);
-        const mobileWebpJpeg = await getDownloadURL(mobileJpeg);
-
-        const aniLogoRef = ref(storage, `slideImg/${identifier}.png`);
-        const aniLogo = await getDownloadURL(aniLogoRef);
-
-        return {
-          pcWebpURL: pcWebpURL,
-          pcJpegURL: pcJpegURL,
-          mWebpURL: mobileWebpURL,
-          mJpegURL: mobileWebpJpeg,
-          aniLogo: aniLogo,
-        };
-      };
 
       let slideList = rawData.docs.map((doc) => ({
         title: doc.id,
@@ -140,7 +139,7 @@ export default {
 
       const imgList = await Promise.all(
         slideList.map((doc) => {
-          return getSlideURL(doc.imgSet);
+          return this.getSlideURL(doc.imgSet);
         })
       );
 

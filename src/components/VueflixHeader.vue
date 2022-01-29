@@ -78,7 +78,10 @@ export default {
     init() {
       this.page = this.$route.name;
       this.isHome = this.page === "home";
-      this.isSearchVisible = this.page !== "reviews" && this.page !== "auth";
+      this.isSearchVisible =
+        this.page !== "reviews" &&
+        this.page !== "auth" &&
+        this.page !== "dark-mode";
       this.isPrevVisible =
         this.page !== "home" &&
         this.page !== "tag-search" &&
@@ -110,6 +113,9 @@ export default {
           break;
         case "auth":
           this.headString = "로그인";
+          break;
+        case "dark-mode":
+          this.headString = "다크 모드";
           break;
         default:
           this.headString = "";

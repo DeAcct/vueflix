@@ -1,10 +1,12 @@
 <template>
   <form class="new-review">
     <div class="input-area inner">
+      <star-interaction @starChanged="starChanged" :rating="starScore" />
       <textarea
-        placeholder="솔직한 평가, 또는 작품의 매력을 알려주세요 (OST, 작화, 캐릭터 등)"
+        :placeholder="placeholder"
         class="new-review-area"
         v-model="reviewData"
+        :disabled="!isLoggedIn"
       />
       <div class="interaction-area">
         <div class="col-left">
@@ -12,7 +14,7 @@
           <p v-if="!reviewDataValid" class="too-long-alert">너무 길어요!</p>
         </div>
         <vueflix-btn
-          :disabled="!reviewDataSubmitAble"
+          :disabled="!reviewDataSubmitAble || !isLoggedIn"
           @click="submit"
           component="button"
         >
@@ -25,14 +27,25 @@
 
 <script>
 import VueflixBtn from "./VueflixBtn.vue";
+import StarInteraction from "./StarInteraction.vue";
 export default {
   name: "NewReview",
   components: {
     VueflixBtn,
+    StarInteraction,
+  },
+  props: {
+    isLoggedIn: {
+      type: [Boolean, Object],
+    },
   },
   data() {
     return {
       reviewData: "",
+      starScore: 0,
+      placeholder: this.isLoggedIn
+        ? "솔직한 평가, 또는 작품의 매력을 알려주세요 (OST, 작화, 캐릭터 등)"
+        : "아직 로그인하지 않아서 긴 글 리뷰를 남길 수 없어요",
     };
   },
   computed: {
@@ -45,7 +58,15 @@ export default {
   },
   methods: {
     submit() {
-      this.$emit("reviewDataSubmit", this.reviewData);
+      this.$emit("reviewDataSubmit", {
+        content: this.reviewData,
+        rating: this.starScore,
+      });
+      this.reviewData = "";
+    },
+    starChanged(e) {
+      this.starScore = e;
+      this.$emit("scoreChanged", this.starScore);
     },
   },
 };
@@ -59,19 +80,26 @@ export default {
     top: 1.5rem;
     bottom: 1.5rem;
   }
-  .new-review-area {
-    width: 100%;
-    height: 9rem;
-    resize: none;
-    font-family: inherit;
-    background-color: transparent;
-    line-height: 1.3;
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-    &::placeholder {
-      color: var(--bg-400);
+  .input-area {
+    .star-interaction {
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .new-review-area {
+      width: 100%;
+      height: 9rem;
+      resize: none;
+      font-family: inherit;
+      background-color: transparent;
+      line-height: 1.3;
+      font-size: 1.2rem;
       font-weight: 500;
+      margin-bottom: 1rem;
+      &::placeholder {
+        color: var(--bg-400);
+        font-weight: 500;
+      }
     }
   }
   .interaction-area {
@@ -97,7 +125,7 @@ export default {
       font-weight: 500;
     }
     .btn {
-      border-radius: 1.65rem;
+      border-radius: 2rem;
       background-color: var(--theme-500);
       box-shadow: none;
       color: #fff;

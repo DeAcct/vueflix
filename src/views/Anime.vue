@@ -1,5 +1,5 @@
 <template>
-  <div class="anime" :style="`min-height: ${deviceHeight}px`" v-if="!isSub">
+  <div class="anime" :style="`min-height: ${deviceHeight + 1}px`" v-if="!isSub">
     <anime-item-head
       :isScroll="isScroll"
       :title="animeInfo.name"
@@ -14,63 +14,67 @@
       @overflowMenuOpened="overflowMenuOpen"
       :myRating="myRating"
       @starChanged="starChanged"
+      @requireLogin="openLoginModal"
       class="widget"
     />
-    <div class="anime-useful-widget widget">
-      <ul class="info">
-        <li class="inner">
-          <strong class="title"> 줄거리 </strong>
-          <p
-            :class="[
-              'text',
-              'loading-target',
-              { 'text--loaded': animeInfo.summary },
-            ]"
-          >
-            {{ animeInfo.summary }}
-          </p>
-        </li>
-        <li class="inner">
-          <strong class="title"> 제작사 </strong>
-          <p
-            :class="[
-              'text',
-              'loading-target',
-              { 'text--loaded': animeInfo.summary },
-            ]"
-          >
-            <span
-              v-for="madeBy in animeInfo.madeBy"
-              :key="madeBy"
-              class="division-pipe"
+    <main>
+      <div class="anime-useful-widget widget">
+        <ul class="info">
+          <li class="inner">
+            <strong class="title"> 줄거리 </strong>
+            <p
+              :class="[
+                'text',
+                'loading-target',
+                { 'text--loaded': animeInfo.summary },
+              ]"
             >
-              {{ madeBy }}
-            </span>
-          </p>
-        </li>
-      </ul>
-      <arrow-link-btn :to="`${$route.params.id}/reviews`" :icon="true">
-        <template v-slot:icon>
-          <icon-review />
-        </template>
-        <template v-slot:text>리뷰</template>
-      </arrow-link-btn>
-    </div>
+              {{ animeInfo.summary }}
+            </p>
+          </li>
+          <li class="inner">
+            <strong class="title"> 제작사 </strong>
+            <p
+              :class="[
+                'text',
+                'loading-target',
+                { 'text--loaded': animeInfo.summary },
+              ]"
+            >
+              <span
+                v-for="madeBy in animeInfo.madeBy"
+                :key="madeBy"
+                class="division-pipe"
+              >
+                {{ madeBy }}
+              </span>
+            </p>
+          </li>
+        </ul>
+        <arrow-btn-widget :to="`${$route.params.id}/reviews`" :icon="true">
+          <template v-slot:icon>
+            <icon-review />
+          </template>
+          <template v-slot:text>리뷰</template>
+        </arrow-btn-widget>
+      </div>
 
-    <div class="episodes-widget widget">
-      <episodes
-        v-for="(part, index) in animeInfo.parts"
-        :episodesData="part"
-        :key="index"
-        :id="part.part"
-      />
-    </div>
+      <div class="episodes-widget widget">
+        <episodes
+          v-for="(part, index) in animeInfo.parts"
+          :episodesData="part"
+          :key="index"
+          :id="part.part"
+        />
+      </div>
+    </main>
     <modal
       title="별점주기 창"
       type="star"
       :noFunc="starModalCancel"
       @starChanged="starModalClose"
       :rating="myRating"
+      v-if="isStarRatingOpened"
       :class="[{ show: isStarRatingOpened }, 'optional-show']"
     >
       <template v-slot:title>이 멋진 애니에 별점을!</template>
@@ -80,11 +84,27 @@
       <template v-slot:no-string>취소</template>
       <template v-slot:yes-string>별점 저장</template>
     </modal>
+    <modal
+      title="로그인 필요 알림"
+      type="yes-no"
+      :yesFunc="gotoLogin"
+      :noFunc="closeLoginModal"
+      v-if="isLoginModalOpened"
+      :class="[{ show: isLoginModalOpened }, 'optional-show']"
+    >
+      <template v-slot:title>로그인 필요</template>
+      <template v-slot:description>
+        로그인해야 좋아요를 남길 수 있어요
+      </template>
+      <template v-slot:no-string>나중에</template>
+      <template v-slot:yes-string>로그인</template>
+    </modal>
     <action-sheet
       :class="[{ show: isOverflowMenuOpened }, 'optional-show']"
       title="더보기"
       :actions="actions"
       :close="actionSheetClose"
+      v-if="isOverflowMenuOpened"
     />
   </div>
   <router-view v-else :myRating="myRating" />
@@ -103,7 +123,7 @@ import AnimeItemHead from "../components/AnimeItemHead.vue";
 import Episodes from "../components/Episodes";
 import Modal from "../components/Modal.vue";
 import ActionSheet from "../components/ActionSheet.vue";
-import ArrowLinkBtn from "../components/ArrowLinkBtn.vue";
+import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconReview from "../components/icons/IconReview.vue";
 
 export default {
@@ -112,7 +132,7 @@ export default {
     Episodes,
     Modal,
     ActionSheet,
-    ArrowLinkBtn,
+    ArrowBtnWidget,
     IconReview,
   },
   name: "anime",
@@ -121,6 +141,7 @@ export default {
     this.animeInit();
     window.addEventListener("resize", () => {
       this.deviceHeight = window.innerHeight;
+      this.isPC = window.innerWidth >= 1024;
     });
     window.addEventListener("scroll", this.handleScroll);
   },
@@ -148,16 +169,7 @@ export default {
           method: this.notInterested,
         },
       ],
-      infos: [
-        {
-          title: "줄거리",
-          text: this.animeInfo ? this.animeInfo.summary : "",
-        },
-        {
-          title: "제작사",
-          text: this.animeInfo ? this.animeInfo.madeBy : "",
-        },
-      ],
+      isLoginModalOpened: false,
       isSub: this.$route.name !== "anime",
       isScroll: false,
     };
@@ -224,7 +236,6 @@ export default {
           text: `뷰플릭스에서 ${this.animeInfo.name}을 다시 즐겨보세요!`,
           url: `https://vueflix.hyse.kr/anime/${this.animeInfo.name}`,
         });
-        this.actionSheetClose();
       } catch {
         this.$store.commit("toast/changeToastMeta", {
           isShown: true,
@@ -235,8 +246,8 @@ export default {
           isShown: false,
           text: "",
         });
-        this.actionSheetClose();
       }
+      this.actionSheetClose();
     },
     async notInterested() {
       this.$store.commit("toast/changeToastMeta", {
@@ -251,6 +262,15 @@ export default {
     },
     starChanged(e) {
       this.myRating = e;
+    },
+    openLoginModal() {
+      this.isLoginModalOpened = true;
+    },
+    gotoLogin() {
+      this.$router.push("/auth");
+    },
+    closeLoginModal() {
+      this.isLoginModalOpened = false;
     },
   },
 };
@@ -311,7 +331,7 @@ export default {
         }
       }
     }
-    .arrow-link-btn {
+    .arrow-btn-widget {
       background-color: var(--bg-100);
     }
   }
@@ -350,8 +370,15 @@ export default {
   .anime {
     .anime-item-head {
       border-radius: 0;
-      padding-top: 10rem;
+      padding-top: 8rem;
       height: 40rem;
+    }
+    main {
+      padding: 0 calc((100% - 118rem) / 2);
+      margin-top: 6rem;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row-reverse;
     }
     .optional-show {
       display: none;
@@ -359,6 +386,32 @@ export default {
       transition: 150ms ease-out;
       &.show {
         display: block;
+      }
+    }
+    .episodes-widget {
+      width: calc(100% - 33% - 3rem);
+    }
+    .anime-useful-widget {
+      width: 33%;
+      height: fit-content;
+      .info li {
+        padding: {
+          top: 2rem;
+          bottom: 2rem;
+        }
+        .title {
+          font-size: 1.5rem;
+        }
+        .text {
+          font-size: 1.3rem;
+        }
+      }
+    }
+    .episodes-widget {
+      .episodes {
+        &:not(:last-child) {
+          margin-bottom: 2rem;
+        }
       }
     }
   }

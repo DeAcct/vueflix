@@ -47,7 +47,6 @@ export default {
   },
   watch: {
     value() {
-      console.log("값 바뀜", this.isValid, !!this.value);
       this.$emit("valueChanged", this.value);
     },
   },

@@ -71,7 +71,6 @@ export default {
       top: 1.5rem;
       bottom: 1.5rem;
     }
-    font-size: 1.3rem;
     border-radius: 0.6rem;
     .open-icon {
       display: flex;
@@ -79,12 +78,17 @@ export default {
       justify-content: center;
       width: 1.8rem;
       height: 1.8rem;
-      transition: 150ms linear;
+      transition: 150ms ease-in-out;
       &--widget-opened {
         transform: rotate(90deg);
       }
+      svg {
+        width: 100%;
+        height: 100%;
+      }
     }
     .part-title {
+      font-size: 1.3rem;
       margin-left: 0.5rem;
     }
   }
@@ -92,9 +96,9 @@ export default {
     padding: 0;
     height: 0;
     overflow: hidden;
-    transition: 150ms linear;
+    transition: 150ms ease-in-out;
     .episode-card {
-      transition: 150ms linear;
+      transition: 150ms ease-in-out;
       opacity: 0;
     }
     &--opened {
@@ -103,6 +107,28 @@ export default {
       .episode-card {
         opacity: 1;
       }
+    }
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .episodes {
+    .part-info {
+      padding: {
+        top: 2rem;
+        bottom: 2rem;
+      }
+      .open-icon {
+        width: 2rem;
+        height: 2rem;
+      }
+      .part-title {
+        font-size: 1.5rem;
+        margin-left: 1rem;
+      }
+    }
+    .episode-widget--opened {
+      padding: 0 0 4rem;
     }
   }
 }

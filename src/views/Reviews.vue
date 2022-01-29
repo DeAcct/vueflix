@@ -1,19 +1,24 @@
 <template>
   <div class="reviews" :style="`min-height: ${deviceHeight}px;`">
-    <keyword-review class="widget" />
-    <text-review class="widget" :myRating="myRating" />
+    <!--todo : 로그인버튼 위젯으로 분리후 v-if처리-->
+    <login-widget class="widget" v-if="!isLoggedIn"></login-widget>
+    <keyword-review class="widget" :isLoggedIn="isLoggedIn" />
+    <text-review class="widget" :myRating="myRating" :isLoggedIn="isLoggedIn" />
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 import KeywordReview from "../components/KeywordReview.vue";
 import TextReview from "../components/TextReview.vue";
+import LoginWidget from "../components/LoginWidget.vue";
 
 export default {
   name: "reviews",
   components: {
     KeywordReview,
     TextReview,
+    LoginWidget,
   },
   props: {
     myRating: Number,
@@ -33,6 +38,14 @@ export default {
       deviceHeight: window.innerHeight,
     };
   },
+  computed: {
+    ...mapState({
+      user: (state) => state.auth.user,
+    }),
+    isLoggedIn() {
+      return this.user;
+    },
+  },
 };
 </script>
 
@@ -40,6 +53,10 @@ export default {
 .reviews {
   padding: 7rem 0 2rem;
   background-color: var(--bg-100);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   .widget:not(:last-child) {
     margin-bottom: 1rem;
   }

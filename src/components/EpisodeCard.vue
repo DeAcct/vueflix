@@ -76,8 +76,7 @@ export default {
     margin-bottom: 1.5rem;
   }
   .episode-item {
-    display: block;
-
+    display: flex;
     figure {
       display: flex;
       justify-content: space-between;
@@ -86,7 +85,7 @@ export default {
       }
       .thumbnail {
         width: 12rem;
-        height: 6.75rem;
+        height: calc(12rem / 16 * 9);
         border-radius: 0.2rem;
         overflow: hidden;
         img {
@@ -105,6 +104,31 @@ export default {
           margin-top: 0.5rem;
           font-size: 1.1rem;
           font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .episode-card {
+    &:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+
+    .episode-item figure {
+      .thumbnail {
+        width: 16rem;
+        height: calc(16rem / 16 * 9);
+      }
+      .episode-info {
+        margin-left: 1.5rem;
+        .title {
+          font-weight: 700;
+          font-size: 1.6rem;
+        }
+        .date {
+          font-size: 1.3rem;
         }
       }
     }

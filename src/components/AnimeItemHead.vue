@@ -1,5 +1,5 @@
 <template>
-  <header class="anime-item-head" :style="posterBg">
+  <component :is="component" class="anime-item-head" :style="posterBg">
     <h1 class="blind" v-if="notPC">뷰플릭스</h1>
     <div
       :class="['navigation', 'inner', { 'navigation--scrolled': isScroll }]"
@@ -82,7 +82,6 @@
         </div>
       </div>
     </div>
-    <div class="anime-interact-btn-area inner"></div>
     <div class="continue-play-bg">
       <anime-action-btn
         @click="wannaSeeToggle"
@@ -100,10 +99,12 @@
         <template v-slot:text>1화 무료보기</template>
       </vueflix-btn>
     </div>
-  </header>
+  </component>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 import VueflixBtn from "./VueflixBtn.vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
@@ -160,7 +161,8 @@ export default {
       type: Number,
     },
   },
-  created() {
+  mounted() {
+    this.component = this.notPC ? "div" : "header";
     window.addEventListener("resize", this.checkResolution);
   },
   unmounted() {
@@ -171,6 +173,7 @@ export default {
       wannaSeeBool: false,
       isMobile: window.innerWidth <= 768,
       notPC: window.innerWidth <= 1080,
+      component: "div",
     };
   },
   methods: {
@@ -178,7 +181,11 @@ export default {
       return this.$router.go(-1);
     },
     wannaSeeToggle() {
-      this.wannaSeeBool = !this.wannaSeeBool;
+      if (this.isLoggedIn) {
+        this.wannaSeeBool = !this.wannaSeeBool;
+      } else {
+        this.$emit("requireLogin");
+      }
     },
     checkResolution() {
       this.isMobile = window.innerWidth <= 768;
@@ -195,11 +202,23 @@ export default {
     },
   },
   computed: {
+    ...mapState({
+      user: (state) => state.auth.user,
+    }),
+    isLoggedIn() {
+      return this.user;
+    },
     posterBg() {
       const bg = `
-        background: linear-gradient(var(--anime-item-head-opacity-700), var(--anime-item-head-opacity-500)), url(${this.poster}) center/cover;
+        background-image: linear-gradient(var(--anime-item-head-opacity-700), var(--anime-item-head-opacity-500)), url(${this.poster});
       `;
       return bg;
+    },
+  },
+
+  watch: {
+    notPC() {
+      this.component = this.notPC ? "header" : "div";
     },
   },
 };
@@ -207,6 +226,8 @@ export default {
 
 <style lang="scss" scoped>
 .anime-item-head {
+  background-position: center;
+  background-size: cover;
   .navigation {
     position: fixed;
     z-index: 100;
@@ -260,7 +281,6 @@ export default {
     .poster {
       min-width: 9rem;
       height: calc(9rem / 3 * 4);
-      overflow: hidden;
       img {
         width: 100%;
         height: 100%;
@@ -369,15 +389,17 @@ export default {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: 1.5rem var(--inner-padding) 2rem;
+    padding: 3rem var(--inner-padding) 2rem;
 
     .anime-interact-btn {
-      width: 22%;
+      width: 4.8rem;
+      height: 4.8rem;
+      background-color: var(--bg-100);
       border-radius: 0.3rem;
     }
 
     .btn {
-      width: 75%;
+      width: calc(100% - 5.8rem);
       padding: 1.2rem 0;
       background-color: var(--bg-100);
       border-radius: 0.3rem;
@@ -390,7 +412,8 @@ export default {
 
 @media screen and (min-width: 1080px) {
   .anime-item-head {
-    background: var(--anime-item-head-500) !important;
+    background-color: var(--anime-item-head-500);
+    background-image: none !important;
     display: flex;
     justify-content: space-between;
     padding: 0 calc((100% - 118rem) / 2);
@@ -400,9 +423,10 @@ export default {
       height: fit-content;
       .poster {
         position: relative;
-        width: 26rem;
-        height: calc(26rem / 3 * 4);
-        overflow: initial;
+        width: 27rem;
+        height: calc(27rem / 3 * 4);
+        overflow: hidden;
+        border-radius: 0.6rem;
         box-shadow: 0 0 3rem var(--box-shadow);
         .anime-interact-btn {
           position: absolute;
@@ -435,11 +459,6 @@ export default {
           width: 40rem;
           margin-bottom: 8rem;
           align-items: flex-start;
-          &:not(.row-bottom--loaded) {
-            .star-interaction {
-              opacity: 0;
-            }
-          }
         }
         .genres .genre {
           font-size: 1.6rem;

@@ -2,11 +2,9 @@
   <div class="wrap">
     <main class="my" v-if="isMyRoot">
       <div class="top">
-        <div :class="['my-profile', { 'my-profile--logged-in': true }]">
+        <div :class="['my-profile', { 'my-profile--logged-in': user }]">
           <div class="profile-img">
-            <router-link to="/my/change-profile">
-              <profile />
-            </router-link>
+            <profile />
             <strong class="nickname">
               {{ user ? user.displayName : "아직 로그인하지 않았어요" }}
             </strong>
@@ -47,7 +45,7 @@
             v-for="(myCard, index) in myCardLoggedin"
             :key="index"
           >
-            <arrow-link-btn
+            <arrow-btn-widget
               v-for="item in myCard"
               :key="item.text"
               :to="item.to"
@@ -57,7 +55,7 @@
                 <component :is="item.icon" />
               </template>
               <template v-slot:text>{{ item.text }}</template>
-            </arrow-link-btn>
+            </arrow-btn-widget>
           </div>
         </template>
         <div
@@ -65,7 +63,7 @@
           v-for="(myCard, index) in myCardGeneral"
           :key="index"
         >
-          <arrow-link-btn
+          <arrow-btn-widget
             v-for="item in myCard"
             :key="item.text"
             :to="item.to"
@@ -75,7 +73,7 @@
               <component :is="item.icon" />
             </template>
             <template v-slot:text>{{ item.text }}</template>
-          </arrow-link-btn>
+          </arrow-btn-widget>
         </div>
       </div>
     </main>
@@ -89,7 +87,7 @@ import { getAuth, signOut } from "firebase/auth";
 
 import Profile from "../components/Profile.vue";
 import VueflixBtn from "../components/VueflixBtn.vue";
-import ArrowLinkBtn from "../components/ArrowLinkBtn.vue";
+import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconMembership from "../components/icons/IconMembership";
 import IconAccount from "../components/icons/IconAccount";
 import IconNotification from "../components/icons/IconNotification.vue";
@@ -98,7 +96,7 @@ export default {
   components: {
     Profile,
     VueflixBtn,
-    ArrowLinkBtn,
+    ArrowBtnWidget,
     IconMembership,
     IconNotification,
     IconAccount,
@@ -107,9 +105,6 @@ export default {
     ...mapState({
       user: (state) => state.auth.user,
     }),
-  },
-  mounted() {
-    console.log(this.user);
   },
   data() {
     return {
@@ -147,6 +142,10 @@ export default {
       ],
       myCardGeneral: [
         [
+          {
+            text: "다크 모드",
+            to: "/my/dark-mode",
+          },
           {
             text: "이미지 캐시 초기화",
             to: "#none",
@@ -207,6 +206,7 @@ export default {
     .nickname {
       font-size: 1.5rem;
       margin-bottom: 0.8rem;
+      color: var(--bg-300);
     }
     .email {
       font-size: 1.3rem;
@@ -224,7 +224,7 @@ export default {
     }
     &--logged-in {
       .nickname {
-        color: var(--bg-300);
+        color: var(--text-800);
       }
     }
   }
@@ -265,6 +265,12 @@ export default {
   overflow: hidden;
   box-shadow: 0 0.2rem 0.4rem var(--bg-200);
   width: 100%;
+  .theme-toggle {
+    background-color: var(--top-item);
+    width: 100%;
+    display: flex;
+    padding: 1.8rem var(--inner-padding);
+  }
 }
 
 @media screen and (min-width: 1024px) {

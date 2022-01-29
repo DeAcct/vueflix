@@ -1,19 +1,24 @@
 <template>
-  <div class="text-review">
+  <section class="text-review">
     <h2 class="title inner">긴 글 리뷰 ({{ reviewList.length }})</h2>
     <p class="description inner">키워드로 표현할 수 없는 무언가가 있다면!</p>
-    <new-review @reviewDataSubmit="add" />
+    <new-review
+      @reviewDataSubmit="add"
+      @scoreChanged="scoreChanged"
+      :isLoggedIn="isLoggedIn"
+    />
     <ul>
       <review-item
         v-for="(reviewItem, index) in reviewList"
         :key="index"
         :rating="reviewItem.rating"
+        :date="reviewItem.date"
       >
         <template v-slot:author>{{ reviewItem.author }}</template>
         <template v-slot:content>{{ reviewItem.content }}</template>
       </review-item>
     </ul>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -25,52 +30,49 @@ export default {
     NewReview,
     ReviewItem,
   },
-  props: {
-    myRating: Number,
-  },
   data() {
     return {
-      reviewList: [
-        //dummy data
-        {
-          author: "나",
-          content:
-            "역시 쿄애니! 안타까운 화재사건을 겪었음에도 불구하고 1기보다 더 좋아졌네요.",
-          rating: 4.5,
-          thumbsUp: 0,
-          date: "2021.12.31",
-        },
-        {
-          author: "나",
-          content:
-            "역시 쿄애니! 안타까운 화재사건을 겪었음에도 불구하고 1기보다 더 좋아졌네요.",
-          rating: 4.5,
-          thumbsUp: 0,
-        },
-        {
-          author: "나",
-          content:
-            "역시 쿄애니! 안타까운 화재사건을 겪었음에도 불구하고 1기보다 더 좋아졌네요.",
-          rating: 4.5,
-          thumbsUp: 0,
-        },
-      ],
+      reviewList: [],
     };
+  },
+  props: {
+    isLoggedIn: {
+      type: [Object, Boolean],
+    },
   },
   methods: {
     add(e) {
       const now = new Date();
-      const rating = this.myRating;
-      console.log(rating, this.myRating);
+      const year = now.getFullYear();
+      const month = this.formatter(now.getMonth() + 1, 10);
+      const date = this.formatter(now.getDate(), 10);
+      const hour = this.formatter(now.getHours(), 10);
+      const min = this.formatter(now.getMinutes(), 10);
+      const formattedDate = `${year}.${month}.${date} ${hour}:${min}`;
       let review = {
         author: "나",
-        content: e,
-        rating: rating,
+        ...e,
         thumbsUp: 0,
-        date: now,
+        date: formattedDate,
       };
-      console.log(review);
-      this.reviewList.push(review);
+      this.reviewList.unshift(review);
+    },
+    scoreChanged(e) {
+      this.reviewList = this.reviewList.map((reviewItem) => ({
+        ...reviewItem,
+        rating: e,
+      }));
+    },
+    formatter(origin, digits) {
+      let result = `${origin}`;
+      for (let i = digits; i >= 10; i /= 10) {
+        if (origin < i) {
+          result = `0${result}`;
+        } else {
+          return result;
+        }
+      }
+      return result;
     },
   },
 };
@@ -78,6 +80,8 @@ export default {
 
 <style lang="scss" scoped>
 .text-review {
+  width: 100%;
+  max-width: 1080px;
   position: relative;
   box-shadow: 0 0.2rem 0.4rem var(--bg-200);
   background-color: var(--top-item);

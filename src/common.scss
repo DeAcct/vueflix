@@ -120,9 +120,13 @@ summary {
   white-space: nowrap;
 }
 
+@mixin inner {
+  padding: 0 var(--inner-padding);
+}
 .inner {
   padding: 0 var(--inner-padding);
 }
+
 *:focus {
   outline: none;
 }
@@ -169,16 +173,20 @@ summary {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 1.8rem;
-    height: 1.8rem;
+    width: 2rem;
+    height: 2rem;
     margin-right: 0.7rem;
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   }
   .text {
     color: inherit;
     display: flex;
     align-items: center;
     height: 100%;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 700;
   }
 }

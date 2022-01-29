@@ -86,11 +86,11 @@ const routes = [
         },
       },
       {
-        path: "change-profile",
-        name: "change-profile",
-        component: () => import("@/views/ChangeProfile"),
+        path: "dark-mode",
+        name: "dark-mode",
+        component: () => import("@/views/Darkmode"),
         meta: {
-          title: "내 프로필사진 편집하기",
+          title: "다크 모드",
           appBar: true,
           bottomTabMenu: false,
         },
