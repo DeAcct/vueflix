@@ -1,6 +1,5 @@
 <template>
   <div class="reviews" :style="`min-height: ${deviceHeight}px;`">
-    <!--todo : 로그인버튼 위젯으로 분리후 v-if처리-->
     <login-widget class="widget" v-if="!isLoggedIn"></login-widget>
     <keyword-review class="widget" :isLoggedIn="isLoggedIn" />
     <text-review class="widget" :myRating="myRating" :isLoggedIn="isLoggedIn" />

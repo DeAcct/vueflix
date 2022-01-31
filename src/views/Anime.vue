@@ -171,11 +171,9 @@ export default {
         if (querySnapshot.docs.length !== 0) {
           const rawData = querySnapshot.docs[0].data();
           return rawData;
-        } else {
-          console.error("존재하지 않는 작품입니다");
         }
       } catch {
-        console.error("통신문제");
+        this.$router.replace("/notfound");
       }
     },
     async animeInit() {
@@ -189,7 +187,7 @@ export default {
         const posterURL = await getDownloadURL(posterRef);
         this.animeInfo = { ...rawData, poster: posterURL };
       } catch {
-        console.error("포스터 정보가 존재하지 않습니다");
+        this.$router.replace("/notfound");
       }
     },
     starModalOpen() {

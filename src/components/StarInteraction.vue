@@ -61,7 +61,7 @@ export default {
     font-size: 1.2rem;
     border-bottom: var(--text-900) solid 1px;
     &:disabled {
-      color: var(--text-200) !important;
+      visibility: hidden;
     }
   }
 }
@@ -69,10 +69,7 @@ export default {
 @media screen and (min-width: 1080px) {
   .star-interaction {
     .rating-reset-btn {
-      &:disabled {
-        opacity: 0;
-        cursor: auto;
-      }
+      cursor: auto;
     }
   }
 }

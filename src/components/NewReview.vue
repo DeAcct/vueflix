@@ -139,4 +139,15 @@ export default {
     }
   }
 }
+
+@media screen and (min-width: 1080px) {
+  .new-review .input-area {
+    .star-interaction {
+      margin-bottom: 2rem;
+    }
+    .new-review-area {
+      font-size: 1.3rem;
+    }
+  }
+}
 </style>

@@ -58,7 +58,7 @@ export default {
 
 <style lang="scss" scoped>
 .star-graph {
-  width: 50%;
+  width: 24rem;
   .star {
     fill: var(--bg-300);
     &--filled {
