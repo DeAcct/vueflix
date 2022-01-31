@@ -1,5 +1,11 @@
 <template>
-  <form class="search-bar" :class="{ open: isOpen }">
+  <form
+    :class="[
+      'search-bar',
+      { 'search-bar--open': isOpen },
+      { 'search-bar--fill': isScroll || !isHome },
+    ]"
+  >
     <fieldset>
       <legend class="blind">작품 검색</legend>
       <label for="검색" class="search-box">
@@ -37,6 +43,14 @@ export default {
   components: {
     IconBase,
     IconSearch,
+  },
+  props: {
+    isScroll: {
+      type: Boolean,
+    },
+    isHome: {
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -118,7 +132,7 @@ export default {
       cursor: text;
     }
   }
-  &.open {
+  &--open {
     width: 100%;
 
     position: absolute;
@@ -143,12 +157,8 @@ export default {
       }
     }
   }
-}
-.fill .search-bar .search-box .icon {
-  color: inherit;
-  &:hover {
-    background-color: var(--theme-100);
-    color: var(--theme-500);
+  &--fill .search-box .icon {
+    color: var(--text-800);
   }
 }
 @media screen and (min-width: 769px) {
@@ -156,7 +166,7 @@ export default {
     transition: width 150ms ease-out;
     border-radius: 0.3rem;
     height: 4rem;
-    &.open {
+    &--open {
       border: 1px solid var(--bg-200);
       position: static;
       width: 30rem;

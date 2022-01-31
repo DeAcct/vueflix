@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "start chrome localhost:8080 && vue-cli-service serve",
     "build": "vue-cli-service build && echo vueflix.hyse.kr > ./docs/CNAME && echo CNAME created (vueflix.hyse.kr)"
   },
   "dependencies": {

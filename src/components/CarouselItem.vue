@@ -5,24 +5,24 @@
         <img
           :data-url="img"
           :alt="`${title}썸네일`"
-          class="img"
+          class="thumbnail__img"
           v-intersection-lazy
         />
-        <div class="progress-bar" v-if="isRecent">
+        <div class="thumbnail__progress-bar" v-if="isRecent">
           <div class="progress" :style="`width:${progress}`"></div>
         </div>
-        <div class="thumbnail-play-btn" v-if="isRecent">
+        <div class="thumbnail__play-btn" v-if="isRecent">
           <span class="blind">{{ title }} 재생하기</span>
           <icon-base icon-name="재생 버튼"><icon-play /></icon-base>
         </div>
       </a>
       <figcaption class="description">
-        <a class="description-text" :href="url">
+        <a class="description__text" :href="url">
           <div class="text">
             <span class="title">{{ title }}</span>
             <strong class="episode">{{ getEpisode }}</strong>
           </div>
-          <span class="description-info-btn" v-if="isRecent">
+          <span class="description__info-btn" v-if="isRecent">
             <span class="blind">작품 정보 보기</span>
             <icon-base icon-name="작품 정보 버튼"><icon-info /></icon-base>
           </span>
@@ -93,14 +93,14 @@ export default {
     border-radius: 0.3rem;
     overflow: hidden;
     transition: 150ms ease-out;
-    .img {
+    &__img {
       position: absolute;
       z-index: -1;
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    .thumbnail-play-btn {
+    &__play-btn {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -113,7 +113,7 @@ export default {
         width: 2rem;
       }
     }
-    .progress-bar {
+    &__progress-bar {
       position: absolute;
       z-index: 3;
       left: 0.8rem;
@@ -138,7 +138,7 @@ export default {
     justify-content: space-between;
     margin-top: 0.8rem;
 
-    .description-text {
+    &__text {
       font-size: 1.1rem;
       display: flex;
       justify-content: space-between;
@@ -155,16 +155,16 @@ export default {
           margin-bottom: 0.3rem;
         }
       }
-      .description-info-btn {
-        display: block;
-        width: 2rem;
-        height: 2rem;
-        min-width: 2rem;
-        color: var(--bg-500);
-        svg {
-          width: 100%;
-          height: 100%;
-        }
+    }
+    &__info-btn {
+      display: block;
+      width: 2rem;
+      height: 2rem;
+      min-width: 2rem;
+      color: var(--bg-500);
+      svg {
+        width: 100%;
+        height: 100%;
       }
     }
   }
@@ -175,7 +175,7 @@ export default {
     height: calc(32vw * 9 / 16 + 8rem);
     .thumbnail {
       height: calc(32vw / 16 * 9);
-      .thumbnail-play-btn {
+      &__play-btn {
         width: 5rem;
         height: 5rem;
         svg {
@@ -183,18 +183,18 @@ export default {
           height: 3rem;
         }
       }
-      .progress-bar {
+      &__progress-bar {
         width: calc(100% - 2rem);
         left: 1rem;
         bottom: 1rem;
       }
     }
     .description {
-      .description-info-btn {
+      &__info-btn {
         width: 2.5rem;
         height: 2.5rem;
       }
-      .description-text {
+      &__text {
         font-size: 1.4rem;
         gap: 0.8rem;
       }
@@ -207,7 +207,7 @@ export default {
     height: calc(28vw * 9 / 16 + 8rem);
     .thumbnail {
       height: calc(28vw / 16 * 9);
-      .thumbnail-play-btn {
+      &__play-btn {
         width: 7rem;
         height: 7rem;
         svg {
@@ -215,18 +215,18 @@ export default {
           height: 4rem;
         }
       }
-      .progress-bar {
+      &__progress-bar {
         width: calc(100% - 3rem);
         bottom: 1.5rem;
         left: 1.5rem;
       }
     }
     .description {
-      .description-info-btn {
+      &__info-btn {
         width: 3rem;
         height: 3rem;
       }
-      .description-text {
+      &__text {
         span,
         strong {
           font-size: 1.5rem;
@@ -241,13 +241,13 @@ export default {
     height: calc(15vw * 9 / 16 + 8rem);
     .thumbnail {
       height: calc(15vw / 16 * 9);
-      .thumbnail-play-btn {
+      &__play-btn {
         svg {
           width: 4rem;
           height: 4rem;
         }
       }
-      .progress-bar {
+      &__progress-bar {
         width: calc(100% - 3rem);
         bottom: 1.5rem;
         left: 1.5rem;

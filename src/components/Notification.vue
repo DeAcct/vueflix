@@ -1,5 +1,8 @@
 <template>
-  <router-link to="/notialert" class="notification">
+  <router-link
+    to="/notialert"
+    :class="['notification', { 'notification--scrolled': isScroll }]"
+  >
     <i class="icon" @click="searchBarOpen">
       <icon-base iconName="알림">
         <icon-notification />
@@ -14,6 +17,11 @@ import IconNotification from "./icons/IconNotification.vue";
 
 export default {
   name: "Notification",
+  props: {
+    isScroll: {
+      type: Boolean,
+    },
+  },
   components: {
     IconBase,
     IconNotification,
@@ -31,11 +39,14 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: var(--top-item);
     transition: background-color 150ms ease-out;
     &:hover {
       background-color: rgba(255, 255, 255, 0.3);
     }
+  }
+  &--scrolled .icon {
+    color: var(--text-800);
   }
 }
 .fill .notification .icon {

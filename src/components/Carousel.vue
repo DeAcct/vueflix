@@ -1,6 +1,6 @@
 <template>
   <section class="carousel">
-    <div class="head-control">
+    <div class="carousel__head-control">
       <h2><slot></slot></h2>
       <day-selector v-if="isDaily" @dayBtnClick="dailyReset" />
       <div class="btn-wrap">
@@ -8,7 +8,7 @@
           class="prev-btn"
           title="이전"
           @click="prev"
-          :class="{ active: prevActive }"
+          :disabled="!prevActive"
         >
           <icon-base><icon-arrow-prev /></icon-base>
         </button>
@@ -16,13 +16,13 @@
           class="next-btn"
           title="다음"
           @click="next"
-          :class="{ active: nextActive }"
+          :disabled="!nextActive"
         >
           <icon-base><icon-arrow-next /></icon-base>
         </button>
       </div>
     </div>
-    <div class="wrap">
+    <div class="carousel__track">
       <ul class="items" :style="style">
         <template v-if="isDaily">
           <carousel-item
@@ -110,14 +110,10 @@ export default {
   },
   methods: {
     next() {
-      if (this.nextActive) {
-        this.carouselNumber++;
-      }
+      this.carouselNumber++;
     },
     prev() {
-      if (this.prevActive) {
-        this.carouselNumber--;
-      }
+      this.carouselNumber--;
     },
     dailyReset() {
       this.carouselNumber = 0;
@@ -139,7 +135,7 @@ export default {
   &:not(:first-of-type) {
     margin-top: 2rem;
   }
-  .head-control {
+  &__head-control {
     padding: 0 2rem;
     h2 {
       font-size: 1.8rem;
@@ -149,7 +145,7 @@ export default {
       display: none;
     }
   }
-  .wrap {
+  &__track {
     width: 100%;
     margin-top: 1.5rem;
     position: relative;
@@ -159,13 +155,13 @@ export default {
     &::-webkit-scrollbar {
       display: none;
     }
-  }
-  .items {
-    display: flex;
-    width: fit-content;
-    padding: 0 2rem;
-    margin: 0;
-    transition: 300ms ease-out;
+    .items {
+      display: flex;
+      width: fit-content;
+      padding: 0 2rem;
+      margin: 0;
+      transition: 300ms ease-out;
+    }
   }
 }
 
@@ -174,7 +170,7 @@ export default {
     &:not(:first-of-type) {
       margin-top: 3rem;
     }
-    .head-control {
+    &__head-control {
       padding: 0 5rem;
       h2 {
         font-size: 2.3rem;
@@ -183,19 +179,19 @@ export default {
         display: none;
       }
     }
-    .wrap {
+    &__track {
       width: 100%;
       margin-top: 1.5rem;
-    }
-    .items {
-      padding: 0 5rem;
+      .items {
+        padding: 0 5rem;
+      }
     }
   }
 }
 @media screen and (min-width: 1024px) {
   .carousel {
     position: relative;
-    .head-control {
+    &__head-control {
       display: flex;
       justify-content: flex-start;
       align-items: center;
@@ -203,7 +199,7 @@ export default {
         font-size: 2.8rem;
       }
     }
-    .wrap {
+    &__track {
       width: 100%;
       margin-top: 2rem;
     }
@@ -211,23 +207,25 @@ export default {
 }
 
 @media screen and (min-width: 1025px) {
-  .carousel .head-control .btn-wrap {
-    display: flex;
-    justify-content: flex-end;
-    flex: 2;
-    gap: 1rem;
-    height: 4rem;
-    margin-left: 2rem;
-    button {
-      width: 4rem;
+  .carousel {
+    &__head-control .btn-wrap {
+      display: flex;
+      justify-content: flex-end;
+      flex: 2;
       height: 4rem;
-      background-color: var(--bg-300);
-      border-radius: 50%;
-      color: #fff;
-      cursor: default;
-      &.active {
-        cursor: pointer;
+      button {
+        width: 4rem;
+        height: 4rem;
         background-color: var(--theme-500);
+        border-radius: 50%;
+        color: #fff;
+        &:disabled {
+          cursor: not-allowed;
+          background-color: var(--bg-300);
+        }
+        &:not(:last-child) {
+          margin-right: 1rem;
+        }
       }
     }
   }

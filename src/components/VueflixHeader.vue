@@ -1,12 +1,15 @@
 <template>
   <header
-    class="header"
-    :class="{ fill: isScroll || !isHome }"
+    :class="[
+      'header',
+      { 'header--scrolled': isScroll || !isHome },
+      { 'header--centered': isHome && isMobile },
+    ]"
     @scroll="handleScroll"
   >
     <div class="inner">
-      <div class="col-left" :class="{ centered: isHome && isMobile }">
-        <h1 class="logo" :class="{ blind: isMobile && !isHome }">
+      <div class="col-left">
+        <h1 :class="['header__logo', { blind: isMobile && !isHome }]">
           <router-link to="/">
             <logo />
           </router-link>
@@ -20,12 +23,18 @@
         >
           <icon-base iconName="뒤로가기"><icon-arrow-prev /></icon-base>
         </button>
-        <h2 v-if="isMobile && !isHome" class="title">{{ headString }}</h2>
-        <site-menu v-if="!isMobile" />
+        <h2 v-if="isMobile && !isHome" class="header__title">
+          {{ headString }}
+        </h2>
+        <site-menu v-if="!isMobile" :isScroll="isScroll" :isHome="isHome" />
       </div>
       <div class="col-right">
-        <search-bar v-if="isSearchVisible" />
-        <notification v-if="isHome" />
+        <search-bar
+          v-if="isSearchVisible"
+          :isScroll="isScroll"
+          :isHome="isHome"
+        />
+        <notification v-if="isHome" :isScroll="isScroll" />
       </div>
     </div>
   </header>
@@ -150,6 +159,23 @@ export default {
   z-index: 50;
   user-select: none;
 
+  &__logo {
+    display: flex;
+    align-items: center;
+    width: 6rem;
+    height: 6rem;
+    a {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      fill: var(--top-item);
+      transition: all 250ms ease-out;
+    }
+  }
+  &__title {
+    font-size: 1.8rem;
+    font-weight: 900;
+  }
   .inner {
     display: flex;
     justify-content: space-between;
@@ -158,32 +184,11 @@ export default {
     .col-left {
       display: flex;
       align-items: center;
-      &.centered {
-        margin-left: 50%;
-        transform: translateX(-50%);
-      }
-      .logo {
-        display: flex;
-        align-items: center;
-        width: 6rem;
-        height: 6rem;
-        a {
-          display: flex;
-          align-items: center;
-          width: 100%;
-          fill: #fff;
-          transition: all 250ms ease-out;
-        }
-      }
       .go-back {
         display: flex;
         align-items: center;
         justify-content: center;
         margin-right: 0.5rem;
-      }
-      .title {
-        font-size: 1.8rem;
-        font-weight: 900;
       }
     }
     .col-right {
@@ -196,14 +201,17 @@ export default {
   }
 
   transition: all 250ms ease-out;
-  &.fill {
+  &--scrolled {
     background-color: var(--top-item);
     border-bottom-color: var(--bg-100);
-    .col-left {
-      .logo a {
-        fill: var(--text-800);
-      }
+
+    .header__logo a {
+      fill: var(--text-800);
     }
+  }
+  &--centered .col-left {
+    margin-left: 50%;
+    transform: translateX(-50%);
   }
 }
 @media screen and (min-width: 768px) {
