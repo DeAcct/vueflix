@@ -2,10 +2,11 @@
   "name": "vueflix",
   "version": "0.1.0",
   "private": true,
+  "homepage": "vueflix.hyse.kr",
   "scripts": {
     "serve": "vue-cli-service serve",
     "predeploy": "vue-cli-service build && echo vueflix.hyse.kr > ./docs/CNAME",
-    "deploy": "gh-pages-d docs"
+    "deploy": "gh-pages -d docs"
   },
   "dependencies": {
     "@vue/cli": "^4.5.13",
@@ -31,7 +32,8 @@
     "@vue/compiler-sfc": "^3.0.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0"
+    "eslint-plugin-vue": "^7.0.0",
+    "gh-pages": "^3.2.3"
   },
   "eslintConfig": {
     "root": true,
