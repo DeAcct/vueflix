@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build && echo vueflix.hyse.kr > ./docs/CNAME"
+    "predeploy": "vue-cli-service build && echo vueflix.hyse.kr > ./docs/CNAME",
+    "deploy": "gh-pages-d docs"
   },
   "dependencies": {
     "@vue/cli": "^4.5.13",
