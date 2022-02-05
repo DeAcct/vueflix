@@ -39,6 +39,7 @@ select,
 option,
 label,
 img,
+video,
 svg {
   margin: 0;
   padding: 0;
@@ -213,7 +214,8 @@ summary {
 
 @media (hover: hover) and (pointer: fine) {
   a,
-  button {
+  button,
+  [role="progressbar"] {
     cursor: pointer;
   }
 }

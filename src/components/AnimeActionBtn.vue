@@ -6,7 +6,7 @@
     ]"
     :title="label"
   >
-    <icon-base iconName="label" class="icon">
+    <icon-base icon-name="label" class="icon">
       <slot name="icon"></slot>
     </icon-base>
     <span class="label">

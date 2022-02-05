@@ -4,7 +4,7 @@
     :class="['notification', { 'notification--scrolled': isScroll }]"
   >
     <i class="icon" @click="searchBarOpen">
-      <icon-base iconName="알림">
+      <icon-base icon-name="알림">
         <icon-notification />
       </icon-base>
     </i>

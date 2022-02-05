@@ -69,7 +69,6 @@ import SwiperCore, {
 import { Swiper, SwiperSlide } from "swiper/vue";
 SwiperCore.use([Autoplay, Pagination, A11y, Navigation, EffectFade]);
 import "swiper/swiper-bundle.min.css";
-import { mapState } from "vuex";
 
 export default {
   components: {
@@ -82,11 +81,6 @@ export default {
       slideList: [],
       slideImgLoaded: false,
     };
-  },
-  computed: {
-    ...mapState({
-      slides: (state) => state.anime.slides,
-    }),
   },
   mounted() {
     this.slideItemInit();

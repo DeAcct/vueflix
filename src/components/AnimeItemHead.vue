@@ -6,15 +6,15 @@
       v-if="isMobile"
     >
       <div class="col-left">
-        <button class="back" @click="goBack">
-          <icon-base iconName="뒤로가기">
+        <a class="back" @click="goBack">
+          <icon-base icon-name="뒤로가기">
             <icon-arrow-prev />
           </icon-base>
-        </button>
+        </a>
         <strong class="scroll-title">{{ title }}</strong>
       </div>
       <button class="overflow-btn" @click="openOverflowMenu">
-        <icon-base iconName="더보기 메뉴">
+        <icon-base icon-name="더보기 메뉴">
           <icon-overflow />
         </icon-base>
       </button>
@@ -162,7 +162,7 @@ export default {
     },
   },
   mounted() {
-    this.component = this.notPC ? "div" : "header";
+    this.component = this.notPC ? "header" : "div";
     window.addEventListener("resize", this.checkResolution);
   },
   unmounted() {

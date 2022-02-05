@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "start chrome localhost:8080 && vue-cli-service serve",
-    "build": "vue-cli-service build && echo vueflix.hyse.kr > ./docs/CNAME && echo CNAME created (vueflix.hyse.kr)"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build && echo vueflix.hyse.kr > ./docs/CNAME"
   },
   "dependencies": {
     "@vue/cli": "^4.5.13",
@@ -15,8 +15,8 @@
     "firebase-tools": "^9.23.0",
     "gsap": "^3.7.1",
     "js-cookie": "^3.0.0",
-    "node-sass": "4.14",
     "register-service-worker": "^1.7.2",
+    "sass": "^1.49.7",
     "sass-loader": "10",
     "swiper": "^6.8.2",
     "vue": "^3.0.0",

@@ -4,13 +4,8 @@
       <h2><slot></slot></h2>
       <day-selector v-if="isDaily" @dayBtnClick="dailyReset" />
       <div class="btn-wrap">
-        <button
-          class="prev-btn"
-          title="이전"
-          @click="prev"
-          :disabled="!prevActive"
-        >
-          <icon-base><icon-arrow-prev /></icon-base>
+        <button class="prev-btn" @click="prev" :disabled="!prevActive">
+          <icon-base icon-name="이전"><icon-arrow-prev /></icon-base>
         </button>
         <button
           class="next-btn"
@@ -18,7 +13,7 @@
           @click="next"
           :disabled="!nextActive"
         >
-          <icon-base><icon-arrow-next /></icon-base>
+          <icon-base icon-name="다음"><icon-arrow-next /></icon-base>
         </button>
       </div>
     </div>

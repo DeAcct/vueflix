@@ -2,8 +2,8 @@
   <div class="inner result">
     <strong class="guide-text">
       보고싶다
-      <i class="icon">
-        <icon-base title="보고싶다">
+      <i class="icon" role="presentation">
+        <icon-base>
           <icon-wanna-see />
         </icon-base>
       </i>

@@ -14,15 +14,15 @@
             <logo />
           </router-link>
         </h1>
-        <button
+        <a
           class="go-back"
           @click="goBack"
           v-if="isPrevVisible"
           role="link"
           id="뒤로가기"
         >
-          <icon-base iconName="뒤로가기"><icon-arrow-prev /></icon-base>
-        </button>
+          <icon-base icon-name="뒤로가기"><icon-arrow-prev /></icon-base>
+        </a>
         <h2 v-if="isMobile && !isHome" class="header__title">
           {{ headString }}
         </h2>
@@ -156,7 +156,7 @@ export default {
   border-bottom: 1px solid hsla(0, 0%, 87%, 0);
   position: fixed;
   top: 0;
-  z-index: 50;
+  z-index: 100;
   user-select: none;
 
   &__logo {

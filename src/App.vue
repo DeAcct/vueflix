@@ -39,14 +39,20 @@ export default {
       headerVisible: this.$route.meta.appBar || !this.isMobile,
       bottomTabMenuVisible: this.$route.meta.bottomTabMenu && this.isMobile,
       isMobile: window.innerWidth <= 768,
+      isPlayer: false,
     };
   },
   methods: {
     init() {
-      this.headerVisible = this.$route.meta.appBar || !this.isMobile;
+      this.isPlayer = this.$route.name === "player";
+      this.headerVisible =
+        (this.$route.meta.appBar || !this.isMobile) && !this.isPlayer;
       this.bottomTabMenuVisible =
         this.$route.meta.bottomTabMenu && this.isMobile;
       document.title = this.$route.meta.title || process.env.VUE_APP_KR_NAME;
+      if (!this.isPlayer && this.$route.name !== "anime") {
+        this.$store.commit("currentAnimeInfo/setCurrentAnimeInfo", undefined);
+      }
     },
   },
   watch: {

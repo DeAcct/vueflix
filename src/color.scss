@@ -50,4 +50,10 @@
   --box-shadow: rgba(0, 0, 0, 0.15);
   --modal-shadow: var(--box-shadow);
   --overflow-gradient-100: rgba(255, 255, 255, 0.95);
+  --player-gradient: linear-gradient(
+    rgba(0, 0, 0, 0.3),
+    transparent,
+    rgba(0, 0, 0, 0.5)
+  );
+  --player-setting-bg: hsla(210, 29%, 10%, 0.95);
 }

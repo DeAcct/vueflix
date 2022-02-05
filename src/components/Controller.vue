@@ -11,7 +11,7 @@
     <div class="bottom-row">
       <div class="tags-container selected">
         <i class="icon">
-          <icon-base iconName="선택된 태그"><icon-selected /></icon-base>
+          <icon-base icon-name="선택된 태그"><icon-selected /></icon-base>
         </i>
         <ul class="tags">
           <tag-item>로맨스</tag-item>
@@ -20,7 +20,7 @@
       </div>
       <div class="tags-container excluded">
         <i class="icon">
-          <icon-base iconName="제외된 태그"><icon-excluded /></icon-base>
+          <icon-base icon-name="제외된 태그"><icon-excluded /></icon-base>
         </i>
         <ul class="tags">
           <tag-item>특촬</tag-item>

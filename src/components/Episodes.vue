@@ -2,7 +2,7 @@
   <div class="episodes">
     <button class="part-info inner" @click="widgetToggle">
       <i :class="['open-icon', { 'open-icon--widget-opened': isWidgetOpen }]">
-        <icon-base>
+        <icon-base :icon-name="isWidgetOpen ? '닫기' : '열기'">
           <icon-arrow-next />
         </icon-base>
       </i>
@@ -17,6 +17,7 @@
         :thumbnail="`${this.$route.params.id}/${episode.thumbnail}`"
         :index="index + 1"
         :ref="`episodeCard${index}`"
+        :part="episodesData.part"
       />
     </ul>
   </div>

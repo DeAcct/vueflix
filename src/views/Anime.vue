@@ -109,6 +109,7 @@ import Modal from "../components/Modal.vue";
 import ActionSheet from "../components/ActionSheet.vue";
 import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconReview from "../components/icons/IconReview.vue";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -163,10 +164,10 @@ export default {
       this.isScroll = 0 < Math.round(window.scrollY);
     },
     async getRawData() {
-      const db = getFirestore();
-      const animeRef = collection(db, "anime");
-      const q = query(animeRef, where("name", "==", this.$route.params.id));
       try {
+        const db = getFirestore();
+        const animeRef = collection(db, "anime");
+        const q = query(animeRef, where("name", "==", this.$route.params.id));
         const querySnapshot = await getDocs(q);
         if (querySnapshot.docs.length !== 0) {
           const rawData = querySnapshot.docs[0].data();
@@ -177,15 +178,19 @@ export default {
       }
     },
     async animeInit() {
-      const storage = getStorage();
-      const rawData = await this.getRawData();
-      const posterRef = ref(
-        storage,
-        `${this.$route.params.id}/${rawData.poster}`
-      );
       try {
+        const storage = getStorage();
+        const rawData = await this.getRawData();
+        const posterRef = ref(
+          storage,
+          `${this.$route.params.id}/${rawData.poster}`
+        );
         const posterURL = await getDownloadURL(posterRef);
         this.animeInfo = { ...rawData, poster: posterURL };
+        this.$store.commit(
+          "currentAnimeInfo/setCurrentAnimeInfo",
+          this.animeInfo.parts
+        );
       } catch {
         this.$router.replace("/notfound");
       }
@@ -254,6 +259,11 @@ export default {
     closeLoginModal() {
       this.isLoginModalOpened = false;
     },
+  },
+  computed: {
+    ...mapState({
+      currentAnime: (state) => state.currentAnimeInfo.currentAnimeInfo,
+    }),
   },
 };
 </script>

@@ -36,6 +36,15 @@ const routes = [
     ],
   },
   {
+    path: "/player/:title/:part/:index",
+    name: "player",
+    component: () => import("@/views/Player"),
+    meta: {
+      appBar: false,
+      bottomTabMenu: false,
+    },
+  },
+  {
     path: "/tag-search",
     name: "tag-search",
     component: () => import("@/views/TagSearch"),

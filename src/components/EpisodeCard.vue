@@ -1,6 +1,6 @@
 <template>
   <li class="episode-card">
-    <a href="#none" class="episode-item inner">
+    <router-link :to="toValue" class="episode-item inner" replace>
       <figure>
         <div class="col-left">
           <div class="thumbnail">
@@ -17,14 +17,24 @@
           </div>
         </div>
         <div class="col-right">
-          <icon-base></icon-base>
+          <icon-base> </icon-base>
         </div>
       </figure>
-    </a>
+    </router-link>
   </li>
 </template>
 
 <script>
+/*
+ * [무슨 일이 일어나고 있나?]
+ *
+ * /anime/[애니제목](replace)
+ * /player/[애니제목]/[몇기]/[몇화](replace)
+ * /anime/[애니제목]
+ * 마지막 히스토리의 관점에서 두 개의 이전 히스토리가 사라졌으니
+   아예 anime 들어오기 전으로 빠져나갈 수 있는 것.
+ */
+
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import IconBase from "../components/IconBase.vue";
 export default {
@@ -40,6 +50,9 @@ export default {
       type: Number,
     },
     date: {
+      type: String,
+    },
+    part: {
       type: String,
     },
   },
@@ -65,6 +78,11 @@ export default {
       } else {
         this.thumbnailURL = URL;
       }
+    },
+  },
+  computed: {
+    toValue() {
+      return `/player/${this.$route.params.id}/${this.part}/${this.index}화`;
     },
   },
 };

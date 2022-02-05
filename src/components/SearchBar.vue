@@ -15,7 +15,7 @@
           @focus="searchBarOpen"
           tabindex="0"
         >
-          <icon-base iconName="검색">
+          <icon-base icon-name="검색">
             <icon-search />
           </icon-base>
         </i>

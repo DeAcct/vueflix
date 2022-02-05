@@ -1,9 +1,15 @@
 <template>
   <div class="accordion-widget">
-    <details>
+    <details ref="accordionWidget" @toggle="detailsToggle">
       <summary>
         <i class="icon">
-          <icon-base width="2rem" height="2rem"><icon-arrow-next /></icon-base>
+          <icon-base
+            width="2rem"
+            height="2rem"
+            :icon-name="isOpen ? '닫기' : '열기'"
+          >
+            <icon-arrow-next />
+          </icon-base>
         </i>
         <slot name="title"></slot>
       </summary>
@@ -26,6 +32,16 @@ export default {
   props: {
     selectorItems: {
       type: Array,
+    },
+  },
+  data() {
+    return {
+      isOpen: false,
+    };
+  },
+  methods: {
+    detailsToggle(e) {
+      this.isOpen = e.currentTarget.open;
     },
   },
 };
