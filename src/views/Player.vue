@@ -20,17 +20,29 @@
       @play-state-change="togglePlayState"
       @pip-state-change="PIPon"
       @progress-change="progressChange"
+      @open-player-setting="openPlayerSetting"
       @exit-player="exitPlayer"
       :is-full-screen="isFullScreen"
       :is-playing="isPlaying"
       :progress="videoProgress"
-      :current="current"
+      :current="videoCurrent"
       :class="{ 'video-controller--show': isControllerShown }"
     >
-      <template v-slot:video-current>{{ current }}</template>
-      <template v-slot:video-duration>{{ duration }}</template>
+      <template v-slot:video-current>{{ videoCurrent }}</template>
+      <template v-slot:video-duration>{{ videoDuration }}</template>
     </video-controller>
-    <player-setting />
+    <player-setting
+      :class="{ 'player-setting--open': isSettingShown }"
+      @close-player-setting="closePlayerSetting"
+      @speed-change="speedChange"
+      @resolution-change="resolutionChange"
+      @autoskip-change="autoskipChange"
+      @autoplay-change="autoplayChange"
+      :video-speed="videoSpeed * 2 - 1"
+      :video-resolution="videoResolution"
+      :video-autoskip="videoAutoskip"
+      :video-autoplay="videoAutoplay"
+    />
   </div>
 </template>
 
@@ -65,11 +77,14 @@ export default {
     this.toggleVideoController();
     this.isPlaying = true;
     window.addEventListener("keydown", this.spaceTrigger);
-    this.$refs.video.addEventListener(
-      "leavepictureinpicture",
-      this.PIPoff,
-      false
-    );
+    if (this.$refs.video) {
+      this.$refs.video.addEventListener(
+        "leavepictureinpicture",
+        this.PIPoff,
+        false
+      );
+      this.$refs.video.playbackRate = this.videoSpeed;
+    }
   },
   unmounted() {
     window.removeEventListener("keydown", this.spaceTrigger);
@@ -82,11 +97,16 @@ export default {
       isPlaying: false,
       isEnd: false,
       isControllerShown: false,
+      isSettingShown: false,
       videoSrc: "",
       controllerTimer: undefined,
       videoProgress: "0%",
-      current: "00:00",
-      duration: "00:00",
+      videoCurrent: "00:00",
+      videoDuration: "00:00",
+      videoSpeed: 1,
+      videoResolution: "1080p",
+      videoAutoskip: false,
+      videoAutoplay: false,
     };
   },
   methods: {
@@ -143,6 +163,19 @@ export default {
         this.isControllerShown = false;
       }, 3000);
     },
+    speedChange(e) {
+      this.$refs.video.playbackRate = e * 0.5;
+      this.videoSpeed = e * 0.5;
+    },
+    resolutionChange(e) {
+      this.videoResolution = e;
+    },
+    autoskipChange(e) {
+      this.videoAutoskip = e;
+    },
+    autoplayChange(e) {
+      this.videoAutoplay = e;
+    },
     async PIPon() {
       await this.$refs.video.requestPictureInPicture();
     },
@@ -155,6 +188,12 @@ export default {
     },
     videoEnd() {
       this.isEnd = true;
+    },
+    openPlayerSetting() {
+      this.isSettingShown = true;
+    },
+    closePlayerSetting() {
+      this.isSettingShown = false;
     },
     async exitPlayer() {
       if (this.isFullScreen) {
@@ -172,10 +211,10 @@ export default {
         const durSec = Math.floor(duration - durMin * 60);
         const progress = (now / duration) * 100;
 
-        this.current = `
+        this.videoCurrent = `
         ${this.formatter(nowMin, 10)}:${this.formatter(nowSec, 10)}
         `;
-        this.duration = duration
+        this.videoDuration = duration
           ? `${this.formatter(durMin, 10)}:${this.formatter(durSec, 10)}`
           : "00:00";
         this.videoProgress = duration ? `${progress}%` : "0%";
@@ -249,7 +288,20 @@ export default {
 
   .player-setting {
     position: fixed;
-    right: 0;
+    right: -75%;
+    transition: 300ms ease-out;
+    opacity: 0;
+    &--open {
+      opacity: 1;
+      right: 0;
+    }
+  }
+}
+
+@media (orientation: landscape) {
+  .player-setting {
+    position: fixed;
+    right: -25%;
   }
 }
 @keyframes spinner-line {

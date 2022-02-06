@@ -8,7 +8,7 @@
           </icon-base>
         </i>
       </button>
-      <button @click="togglePlayerSetting" class="video-controller__btn">
+      <button @click="openPlayerSetting" class="video-controller__btn">
         <i class="icon">
           <icon-base icon-name="플레이어 설정 열기">
             <icon-overflow />
@@ -136,6 +136,9 @@ export default {
     },
     toggleFullScreen() {
       this.$emit("fullscreen-state-change");
+    },
+    openPlayerSetting() {
+      this.$emit("open-player-setting");
     },
     enablePIP() {
       this.$emit("pip-state-change");

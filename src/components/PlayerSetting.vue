@@ -1,107 +1,168 @@
 <template>
   <aside class="player-setting">
-    <button class="player-setting__close-btn">
-      <i class="icon">
-        <icon-base icon-name="플레이어 설정 닫기">
-          <icon-close />
-        </icon-base>
-      </i>
-    </button>
-    <ul class="setting-list">
-      <li v-for="item in settingItems" :key="item.text">
-        <button>
-          <span class="setting-list__text">{{ item.text }}</span>
-          <i class="setting-list__icon">
-            <icon-base>
-              <icon-arrow-next />
-            </icon-base>
-          </i>
-        </button>
-      </li>
-    </ul>
+    <div class="row-top">
+      <h2 class="player-setting__heading">플레이어 설정</h2>
+      <button class="player-setting__close-btn" @click="closeSetting">
+        <i class="icon">
+          <icon-base icon-name="플레이어 설정 닫기">
+            <icon-close />
+          </icon-base>
+        </i>
+      </button>
+    </div>
+    <transition :name="hierarchy" mode="out-in">
+      <component
+        :is="selectedSetting"
+        @setting-replace="settingReplace"
+        @speed-change="speedChange"
+        @resolution-change="resolutionChange"
+        @autoskip-change="autoskipChange"
+        @autoplay-change="autoplayChange"
+        :speed="videoSpeed"
+        :resolution="videoResolution"
+        :autoskip="videoAutoskip"
+        :autoplay="videoAutoplay"
+      />
+    </transition>
   </aside>
 </template>
 
 <script>
 import IconBase from "./IconBase.vue";
-import IconArrowNext from "./icons/IconArrowNext.vue";
 import IconClose from "./icons/IconClose.vue";
-
+import PlayerSettingMain from "./PlayerSettingMain.vue";
+import PlayerSettingResolution from "./PlayerSettingResolution.vue";
+import PlayerSettingSpeed from "./PlayerSettingSpeed.vue";
+import PlayerSettingAutoSkip from "./PlayerSettingAutoSkip.vue";
+import PlayerSettingAutoPlay from "./PlayerSettingAutoPlay.vue";
 export default {
   name: "PlayerSetting",
   components: {
     IconBase,
-    IconArrowNext,
     IconClose,
+    PlayerSettingMain,
+    PlayerSettingResolution,
+    PlayerSettingSpeed,
+    PlayerSettingAutoSkip,
+    PlayerSettingAutoPlay,
   },
   data() {
     return {
-      settingItems: [
-        {
-          method: "",
-          text: "화질 선택",
-        },
-        {
-          method: "",
-          text: "재생 속도",
-        },
-        {
-          method: "",
-          text: "오프닝/엔딩 자동 스킵",
-        },
-        {
-          method: "",
-          text: "에피소드 자동재생",
-        },
-      ],
+      current: "main",
     };
+  },
+  props: {
+    videoSpeed: {
+      type: Number,
+    },
+    videoResolution: {
+      type: String,
+    },
+    videoAutoplay: {
+      type: Boolean,
+    },
+    videoAutoskip: {
+      type: Boolean,
+    },
+  },
+  methods: {
+    closeSetting() {
+      this.current = "main";
+      this.$emit("close-player-setting");
+    },
+    settingReplace(e) {
+      this.current = e;
+    },
+    speedChange(e) {
+      this.$emit("speed-change", e);
+    },
+    resolutionChange(e) {
+      this.$emit("resolution-change", e);
+    },
+    autoskipChange(e) {
+      this.$emit("autoskip-change", e);
+    },
+    autoplayChange(e) {
+      this.$emit("autoplay-change", e);
+    },
+  },
+  computed: {
+    selectedSetting() {
+      return `player-setting-${this.current}`;
+    },
+    hierarchy() {
+      return this.current !== "main" ? "to-up" : "to-down";
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .player-setting {
+  overflow: hidden;
   display: flex;
+  width: 75%;
   flex-direction: column;
   background-color: var(--player-setting-bg);
   height: 100%;
-  padding: 1rem 3rem;
+  padding: 2rem 3rem;
+
+  .row-top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__heading {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
   &__close-btn {
     align-self: flex-end;
-    margin-bottom: 1rem;
     .icon {
       color: #fff;
-      width: 3.6rem;
+      width: 2.4rem;
       height: 3.6rem;
       display: flex;
       justify-content: center;
       align-items: center;
     }
   }
-  .setting-list {
+}
+
+.to-up-enter-active,
+.to-up-leave-active,
+.to-down-enter-active,
+.to-down-leave-active {
+  transition: 100ms ease-in-out;
+}
+
+.to-up-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+.to-up-leave-to {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+.to-down-enter-from {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.to-down-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
+}
+@media (orientation: landscape) {
+  .player-setting {
     display: flex;
-    flex-direction: column;
-    button {
-      display: flex;
-      width: 20vw;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.5rem 0;
-    }
-    &__text {
-      color: #fff;
-      font-size: 1.1rem;
-    }
-    &__icon {
-      color: #fff;
-      width: 1.8rem;
-      height: 1.8rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    li:not(:last-child) {
-      margin-bottom: 0.5rem;
+    width: 25%;
+    .row-top {
+      margin-bottom: 2rem;
     }
   }
 }
