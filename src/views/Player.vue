@@ -8,7 +8,7 @@
       @loadeddata="loaded"
       @timeupdate="setTime"
       @ended="videoEnd"
-    ></video>
+    />
     <svg
       viewBox="0 0 64 64"
       :class="['player__loader', { 'player__loader--show': isLoading }]"
@@ -21,12 +21,14 @@
       @pip-state-change="PIPon"
       @progress-change="progressChange"
       @open-player-setting="openPlayerSetting"
+      @open-mini-episode-list="openMiniEpisodeList"
       @exit-player="exitPlayer"
       :is-full-screen="isFullScreen"
       :is-playing="isPlaying"
       :progress="videoProgress"
+      :duration="videoDuration"
       :current="videoCurrent"
-      :class="{ 'video-controller--show': isControllerShown }"
+      :class="{ 'video-controller--show': true }"
     >
       <template v-slot:video-current>{{ videoCurrent }}</template>
       <template v-slot:video-duration>{{ videoDuration }}</template>
@@ -43,6 +45,11 @@
       :video-autoskip="videoAutoskip"
       :video-autoplay="videoAutoplay"
     />
+    <mini-episode-list
+      :class="{ 'mini-episode-list--open': isMiniEpisodeListShown }"
+      :episode-data="currentAnime"
+      @close-emit="closeMiniEpisodeList"
+    />
   </div>
 </template>
 
@@ -52,6 +59,7 @@ import { mapState } from "vuex";
 
 import VideoController from "../components/VideoController.vue";
 import PlayerSetting from "../components/PlayerSetting.vue";
+import MiniEpisodeList from "../components/MiniEpisodeList.vue";
 
 export default {
   name: "Player",
@@ -67,6 +75,7 @@ export default {
   components: {
     VideoController,
     PlayerSetting,
+    MiniEpisodeList,
   },
   async mounted() {
     if (!this.currentAnime) {
@@ -98,6 +107,7 @@ export default {
       isEnd: false,
       isControllerShown: false,
       isSettingShown: false,
+      isMiniEpisodeListShown: false,
       videoSrc: "",
       controllerTimer: undefined,
       videoProgress: "0%",
@@ -107,6 +117,7 @@ export default {
       videoResolution: "1080p",
       videoAutoskip: false,
       videoAutoplay: false,
+      seekImgSrc: "",
     };
   },
   methods: {
@@ -194,6 +205,14 @@ export default {
     },
     closePlayerSetting() {
       this.isSettingShown = false;
+      console.log(this.isSettingShown);
+    },
+    openMiniEpisodeList() {
+      this.isMiniEpisodeListShown = true;
+      console.log(this.isMiniEpisodeListShown);
+    },
+    closeMiniEpisodeList() {
+      this.isMiniEpisodeListShown = false;
     },
     async exitPlayer() {
       if (this.isFullScreen) {
@@ -290,7 +309,15 @@ export default {
     position: fixed;
     right: -75%;
     transition: 300ms ease-out;
-    opacity: 0;
+    &--open {
+      opacity: 1;
+      right: 0;
+    }
+  }
+  .mini-episode-list {
+    position: fixed;
+    right: -100%;
+    transition: 300ms ease-out;
     &--open {
       opacity: 1;
       right: 0;
@@ -300,8 +327,10 @@ export default {
 
 @media (orientation: landscape) {
   .player-setting {
-    position: fixed;
     right: -25%;
+  }
+  .mini-episode-list {
+    right: -50%;
   }
 }
 @keyframes spinner-line {

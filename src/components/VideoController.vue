@@ -1,20 +1,30 @@
 <template>
   <div class="video-controller inner">
     <div class="row-top">
-      <button @click="exitPlayer" class="video-controller__btn" replace>
-        <i class="icon">
-          <icon-base icon-name="뒤로가기">
-            <icon-arrow-prev />
-          </icon-base>
-        </i>
-      </button>
-      <button @click="openPlayerSetting" class="video-controller__btn">
-        <i class="icon">
-          <icon-base icon-name="플레이어 설정 열기">
-            <icon-overflow />
-          </icon-base>
-        </i>
-      </button>
+      <div class="col-left">
+        <button @click="exitPlayer" class="video-controller__btn" replace>
+          <i class="icon">
+            <icon-base icon-name="뒤로가기">
+              <icon-arrow-prev />
+            </icon-base>
+          </i>
+        </button>
+        <div class="episode-info">
+          <h1 class="episode-info__title">{{ $route.params.title }}</h1>
+          <p class="episode-info__part-index">
+            {{ $route.params.part }} {{ $route.params.index }}
+          </p>
+        </div>
+      </div>
+      <div class="col-right">
+        <button @click="openPlayerSetting" class="video-controller__btn">
+          <i class="icon">
+            <icon-base icon-name="플레이어 설정">
+              <icon-overflow />
+            </icon-base>
+          </i>
+        </button>
+      </div>
     </div>
     <div class="row-bottom">
       <div class="video-progress">
@@ -24,10 +34,29 @@
 
         <div
           role="progressbar"
-          class="video-progress__track"
-          @click="progressChange"
+          :aria-valuenow="current"
+          aria-valuemin="00:00"
+          :aria-valuemax="duration"
+          :class="[
+            'video-progress__track',
+            { 'video-progress__track--expanded': isProgressExpanded },
+          ]"
+          @mousedown="progressMouseDown"
+          @mousemove="progressMouseMove"
+          @mouseup="progressMouseUp"
+          @touchstart="progressTouchStart"
+          @touchmove="progressTouchMove"
+          @touchend="progressTouchEnd"
+          @contextmenu.prevent
         >
           <div class="video-progress__body" :style="`width:${progress}`"></div>
+          <div
+            :class="[
+              'video-progress__interact-tracker',
+              { 'video-progress__interact-tracker--show': isProgressExpanded },
+            ]"
+            :style="`transform:translateX(${interactTrackerLeft}px)`"
+          ></div>
         </div>
         <span class="video-progress__timer">
           <slot name="video-duration"></slot>
@@ -50,11 +79,18 @@
             replace
           >
             <i class="icon">
-              <icon-base>
+              <icon-base icon-name="다음 에피소드로">
                 <icon-next-episode />
               </icon-base>
             </i>
           </router-link>
+          <button @click="openMiniEpisodeList" class="video-controller__btn">
+            <i class="icon">
+              <icon-base icon-name="에피소드 목록">
+                <icon-episode-list />
+              </icon-base>
+            </i>
+          </button>
         </div>
         <div class="col-right">
           <button
@@ -63,14 +99,14 @@
             class="video-controller__btn"
           >
             <i class="icon">
-              <icon-base>
+              <icon-base icon-name="작은 화면으로 보기(PIP)">
                 <icon-pip />
               </icon-base>
             </i>
           </button>
           <button @click="toggleFullScreen" class="video-controller__btn">
             <i class="icon">
-              <icon-base>
+              <icon-base icon-name="전체화면">
                 <icon-full-screen-off v-if="isFullScreen" />
                 <icon-full-screen-on v-else />
               </icon-base>
@@ -94,6 +130,7 @@ import IconNextEpisode from "./icons/IconNextEpisode.vue";
 import IconFullScreenOff from "./icons/IconFullScreenOff.vue";
 import IconFullScreenOn from "./icons/IconFullScreenOn.vue";
 import IconPip from "./icons/IconPIP.vue";
+import IconEpisodeList from "./icons/IconEpisodeList.vue";
 
 export default {
   name: "VideoController",
@@ -107,6 +144,7 @@ export default {
     IconFullScreenOn,
     IconPip,
     IconOverflow,
+    IconEpisodeList,
   },
   props: {
     isFullScreen: {
@@ -116,6 +154,9 @@ export default {
       type: Boolean,
     },
     current: {
+      type: String,
+    },
+    duration: {
       type: String,
     },
     progress: {
@@ -128,6 +169,9 @@ export default {
   data() {
     return {
       isPIPAvailable: false,
+      isProgressExpanded: false,
+      interactTrackerLeft: 0,
+      isMouseDown: false,
     };
   },
   methods: {
@@ -140,14 +184,54 @@ export default {
     openPlayerSetting() {
       this.$emit("open-player-setting");
     },
+    openMiniEpisodeList() {
+      this.$emit("open-mini-episode-list");
+    },
     enablePIP() {
       this.$emit("pip-state-change");
     },
-    progressChange(e) {
-      const clickedPos =
-        (e.layerX - e.currentTarget.getBoundingClientRect().x) /
-        e.currentTarget.getBoundingClientRect().width;
-      this.$emit("progressChange", clickedPos);
+    progressMouseDown(e) {
+      this.isProgressExpanded = true;
+      this.isMouseDown = true;
+      this.interactTrackerLeft =
+        e.clientX - e.currentTarget.getBoundingClientRect().x;
+    },
+    progressMouseMove(e) {
+      if (
+        this.isMouseDown &&
+        this.interactTrackerLeft <
+          e.currentTarget.getBoundingClientRect().width &&
+        this.interactTrackerLeft >= 0
+      ) {
+        this.interactTrackerLeft =
+          e.clientX - e.currentTarget.getBoundingClientRect().x;
+      } else {
+        return;
+      }
+    },
+    progressMouseUp(e) {
+      this.$emit(
+        "progressChange",
+        this.interactTrackerLeft / e.currentTarget.getBoundingClientRect().width
+      );
+      this.isProgressExpanded = false;
+      this.isMouseDown = false;
+    },
+    progressTouchStart(e) {
+      this.isProgressExpanded = true;
+      this.interactTrackerLeft =
+        e.touches[0].clientX - e.currentTarget.getBoundingClientRect().x;
+    },
+    progressTouchMove(e) {
+      this.interactTrackerLeft =
+        e.touches[0].clientX - e.currentTarget.getBoundingClientRect().x;
+    },
+    progressTouchEnd(e) {
+      this.$emit(
+        "progressChange",
+        this.interactTrackerLeft / e.currentTarget.getBoundingClientRect().width
+      );
+      this.isProgressExpanded = false;
     },
     exitPlayer() {
       this.$emit("exit-player");
@@ -196,6 +280,10 @@ export default {
     button {
       margin: 0;
     }
+    .col-left,
+    .col-right {
+      display: flex;
+    }
   }
   .btn-area {
     display: flex;
@@ -213,26 +301,50 @@ export default {
     color: #fff;
   }
   .video-progress {
+    position: relative;
     display: flex;
     align-items: center;
-    margin-bottom: 1.5rem;
+    height: 2rem;
+    margin-bottom: 1rem;
     &__timer {
       color: #fff;
-      font-size: 1.2rem;
+      font-size: 1.5rem;
     }
     &__track {
       flex: 1;
       width: 100%;
       height: 0.5rem;
-      background-color: var(--bg-200);
+      background-color: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(50px);
       border-radius: 9999px;
-      margin: 0 1rem;
+      margin: 0 2rem;
+      transition: height 150ms ease-out;
+      &--expanded,
+      &:hover {
+        height: 100%;
+      }
     }
     &__body {
       background-color: var(--theme-500);
       height: 100%;
       border-radius: 9999px;
       transition: width 100ms linear;
+    }
+    &__interact-tracker {
+      position: absolute;
+      top: calc(50% - 0.8rem);
+      left: -0.3rem;
+      width: 0.6rem;
+      height: 1.6rem;
+      border-radius: 9999px;
+      background-color: #fff;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 300ms ease-out, visibility 300ms ease-out;
+      &--show {
+        visibility: visible;
+        opacity: 1;
+      }
     }
   }
   &__btn {
@@ -244,6 +356,26 @@ export default {
     &:not(:last-child) {
       margin-right: 1rem;
     }
+  }
+  .episode-info {
+    visibility: hidden; //폴더블 대응
+    display: flex;
+    align-items: center;
+    &__title {
+      color: #fff;
+      font-size: 1.5rem;
+      margin-right: 1rem;
+    }
+    &__part-index {
+      font-size: 1.3rem;
+      color: #fff;
+    }
+  }
+}
+
+@media screen and (min-width: 375px) {
+  .video-controller .episode-info {
+    visibility: visible; //폴더블 대응
   }
 }
 </style>

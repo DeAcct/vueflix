@@ -1,6 +1,8 @@
 <template>
-  <li class="episode-card">
-    <router-link :to="toValue" class="episode-item inner" replace>
+  <li
+    :class="['episode-card', { 'episode-card--theme-exclude': excludeTheme }]"
+  >
+    <router-link :to="toValue" class="episode-item" replace>
       <figure>
         <div class="col-left">
           <div class="thumbnail">
@@ -12,11 +14,21 @@
             />
           </div>
           <div class="episode-info">
-            <figcaption class="title">{{ index }}화 {{ title }}</figcaption>
-            <p class="date">{{ date }}</p>
+            <figcaption
+              class="title"
+              :style="`color:${excludeTheme ? textColor : undefined}`"
+            >
+              {{ index }}화 {{ title }}
+            </figcaption>
+            <p
+              class="date"
+              :style="`color:${excludeTheme ? textColor : undefined}`"
+            >
+              {{ date }}
+            </p>
           </div>
         </div>
-        <div class="col-right">
+        <div class="col-right" v-if="download">
           <icon-base> </icon-base>
         </div>
       </figure>
@@ -55,6 +67,15 @@ export default {
     part: {
       type: String,
     },
+    download: {
+      type: Boolean,
+    },
+    excludeTheme: {
+      type: Boolean,
+    },
+    textColor: {
+      type: String,
+    },
   },
   components: {
     IconBase,
@@ -82,7 +103,7 @@ export default {
   },
   computed: {
     toValue() {
-      return `/player/${this.$route.params.id}/${this.part}/${this.index}화`;
+      return `/player/${this.$route.params.title}/${this.part}/${this.index}화`;
     },
   },
 };
@@ -96,10 +117,15 @@ export default {
   .episode-item {
     display: flex;
     figure {
+      width: 100%;
       display: flex;
       justify-content: space-between;
       .col-left {
         display: flex;
+      }
+      .col-right {
+        display: flex;
+        align-items: center;
       }
       .thumbnail {
         width: 12rem;

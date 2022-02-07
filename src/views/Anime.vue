@@ -51,7 +51,7 @@
             </p>
           </li>
         </ul>
-        <arrow-btn-widget :to="`${$route.params.id}/reviews`" :icon="true">
+        <arrow-btn-widget :to="`${$route.params.title}/reviews`" :icon="true">
           <template v-slot:icon>
             <icon-review />
           </template>
@@ -122,7 +122,7 @@ export default {
   },
   name: "anime",
   mounted() {
-    document.title = `${this.$route.params.id} 다시보기`;
+    document.title = `${this.$route.params.title} 다시보기`;
     this.animeInit();
     window.addEventListener("resize", () => {
       this.deviceHeight = window.innerHeight;
@@ -167,7 +167,10 @@ export default {
       try {
         const db = getFirestore();
         const animeRef = collection(db, "anime");
-        const q = query(animeRef, where("name", "==", this.$route.params.id));
+        const q = query(
+          animeRef,
+          where("name", "==", this.$route.params.title)
+        );
         const querySnapshot = await getDocs(q);
         if (querySnapshot.docs.length !== 0) {
           const rawData = querySnapshot.docs[0].data();
@@ -183,7 +186,7 @@ export default {
         const rawData = await this.getRawData();
         const posterRef = ref(
           storage,
-          `${this.$route.params.id}/${rawData.poster}`
+          `${this.$route.params.title}/${rawData.poster}`
         );
         const posterURL = await getDownloadURL(posterRef);
         this.animeInfo = { ...rawData, poster: posterURL };

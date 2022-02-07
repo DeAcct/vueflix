@@ -8,16 +8,22 @@
       </i>
       <strong class="part-title">{{ episodesData.part }}</strong>
     </button>
-    <ul :class="['episode-widget', { 'episode-widget--opened': isWidgetOpen }]">
+    <ul
+      :class="[
+        'episode-widget',
+        'inner',
+        { 'episode-widget--opened': isWidgetOpen },
+      ]"
+    >
       <episode-card
         v-for="(episode, index) in episodesData.episodes"
         :key="episode.title"
         :title="episode.title"
         :date="episode.date"
-        :thumbnail="`${this.$route.params.id}/${episode.thumbnail}`"
+        :thumbnail="`${this.$route.params.title}/${episode.thumbnail}`"
         :index="index + 1"
-        :ref="`episodeCard${index}`"
         :part="episodesData.part"
+        :download="true"
       />
     </ul>
   </div>
@@ -94,7 +100,6 @@ export default {
     }
   }
   .episode-widget {
-    padding: 0;
     height: 0;
     overflow: hidden;
     transition: 150ms ease-in-out;
@@ -103,7 +108,7 @@ export default {
       opacity: 0;
     }
     &--opened {
-      padding: 0 0 2rem;
+      padding-bottom: 2rem;
       height: auto;
       .episode-card {
         opacity: 1;
@@ -129,7 +134,7 @@ export default {
       }
     }
     .episode-widget--opened {
-      padding: 0 0 4rem;
+      padding-bottom: 4rem;
     }
   }
 }

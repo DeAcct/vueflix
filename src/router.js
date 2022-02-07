@@ -16,7 +16,7 @@ const routes = [
     },
   },
   {
-    path: "/anime/:id",
+    path: "/anime/:title",
     name: "anime",
     component: () => import("@/views/Anime"),
     meta: {

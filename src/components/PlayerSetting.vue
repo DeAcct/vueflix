@@ -18,10 +18,10 @@
         @resolution-change="resolutionChange"
         @autoskip-change="autoskipChange"
         @autoplay-change="autoplayChange"
-        :speed="videoSpeed"
-        :resolution="videoResolution"
-        :autoskip="videoAutoskip"
-        :autoplay="videoAutoplay"
+        :speed="current === 'speed' ? videoSpeed : undefined"
+        :resolution="current === 'resolution' ? videoResolution : undefined"
+        :autoskip="current === 'auto-skip' ? videoAutoskip : undefined"
+        :autoplay="current === 'auto-play' ? videoAutoplay : undefined"
       />
     </transition>
   </aside>
@@ -103,7 +103,7 @@ export default {
   display: flex;
   width: 75%;
   flex-direction: column;
-  background-color: var(--player-setting-bg);
+  background-color: var(--player-aside-bg);
   height: 100%;
   padding: 2rem 3rem;
 
@@ -159,7 +159,6 @@ export default {
 }
 @media (orientation: landscape) {
   .player-setting {
-    display: flex;
     width: 25%;
     .row-top {
       margin-bottom: 2rem;

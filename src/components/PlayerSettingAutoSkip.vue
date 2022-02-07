@@ -70,7 +70,7 @@ export default {
     padding: 1.5rem 2rem;
     margin-bottom: 1rem;
     background-color: var(--toggle-box-false);
-    border-radius: 0.6rem;
+    border-radius: 0.3rem;
     transition: background-color 150ms ease-in-out;
     &__state-text {
       color: #fff;
