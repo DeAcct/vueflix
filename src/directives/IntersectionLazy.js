@@ -12,7 +12,6 @@ export const IntersectionLazy = {
           entry.isIntersecting ||
           entry.boundingClientRect.top <= window.innerHeight
         ) {
-          console.log(entry.boundingClientRect.top);
           loadImage();
           observer.unobserve(element);
         }

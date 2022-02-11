@@ -3,12 +3,14 @@
     <video
       :src="videoSrc"
       autoplay
+      playsinline
       ref="video"
       @mousemove="toggleVideoController"
       @loadeddata="loaded"
       @timeupdate="setTime"
       @ended="videoEnd"
-    />
+    ></video>
+
     <svg
       viewBox="0 0 64 64"
       :class="['player__loader', { 'player__loader--show': isLoading }]"
