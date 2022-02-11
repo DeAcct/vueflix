@@ -3,7 +3,7 @@
     :class="[
       'search-bar',
       { 'search-bar--open': isOpen },
-      { 'search-bar--fill': isScroll || !isHome },
+      { 'search-bar--fill': isScroll || (!isHome && !isAuth) },
     ]"
   >
     <fieldset>
@@ -49,6 +49,9 @@ export default {
       type: Boolean,
     },
     isHome: {
+      type: Boolean,
+    },
+    isAuth: {
       type: Boolean,
     },
   },

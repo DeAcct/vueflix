@@ -18,10 +18,46 @@
       class="widget"
     />
     <main>
-      <div class="anime-useful-widget widget">
+      <section class="anime-useful-widget widget">
         <ul class="info">
+          <li>
+            <ul class="makers">
+              <li>
+                <h3 class="title">제작사</h3>
+                <p
+                  :class="[
+                    'text',
+                    'loading-target',
+                    { 'text--loaded': animeInfo.summary },
+                  ]"
+                >
+                  <span
+                    v-for="madeBy in animeInfo.madeBy"
+                    :key="madeBy"
+                    class="division-pipe"
+                  >
+                    {{ madeBy }}
+                  </span>
+                </p>
+              </li>
+              <li>
+                <h3 class="title">감독</h3>
+                <p
+                  :class="[
+                    'text',
+                    'loading-target',
+                    { 'text--loaded': animeInfo.director },
+                  ]"
+                >
+                  <span class="division-pipe">
+                    {{ animeInfo.director }}
+                  </span>
+                </p>
+              </li>
+            </ul>
+          </li>
           <li class="inner">
-            <strong class="title"> 줄거리 </strong>
+            <h3 class="title">한 줄 요약</h3>
             <p
               :class="[
                 'text',
@@ -32,24 +68,6 @@
               {{ animeInfo.summary }}
             </p>
           </li>
-          <li class="inner">
-            <strong class="title"> 제작사 </strong>
-            <p
-              :class="[
-                'text',
-                'loading-target',
-                { 'text--loaded': animeInfo.summary },
-              ]"
-            >
-              <span
-                v-for="madeBy in animeInfo.madeBy"
-                :key="madeBy"
-                class="division-pipe"
-              >
-                {{ madeBy }}
-              </span>
-            </p>
-          </li>
         </ul>
         <arrow-btn-widget :to="`${$route.params.title}/reviews`" :icon="true">
           <template v-slot:icon>
@@ -57,9 +75,10 @@
           </template>
           <template v-slot:text>리뷰</template>
         </arrow-btn-widget>
-      </div>
+      </section>
 
       <div class="episodes-widget widget">
+        <h3 class="blind">에피소드</h3>
         <episodes
           v-for="(part, index) in animeInfo.parts"
           :episodesData="part"
@@ -301,6 +320,9 @@ export default {
     .info {
       background-color: var(--top-item);
       & > li {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         padding: {
           top: 1.8rem;
           bottom: 1.8rem;
@@ -323,6 +345,20 @@ export default {
           height: auto;
           background: transparent;
           animation: none;
+        }
+      }
+
+      .makers {
+        width: 100%;
+        display: flex;
+        li {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 50%;
+          &:not(:last-child) {
+            border-right: 1px solid var(--bg-100);
+          }
         }
       }
     }
@@ -389,7 +425,7 @@ export default {
     .anime-useful-widget {
       width: 33%;
       height: fit-content;
-      .info li {
+      .info > li {
         padding: {
           top: 2rem;
           bottom: 2rem;

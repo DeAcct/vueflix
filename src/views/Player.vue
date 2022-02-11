@@ -11,12 +11,7 @@
       @ended="videoEnd"
     ></video>
 
-    <svg
-      viewBox="0 0 64 64"
-      :class="['player__loader', { 'player__loader--show': isLoading }]"
-    >
-      <circle cx="32" cy="32" r="30"></circle>
-    </svg>
+    <loading-spinner :is-loading="isLoading" />
     <video-controller
       @fullscreen-state-change="toggleFullScreen"
       @play-state-change="togglePlayState"
@@ -62,6 +57,7 @@ import { mapState } from "vuex";
 import VideoController from "../components/VideoController.vue";
 import PlayerSetting from "../components/PlayerSetting.vue";
 import MiniEpisodeList from "../components/MiniEpisodeList.vue";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
 
 export default {
   name: "Player",
@@ -78,6 +74,7 @@ export default {
     VideoController,
     PlayerSetting,
     MiniEpisodeList,
+    LoadingSpinner,
   },
   async mounted() {
     if (!this.currentAnime) {
@@ -207,11 +204,9 @@ export default {
     },
     closePlayerSetting() {
       this.isSettingShown = false;
-      console.log(this.isSettingShown);
     },
     openMiniEpisodeList() {
       this.isMiniEpisodeListShown = true;
-      console.log(this.isMiniEpisodeListShown);
     },
     closeMiniEpisodeList() {
       this.isMiniEpisodeListShown = false;
@@ -273,26 +268,13 @@ export default {
     width: 100%;
     height: 100%;
   }
-  &__loader {
+  .loader {
+    width: 6.4rem;
+    height: 6.4rem;
     position: absolute;
     left: 50%;
     transform: translateX(-50%) rotate(-90deg);
-    width: 6.4rem;
-    height: 6.4rem;
-    fill: transparent;
-    stroke: #fff;
-    stroke-linecap: round;
-    stroke-width: 4px;
-    visibility: hidden;
-    circle {
-      stroke-dashoffset: 200;
-      stroke-dasharray: 200;
-      animation: spinner-line 1500ms infinite, spinner-rotate 1500ms infinite;
-      transform-origin: 3.2rem;
-    }
-    &--show {
-      visibility: visible;
-    }
+    color: #fff;
   }
 
   .video-controller {
@@ -333,22 +315,6 @@ export default {
   }
   .mini-episode-list {
     right: -50%;
-  }
-}
-@keyframes spinner-line {
-  0% {
-    stroke-dashoffset: 200;
-  }
-  50% {
-    stroke-dashoffset: 0;
-  }
-  100% {
-    stroke-dashoffset: -200;
-  }
-}
-@keyframes spinner-rotate {
-  to {
-    transform: rotate(360deg);
   }
 }
 </style>

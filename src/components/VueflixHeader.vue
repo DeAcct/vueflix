@@ -2,7 +2,7 @@
   <header
     :class="[
       'header',
-      { 'header--scrolled': isScroll || !isHome },
+      { 'header--filled': isScroll || (!isHome && !isAuth) },
       { 'header--centered': isHome && isMobile },
     ]"
     @scroll="handleScroll"
@@ -26,15 +26,21 @@
         <h2 v-if="isMobile && !isHome" class="header__title">
           {{ headString }}
         </h2>
-        <site-menu v-if="!isMobile" :isScroll="isScroll" :isHome="isHome" />
+        <site-menu
+          v-if="!isMobile"
+          :is-scroll="isScroll"
+          :is-home="isHome"
+          :is-auth="isAuth"
+        />
       </div>
       <div class="col-right">
         <search-bar
           v-if="isSearchVisible"
-          :isScroll="isScroll"
-          :isHome="isHome"
+          :is-scroll="isScroll"
+          :is-home="isHome"
+          :is-auth="isAuth"
         />
-        <notification v-if="isHome" :isScroll="isScroll" />
+        <notification v-if="isHome" :is-scroll="isScroll" />
       </div>
     </div>
   </header>
@@ -63,6 +69,7 @@ export default {
       isMobile: window.innerWidth <= 768,
       isSearchVisible: false,
       isHome: this.page === "home",
+      isAuth: this.page === "auth",
       isPrevVisible:
         this.page !== "home" &&
         this.page !== "tag-search" &&
@@ -87,6 +94,7 @@ export default {
     init() {
       this.page = this.$route.name;
       this.isHome = this.page === "home";
+      this.isAuth = this.page === "auth";
       this.isSearchVisible =
         this.page !== "reviews" &&
         this.page !== "auth" &&
@@ -201,7 +209,7 @@ export default {
   }
 
   transition: all 250ms ease-out;
-  &--scrolled {
+  &--filled {
     background-color: var(--top-item);
     border-bottom-color: var(--bg-100);
 

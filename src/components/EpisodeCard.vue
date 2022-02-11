@@ -7,10 +7,10 @@
         <div class="col-left">
           <div class="thumbnail">
             <img
-              :data-url="thumbnailURL"
+              :src="thumbnailURL"
               :alt="`${title} 썸네일`"
-              v-intersection-lazy
               :ref="`thumbnail-${index}`"
+              loading="lazy"
             />
           </div>
           <div class="episode-info">
@@ -29,7 +29,9 @@
           </div>
         </div>
         <div class="col-right" v-if="download">
-          <icon-base> </icon-base>
+          <icon-base>
+            <icon-download />
+          </icon-base>
         </div>
       </figure>
     </router-link>
@@ -49,6 +51,7 @@
 
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import IconBase from "../components/IconBase.vue";
+import IconDownload from "./icons/IconDownload.vue";
 export default {
   name: "EpisodeCard",
   props: {
@@ -79,6 +82,7 @@ export default {
   },
   components: {
     IconBase,
+    IconDownload,
   },
   data() {
     return {
@@ -93,12 +97,7 @@ export default {
       const storage = getStorage();
       const thumbnailRef = ref(storage, this.thumbnail);
       const URL = await getDownloadURL(thumbnailRef);
-      const $img = this.$refs[`thumbnail-${this.index}`];
-      if ($img.getBoundingClientRect().top <= window.innerHeight) {
-        $img.src = URL;
-      } else {
-        this.thumbnailURL = URL;
-      }
+      this.thumbnailURL = URL;
     },
   },
   computed: {

@@ -1,13 +1,15 @@
 <template>
-  <div class="episodes">
-    <button class="part-info inner" @click="widgetToggle">
-      <i :class="['open-icon', { 'open-icon--widget-opened': isWidgetOpen }]">
-        <icon-base :icon-name="isWidgetOpen ? '닫기' : '열기'">
-          <icon-arrow-next />
-        </icon-base>
-      </i>
-      <strong class="part-title">{{ episodesData.part }}</strong>
-    </button>
+  <section class="episodes">
+    <h3 class="part-info">
+      <button @click="widgetToggle" class="inner">
+        <i :class="['open-icon', { 'open-icon--widget-opened': isWidgetOpen }]">
+          <icon-base :icon-name="isWidgetOpen ? '닫기' : '열기'">
+            <icon-arrow-next />
+          </icon-base>
+        </i>
+        <span class="part-title">{{ episodesData.part }}</span>
+      </button>
+    </h3>
     <ul
       :class="[
         'episode-widget',
@@ -26,7 +28,7 @@
         :download="true"
       />
     </ul>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -74,11 +76,17 @@ export default {
     width: 100%;
     align-items: center;
     background-color: var(--top-item);
-    padding: {
-      top: 1.5rem;
-      bottom: 1.5rem;
-    }
     border-radius: 0.6rem;
+
+    button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      padding: {
+        top: 1.5rem;
+        bottom: 1.5rem;
+      }
+    }
     .open-icon {
       display: flex;
       align-items: center;
@@ -96,6 +104,7 @@ export default {
     }
     .part-title {
       font-size: 1.3rem;
+      font-weight: 700;
       margin-left: 0.5rem;
     }
   }
@@ -120,10 +129,13 @@ export default {
 @media screen and (min-width: 1080px) {
   .episodes {
     .part-info {
-      padding: {
-        top: 2rem;
-        bottom: 2rem;
+      button {
+        padding: {
+          top: 2rem;
+          bottom: 2rem;
+        }
       }
+
       .open-icon {
         width: 2rem;
         height: 2rem;

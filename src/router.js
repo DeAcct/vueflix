@@ -111,42 +111,10 @@ const routes = [
     name: "auth",
     component: () => import("@/views/Auth"),
     meta: {
-      title: "회원가입 / 로그인",
+      title: "뷰플릭스에 어서오세요!",
       appBar: false,
       bottomTabMenu: false,
     },
-    children: [
-      {
-        path: "by-email",
-        name: "by-email",
-        component: () => import("@/views/ByEmail"),
-        meta: {
-          title: "이메일로 로그인",
-          appBar: false,
-          bottomTabMenu: false,
-        },
-      },
-      {
-        path: "sign-up",
-        name: "sign-up",
-        component: () => import("@/views/SignUp"),
-        meta: {
-          title: "이메일로 가입",
-          appBar: false,
-          bottomTabMenu: false,
-        },
-      },
-      {
-        path: "another",
-        name: "another",
-        component: () => import("@/views/OtherSignUp"),
-        meta: {
-          title: "다른 방법으로 계속하기",
-          appBar: false,
-          bottomTabMenu: false,
-        },
-      },
-    ],
   },
   {
     path: "/notialert",
@@ -159,8 +127,8 @@ const routes = [
     },
   },
   {
-    path: "/notfound",
-    name: "notfound",
+    path: "/isekai-404",
+    name: "isekai-404",
     component: () => import("@/views/NotFound"),
     meta: {
       appBar: true,
@@ -169,7 +137,7 @@ const routes = [
   },
   {
     path: "/:pathMatch(.*)*",
-    redirect: "/notfound",
+    redirect: "/isekai-404",
   },
 ];
 

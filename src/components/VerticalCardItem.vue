@@ -2,12 +2,7 @@
   <li class="vertical-card-item">
     <a :href="url">
       <figure>
-        <img
-          :data-url="img"
-          :alt="`${title}썸네일`"
-          class="img"
-          v-intersection-lazy
-        />
+        <img :src="img" :alt="`${title}썸네일`" class="img" />
         <div class="text">
           <strong class="title">{{ title }}</strong>
           <p class="genre">{{ genre }}</p>

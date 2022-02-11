@@ -2,12 +2,7 @@
   <li class="item">
     <figure>
       <a class="thumbnail" :href="url" :title="`${title} 썸네일`">
-        <img
-          :data-url="img"
-          :alt="`${title}썸네일`"
-          class="thumbnail__img"
-          v-intersection-lazy
-        />
+        <img :src="img" :alt="`${title}썸네일`" class="thumbnail__img" />
         <div class="thumbnail__progress-bar" v-if="isRecent">
           <div class="progress" :style="`width:${progress}`"></div>
         </div>

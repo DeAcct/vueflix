@@ -1,5 +1,5 @@
 <template>
-  <nav :class="['menu', { 'menu--fill': isScroll || !isHome }]">
+  <nav :class="['menu', { 'menu--fill': isScroll || (!isHome && !isAuth) }]">
     <h2 class="blind">대메뉴</h2>
     <ul class="items">
       <li v-for="(item, index) in items" :key="index" class="item">
@@ -19,6 +19,9 @@ export default {
       type: Boolean,
     },
     isHome: {
+      type: Boolean,
+    },
+    isAuth: {
       type: Boolean,
     },
   },
