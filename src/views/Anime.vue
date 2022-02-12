@@ -294,7 +294,7 @@ export default {
 .anime {
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-100);
+  background-color: var(--anime-bg);
   .widget {
     margin-bottom: 1rem;
   }
@@ -318,7 +318,7 @@ export default {
     overflow: hidden;
     box-shadow: 0 0.2rem 0.4rem var(--bg-200);
     .info {
-      background-color: var(--top-item);
+      background-color: var(--bg-100);
       & > li {
         display: flex;
         flex-direction: column;
@@ -329,7 +329,7 @@ export default {
         }
       }
       & > li:not(:last-child) {
-        border-bottom: 1px solid var(--bg-100);
+        border-bottom: 1px solid var(--bg-200);
       }
       .title {
         display: block;
@@ -357,13 +357,13 @@ export default {
           align-items: center;
           width: 50%;
           &:not(:last-child) {
-            border-right: 1px solid var(--bg-100);
+            border-right: 1px solid var(--bg-200);
           }
         }
       }
     }
     .arrow-btn-widget {
-      background-color: var(--bg-100);
+      background-color: var(--bg-200);
     }
   }
   .episodes-widget {
@@ -374,7 +374,7 @@ export default {
     }
   }
   .loading-target {
-    background-image: linear-gradient(135deg, var(--bg-200), var(--bg-100));
+    background-image: linear-gradient(135deg, var(--bg-300), var(--bg-200));
   }
   .division-pipe {
     display: flex;

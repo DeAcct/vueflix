@@ -48,7 +48,7 @@ export default {
   width: 100%;
   justify-content: space-between;
   border-bottom: 0.1rem solid var(--bg-100);
-  background-color: #fff;
+  background-color: var(--bg-200);
 
   .tab-item {
     border-bottom: 0.1rem solid transparent;

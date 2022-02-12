@@ -1,39 +1,6 @@
 <template>
   <div class="wrap">
     <main class="my" v-if="isMyRoot">
-      <!-- <div class="top">
-        <div :class="['my-profile', { 'my-profile--logged-in': user }]">
-          <div class="profile-img">
-            <profile :input-profile="user ? user.profileImgSrc : undefined" />
-            <strong class="nickname">
-              {{ user ? user.name : "아직 로그인하지 않았어요" }}
-            </strong>
-            <i class="email" v-if="user">{{ user.email }}</i>
-          </div>
-          <div class="btn-area">
-            <vueflix-btn
-              class="btn"
-              component="button"
-              to="/auth"
-              @click="route"
-            >
-              <template v-slot:text>
-                {{ user ? "로그아웃" : "로그인" }}
-              </template>
-            </vueflix-btn>
-          </div>
-        </div>
-        <div class="history-items" v-if="user">
-          <router-link to="#none" class="history-item">
-            <strong>20</strong>
-            <span>리뷰</span>
-          </router-link>
-          <router-link to="#none" class="history-item">
-            <strong>24</strong>
-            <span>정주행</span>
-          </router-link>
-        </div>
-      </div> -->
       <div class="tab-one">
         <login-widget :btn-func="route">
           <template v-slot:profile-img>
@@ -174,8 +141,8 @@ export default {
       myCardGeneral: [
         [
           {
-            text: "다크 모드",
-            to: "/my/dark-mode",
+            text: "앱 테마",
+            to: "/my/app-theme",
           },
           {
             text: "이미지 캐시 초기화",
@@ -208,7 +175,7 @@ export default {
 
 <style lang="scss" scoped>
 .wrap {
-  background-color: var(--bg-100);
+  background-color: var(--bg-200);
   min-height: 100vh;
 }
 .my {
@@ -225,7 +192,7 @@ export default {
   background-color: var(--top-item);
   border-radius: 0.6rem;
   margin: 0 auto 1rem;
-  box-shadow: 0 0.2rem 0.4rem var(--bg-200);
+  box-shadow: 0 0.2rem 0.4rem var(--bg-300);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -258,7 +225,7 @@ export default {
   max-width: 768px;
   border-radius: 0.6rem;
   overflow: hidden;
-  box-shadow: 0 0.2rem 0.4rem var(--bg-200);
+  box-shadow: var(--box-shadow);
   width: 100%;
 
   &:not(:last-child) {

@@ -98,7 +98,7 @@ export default {
       this.isSearchVisible =
         this.page !== "reviews" &&
         this.page !== "auth" &&
-        this.page !== "dark-mode";
+        this.page !== "app-theme";
       this.isPrevVisible =
         this.page !== "home" &&
         this.page !== "tag-search" &&
@@ -131,8 +131,8 @@ export default {
         case "auth":
           this.headString = "로그인";
           break;
-        case "dark-mode":
-          this.headString = "다크 모드";
+        case "app-theme":
+          this.headString = "앱 테마";
           break;
         default:
           this.headString = "";
@@ -176,7 +176,7 @@ export default {
       display: flex;
       align-items: center;
       width: 100%;
-      fill: var(--top-item);
+      fill: #fff;
       transition: all 250ms ease-out;
     }
   }

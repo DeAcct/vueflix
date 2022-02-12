@@ -24,7 +24,7 @@ export default {
 
 <style lang="scss" scoped>
 .service-noti-box {
-  background-color: #fff;
+  background-color: var(--bg-100);
   padding: 1.5rem 2rem;
   border-radius: 0.6rem;
   display: flex;

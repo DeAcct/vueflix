@@ -46,6 +46,8 @@ export default {
 <style lang="scss" scoped>
 .basket {
   padding: 12rem 0 6rem;
+  background-color: var(--bg-200);
+  min-height: 100vh;
   .basket-tab-menu {
     position: fixed;
     z-index: 25;

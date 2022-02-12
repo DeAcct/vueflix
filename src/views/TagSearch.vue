@@ -196,6 +196,7 @@ export default {
 <style lang="scss" scoped>
 main {
   padding: 8rem 0 15.4rem;
+  background-color: var(--bg-100);
   .inner {
     display: flex;
     flex-direction: column;
@@ -242,7 +243,7 @@ main {
     display: flex;
     padding: 0;
     margin-top: 6rem;
-    background-color: var(--bg-100);
+    background-color: var(--bg-200);
     .controller {
       position: static;
       width: 400px;

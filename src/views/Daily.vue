@@ -76,7 +76,7 @@ export default {
 <style lang="scss" scoped>
 main {
   padding: 9rem 0 8.6rem;
-  background-color: var(--bg-100);
+  background-color: var(--bg-200);
   min-height: 100vh;
   .day-selector-holder {
     position: sticky;
@@ -90,7 +90,7 @@ main {
       top: 0.4rem;
       bottom: 0.4rem;
     }
-    background-color: var(--bg-100);
+    background-color: var(--bg-200);
     transition: box-shadow 150ms ease-out;
     &--scrolled {
       box-shadow: 0 0.4rem 0.8rem var(--bg-200);

@@ -79,6 +79,7 @@ export default {
 <style lang="scss" scoped>
 .contents {
   padding: 2.8rem 0 5.6rem;
+  background-color: var(--bg-100);
 }
 .modal {
   transition: 150ms ease-out;

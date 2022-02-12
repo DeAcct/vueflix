@@ -36,7 +36,7 @@ export default {
   background-color: var(--top-item);
   border-radius: 0.6rem;
   overflow: hidden;
-  box-shadow: 0 0.2rem 0.4rem var(--bg-200);
+  box-shadow: var(--box-shadow);
   & + & {
     margin-top: 1rem;
   }

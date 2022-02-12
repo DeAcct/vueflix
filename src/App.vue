@@ -43,7 +43,12 @@ export default {
         this.$store.commit("auth/setUser", doc.data());
       });
     }
+
     this.init();
+    const $app = document.getElementById("app");
+    $app.dataset.theme = localStorage.getItem("theme") ? "dark" : "light";
+    this.$store.commit("theme/setTheme", $app.dataset.theme === "dark");
+
     window.addEventListener("resize", () => {
       this.isMobile = window.innerWidth <= 768;
     });
@@ -93,11 +98,16 @@ export default {
     isMobile() {
       this.init();
     },
+    theme() {
+      const $app = document.getElementById("app");
+      $app.dataset.theme = this.theme ? "dark" : "light";
+    },
   },
   computed: mapState({
     toastText: (state) => state.toast.text,
     toastShown: (state) => state.toast.isShown,
     user: (state) => state.auth.user,
+    theme: (state) => state.theme.theme,
   }),
 };
 </script>

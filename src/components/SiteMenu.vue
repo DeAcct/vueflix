@@ -60,7 +60,7 @@ export default {
       font-size: 1.5rem;
       transition: 150ms ease-out;
       a {
-        color: var(--top-item);
+        color: #fff;
         font-weight: 700;
       }
     }

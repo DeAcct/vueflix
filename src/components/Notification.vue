@@ -39,7 +39,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--top-item);
+    color: #fff;
     transition: background-color 150ms ease-out;
     &:hover {
       background-color: rgba(255, 255, 255, 0.3);

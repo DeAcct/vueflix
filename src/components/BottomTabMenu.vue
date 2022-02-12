@@ -94,9 +94,9 @@ export default {
   bottom: 0;
   width: 100%;
   height: 5.6rem;
-  background-color: #fff;
+  background-color: var(--top-item);
   border-radius: 0.6rem 0.6rem 0 0;
-  border: 1px solid var(--bg-100);
+  border: 1px solid var(--bg-200);
   border-bottom: none;
   overflow: hidden;
   user-select: none;

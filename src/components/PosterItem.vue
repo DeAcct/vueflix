@@ -5,7 +5,7 @@
         <div class="icons">
           <i class="adult-icon icon" v-if="isAdult">19</i>
           <i class="play-icon icon">
-            <icon-base :width="10" :height="10">
+            <icon-base>
               <icon-play></icon-play>
             </icon-base>
           </i>
@@ -47,7 +47,7 @@ export default {
       height: calc((100vw - 6rem) / 3 * 1.3);
       border-radius: 0.3rem;
       margin-bottom: 0.5rem;
-      box-shadow: 0 0.2rem 0.4rem var(--bg-200);
+      box-shadow: var(--box-shadow);
       .icons {
         width: 100%;
         position: relative;
@@ -57,8 +57,8 @@ export default {
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 1.5rem;
-          height: 1.5rem;
+          width: 2rem;
+          height: 2rem;
           line-height: 1;
           color: #fff;
           border-radius: 0.15rem;

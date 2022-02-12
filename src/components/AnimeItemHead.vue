@@ -313,7 +313,7 @@ export default {
         &--loaded {
           width: auto;
           height: auto;
-          color: var(--top-item);
+          color: #fff;
           background: transparent;
           animation: none;
         }
@@ -321,7 +321,7 @@ export default {
       .division-pipe {
         display: flex;
         align-items: center;
-        color: inherit;
+        color: #fff;
         font-size: 1.2rem;
         &:not(:last-child):after {
           content: "|";
@@ -333,10 +333,10 @@ export default {
       .sub-info {
         display: flex;
         align-items: center;
-        color: inherit;
+        color: #fff;
       }
       .title {
-        color: inherit;
+        color: #fff;
         font-size: 2rem;
         margin-top: 0.7rem;
         line-height: 1.3;
@@ -361,16 +361,16 @@ export default {
       }
       .genres {
         display: flex;
-        color: inherit;
+        color: #fff;
         .genre {
           display: flex;
           align-items: center;
-          color: inherit;
+          color: #fff;
           font-size: 1.1rem;
         }
       }
       .star-rating-number {
-        color: inherit;
+        color: #fff;
         font-size: 1.5rem;
         font-weight: 500;
         margin-top: 0.7rem;

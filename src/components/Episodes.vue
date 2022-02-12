@@ -65,7 +65,7 @@ export default {
 
 <style lang="scss" scoped>
 .episodes {
-  background-color: var(--top-item);
+  background-color: var(--bg-100);
   border-radius: 0.6rem;
   box-shadow: 0 0.2rem 0.4rem var(--bg-200);
   .part-info {
@@ -75,9 +75,8 @@ export default {
     display: flex;
     width: 100%;
     align-items: center;
-    background-color: var(--top-item);
+    background-color: var(--bg-100);
     border-radius: 0.6rem;
-
     button {
       width: 100%;
       display: flex;

@@ -153,7 +153,11 @@ export default {
 <style lang="scss">
 .slide {
   min-height: 50vh;
-  background-image: linear-gradient(90deg, var(--text-900), var(--text-800));
+  background-image: linear-gradient(
+    90deg,
+    hsl(210, 29%, 10%),
+    hsl(210, 20%, 20%)
+  );
   transition: opacity 150ms ease-out;
   &--loaded {
     min-height: auto;

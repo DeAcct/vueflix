@@ -95,11 +95,11 @@ const routes = [
         },
       },
       {
-        path: "dark-mode",
-        name: "dark-mode",
-        component: () => import("@/views/Darkmode"),
+        path: "app-theme",
+        name: "app-theme",
+        component: () => import("@/views/AppTheme"),
         meta: {
-          title: "다크 모드",
+          title: "앱 테마 설정",
           appBar: true,
           bottomTabMenu: false,
         },

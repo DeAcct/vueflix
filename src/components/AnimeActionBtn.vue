@@ -49,7 +49,7 @@ export default {
   transition: opacity 150ms ease-out;
   .icon {
     color: transparent;
-    stroke: var(--text-900);
+    stroke: #fff;
     stroke-width: 0.2rem;
     stroke-linejoin: round;
     width: 4.8rem;
@@ -67,7 +67,7 @@ export default {
     font-size: 1.5rem;
     .icon {
       width: 2.4rem;
-      stroke: var(--top-item);
+      stroke: #fff;
       margin: {
         bottom: 0;
         right: 0.6rem;
