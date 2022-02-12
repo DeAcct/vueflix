@@ -36,6 +36,7 @@
 
 <script>
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 import IconBase from "../components/IconBase.vue";
 import IconArrowPrev from "../components/icons/IconArrowPrev.vue";
@@ -76,9 +77,20 @@ export default {
     async googleContinue() {
       this.isLoginWaiting = true;
       const auth = getAuth();
+      const db = getFirestore();
       const provider = new GoogleAuthProvider();
       try {
         await signInWithPopup(auth, provider);
+        await setDoc(doc(db, "user", auth.currentUser.uid), {
+          uid: auth.currentUser.uid,
+          name: auth.currentUser.displayName,
+          profileImgSrc: auth.currentUser.photoURL,
+          email: auth.currentUser.email,
+          recentWatched: [],
+          likeIt: [],
+          reviews: [],
+          maratonWatched: [],
+        });
         this.$router.back();
       } catch {
         this.isLoginWaiting = false;
@@ -89,13 +101,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@font-face {
-  font-family: "yg-jalnan";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff")
-    format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
 .wrap {
   height: 100vh;
   background-color: var(--promotion-bg);
@@ -169,6 +174,13 @@ header {
 }
 
 @media screen and (min-width: 1080px) {
+  @font-face {
+    font-family: "yg-jalnan";
+    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff")
+      format("woff");
+    font-weight: normal;
+    font-style: normal;
+  }
   .login {
     justify-content: center;
 

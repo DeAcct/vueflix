@@ -1,8 +1,15 @@
 <template>
   <section class="login-widget inner">
-    <h2 class="guide">로그인하고 리뷰를 남겨보세요</h2>
-    <vueflix-btn class="widget" component="router-link" to="/auth">
-      <template v-slot:text>로그인</template>
+    <div class="col-left">
+      <slot name="profile-img"></slot>
+      <div class="text-area">
+        <slot name="text"></slot>
+      </div>
+    </div>
+    <vueflix-btn class="widget" component="button" @click="btnFunc">
+      <template v-slot:text>
+        <slot name="login-state-text"></slot>
+      </template>
     </vueflix-btn>
   </section>
 </template>
@@ -13,6 +20,11 @@ export default {
   name: "LoginWidget",
   components: {
     VueflixBtn,
+  },
+  props: {
+    btnFunc: {
+      type: Function,
+    },
   },
 };
 </script>
@@ -31,8 +43,21 @@ export default {
     top: 1.8rem;
     bottom: 1.8rem;
   }
-  .guide {
+  .col-left {
+    display: flex;
+    align-items: center;
+  }
+  .profile {
+    width: 4.8rem;
+    height: 4.8rem;
+    margin-right: 1rem;
+  }
+  h2 {
     font-size: 1.5rem;
+  }
+  p {
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
   }
   .btn {
     border-radius: 9999px;

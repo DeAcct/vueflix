@@ -11,7 +11,15 @@
               </icon-base>
             </template>
             <template v-else>
-              <component :is="item.icon" :key="item.item" />
+              <component
+                :is="item.icon"
+                :key="item.item"
+                :input-profile="
+                  item.icon === 'Profile' && user
+                    ? user.profileImgSrc
+                    : undefined
+                "
+              />
             </template>
           </i>
           <span>
@@ -30,6 +38,7 @@ import IconTagSearch from "./icons/IconTagSearch.vue";
 import IconDaily from "./icons/IconDaily.vue";
 import IconBasket from "./icons/IconBasket.vue";
 import Profile from "./Profile.vue";
+import { mapState } from "vuex";
 export default {
   name: "BottomTabMenu",
   components: {
@@ -70,6 +79,11 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    ...mapState({
+      user: (state) => state.auth.user,
+    }),
   },
 };
 </script>
@@ -121,7 +135,7 @@ export default {
         color: var(--theme-500);
       }
       .profile {
-        width: 2.8rem;
+        width: 2.6rem;
         border: 2px solid transparent;
       }
     }

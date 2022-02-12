@@ -242,6 +242,7 @@ main {
     display: flex;
     padding: 0;
     margin-top: 6rem;
+    background-color: var(--bg-100);
     .controller {
       position: static;
       width: 400px;
@@ -249,6 +250,7 @@ main {
       height: calc(100vh - 6rem);
       max-height: none;
       animation: none;
+      background-color: var(--top-item);
     }
     .inner {
       flex: 2;

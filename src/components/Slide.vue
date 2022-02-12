@@ -46,6 +46,7 @@
                 :src="slideItem.imgSet.aniLogo"
                 :alt="slideItem.title"
                 class="ani-logo"
+                @load="loadComplete"
               />
             </h3>
             <strong class="slide-copy">{{ slideItem.copy }}</strong>
@@ -132,9 +133,7 @@ export default {
       }));
 
       const imgList = await Promise.all(
-        slideList.map((doc) => {
-          return this.getSlideURL(doc.imgSet);
-        })
+        slideList.map((doc) => this.getSlideURL(doc.imgSet))
       );
 
       slideList = slideList.map((slide, index) => ({
@@ -143,6 +142,8 @@ export default {
       }));
 
       this.slideList = slideList;
+    },
+    loadComplete() {
       this.slideImgLoaded = true;
     },
   },

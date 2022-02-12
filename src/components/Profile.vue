@@ -1,15 +1,20 @@
 <template>
   <div class="profile">
-    <img :src="src" alt="프로필 사진" />
+    <img :src="inputProfile || defaultProfile" alt="프로필 사진" />
   </div>
 </template>
 
 <script>
 export default {
   name: "Profile",
+  props: {
+    inputProfile: {
+      type: String,
+    },
+  },
   data() {
     return {
-      src: require("../assets/NotFoundAqua.svg"),
+      defaultProfile: require("../assets/NotFoundAqua.svg"),
     };
   },
 };
@@ -19,5 +24,8 @@ export default {
 .profile {
   border-radius: 50%;
   overflow: hidden;
+  img {
+    width: 100%;
+  }
 }
 </style>

@@ -17,6 +17,7 @@ import VueflixHeader from "./components/VueflixHeader.vue";
 import BottomTabMenu from "./components/BottomTabMenu.vue";
 import Toast from "./components/Toast.vue";
 import { mapState } from "vuex";
+import { doc, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
 export default {
   name: "App",
   components: {
@@ -26,11 +27,33 @@ export default {
   },
   mounted() {
     const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      this.$store.commit("auth/setUser", user);
+    const db = getFirestore();
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const db = getFirestore();
+        const userRef = doc(db, "user", user.uid);
+        const userSnap = await getDoc(userRef);
+        this.$store.commit("auth/setUser", userSnap.data());
+      } else {
+        this.$store.commit("auth/setUser", undefined);
+      }
     });
+    if (this.user) {
+      this.unsub = onSnapshot(doc(db, "user", this.user.uid), function (doc) {
+        this.$store.commit("auth/setUser", doc.data());
+      });
+    }
     this.init();
     window.addEventListener("resize", () => {
+      this.isMobile = window.innerWidth <= 768;
+    });
+  },
+  unmounted() {
+    if (this.user) {
+      this.unsub();
+    }
+
+    window.removeEventListener("resize", () => {
       this.isMobile = window.innerWidth <= 768;
     });
   },
@@ -40,6 +63,7 @@ export default {
       bottomTabMenuVisible: this.$route.meta.bottomTabMenu && this.isMobile,
       isMobile: window.innerWidth <= 768,
       isPlayer: false,
+      unsub: undefined,
     };
   },
   methods: {
@@ -73,6 +97,7 @@ export default {
   computed: mapState({
     toastText: (state) => state.toast.text,
     toastShown: (state) => state.toast.isShown,
+    user: (state) => state.auth.user,
   }),
 };
 </script>

@@ -1,12 +1,12 @@
 <template>
   <div class="wrap">
     <main class="my" v-if="isMyRoot">
-      <div class="top">
+      <!-- <div class="top">
         <div :class="['my-profile', { 'my-profile--logged-in': user }]">
           <div class="profile-img">
-            <profile />
+            <profile :input-profile="user ? user.profileImgSrc : undefined" />
             <strong class="nickname">
-              {{ user ? user.displayName : "아직 로그인하지 않았어요" }}
+              {{ user ? user.name : "아직 로그인하지 않았어요" }}
             </strong>
             <i class="email" v-if="user">{{ user.email }}</i>
           </div>
@@ -25,10 +25,6 @@
         </div>
         <div class="history-items" v-if="user">
           <router-link to="#none" class="history-item">
-            <strong>66</strong>
-            <span>별점</span>
-          </router-link>
-          <router-link to="#none" class="history-item">
             <strong>20</strong>
             <span>리뷰</span>
           </router-link>
@@ -37,6 +33,39 @@
             <span>정주행</span>
           </router-link>
         </div>
+      </div> -->
+      <div class="tab-one">
+        <login-widget :btn-func="route">
+          <template v-slot:profile-img>
+            <profile :input-profile="user ? user.profileImgSrc : undefined" />
+          </template>
+          <template v-slot:text>
+            <h2>
+              {{ user ? user.name : "로그인 전이에요" }}
+            </h2>
+            <p v-if="user">{{ user.email }}</p>
+          </template>
+          <template v-slot:login-state-text>
+            {{ user ? "로그아웃" : "로그인" }}
+          </template>
+        </login-widget>
+        <section class="my-stats" v-if="user">
+          <h2>내 덕질 기록</h2>
+          <ul class="stat-list">
+            <li class="stat-item">
+              <h3>보고싶다</h3>
+              <p>{{ user.likeIt.length }}개</p>
+            </li>
+            <li class="stat-item">
+              <h3>리뷰</h3>
+              <p>{{ user.reviews.length }}개</p>
+            </li>
+            <li class="stat-item">
+              <h3>정주행</h3>
+              <p>{{ user.maratonWatched.length }}개</p>
+            </li>
+          </ul>
+        </section>
       </div>
       <div class="my-cards-wrap">
         <template v-if="user">
@@ -91,6 +120,7 @@ import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconMembership from "../components/icons/IconMembership";
 import IconAccount from "../components/icons/IconAccount";
 import IconNotification from "../components/icons/IconNotification.vue";
+import LoginWidget from "../components/LoginWidget.vue";
 
 export default {
   components: {
@@ -100,6 +130,7 @@ export default {
     IconMembership,
     IconNotification,
     IconAccount,
+    LoginWidget,
   },
   computed: {
     ...mapState({
@@ -183,72 +214,36 @@ export default {
 .my {
   display: flex;
   flex-direction: column;
-  padding-bottom: 6.4rem;
+  padding: 7rem 0 9rem;
 }
-.top {
-  padding: 9rem 0 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.login-widget {
+  margin: 0 auto 1rem;
+}
+.my-stats {
+  width: 100%;
+  padding: 1.8rem var(--inner-padding);
   background-color: var(--top-item);
-  border-radius: 0 0 0.6rem 0.6rem;
+  border-radius: 0.6rem;
+  margin: 0 auto 1rem;
   box-shadow: 0 0.2rem 0.4rem var(--bg-200);
-  .my-profile {
-    .profile-img {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .profile {
-      width: 7.2rem;
-      margin-bottom: 1.6rem;
-    }
-    .nickname {
-      font-size: 1.5rem;
-      margin-bottom: 0.8rem;
-      color: var(--bg-300);
-    }
-    .email {
-      font-size: 1.3rem;
-      margin-bottom: 1.6rem;
-      color: var(--text-600);
-    }
-    .btn-area {
-      display: flex;
-      justify-content: center;
-      .btn {
-        margin: 0;
-        background-color: var(--theme-500);
-        color: #fff;
-      }
-    }
-    &--logged-in {
-      .nickname {
-        color: var(--text-800);
-      }
-    }
-  }
-  .history-items {
-    margin-top: 2.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .stat-list {
     display: flex;
-    width: 50vw;
-    justify-content: space-between;
-    .history-item {
-      width: 5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: 150ms ease-out;
-      strong {
-        font-size: 1.8rem;
-        margin-bottom: 0.4rem;
+    .stat-item {
+      text-align: center;
+      h3 {
+        font-size: 1.3rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
       }
-      span {
-        font-size: 1.2rem;
+      p {
+        font-size: 1.5rem;
+        font-weight: 700;
       }
-      &:hover,
-      &:focus {
-        opacity: 0.5;
+      &:not(:last-child) {
+        margin-right: 2rem;
       }
     }
   }
@@ -260,11 +255,15 @@ export default {
   justify-content: center;
 }
 .my-cards {
-  margin-top: 0.8rem;
+  max-width: 768px;
   border-radius: 0.6rem;
   overflow: hidden;
   box-shadow: 0 0.2rem 0.4rem var(--bg-200);
   width: 100%;
+
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+  }
   .theme-toggle {
     background-color: var(--top-item);
     width: 100%;
@@ -275,75 +274,48 @@ export default {
 
 @media screen and (min-width: 1024px) {
   .my {
-    padding-bottom: 1rem;
+    height: 100vh;
+    margin: 0 auto;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 6rem 0 0 0;
   }
-  .top {
-    padding: 12rem 0 6rem;
+  .tab-one {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--top-item);
+    height: 100%;
+  }
+  .login-widget {
+    margin: 0;
+    width: 40rem;
     box-shadow: none;
-    .my-profile {
-      .profile {
-        width: 9rem;
-        margin-bottom: 3rem;
-      }
-      .nickname {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-      }
-      .email {
-        font-size: 1.5rem;
-        margin-bottom: 3.2rem;
-      }
+    h2 {
+      font-size: 2rem;
     }
-    .history-items {
-      margin-top: 4rem;
-      display: flex;
-      width: 40vw;
-      justify-content: space-between;
-      .history-item {
-        strong {
-          font-size: 2rem;
-          margin-bottom: 0.8rem;
-        }
-        span {
-          font-size: 1.5rem;
-        }
-      }
+    p {
+      font-size: 1.2rem;
     }
   }
-  .my-cards .arrow-link-btn {
-    padding: 2rem 5rem;
+  .my-stats {
+    box-shadow: none;
+    border-radius: 0;
+  }
+  .my-cards-wrap {
+    flex: 1;
+    margin-left: 1rem;
+    height: 100%;
   }
 }
 
 @media screen and (min-width: 1300px) {
   .my {
-    flex-direction: row;
     padding-bottom: 0;
   }
-  .top {
-    width: 40rem;
-    height: 100vh;
-    padding: 0 5rem;
-    justify-content: center;
-    .history-items {
-      width: 75%;
-    }
-  }
-  .my-cards-wrap {
-    flex: 2;
-    padding: 6rem 0 0;
-
-    .my-cards {
-      width: 75%;
-      max-width: 108rem;
-      margin-top: 2.5rem;
-      &:first-child {
-        margin-top: 0;
-      }
-      .arrow-link-btn {
-        padding: 2rem 3rem;
-      }
-    }
+  .arrow-link-btn {
+    padding: 2rem 3rem;
   }
 }
 </style>

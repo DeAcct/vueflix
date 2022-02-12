@@ -250,7 +250,8 @@ export default {
   flex-direction: column;
   width: 100%;
   padding: 0 2rem 7.5rem;
-  background-color: var(--text-100);
+  background-color: var(--top-item);
+  box-shadow: 0 -0.2rem 1rem var(--bg-200);
   border-radius: 0.6rem 0.6rem 0 0;
   max-height: calc(100vh - 11.6rem);
   overflow-y: scroll;
@@ -269,7 +270,7 @@ export default {
     position: sticky;
     z-index: 10;
     padding: 1rem 0;
-    background-color: var(--text-100);
+    background-color: var(--top-item);
     top: 0;
     display: flex;
     flex-direction: column;
@@ -280,7 +281,7 @@ export default {
       height: 0.5rem;
       border-radius: 0.25rem;
       margin-bottom: 2rem;
-      background-color: var(--text-300);
+      background-color: var(--bg-200);
     }
     strong {
       font-size: 2rem;
@@ -292,7 +293,7 @@ export default {
   .bottom-row {
     display: flex;
     flex-direction: column;
-    border-bottom: 2px solid var(--text-300);
+    border-bottom: 2px solid var(--bg-200);
     padding-bottom: 2rem;
     margin-bottom: 2rem;
     .tags-container {
@@ -327,7 +328,7 @@ export default {
   }
   fieldset:not(:last-child) {
     padding-bottom: 2rem;
-    border-bottom: 1px solid var(--text-200);
+    border-bottom: 1px solid var(--bg-200);
     margin-bottom: 2rem;
   }
   .year-quarter-selector {
@@ -350,7 +351,7 @@ export default {
         border-radius: 0.3rem;
         padding: 0 0.5rem;
         background-color: transparent;
-        border: 1px solid var(--text-300);
+        border: 1px solid var(--bg-200);
         option {
           font-weight: 500;
         }
@@ -372,8 +373,10 @@ export default {
   .controller {
     padding: 0 4.7rem 0;
     bottom: auto;
+    box-shadow: none;
     .top-row {
       padding-top: 3rem;
+      background-color: transparent;
       .swipe-indi {
         display: none;
       }

@@ -1,6 +1,11 @@
 <template>
   <div class="reviews" :style="`min-height: ${deviceHeight}px;`">
-    <login-widget class="widget" v-if="!isLoggedIn"></login-widget>
+    <login-widget class="widget" v-if="!isLoggedIn" :btn-func="goAuth">
+      <template v-slot:text>
+        <h2>로그인하고 리뷰를 남겨보세요</h2>
+      </template>
+      <template v-slot:login-state-text>로그인</template>
+    </login-widget>
     <keyword-review class="widget" :isLoggedIn="isLoggedIn" />
     <text-review class="widget" :myRating="myRating" :isLoggedIn="isLoggedIn" />
   </div>
@@ -36,6 +41,11 @@ export default {
     return {
       deviceHeight: window.innerHeight,
     };
+  },
+  methods: {
+    goAuth() {
+      this.$router.push("/auth");
+    },
   },
   computed: {
     ...mapState({
