@@ -79,7 +79,8 @@ export default {
 <style lang="scss" scoped>
 .new-review {
   width: 100%;
-  background-color: var(--bg-100);
+  background-color: var(--anime-bg);
+  border-radius: 0.6rem;
   padding: {
     top: 1.5rem;
     bottom: 1.5rem;

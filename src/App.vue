@@ -43,11 +43,7 @@ export default {
         this.$store.commit("auth/setUser", doc.data());
       });
     }
-
     this.init();
-    const $app = document.getElementById("app");
-    $app.dataset.theme = localStorage.getItem("theme") ? "dark" : "light";
-    this.$store.commit("theme/setTheme", $app.dataset.theme === "dark");
 
     window.addEventListener("resize", () => {
       this.isMobile = window.innerWidth <= 768;
@@ -82,6 +78,20 @@ export default {
       if (!this.isPlayer && this.$route.name !== "anime") {
         this.$store.commit("currentAnimeInfo/setCurrentAnimeInfo", undefined);
       }
+
+      const currentTheme = localStorage.getItem("theme");
+      if (currentTheme) {
+        this.$store.commit("theme/setTheme", currentTheme);
+      } else {
+        const deviceTheme = window.matchMedia("(prefers-color-scheme:dark)")
+          .matches
+          ? "dark"
+          : "light";
+        console.log(deviceTheme);
+        this.$store.commit("theme/setTheme", deviceTheme);
+      }
+      const $app = document.getElementById("app");
+      $app.dataset.theme = this.theme;
     },
   },
   watch: {
@@ -100,7 +110,7 @@ export default {
     },
     theme() {
       const $app = document.getElementById("app");
-      $app.dataset.theme = this.theme ? "dark" : "light";
+      $app.dataset.theme = this.theme;
     },
   },
   computed: mapState({

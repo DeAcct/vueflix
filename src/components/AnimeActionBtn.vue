@@ -49,14 +49,14 @@ export default {
   transition: opacity 150ms ease-out;
   .icon {
     color: transparent;
-    stroke: #fff;
+    stroke: var(--anime-wanna-see);
     stroke-width: 0.2rem;
     stroke-linejoin: round;
     width: 4.8rem;
   }
   &--wanna-see .icon {
-    fill: var(--anime-wanna-see-icon);
-    stroke: var(--anime-wanna-see-icon);
+    fill: var(--anime-wanna-see-enabled);
+    stroke: var(--anime-wanna-see-enabled);
   }
 }
 
@@ -74,7 +74,7 @@ export default {
       }
     }
     &--wanna-see .icon {
-      stroke: var(--anime-wanna-see-icon);
+      stroke: var(--anime-wanna-see-enabled);
     }
     .label {
       display: flex;

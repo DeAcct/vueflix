@@ -36,7 +36,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 0.2rem 0.4rem var(--bg-300);
+  box-shadow: var(--box-shadow);
   background-color: var(--top-item);
   border-radius: 0.6rem;
   padding: {

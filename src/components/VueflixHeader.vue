@@ -161,7 +161,6 @@ export default {
 <style lang="scss" scoped>
 .header {
   width: 100%;
-  border-bottom: 1px solid hsla(0, 0%, 87%, 0);
   position: fixed;
   top: 0;
   z-index: 100;
@@ -210,9 +209,8 @@ export default {
 
   transition: all 250ms ease-out;
   &--filled {
-    background-color: var(--top-item);
-    border-bottom-color: var(--bg-100);
-
+    background-color: var(--bg-100);
+    border-bottom: 1px solid var(--bg-200);
     .header__logo a {
       fill: var(--text-800);
     }
@@ -228,13 +226,18 @@ export default {
   }
 }
 @media screen and (min-width: 769px) {
-  .header .inner {
-    .col-left {
-      margin-left: 0;
-      transform: none;
+  .header {
+    .inner {
+      .col-left {
+        margin-left: 0;
+        transform: none;
+      }
+      .col-right .notification {
+        margin-left: 1.5rem;
+      }
     }
-    .col-right .notification {
-      margin-left: 1.5rem;
+    &--filled {
+      border-bottom-color: var(--bg-200);
     }
   }
 }

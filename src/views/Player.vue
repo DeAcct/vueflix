@@ -4,11 +4,14 @@
       :src="videoSrc"
       autoplay
       playsinline
+      crossorigin="anonymous"
+      :muted="isMuted"
       ref="video"
       @mousemove="toggleVideoController"
       @loadeddata="loaded"
       @timeupdate="setTime"
       @ended="videoEnd"
+      class="player__video"
     ></video>
 
     <loading-spinner :is-loading="isLoading" />
@@ -16,16 +19,25 @@
       @fullscreen-state-change="toggleFullScreen"
       @play-state-change="togglePlayState"
       @pip-state-change="PIPon"
+      @muted-state-change="mutedChange"
       @progress-change="progressChange"
       @open-player-setting="openPlayerSetting"
+      @request-screenshot="screenshot"
       @open-mini-episode-list="openMiniEpisodeList"
       @exit-player="exitPlayer"
+      :episode-title="episodeCurrentTitle"
       :is-full-screen="isFullScreen"
       :is-playing="isPlaying"
+      :is-muted="isMuted"
       :progress="videoProgress"
       :duration="videoDuration"
       :current="videoCurrent"
-      :class="{ 'video-controller--show': true }"
+      :class="[
+        { 'video-controller--show': isControllerShown },
+        { 'video-controller--blur': isEnd },
+      ]"
+      :is-end="isEnd"
+      :next-link="nextLink"
     >
       <template v-slot:video-current>{{ videoCurrent }}</template>
       <template v-slot:video-duration>{{ videoDuration }}</template>
@@ -47,17 +59,25 @@
       :episode-data="currentAnime"
       @close-emit="closeMiniEpisodeList"
     />
+    <next-episode-card
+      :class="[{ 'next-episode-card--show': isEnd }]"
+      :next-info="nextEpisodeInfo"
+      :next-link="nextLink"
+      v-if="nextEpisodeInfo"
+    />
   </div>
 </template>
 
 <script>
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { mapState } from "vuex";
 
 import VideoController from "../components/VideoController.vue";
 import PlayerSetting from "../components/PlayerSetting.vue";
 import MiniEpisodeList from "../components/MiniEpisodeList.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
+import NextEpisodeCard from "../components/NextEpisodeCard.vue";
 
 export default {
   name: "Player",
@@ -75,16 +95,18 @@ export default {
     PlayerSetting,
     MiniEpisodeList,
     LoadingSpinner,
+    NextEpisodeCard,
   },
   async mounted() {
     if (!this.currentAnime) {
-      alert("잘못된 접근이에요");
       this.$router.replace(`/anime/${this.$route.params.title}`);
     }
     await this.videoInit();
     this.toggleVideoController();
     this.isPlaying = true;
-    window.addEventListener("keydown", this.spaceTrigger);
+
+    window.addEventListener("keydown", this.keyTrigger);
+
     if (this.$refs.video) {
       this.$refs.video.addEventListener(
         "leavepictureinpicture",
@@ -93,9 +115,11 @@ export default {
       );
       this.$refs.video.playbackRate = this.videoSpeed;
     }
+    document.addEventListener("fullscreenchange", this.updateFullScreen);
   },
   unmounted() {
-    window.removeEventListener("keydown", this.spaceTrigger);
+    window.removeEventListener("keydown", this.keyTrigger);
+    document.removeEventListener("fullscreenchange", this.updateFullScreen);
   },
 
   data() {
@@ -103,6 +127,7 @@ export default {
       isFullScreen: false,
       isLoading: false,
       isPlaying: false,
+      isMuted: true,
       isEnd: false,
       isControllerShown: false,
       isSettingShown: false,
@@ -116,7 +141,8 @@ export default {
       videoResolution: "1080p",
       videoAutoskip: false,
       videoAutoplay: false,
-      seekImgSrc: "",
+      $canvas: undefined,
+      $anchor: undefined,
     };
   },
   methods: {
@@ -139,6 +165,28 @@ export default {
         this.$router.replace("/notfound");
       }
     },
+    screenshot() {
+      if (!this.$canvas) {
+        this.$canvas = document.createElement("canvas");
+      }
+      if (!this.$anchor) {
+        this.$anchor = document.createElement("a");
+      }
+      this.$canvas.width = 1920;
+      this.$canvas.height = 1080;
+      const ctx = this.$canvas.getContext("2d");
+      ctx.drawImage(
+        this.$refs.video,
+        0,
+        0,
+        this.$canvas.width,
+        this.$canvas.height
+      );
+      const img = this.$canvas.toDataURL("image/png");
+      this.$anchor.href = img;
+      this.$anchor.download = `${this.$route.params.title} ${this.$route.params.part} ${this.$route.params.index} 스크린샷`;
+      this.$anchor.click();
+    },
     loaded() {
       this.isLoading = false;
     },
@@ -148,15 +196,18 @@ export default {
       } else {
         await document.documentElement.requestFullscreen();
       }
-      this.isFullScreen = !this.isFullScreen;
     },
-    spaceTrigger(e) {
+    updateFullScreen() {
+      this.isFullScreen = !!document.fullscreenElement;
+    },
+    async keyTrigger(e) {
       if (e.code === "Space") {
         e.preventDefault();
         this.togglePlayState();
       }
     },
     async togglePlayState() {
+      this.isEnd = false;
       if (this.isPlaying) {
         this.$refs.video.pause();
       } else {
@@ -169,9 +220,11 @@ export default {
       if (this.controllerTimer) {
         this.controllerTimer = undefined;
       }
-      this.controllerTimer = setTimeout(() => {
-        this.isControllerShown = false;
-      }, 3000);
+      if (!this.isEnd) {
+        this.controllerTimer = setTimeout(() => {
+          this.isControllerShown = false;
+        }, 3000);
+      }
     },
     speedChange(e) {
       this.$refs.video.playbackRate = e * 0.5;
@@ -193,19 +246,28 @@ export default {
       this.$refs.video.pause();
       this.isPlaying = false;
     },
+    mutedChange() {
+      this.isMuted = !this.isMuted;
+    },
     progressChange(e) {
+      this.isEnd = false;
       this.$refs.video.currentTime = this.$refs.video.duration * e;
     },
     videoEnd() {
       this.isEnd = true;
+      clearTimeout(this.controllerTimer);
+      this.controllerTimer = undefined;
+      this.isControllerShown = true;
     },
     openPlayerSetting() {
+      this.closeMiniEpisodeList();
       this.isSettingShown = true;
     },
     closePlayerSetting() {
       this.isSettingShown = false;
     },
     openMiniEpisodeList() {
+      this.closePlayerSetting();
       this.isMiniEpisodeListShown = true;
     },
     closeMiniEpisodeList() {
@@ -215,6 +277,11 @@ export default {
       if (this.isFullScreen) {
         await document.exitFullscreen();
       }
+      this.$store.commit("auth/updateRecentWatched", this.nowEpisodeInfo);
+      const db = getFirestore();
+      await setDoc(doc(db, "user", this.auth.uid), {
+        ...this.auth,
+      });
       this.$router.replace(`/anime/${this.$route.params.title}`);
     },
     setTime() {
@@ -227,9 +294,9 @@ export default {
         const durSec = Math.floor(duration - durMin * 60);
         const progress = (now / duration) * 100;
 
-        this.videoCurrent = `
-        ${this.formatter(nowMin, 10)}:${this.formatter(nowSec, 10)}
-        `;
+        this.videoCurrent =
+          this.formatter(nowMin, 10) + ":" + this.formatter(nowSec, 10);
+        //prettier 버그로 인해 개행문자가 섞이는 문제가 있음
         this.videoDuration = duration
           ? `${this.formatter(durMin, 10)}:${this.formatter(durSec, 10)}`
           : "00:00";
@@ -251,7 +318,84 @@ export default {
   computed: {
     ...mapState({
       currentAnime: (state) => state.currentAnimeInfo.currentAnimeInfo,
+      auth: (state) => state.auth.user,
     }),
+    partNow() {
+      return Number(this.$route.params.part.slice(0, -1));
+    },
+    indexNow() {
+      return Number(this.$route.params.index.slice(0, -1));
+    },
+    episodeCurrentTitle() {
+      return this.currentAnime
+        ? this.currentAnime[this.partNow - 1].episodes[this.indexNow - 1].title
+        : undefined;
+    },
+    partMax() {
+      return this.currentAnime
+        ? this.currentAnime.map((part) => part.episodes.length)
+        : undefined;
+    },
+    nextLink() {
+      if (!this.currentAnime) {
+        return "";
+      } else {
+        const aniTitle = this.$route.params.title;
+        let part = this.partNow;
+        let index = this.indexNow;
+        if (index < this.partMax[part - 1]) {
+          index++;
+          return `/player/${aniTitle}/${part}기/${index}화`;
+        } else if (this.partMax[part]) {
+          index = 1;
+          return `/player/${aniTitle}/${++part}기/${index}화`;
+        } else {
+          return "";
+        }
+      }
+    },
+    nowEpisodeInfo() {
+      const aniTitle = this.$route.params.title;
+      let part = this.partNow;
+      let index = this.indexNow;
+      return {
+        aniTitle: aniTitle,
+        part: this.partNow,
+        index: this.indexNow,
+        episodeTitle: this.currentAnime[part - 1].episodes[index - 1].title,
+        episodeThumbnail:
+          this.currentAnime[part - 1].episodes[index - 1].thumbnail,
+        watchedPercent: this.videoProgress,
+      };
+    },
+    nextEpisodeInfo() {
+      if (!this.currentAnime) {
+        return undefined;
+      } else {
+        let part = this.partNow;
+        let index = this.indexNow;
+        if (index < this.partMax[part - 1]) {
+          index++;
+          return {
+            part: part,
+            index: index,
+            title: this.currentAnime[part - 1].episodes[index - 1].title,
+            thumbnail:
+              this.currentAnime[part - 1].episodes[index - 1].thumbnail,
+          };
+        } else if (this.partMax[part]) {
+          index = 0;
+          return {
+            part: part + 1,
+            index: index + 1,
+            title: this.currentAnime[part].episodes[index].title,
+            thumbnail: this.currentAnime[part].episodes[index].thumbnail,
+          };
+        } else {
+          return "";
+        }
+      }
+    },
   },
 };
 </script>
@@ -264,7 +408,7 @@ export default {
   height: 100vh;
   justify-content: center;
   background-color: #000;
-  video {
+  &__video {
     width: 100%;
     height: 100%;
   }
@@ -287,6 +431,10 @@ export default {
       opacity: 1;
       visibility: visible;
     }
+    &--blur {
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+    }
   }
 
   .player-setting {
@@ -307,6 +455,18 @@ export default {
       right: 0;
     }
   }
+
+  .next-episode-card {
+    position: fixed;
+    right: 0;
+    bottom: 2rem;
+    opacity: 0;
+    visibility: hidden;
+    &--show {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
 }
 
 @media (orientation: landscape) {
@@ -315,6 +475,25 @@ export default {
   }
   .mini-episode-list {
     right: -50%;
+  }
+}
+
+@media screen and (min-width: 768px) and (orientation: portrait) {
+  .player {
+    .mini-episode-list,
+    .player-setting {
+      width: 50rem;
+      height: 70rem;
+      &--open {
+        right: var(--inner-padding);
+      }
+    }
+  }
+}
+
+@media (orientation: portrait) {
+  .player .next-episode-card {
+    bottom: 6rem;
   }
 }
 </style>

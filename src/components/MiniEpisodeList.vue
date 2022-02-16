@@ -28,6 +28,7 @@
           :part="part.part"
           :download="false"
           :exclude-theme="true"
+          :accent-current="true"
           text-color="#fff"
         />
       </ul>
@@ -69,6 +70,13 @@ export default {
   padding: 0 3rem 2rem;
   background-color: var(--player-aside-bg);
   overflow-y: scroll;
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--mini-episode-scroll-bar);
+    border: 0.5rem solid var(--player-aside-bg);
+  }
+  &::-webkit-scrollbar {
+    width: 1.5rem;
+  }
   .col-top {
     padding: 2rem 0;
     position: sticky;

@@ -73,7 +73,7 @@ export default {
   button {
     width: 4rem;
     height: 4rem;
-    background-color: var(--bg-300);
+    background-color: var(--bg-400);
     color: #fff;
     border-radius: 50%;
     font-size: 1.5rem;

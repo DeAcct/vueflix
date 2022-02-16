@@ -21,7 +21,7 @@
           <ul class="stat-list">
             <li class="stat-item">
               <h3>보고싶다</h3>
-              <p>{{ user.likeIt.length }}개</p>
+              <p>{{ user.wannaSee.length }}개</p>
             </li>
             <li class="stat-item">
               <h3>리뷰</h3>
@@ -192,7 +192,7 @@ export default {
   background-color: var(--top-item);
   border-radius: 0.6rem;
   margin: 0 auto 1rem;
-  box-shadow: 0 0.2rem 0.4rem var(--bg-300);
+  box-shadow: var(--box-shadow);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -236,6 +236,15 @@ export default {
     width: 100%;
     display: flex;
     padding: 1.8rem var(--inner-padding);
+  }
+  .crumbs {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    background-color: var(--theme-300);
+    padding: 0.3rem 0.5rem;
+    border-radius: 9999px;
   }
 }
 

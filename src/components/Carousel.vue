@@ -19,26 +19,38 @@
     </div>
     <div class="carousel__track">
       <ul class="items" :style="style">
-        <template v-if="isDaily">
+        <template v-if="isRecent">
+          <carousel-item
+            v-for="anime in animeList"
+            :key="anime.aniTitle"
+            :ani-title="anime.aniTitle"
+            :episode-thumbnail="anime.episodeThumbnail"
+            :part="anime.part"
+            :index="anime.index"
+            :isRecent="isRecent"
+            :progress="anime.watchedPercent"
+            :develop-firebase="true"
+          />
+        </template>
+        <template v-else-if="isDaily">
           <carousel-item
             v-for="anime in dailyShownList"
             :key="anime.title"
-            :title="anime.title"
-            :img="anime.img"
-            :url="anime.url"
+            :ani-title="anime.title"
+            :episode-thumbnail="anime.img"
+            :url="`/anime/${anime.aniTitle}/`"
+            :develop-firebase="false"
           />
         </template>
-        <template v-else>
+        <template v-else-if="isRecommend">
           <carousel-item
             v-for="anime in animeList"
-            :key="anime.title"
-            :title="anime.title"
-            :episode="anime.episode"
-            :img="anime.img"
-            :url="anime.url"
-            :isMovie="anime.isMovie"
-            :isRecent="isRecent"
-            :progress="anime.progress"
+            :key="anime.aniTitle"
+            :ani-title="anime.aniTitle"
+            :episode-thumbnail="anime.episodeThumbnail"
+            :url="`/anime/${anime.aniTitle}/`"
+            :progress="anime.watchedPercent"
+            :develop-firebase="true"
           />
         </template>
       </ul>
@@ -47,6 +59,7 @@
 </template>
 
 <script>
+/*데일리를 파이어베이스로 옮길 때까기 develop-firebase prop 유지*/
 import CarouselItem from "./CarouselItem.vue";
 import IconBase from "./IconBase.vue";
 import DaySelector from "../components/DaySelector.vue";
@@ -76,6 +89,8 @@ export default {
       shownItems: this.resolution >= 1920 ? 7 : 4,
       isRecent: this.type === "recent",
       isDaily: this.type === "daily",
+      isRecommend: this.type === "recommend",
+      animeResult: {},
     };
   },
   computed: {
@@ -114,7 +129,7 @@ export default {
       this.carouselNumber = 0;
     },
   },
-  mounted() {
+  async mounted() {
     window.addEventListener("resize", () => {
       this.resolution = window.innerWidth;
       this.shownItems = this.resolution >= 1920 ? 7 : 4;
@@ -221,6 +236,15 @@ export default {
         &:not(:last-child) {
           margin-right: 1rem;
         }
+      }
+    }
+  }
+}
+@media screen and (min-width: 1920px) {
+  .carousel {
+    &__head-control {
+      h2 {
+        font-size: 3.2rem;
       }
     }
   }

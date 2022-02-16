@@ -58,6 +58,7 @@ export default {
     background-color: #fff;
     border-radius: 50%;
     transition: transform 150ms ease-in-out;
+    box-shadow: 0 0.2rem 0.4rem var(--toggle-shadow);
   }
   .base-input:checked ~ &__track {
     background-color: var(--theme-500);

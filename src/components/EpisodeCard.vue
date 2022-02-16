@@ -1,7 +1,5 @@
 <template>
-  <li
-    :class="['episode-card', { 'episode-card--theme-exclude': excludeTheme }]"
-  >
+  <li class="episode-card">
     <router-link :to="toValue" class="episode-item" replace>
       <figure>
         <div class="col-left">
@@ -11,7 +9,14 @@
               :alt="`${title} 썸네일`"
               :ref="`thumbnail-${index}`"
               loading="lazy"
+              class="thumbnail__img"
             />
+            <p v-if="isCurrent" class="thumbnail__now-playing">현재 재생 중</p>
+            <i class="icon" v-else>
+              <icon-base>
+                <icon-play />
+              </icon-base>
+            </i>
           </div>
           <div class="episode-info">
             <figcaption
@@ -50,8 +55,9 @@
  */
 
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import IconBase from "../components/IconBase.vue";
 import IconDownload from "./icons/IconDownload.vue";
+import IconBase from "../components/IconBase.vue";
+import IconPlay from "./icons/IconPlay.vue";
 export default {
   name: "EpisodeCard",
   props: {
@@ -79,10 +85,14 @@ export default {
     textColor: {
       type: String,
     },
+    accentCurrent: {
+      type: Boolean,
+    },
   },
   components: {
-    IconBase,
     IconDownload,
+    IconBase,
+    IconPlay,
   },
   data() {
     return {
@@ -102,7 +112,17 @@ export default {
   },
   computed: {
     toValue() {
-      return `/player/${this.$route.params.title}/${this.part}/${this.index}화`;
+      return this.part === this.$route.params.part &&
+        this.index === Number(this.$route.params.index.slice(0, -1))
+        ? "#none"
+        : `/player/${this.$route.params.title}/${this.part}/${this.index}화`;
+    },
+    isCurrent() {
+      return (
+        this.accentCurrent &&
+        this.part === this.$route.params.part &&
+        this.index === Number(this.$route.params.index.slice(0, -1))
+      );
     },
   },
 };
@@ -127,12 +147,48 @@ export default {
         align-items: center;
       }
       .thumbnail {
+        position: relative;
         width: 12rem;
         height: calc(12rem / 16 * 9);
         border-radius: 0.2rem;
         overflow: hidden;
-        img {
+        &__img {
           width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        &__now-playing {
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 5;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: var(--thumbnail-current-bg);
+          color: #fff;
+          font-size: 1.3rem;
+          font-weight: 500;
+        }
+        .icon {
+          position: absolute;
+          z-index: 7;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: #fff;
+          background-color: var(--thumbnail-current-bg);
+          width: 3.6rem;
+          height: 3.6rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          opacity: 0;
+          visibility: hidden;
+          transition: 150ms ease-out;
         }
       }
       .episode-info {
@@ -151,6 +207,10 @@ export default {
       }
     }
   }
+  &:hover .episode-item figure .thumbnail .icon {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 @media screen and (min-width: 1080px) {
@@ -167,7 +227,6 @@ export default {
       .episode-info {
         margin-left: 1.5rem;
         .title {
-          font-weight: 700;
           font-size: 1.6rem;
         }
         .date {

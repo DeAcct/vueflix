@@ -1,70 +1,67 @@
 <template>
   <li class="item">
-    <figure>
-      <a class="thumbnail" :href="url" :title="`${title} 썸네일`">
-        <img :src="img" :alt="`${title}썸네일`" class="thumbnail__img" />
-        <div class="thumbnail__progress-bar" v-if="isRecent">
-          <div class="progress" :style="`width:${progress}`"></div>
-        </div>
-        <div class="thumbnail__play-btn" v-if="isRecent">
-          <span class="blind">{{ title }} 재생하기</span>
-          <icon-base icon-name="재생 버튼"><icon-play /></icon-base>
-        </div>
-      </a>
-      <figcaption class="description">
-        <a class="description__text" :href="url">
-          <div class="text">
-            <span class="title">{{ title }}</span>
-            <strong class="episode">{{ getEpisode }}</strong>
-          </div>
-          <span class="description__info-btn" v-if="isRecent">
-            <span class="blind">작품 정보 보기</span>
-            <icon-base icon-name="작품 정보 버튼"><icon-info /></icon-base>
-          </span>
-        </a>
-      </figcaption>
-    </figure>
+    <router-link :to="`/anime/${aniTitle}`">
+      <span class="thumbnail">
+        <img
+          :src="thumbnailSrc"
+          :alt="`${aniTitle} 썸네일`"
+          class="thumbnail__img"
+        />
+        <span class="thumbnail__progress-bar" v-if="isRecent">
+          <span class="progress" :style="`width:${progress}`"></span>
+        </span>
+      </span>
+      <span class="text">
+        <span class="title">{{ aniTitle }}</span>
+        <strong class="episode" v-if="part && index">
+          {{ part }}기 {{ index }}화
+        </strong>
+      </span>
+    </router-link>
   </li>
 </template>
 
 <script>
-import IconPlay from "./icons/IconPlay.vue";
-import IconInfo from "./icons/IconInfo.vue";
-import IconBase from "./IconBase.vue";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 export default {
   name: "CarouselItem",
-  components: {
-    IconBase,
-    IconPlay,
-    IconInfo,
-  },
   props: {
-    title: {
+    aniTitle: {
       type: String,
     },
-    episode: {
+    episodeThumbnail: {
       type: String,
     },
-    img: {
-      type: String,
+    part: {
+      type: Number,
     },
-    url: {
-      type: String,
-    },
-    isMovie: {
-      type: Boolean,
-    },
-    isRecent: {
-      type: Boolean,
+    index: {
+      type: Number,
     },
     progress: {
       type: String,
     },
-  },
-  computed: {
-    getEpisode() {
-      return this.isMovie ? "극장판" : this.episode;
+    isRecent: {
+      type: Boolean,
     },
+    developFirebase: {
+      type: Boolean,
+    },
+  },
+  data() {
+    return {
+      thumbnailSrc: this.img,
+    };
+  },
+  async mounted() {
+    const storage = getStorage();
+    const thumbnailRef = ref(
+      storage,
+      `${this.aniTitle}/${this.episodeThumbnail}`
+    );
+    this.thumbnailSrc = this.developFirebase
+      ? await getDownloadURL(thumbnailRef)
+      : this.episodeThumbnail;
   },
 };
 </script>
@@ -87,6 +84,7 @@ export default {
     height: calc(55vw / 16 * 9);
     border-radius: 0.3rem;
     overflow: hidden;
+    margin-bottom: 1rem;
     transition: 150ms ease-out;
     &__img {
       position: absolute;
@@ -95,19 +93,6 @@ export default {
       height: 100%;
       object-fit: cover;
     }
-    &__play-btn {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 4rem;
-      height: 4rem;
-      border-radius: 50%;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: #fff;
-      svg {
-        width: 2rem;
-      }
-    }
     &__progress-bar {
       position: absolute;
       z-index: 3;
@@ -115,11 +100,12 @@ export default {
       bottom: 0.8rem;
       width: calc(100% - 1.6rem);
       height: 0.5rem;
-      border-radius: 0.2rem;
+      border-radius: 9999px;
       background-color: var(--bg-300);
       .progress {
+        display: block;
         height: 100%;
-        border-radius: 0.15rem;
+        border-radius: 9999px;
         background-color: var(--theme-500);
       }
     }
@@ -127,40 +113,13 @@ export default {
       opacity: 0.5;
     }
   }
-  .description {
+  .text {
     display: flex;
-    width: 100%;
-    justify-content: space-between;
-    margin-top: 0.8rem;
-
-    &__text {
-      font-size: 1.1rem;
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      .text {
-        font-size: 1.3rem;
-        color: inherit;
-        display: block;
-        width: 80%;
-        span {
-          font-weight: 500;
-          line-height: 1.3;
-          display: block;
-          margin-bottom: 0.3rem;
-        }
-      }
-    }
-    &__info-btn {
-      display: block;
-      width: 2rem;
-      height: 2rem;
-      min-width: 2rem;
-      color: var(--bg-500);
-      svg {
-        width: 100%;
-        height: 100%;
-      }
+    flex-direction: column;
+    font-size: 1.3rem;
+    .title {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
     }
   }
 }
@@ -184,15 +143,8 @@ export default {
         bottom: 1rem;
       }
     }
-    .description {
-      &__info-btn {
-        width: 2.5rem;
-        height: 2.5rem;
-      }
-      &__text {
-        font-size: 1.4rem;
-        gap: 0.8rem;
-      }
+    .text {
+      font-size: 1.5rem;
     }
   }
 }
@@ -216,16 +168,10 @@ export default {
         left: 1.5rem;
       }
     }
-    .description {
-      &__info-btn {
-        width: 3rem;
-        height: 3rem;
-      }
-      &__text {
-        span,
-        strong {
-          font-size: 1.5rem;
-        }
+    .text {
+      font-size: 1.7rem;
+      .title {
+        margin-bottom: 0.75rem;
       }
     }
   }
@@ -236,6 +182,7 @@ export default {
     height: calc(15vw * 9 / 16 + 8rem);
     .thumbnail {
       height: calc(15vw / 16 * 9);
+      margin-bottom: 1.5rem;
       &__play-btn {
         svg {
           width: 4rem;
@@ -246,6 +193,12 @@ export default {
         width: calc(100% - 3rem);
         bottom: 1.5rem;
         left: 1.5rem;
+      }
+    }
+    .text {
+      font-size: 2rem;
+      .title {
+        margin-bottom: 1rem;
       }
     }
   }

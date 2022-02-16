@@ -1,7 +1,5 @@
-const deviceTheme = window.matchMedia("prefers-color-scheme").matches;
-
 const state = {
-  theme: deviceTheme,
+  theme: "light",
 };
 
 const mutations = {

@@ -96,6 +96,7 @@ export default {
       width: 2.4rem;
       height: 2.4rem;
       margin-right: 0.5rem;
+      fill: var(--text-800);
       &[aria-checked="true"] {
         fill: var(--toggle-true);
       }

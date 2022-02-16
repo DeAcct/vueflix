@@ -1,14 +1,18 @@
 <template>
   <div class="darkmode">
+    <h2 class="darkmode__heading">앱 테마</h2>
     <label
       :class="[
         'darkmode__toggle',
         'inner',
-        { 'darkmode__toggle--enabled': theme },
+        { 'darkmode__toggle--enabled': theme === 'dark' },
       ]"
     >
-      {{ theme ? "켜짐" : "꺼짐" }}
-      <state-toggle :input-state="theme" @state-change="themeToggle" />
+      {{ theme === "dark" ? "어두운 테마" : "밝은 테마" }}
+      <state-toggle
+        :input-state="theme === 'dark'"
+        @state-change="themeToggle"
+      />
     </label>
     <div class="info-area">
       <svg class="infographic" viewBox="0 0 1366 768">
@@ -18,7 +22,11 @@
         <circle class="infographic__sun-line" cx="673.6" cy="374.6" r="238.6" />
       </svg>
       <p class="darkmode__description">
-        어두운 테마를 적용하여 밤에도 편하게 덕질하세요!
+        <strong class="line-break">
+          어두운 테마를 적용하여 밤에도 편하게 보세요!
+        </strong>
+        이 기능을 한 번도 사용한 적 없거나 인터넷 사용기록을 삭제할 경우
+        브라우저나 운영체제의 다크 모드 설정을 따라요.
       </p>
     </div>
   </div>
@@ -35,19 +43,15 @@ export default {
       time: undefined,
     };
   },
-  mounted() {
-    const localStorageTheme = JSON.parse(localStorage.getItem("theme"));
-    this.$store.commit("theme/setTheme", localStorageTheme);
-  },
   methods: {
     themeToggle(e) {
-      localStorage.setItem("theme", JSON.stringify(e));
-      this.$store.commit("theme/setTheme", e);
+      const currentTheme = e ? "dark" : "light";
+      this.$store.commit("theme/setTheme", currentTheme);
+      localStorage.setItem("theme", currentTheme);
     },
   },
   components: { StateToggle },
   computed: {
-    //false: 라이트모드, true: 다크모드
     ...mapState({
       theme: (state) => state.theme.theme,
     }),
@@ -58,26 +62,37 @@ export default {
 <style lang="scss" scoped>
 .darkmode {
   padding: 7rem 0 2rem;
+  &__heading {
+    display: none;
+    text-align: center;
+    margin: 3rem 0 2rem;
+    font-size: 2.5rem;
+  }
 
   &__toggle {
     display: flex;
+    max-width: 1080px;
+    margin: 0 auto 1rem;
     justify-content: space-between;
     align-items: center;
     padding: 2rem 3rem;
-    margin-bottom: 1rem;
     border-radius: 0.6rem;
     background-color: var(--text-200);
-    box-shadow: 0 0.2rem 0.4rem var(--bg-200);
+    box-shadow: var(--box-shadow);
     font-size: 1.5rem;
     font-weight: 700;
     transition: 150ms ease-out;
+    user-select: none;
+    inherits: none;
     &--enabled {
       background-color: var(--theme-300);
     }
   }
 
   .info-area {
-    box-shadow: 0 0.2rem 0.4rem var(--bg-200);
+    box-shadow: var(--box-shadow);
+    max-width: 1080px;
+    margin: 0 auto;
   }
   .infographic {
     width: 100%;
@@ -109,9 +124,13 @@ export default {
   &__description {
     font-size: 1.3rem;
     font-weight: 500;
+    line-height: 1.5;
     padding: 2rem 3rem;
     background-color: var(--top-item);
     border-radius: 0 0 0.6rem 0.6rem;
+    strong {
+      line-height: 1.5;
+    }
   }
 }
 
@@ -139,6 +158,17 @@ export default {
     fill: hsl(282, 21%, 15%);
     offset-distance: 100%;
     transform: scale(500);
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .darkmode {
+    &__heading {
+      display: block;
+    }
+    &__description {
+      font-size: 1.5rem;
+    }
   }
 }
 </style>

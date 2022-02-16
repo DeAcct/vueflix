@@ -61,7 +61,7 @@ export default {
 <style lang="scss" scoped>
 .reviews {
   padding: 7rem 0 2rem;
-  background-color: var(--bg-100);
+  background-color: var(--anime-bg);
   display: flex;
   flex-direction: column;
   align-items: center;

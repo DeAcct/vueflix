@@ -36,7 +36,7 @@
 
 <script>
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
 import IconBase from "../components/IconBase.vue";
 import IconArrowPrev from "../components/icons/IconArrowPrev.vue";
@@ -81,16 +81,21 @@ export default {
       const provider = new GoogleAuthProvider();
       try {
         await signInWithPopup(auth, provider);
-        await setDoc(doc(db, "user", auth.currentUser.uid), {
-          uid: auth.currentUser.uid,
-          name: auth.currentUser.displayName,
-          profileImgSrc: auth.currentUser.photoURL,
-          email: auth.currentUser.email,
-          recentWatched: [],
-          likeIt: [],
-          reviews: [],
-          maratonWatched: [],
-        });
+
+        const docSnap = await getDoc(doc(db, "user", auth.currentUser.uid));
+        if (!docSnap.exists()) {
+          await setDoc(doc(db, "user", auth.currentUser.uid), {
+            uid: auth.currentUser.uid,
+            name: auth.currentUser.displayName,
+            profileImgSrc: auth.currentUser.photoURL,
+            email: auth.currentUser.email,
+            recentWatched: [],
+            wannaSee: [],
+            reviews: [],
+            maratonWatched: [],
+          });
+        }
+        this.$store.commit("auth/setUser", docSnap.data());
         this.$router.back();
       } catch {
         this.isLoginWaiting = false;

@@ -47,8 +47,8 @@ export default {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  border-bottom: 0.1rem solid var(--bg-100);
-  background-color: var(--bg-200);
+  border-bottom: 0.1rem solid var(--bg-200);
+  background-color: var(--bg-100);
 
   .tab-item {
     border-bottom: 0.1rem solid transparent;

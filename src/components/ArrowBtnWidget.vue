@@ -64,6 +64,10 @@ export default {
       font-weight: 500;
     }
   }
+  .col-right {
+    display: flex;
+    align-items: center;
+  }
 }
 @media screen and (min-width: 768px) {
   .my-cards .my-card .col-left span {

@@ -127,7 +127,7 @@ export default {
       }
       .icon,
       span {
-        color: var(--bg-500);
+        color: var(--bottom-tab);
         font-weight: 500;
       }
       &.vueflix-active-link .icon,

@@ -316,9 +316,9 @@ export default {
   .anime-useful-widget {
     border-radius: 0.6rem;
     overflow: hidden;
-    box-shadow: 0 0.2rem 0.4rem var(--bg-200);
+    box-shadow: var(--box-shadow);
     .info {
-      background-color: var(--bg-100);
+      background-color: var(--episodes);
       & > li {
         display: flex;
         flex-direction: column;
@@ -329,7 +329,7 @@ export default {
         }
       }
       & > li:not(:last-child) {
-        border-bottom: 1px solid var(--bg-200);
+        border-bottom: 1px solid var(--anime-useful-widget);
       }
       .title {
         display: block;
@@ -357,13 +357,13 @@ export default {
           align-items: center;
           width: 50%;
           &:not(:last-child) {
-            border-right: 1px solid var(--bg-200);
+            border-right: 1px solid var(--anime-useful-widget);
           }
         }
       }
     }
     .arrow-btn-widget {
-      background-color: var(--bg-200);
+      background-color: var(--anime-useful-widget);
     }
   }
   .episodes-widget {

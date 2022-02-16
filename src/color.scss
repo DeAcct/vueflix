@@ -35,7 +35,7 @@
   --toggle-true: hsl(209, 100%, 50%);
   --toggle-mixed: var(--theme-500);
 
-  --anime-bg: #fff;
+  --anime-bg: var(--bg-200);
 
   --anime-item-head-700: hsl(288, 79%, 7%);
   --anime-item-head-500: hsl(288, 79%, 10%);
@@ -46,9 +46,12 @@
   --anime-poster-load-700: var(--anime-item-head-500);
   --anime-poster-load-500: var(--anime-item-head-300);
 
-  --anime-wanna-see-icon: hsl(335, 100%, 50%);
+  --anime-wanna-see: var(--text-800);
+  --anime-wanna-see-enabled: hsl(335, 100%, 50%);
 
   --top-item: #fff;
+  --episodes: #fff;
+  --anime-useful-widget: hsl(0, 5%, 85%);
   --box-shadow: rgba(0, 0, 0, 0.15);
   --modal-shadow: var(--box-shadow);
   --overflow-gradient-100: rgba(255, 255, 255, 0.95);
@@ -57,12 +60,16 @@
     transparent,
     rgba(0, 0, 0, 0.5)
   );
+  --thumbnail-current-bg: hsla(210, 20%, 20%, 0.8);
   --player-aside-bg: hsl(210, 29%, 10%);
   --toggle-box-false: hsl(210, 20%, 20%);
   --mini-episode-current-part: hsl(210, 20%, 20%);
+  --mini-episode-scroll-bar: hsl(210, 20%, 70%);
   --toggle-false: hsl(210, 20%, 30%);
   --promotion-bg: hsl(210, 29%, 10%);
+  --bottom-tab: var(--text-800);
 
+  --toggle-shadow: rgba(0, 0, 0, 0.4);
   --box-shadow: 0 0.2rem 0.4rem var(--bg-300);
 }
 
@@ -77,23 +84,24 @@
   --text-200: hsl(210, 20%, 20%);
   --text-100: hsl(210, 29%, 10%);
 
-  --bg-900: hsl(0, 5%, 95%);
-  --bg-800: hsl(0, 5%, 85%);
-  --bg-700: hsl(0, 5%, 75%);
-  --bg-600: hsl(0, 5%, 65%);
-  --bg-500: hsl(0, 5%, 55%);
-  --bg-400: hsl(0, 5%, 45%);
-  --bg-300: hsl(0, 5%, 35%);
+  --bg-900: hsl(0, 5%, 78%);
+  --bg-800: hsl(0, 5%, 64%);
+  --bg-700: hsl(0, 5%, 48%);
+  --bg-600: hsl(0, 5%, 34%);
+  --bg-500: hsl(0, 5%, 27%);
+  --bg-400: hsl(0, 5%, 20%);
+  --bg-300: hsl(0, 5%, 13%);
   --bg-200: hsl(0, 5%, 10%);
   --bg-100: #000;
-
-  --top-item: hsl(0, 5%, 7%);
-
-  --anime-bg: #000;
 
   --anime-item-head-700: hsl(288, 79%, 3%);
   --anime-item-head-500: hsl(288, 79%, 5%);
   --anime-item-head-300: hsl(288, 79%, 7%);
 
+  --top-item: hsl(0, 5%, 7%);
+  --episodes: var(--bg-300);
+  --anime-useful-widget: hsl(0, 5%, 20%);
+
   --box-shadow: none;
+  background-color: hsl(0, 5%, 7%);
 }

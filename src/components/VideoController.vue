@@ -10,13 +10,27 @@
           </i>
         </button>
         <div class="episode-info">
-          <h1 class="episode-info__title">{{ $route.params.title }}</h1>
-          <p class="episode-info__part-index">
-            {{ $route.params.part }} {{ $route.params.index }}
+          <div class="row-top">
+            <h1 class="episode-info__title">
+              {{ $route.params.title }}
+            </h1>
+            <p class="episode-info__part-index">
+              {{ $route.params.part }} {{ $route.params.index }}
+            </p>
+          </div>
+          <p class="episode-info__episode-title">
+            {{ episodeTitle }}
           </p>
         </div>
       </div>
       <div class="col-right">
+        <button @click="openMiniEpisodeList" class="video-controller__btn">
+          <i class="icon">
+            <icon-base icon-name="에피소드 목록">
+              <icon-episode-list />
+            </icon-base>
+          </i>
+        </button>
         <button @click="openPlayerSetting" class="video-controller__btn">
           <i class="icon">
             <icon-base icon-name="플레이어 설정">
@@ -26,7 +40,7 @@
         </button>
       </div>
     </div>
-    <div class="row-bottom">
+    <div class="row-bottom" v-if="!isEnd">
       <div class="video-progress">
         <span class="video-progress__timer">
           <slot name="video-current"></slot>
@@ -73,8 +87,8 @@
             </i>
           </button>
           <router-link
-            v-if="nextEpisode"
-            :to="nextEpisode"
+            v-if="nextLink"
+            :to="nextLink"
             class="video-controller__btn"
             replace
           >
@@ -84,15 +98,23 @@
               </icon-base>
             </i>
           </router-link>
-          <button @click="openMiniEpisodeList" class="video-controller__btn">
+          <button @click="toggleMuted" class="video-controller__btn">
             <i class="icon">
-              <icon-base icon-name="에피소드 목록">
-                <icon-episode-list />
+              <icon-base :icon-name="isMuted ? '소리 끄기' : '소리 켜기'">
+                <icon-mute-off v-if="isMuted" />
+                <icon-mute-on v-else />
               </icon-base>
             </i>
           </button>
         </div>
         <div class="col-right">
+          <button @click="takeScreenshot" class="video-controller__btn">
+            <i class="icon">
+              <icon-base icon-name="스크린샷 찍고 저장하기">
+                <icon-screenshot />
+              </icon-base>
+            </i>
+          </button>
           <button
             @click="enablePIP"
             v-if="isPIPAvailable"
@@ -119,8 +141,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconOverflow from "./icons/IconOverflow.vue";
@@ -131,6 +151,9 @@ import IconFullScreenOff from "./icons/IconFullScreenOff.vue";
 import IconFullScreenOn from "./icons/IconFullScreenOn.vue";
 import IconPip from "./icons/IconPIP.vue";
 import IconEpisodeList from "./icons/IconEpisodeList.vue";
+import IconMuteOff from "./icons/IconMuteOff.vue";
+import IconMuteOn from "./icons/IconMuteOn.vue";
+import IconScreenshot from "./icons/IconScreenshot.vue";
 
 export default {
   name: "VideoController",
@@ -145,12 +168,21 @@ export default {
     IconPip,
     IconOverflow,
     IconEpisodeList,
+    IconMuteOff,
+    IconMuteOn,
+    IconScreenshot,
   },
   props: {
     isFullScreen: {
       type: Boolean,
     },
     isPlaying: {
+      type: Boolean,
+    },
+    isMuted: {
+      type: Boolean,
+    },
+    isEnd: {
       type: Boolean,
     },
     current: {
@@ -160,6 +192,12 @@ export default {
       type: String,
     },
     progress: {
+      type: String,
+    },
+    nextLink: {
+      type: String,
+    },
+    episodeTitle: {
       type: String,
     },
   },
@@ -181,8 +219,14 @@ export default {
     toggleFullScreen() {
       this.$emit("fullscreen-state-change");
     },
+    toggleMuted() {
+      this.$emit("muted-state-change");
+    },
     openPlayerSetting() {
       this.$emit("open-player-setting");
+    },
+    takeScreenshot() {
+      this.$emit("request-screenshot");
     },
     openMiniEpisodeList() {
       this.$emit("open-mini-episode-list");
@@ -235,30 +279,6 @@ export default {
     },
     exitPlayer() {
       this.$emit("exit-player");
-    },
-  },
-  computed: {
-    ...mapState({
-      currentAnime: (state) => state.currentAnimeInfo.currentAnimeInfo,
-    }),
-    nextEpisode() {
-      if (!this.currentAnime) {
-        return "";
-      } else {
-        const partMax = this.currentAnime.map((item) => item.episodes.length);
-        const title = this.$route.params.title;
-        let part = Number(this.$route.params.part.slice(0, 1));
-        let index = Number(this.$route.params.index.slice(0, -1));
-        if (index < partMax[part - 1]) {
-          index++;
-          return `/player/${title}/${part}기/${index}화`;
-        } else if (partMax[part]) {
-          index = 1;
-          return `/player/${title}/${++part}기/${index}화`;
-        } else {
-          return "";
-        }
-      }
     },
   },
 };
@@ -360,15 +380,37 @@ export default {
   .episode-info {
     visibility: hidden; //폴더블 대응
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    margin-left: 1rem;
+    .row-top {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin: {
+        top: 0;
+        bottom: 0.7rem;
+      }
+    }
     &__title {
       color: #fff;
       font-size: 1.5rem;
-      margin-right: 1rem;
+      max-width: 40vw;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      margin-right: 0.5rem;
     }
     &__part-index {
       font-size: 1.3rem;
       color: #fff;
+    }
+    &__episode-title {
+      color: #fff;
+      font-size: 1.3rem;
+      max-width: 50vw;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 }
@@ -376,6 +418,17 @@ export default {
 @media screen and (min-width: 375px) {
   .video-controller .episode-info {
     visibility: visible; //폴더블 대응
+  }
+}
+
+@media (orientation: landscape) {
+  .video-controller .episode-info {
+    &__title {
+      max-width: 60vw;
+    }
+    &__episode-title {
+      max-width: 70vw;
+    }
   }
 }
 </style>

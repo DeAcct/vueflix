@@ -1,18 +1,18 @@
 <template>
   <div class="inner result">
-    <strong class="result-number">총 {{ recentItems.length }}개</strong>
+    <strong class="result-number"> 총 {{ recentItems.length }}개 </strong>
     <ul class="basket-items">
       <carousel-item
         v-for="recentItem in recentItems"
-        :key="recentItem.title"
-        :title="recentItem.title"
-        :episode="recentItem.episode"
-        :img="recentItem.img"
-        :url="recentItem.url"
-        :isMovie="recentItem.isMovie"
+        :key="recentItem.aniTitle"
+        :ani-title="recentItem.aniTitle"
+        :part="recentItem.part"
+        :index="recentItem.index"
+        :episode-thumbnail="recentItem.episodeThumbnail"
         :isRecent="true"
-        :progress="recentItem.progress"
+        :progress="recentItem.watchedPercent"
         class="basket-item"
+        :develop-firebase="true"
       />
     </ul>
   </div>
@@ -25,9 +25,12 @@ export default {
   components: {
     CarouselItem,
   },
-  computed: mapState({
-    recentItems: (state) => state.anime.recentAnime,
-  }),
+  computed: {
+    ...mapState({
+      recentItems: (state) =>
+        state.auth.user ? state.auth.user.recentWatched : [],
+    }),
+  },
 };
 </script>
 

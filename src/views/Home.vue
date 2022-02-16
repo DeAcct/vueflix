@@ -3,14 +3,21 @@
     <main>
       <slide />
       <div class="contents">
-        <carousel :animeList="recent" type="recent">최근 본 애니</carousel>
+        <carousel
+          :animeList="auth.recentWatched"
+          type="recent"
+          v-if="auth ? auth.recentWatched.length : auth"
+        >
+          최근 본 애니
+        </carousel>
         <carousel type="daily">요일별 신작</carousel>
         <carousel
-          v-for="recommend in recommendAnime"
-          :key="recommend.recommendTitle"
-          :animeList="recommend.list"
+          type="recommend"
+          v-for="recommended in recommendedAnime"
+          :key="recommended.subject"
+          :animeList="recommended.list"
         >
-          {{ recommend.recommendTitle }}
+          {{ recommended.subject }}
         </carousel>
       </div>
     </main>
@@ -37,6 +44,7 @@ import Modal from "../components/Modal.vue";
 import Carousel from "../components/Carousel.vue";
 import Cookies from "js-cookie";
 import { mapState } from "vuex";
+import { getFirestore, getDocs, collection } from "firebase/firestore";
 export default {
   name: "Home",
   components: {
@@ -47,9 +55,10 @@ export default {
   data() {
     return {
       isModalOpened: false,
+      recommendedAnime: {},
     };
   },
-  created() {
+  async mounted() {
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       if (Cookies.get("add-to-home-screen") === undefined) {
@@ -59,6 +68,7 @@ export default {
     window.addEventListener("appinstalled", () => {
       this.isModalOpened = null;
     });
+    await this.recommendInit();
   },
   methods: {
     async dismiss() {
@@ -68,11 +78,31 @@ export default {
     async install() {
       this.isModalOpened.prompt();
     },
+    async recommendInit() {
+      const db = getFirestore();
+      const qSnapshot = await getDocs(collection(db, "recommend"));
+      const data = qSnapshot.docs
+        .map((doc) => doc.data())
+        .map((lists) => ({
+          ...lists,
+          list: lists.list.sort((a, b) => {
+            if (a.aniTitle < b.aniTitle) {
+              return -1;
+            } else if (a.aniTitle > b.aniTitle) {
+              return 1;
+            }
+            return 0;
+          }),
+        }));
+      console.log(data);
+      this.recommendedAnime = data;
+    },
   },
-  computed: mapState({
-    recent: (state) => state.anime.recentAnime,
-    recommendAnime: (state) => state.anime.recommendAnime,
-  }),
+  computed: {
+    ...mapState({
+      auth: (state) => state.auth.user,
+    }),
+  },
 };
 </script>
 
