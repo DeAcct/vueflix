@@ -36,7 +36,7 @@
 import { mapState } from "vuex";
 import StateToggle from "../components/StateToggle.vue";
 export default {
-  name: "Darkmode",
+  name: "AppTheme",
   data() {
     return {
       timeInterval: undefined,

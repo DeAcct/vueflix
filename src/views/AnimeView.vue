@@ -79,7 +79,7 @@
 
       <div class="episodes-widget widget">
         <h3 class="blind">에피소드</h3>
-        <episodes
+        <episodes-widget
           v-for="(part, index) in animeInfo.parts"
           :episodesData="part"
           :key="index"
@@ -88,7 +88,7 @@
         />
       </div>
     </main>
-    <modal
+    <vueflix-modal
       title="로그인 필요 알림"
       type="yes-no"
       :yesFunc="gotoLogin"
@@ -102,7 +102,7 @@
       </template>
       <template v-slot:no-string>나중에</template>
       <template v-slot:yes-string>로그인</template>
-    </modal>
+    </vueflix-modal>
     <action-sheet
       :class="[{ show: isOverflowMenuOpened }, 'optional-show']"
       title="더보기"
@@ -124,8 +124,8 @@ import {
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import AnimeItemHead from "../components/AnimeItemHead.vue";
-import Episodes from "../components/Episodes";
-import Modal from "../components/Modal.vue";
+import EpisodesWidget from "../components/EpisodesWidget";
+import VueflixModal from "../components/VueflixModal.vue";
 import ActionSheet from "../components/ActionSheet.vue";
 import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconReview from "../components/icons/IconReview.vue";
@@ -134,13 +134,13 @@ import { mapState } from "vuex";
 export default {
   components: {
     AnimeItemHead,
-    Episodes,
-    Modal,
+    EpisodesWidget,
+    VueflixModal,
     ActionSheet,
     ArrowBtnWidget,
     IconReview,
   },
-  name: "anime",
+  name: "AnimeView",
   mounted() {
     document.title = `${this.$route.params.title} 다시보기`;
     this.animeInit();

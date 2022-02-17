@@ -35,7 +35,7 @@ import ServiceNotiBox from "../components/ServiceNotiBox.vue";
 import DaySelector from "../components/DaySelector.vue";
 import VerticalCardItem from "../components/VerticalCardItem.vue";
 export default {
-  name: "Daily",
+  name: "AppDaily",
   components: {
     ServiceNotiBox,
     DaySelector,

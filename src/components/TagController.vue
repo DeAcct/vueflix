@@ -85,7 +85,7 @@ import TagItem from "./TagItem.vue";
 import AccordionWidget from "./AccordionWidget.vue";
 import TripleCheckbox from "./TripleCheckbox.vue";
 export default {
-  name: "Controller",
+  name: "TagController",
   components: {
     IconBase,
     IconExcluded,

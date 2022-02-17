@@ -72,6 +72,7 @@ SwiperCore.use([Autoplay, Pagination, A11y, Navigation, EffectFade]);
 import "swiper/swiper-bundle.min.css";
 
 export default {
+  name: "BannerSlide",
   components: {
     Swiper,
     SwiperSlide,

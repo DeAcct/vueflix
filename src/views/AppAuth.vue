@@ -10,7 +10,7 @@
     <main class="login inner">
       <div class="row-top">
         <div class="logo">
-          <logo />
+          <vueflix-logo />
         </div>
         <p class="copy-text">
           <span class="line-break"> 이번 분기 화제작부터 고전 명작까지 </span>
@@ -40,17 +40,17 @@ import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
 import IconBase from "../components/IconBase.vue";
 import IconArrowPrev from "../components/icons/IconArrowPrev.vue";
-import Logo from "../components/Logo.vue";
+import VueflixLogo from "../components/VueflixLogo.vue";
 import VueflixBtn from "../components/VueflixBtn.vue";
 import IconGoogle from "../components/icons/IconGoogle.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
 export default {
-  name: "Auth",
+  name: "AppAuth",
   components: {
     IconBase,
     IconArrowPrev,
     VueflixBtn,
-    Logo,
+    VueflixLogo,
     IconGoogle,
     LoadingSpinner,
   },

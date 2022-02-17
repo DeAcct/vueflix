@@ -1,27 +1,27 @@
 <template>
   <div class="wrap">
     <main>
-      <slide />
+      <banner-slide />
       <div class="contents">
-        <carousel
+        <vueflix-carousel
           :animeList="auth.recentWatched"
           type="recent"
           v-if="auth ? auth.recentWatched.length : auth"
         >
           최근 본 애니
-        </carousel>
-        <carousel type="daily">요일별 신작</carousel>
-        <carousel
+        </vueflix-carousel>
+        <vueflix-carousel type="daily">요일별 신작</vueflix-carousel>
+        <vueflix-carousel
           type="recommend"
           v-for="recommended in recommendedAnime"
           :key="recommended.subject"
           :animeList="recommended.list"
         >
           {{ recommended.subject }}
-        </carousel>
+        </vueflix-carousel>
       </div>
     </main>
-    <modal
+    <vueflix-modal
       type="yes-no"
       :yesFunc="install"
       :noFunc="dismiss"
@@ -34,23 +34,23 @@
       </template>
       <template v-slot:no-string>나중에</template>
       <template v-slot:yes-string>설치</template>
-    </modal>
+    </vueflix-modal>
   </div>
 </template>
 
 <script>
-import Slide from "../components/Slide.vue";
-import Modal from "../components/Modal.vue";
-import Carousel from "../components/Carousel.vue";
+import BannerSlide from "../components/BannerSlide.vue";
+import VueflixModal from "../components/VueflixModal.vue";
+import VueflixCarousel from "../components/VueflixCarousel.vue";
 import Cookies from "js-cookie";
 import { mapState } from "vuex";
 import { getFirestore, getDocs, collection } from "firebase/firestore";
 export default {
-  name: "Home",
+  name: "AppHome",
   components: {
-    Slide,
-    Modal,
-    Carousel,
+    BannerSlide,
+    VueflixModal,
+    VueflixCarousel,
   },
   data() {
     return {

@@ -34,7 +34,7 @@ export default {
   components: {
     VueflixBtn,
   },
-  name: "Modal",
+  name: "VueflixModal",
   props: {
     title: {
       type: String,

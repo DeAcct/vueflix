@@ -80,7 +80,7 @@ import LoadingSpinner from "../components/LoadingSpinner.vue";
 import NextEpisodeCard from "../components/NextEpisodeCard.vue";
 
 export default {
-  name: "Player",
+  name: "VueflixPlayer",
   /*
    * 풀스크린을 자동으로 열도록 요청하고 싶었으나,
    * 보안 상의 이유로 인해 브라우저가 이를 막는다

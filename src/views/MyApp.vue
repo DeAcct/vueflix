@@ -4,7 +4,9 @@
       <div class="tab-one">
         <login-widget :btn-func="route">
           <template v-slot:profile-img>
-            <profile :input-profile="user ? user.profileImgSrc : undefined" />
+            <profile-img
+              :input-profile="user ? user.profileImgSrc : undefined"
+            />
           </template>
           <template v-slot:text>
             <h2>
@@ -81,7 +83,7 @@
 import { mapState } from "vuex";
 import { getAuth, signOut } from "firebase/auth";
 
-import Profile from "../components/Profile.vue";
+import ProfileImg from "../components/ProfileImg.vue";
 import VueflixBtn from "../components/VueflixBtn.vue";
 import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconMembership from "../components/icons/IconMembership";
@@ -90,8 +92,9 @@ import IconNotification from "../components/icons/IconNotification.vue";
 import LoginWidget from "../components/LoginWidget.vue";
 
 export default {
+  name: "MyApp",
   components: {
-    Profile,
+    ProfileImg,
     VueflixBtn,
     ArrowBtnWidget,
     IconMembership,

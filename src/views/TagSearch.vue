@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <main>
-      <controller />
+      <tag-controller />
       <div class="inner">
         <p class="result-text">
           총 <strong>{{ formatResult }}</strong
@@ -26,12 +26,12 @@
 
 <script>
 import PosterList from "../components/PosterList.vue";
-import Controller from "../components/Controller.vue";
+import TagController from "../components/TagController.vue";
 export default {
   name: "TagSearch",
   components: {
     PosterList,
-    Controller,
+    TagController,
   },
   data() {
     return {

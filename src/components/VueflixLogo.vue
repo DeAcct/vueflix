@@ -27,6 +27,6 @@
 
 <script>
 export default {
-  name: "Logo",
+  name: "VueflixLogo",
 };
 </script>

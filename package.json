@@ -1,16 +1,15 @@
 {
   "name": "vueflix",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "private": true,
-  "homepage": "vueflix.hyse.kr",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "predeploy": "vue-cli-service build && echo vueflix.hyse.kr > ./docs/CNAME",
-    "deploy": "gh-pages -d docs"
+    "deploy": "gh-pages -d docs",
+    "predeploy": "vue-cli-service build && echo vueflix.hyse.kr > ./docs/CNAME"
   },
   "dependencies": {
     "@vue/cli": "^4.5.13",
-    "@vue/cli-plugin-pwa": "^4.5.13",
+    "@vue/cli-plugin-pwa": "~5.0.1",
     "core-js": "^3.6.5",
     "es6-promise": "^4.2.8",
     "firebase": "^9.6.0",
@@ -21,17 +20,19 @@
     "sass-loader": "10",
     "swiper": "^6.8.2",
     "vue": "^3.0.0",
-    "vue-router": "4",
+    "vue-router": "^4.0.0",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.1",
+    "@vue/cli-plugin-eslint": "~5.0.1",
+    "@vue/cli-service": "~5.0.1",
     "@vue/compiler-sfc": "^3.0.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "fibers": "^5.0.1",
     "gh-pages": "^3.2.3"
   },
   "eslintConfig": {
@@ -44,7 +45,7 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser"
     },
     "rules": {}
   },
@@ -52,5 +53,6 @@
     "> 0.25%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "homepage": "vueflix.hyse.kr"
 }

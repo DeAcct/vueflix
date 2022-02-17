@@ -11,7 +11,7 @@
       <div class="col-left">
         <h1 :class="['header__logo', { blind: isMobile && !isHome }]">
           <router-link to="/">
-            <logo />
+            <vueflix-logo />
           </router-link>
         </h1>
         <a
@@ -40,7 +40,7 @@
           :is-home="isHome"
           :is-auth="isAuth"
         />
-        <notification v-if="isHome" :is-scroll="isScroll" />
+        <notification-action-btn v-if="isHome" :is-scroll="isScroll" />
       </div>
     </div>
   </header>
@@ -49,8 +49,8 @@
 <script>
 import SiteMenu from "./SiteMenu.vue";
 import SearchBar from "./SearchBar.vue";
-import Notification from "./Notification.vue";
-import Logo from "./Logo.vue";
+import NotificationActionBtn from "./NotificationActionBtn.vue";
+import VueflixLogo from "./VueflixLogo.vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 export default {
@@ -58,8 +58,8 @@ export default {
   components: {
     SiteMenu,
     SearchBar,
-    Notification,
-    Logo,
+    NotificationActionBtn,
+    VueflixLogo,
     IconBase,
     IconArrowPrev,
   },

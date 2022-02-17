@@ -18,7 +18,7 @@ import TextReview from "../components/TextReview.vue";
 import LoginWidget from "../components/LoginWidget.vue";
 
 export default {
-  name: "reviews",
+  name: "AnimeReviews",
   components: {
     KeywordReview,
     TextReview,

@@ -16,7 +16,7 @@ import BasketTabPurchase from "../components/BasketTabPurchase.vue";
 import BasketTabNotInterested from "../components/BasketTabNotInterested.vue";
 
 export default {
-  name: "Basket",
+  name: "AppBasket",
   components: {
     BasketTabMenu,
     BasketTabRecent,

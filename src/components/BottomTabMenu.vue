@@ -37,7 +37,7 @@ import IconHome from "./icons/IconHome.vue";
 import IconTagSearch from "./icons/IconTagSearch.vue";
 import IconDaily from "./icons/IconDaily.vue";
 import IconBasket from "./icons/IconBasket.vue";
-import Profile from "./Profile.vue";
+import ProfileImg from "./ProfileImg.vue";
 import { mapState } from "vuex";
 export default {
   name: "BottomTabMenu",
@@ -47,7 +47,7 @@ export default {
     IconTagSearch,
     IconDaily,
     IconBasket,
-    Profile,
+    ProfileImg,
   },
   data() {
     return {
@@ -75,7 +75,7 @@ export default {
         {
           to: "my",
           item: "MY",
-          icon: "Profile",
+          icon: "ProfileImg",
         },
       ],
     };

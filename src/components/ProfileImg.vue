@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "Profile",
+  name: "ProfileImg",
   props: {
     inputProfile: {
       type: String,

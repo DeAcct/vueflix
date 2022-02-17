@@ -8,7 +8,7 @@ const routes = [
   {
     path: "/",
     name: "home",
-    component: () => import("@/views/Home"),
+    component: () => import("@/views/AppHome"),
     meta: {
       title: "뷰플릭스 - 합법적 애니 스트리밍",
       appBar: true,
@@ -18,7 +18,7 @@ const routes = [
   {
     path: "/anime/:title",
     name: "anime",
-    component: () => import("@/views/Anime"),
+    component: () => import("@/views/AnimeView"),
     meta: {
       appBar: false,
       bottomTabMenu: false,
@@ -27,7 +27,7 @@ const routes = [
       {
         path: "reviews",
         name: "reviews",
-        component: () => import("@/views/Reviews"),
+        component: () => import("@/views/AnimeReviews"),
         meta: {
           appBar: true,
           bottomTabMenu: false,
@@ -38,7 +38,7 @@ const routes = [
   {
     path: "/player/:title/:part/:index",
     name: "player",
-    component: () => import("@/views/Player"),
+    component: () => import("@/views/VueflixPlayer"),
     meta: {
       appBar: false,
       bottomTabMenu: false,
@@ -57,7 +57,7 @@ const routes = [
   {
     path: "/daily",
     name: "daily",
-    component: () => import("@/views/Daily"),
+    component: () => import("@/views/AppDaily"),
     meta: {
       title: `${year}년 ${quarter}분기 신작 애니 편성표`,
       appBar: true,
@@ -67,7 +67,7 @@ const routes = [
   {
     path: "/basket",
     name: "basket",
-    component: () => import("@/views/Basket"),
+    component: () => import("@/views/AppBasket"),
     meta: {
       title: "보관함",
       appBar: true,
@@ -77,7 +77,7 @@ const routes = [
   {
     path: "/my",
     name: "my",
-    component: () => import("@/views/My"),
+    component: () => import("@/views/MyApp"),
     meta: {
       title: "내 뷰플릭스",
       appBar: true,
@@ -87,7 +87,7 @@ const routes = [
       {
         path: "membership",
         name: "membership",
-        component: () => import("@/views/Membership"),
+        component: () => import("@/views/VueflixMembership"),
         meta: {
           title: "뷰플릭스 멤버십",
           appBar: true,
@@ -109,7 +109,7 @@ const routes = [
   {
     path: "/auth",
     name: "auth",
-    component: () => import("@/views/Auth"),
+    component: () => import("@/views/AppAuth"),
     meta: {
       title: "뷰플릭스에 어서오세요!",
       appBar: false,

@@ -5,9 +5,6 @@
     <transition name="fade">
       <component :is="Component" :key="$route.path"></component>
     </transition>
-    <transition name="toast-show">
-      <toast v-if="toastShown">{{ toastText }}</toast>
-    </transition>
   </router-view>
 </template>
 
@@ -15,7 +12,6 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import VueflixHeader from "./components/VueflixHeader.vue";
 import BottomTabMenu from "./components/BottomTabMenu.vue";
-import Toast from "./components/Toast.vue";
 import { mapState } from "vuex";
 import { doc, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
 export default {
@@ -23,7 +19,6 @@ export default {
   components: {
     VueflixHeader,
     BottomTabMenu,
-    Toast,
   },
   mounted() {
     const auth = getAuth();
@@ -114,8 +109,6 @@ export default {
     },
   },
   computed: mapState({
-    toastText: (state) => state.toast.text,
-    toastShown: (state) => state.toast.isShown,
     user: (state) => state.auth.user,
     theme: (state) => state.theme.theme,
   }),

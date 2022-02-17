@@ -62,11 +62,11 @@
 /*데일리를 파이어베이스로 옮길 때까기 develop-firebase prop 유지*/
 import CarouselItem from "./CarouselItem.vue";
 import IconBase from "./IconBase.vue";
-import DaySelector from "../components/DaySelector.vue";
+import DaySelector from "./DaySelector.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 export default {
-  name: "Carousel",
+  name: "VueflixCarousel",
   components: {
     CarouselItem,
     IconBase,

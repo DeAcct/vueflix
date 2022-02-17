@@ -45,7 +45,7 @@
 <script>
 import MembershipCard from "../components/MembershipCard.vue";
 export default {
-  name: "Membership",
+  name: "VueflixMembership",
   components: {
     MembershipCard,
   },

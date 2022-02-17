@@ -16,7 +16,7 @@ import IconBase from "./IconBase.vue";
 import IconNotification from "./icons/IconNotification.vue";
 
 export default {
-  name: "Notification",
+  name: "NotificationActionBtn",
   props: {
     isScroll: {
       type: Boolean,

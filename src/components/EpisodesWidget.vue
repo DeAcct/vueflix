@@ -37,7 +37,7 @@ import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 import EpisodeCard from "./EpisodeCard.vue";
 export default {
-  name: "Episodes",
+  name: "EpisodesWidget",
   components: {
     EpisodeCard,
     IconBase,
