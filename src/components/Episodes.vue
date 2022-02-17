@@ -26,6 +26,7 @@
         :index="index + 1"
         :part="episodesData.part"
         :download="true"
+        @login-require="loginRequire"
       />
     </ul>
   </section>
@@ -58,6 +59,9 @@ export default {
   methods: {
     widgetToggle() {
       this.isWidgetOpen = !this.isWidgetOpen;
+    },
+    loginRequire() {
+      this.$emit("login-require", "로그인해야 애니를 감상할 수 있어요");
     },
   },
 };

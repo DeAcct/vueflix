@@ -133,7 +133,7 @@ const state = {
       day: "목",
       animes: [
         {
-          title: "코바야시네 메이드래곤 S",
+          title: "코바야시네 메이드래곤",
           img: require("@/assets/carousel_thumbnail_kobayashis.webp"),
           url: "#none",
           genre: "일상 / 개그",

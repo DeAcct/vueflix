@@ -14,7 +14,7 @@
       @overflowMenuOpened="overflowMenuOpen"
       :myRating="myRating"
       @starChanged="starChanged"
-      @requireLogin="openLoginModal"
+      @require-login="openLoginModal"
       class="widget"
     />
     <main>
@@ -84,6 +84,7 @@
           :episodesData="part"
           :key="index"
           :id="part.part"
+          @login-require="openLoginModal"
         />
       </div>
     </main>
@@ -97,7 +98,7 @@
     >
       <template v-slot:title>로그인 필요</template>
       <template v-slot:description>
-        로그인해야 좋아요를 남길 수 있어요
+        {{ loginModalText }}
       </template>
       <template v-slot:no-string>나중에</template>
       <template v-slot:yes-string>로그인</template>
@@ -174,6 +175,7 @@ export default {
         },
       ],
       isLoginModalOpened: false,
+      loginModalText: "",
       isSub: this.$route.name !== "anime",
       isScroll: false,
     };
@@ -272,7 +274,8 @@ export default {
     starChanged(e) {
       this.myRating = e;
     },
-    openLoginModal() {
+    openLoginModal(e) {
+      this.loginModalText = e;
       this.isLoginModalOpened = true;
     },
     gotoLogin() {

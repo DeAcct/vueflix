@@ -1,6 +1,11 @@
 <template>
   <li class="episode-card">
-    <router-link :to="toValue" class="episode-item" replace>
+    <router-link
+      :to="auth ? toValue : '#none'"
+      class="episode-item"
+      replace
+      @click="loginRequire"
+    >
       <figure>
         <div class="col-left">
           <div class="thumbnail">
@@ -58,6 +63,7 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import IconDownload from "./icons/IconDownload.vue";
 import IconBase from "../components/IconBase.vue";
 import IconPlay from "./icons/IconPlay.vue";
+import { mapState } from "vuex";
 export default {
   name: "EpisodeCard",
   props: {
@@ -88,6 +94,9 @@ export default {
     accentCurrent: {
       type: Boolean,
     },
+    isLoggedin: {
+      type: Boolean,
+    },
   },
   components: {
     IconDownload,
@@ -109,6 +118,11 @@ export default {
       const URL = await getDownloadURL(thumbnailRef);
       this.thumbnailURL = URL;
     },
+    loginRequire() {
+      if (!this.auth) {
+        this.$emit("login-require");
+      }
+    },
   },
   computed: {
     toValue() {
@@ -124,6 +138,9 @@ export default {
         this.index === Number(this.$route.params.index.slice(0, -1))
       );
     },
+    ...mapState({
+      auth: (state) => state.auth.user,
+    }),
   },
 };
 </script>

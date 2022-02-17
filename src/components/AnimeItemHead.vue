@@ -94,9 +94,15 @@
           <icon-wanna-see />
         </template>
       </anime-action-btn>
-      <vueflix-btn class="btn--continue-play" component="button" :icon="true">
+      <vueflix-btn
+        class="btn--continue-play"
+        component="router-link"
+        :to="continueLink"
+        :icon="true"
+        :type="undefined"
+      >
         <template v-slot:icon><icon-play /></template>
-        <template v-slot:text>1화 무료보기</template>
+        <template v-slot:text>{{ continueString }}</template>
       </vueflix-btn>
     </div>
   </component>
@@ -112,6 +118,7 @@ import IconOverflow from "./icons/IconOverflow.vue";
 import AnimeActionBtn from "./AnimeActionBtn.vue";
 import IconWannaSee from "./icons/IconWannaSee.vue";
 import IconPlay from "./icons/IconPlay.vue";
+import { getFirestore, setDoc, doc, getDoc } from "firebase/firestore";
 
 export default {
   name: "AnimeItemHead",
@@ -161,9 +168,22 @@ export default {
       type: Number,
     },
   },
-  mounted() {
+  async mounted() {
     this.component = this.notPC ? "header" : "div";
     window.addEventListener("resize", this.checkResolution);
+    if (this.user) {
+      const db = getFirestore();
+      const userRef = doc(db, "user", this.user.uid);
+      const userSnap = await getDoc(userRef);
+      this.$store.commit("auth/setUser", userSnap.data());
+
+      const wannaSeeIndex = userSnap
+        .data()
+        .wannaSee.findIndex(
+          (wanna) => wanna.aniTitle === this.$route.params.title
+        );
+      this.wannaSeeBool = wannaSeeIndex !== -1;
+    }
   },
   unmounted() {
     window.removeEventListener("resize", this.checkResolution);
@@ -180,11 +200,39 @@ export default {
     goBack() {
       return this.$router.go(-1);
     },
-    wannaSeeToggle() {
-      if (this.isLoggedIn) {
+    async wannaSeeToggle() {
+      if (this.user) {
         this.wannaSeeBool = !this.wannaSeeBool;
+        const aniTitle = this.$route.params.title;
+        if (this.wannaSeeBool) {
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = now.getMonth() + 1;
+          const date = now.getDate();
+          const hour = now.getHours();
+          const min = now.getMinutes();
+          const sec = now.getSeconds();
+          this.$store.commit("auth/updateWannaSee", {
+            aniTitle: aniTitle,
+            time: {
+              year: year,
+              month: month,
+              date: date,
+              hour: hour,
+              min: min,
+              sec: sec,
+            },
+          });
+          console.log(this.user);
+        } else {
+          this.$store.commit("auth/deleteWannaSee", aniTitle);
+        }
+        const db = getFirestore();
+        await setDoc(doc(db, "user", this.user.uid), {
+          ...this.user,
+        });
       } else {
-        this.$emit("requireLogin");
+        this.$emit("require-login", "로그인해야 '보고싶다'를 체크할 수 있어요");
       }
     },
     checkResolution() {
@@ -205,14 +253,34 @@ export default {
     ...mapState({
       user: (state) => state.auth.user,
     }),
-    isLoggedIn() {
-      return this.user;
-    },
     posterBg() {
       const bg = `
         background-image: linear-gradient(var(--anime-item-head-opacity-700), var(--anime-item-head-opacity-500)), url(${this.poster});
       `;
       return bg;
+    },
+    continueLink() {
+      if (this.user) {
+        const last = this.user.recentWatched.find(
+          (anime) => anime.aniTitle === this.$route.params.title
+        );
+        return last.continueLink;
+      } else {
+        return "#none";
+      }
+    },
+    continueString() {
+      if (this.user) {
+        const last = this.user.recentWatched.find(
+          (anime) => anime.aniTitle === this.$route.params.title
+        );
+        const stringOrigin = last.continueLink.split("/");
+        const part = stringOrigin[3];
+        const index = stringOrigin[4];
+        return `${part} ${index} 이어보기`;
+      } else {
+        return "1화 무료보기";
+      }
     },
   },
 

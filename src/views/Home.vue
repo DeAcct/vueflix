@@ -94,7 +94,6 @@ export default {
             return 0;
           }),
         }));
-      console.log(data);
       this.recommendedAnime = data;
     },
   },

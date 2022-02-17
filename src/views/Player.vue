@@ -115,6 +115,9 @@ export default {
       );
       this.$refs.video.playbackRate = this.videoSpeed;
     }
+    if (this.auth) {
+      await this.savePoint();
+    }
     document.addEventListener("fullscreenchange", this.updateFullScreen);
   },
   unmounted() {
@@ -161,6 +164,10 @@ export default {
       this.isLoading = true;
       try {
         this.videoSrc = await getDownloadURL(videoRef);
+        /*
+         * this.$refs.video.duration * (어디까지 봤는지 %) 계산해서 반영하기,
+         * (어디까지 봤는지 %) 없으면 놔두기
+         */
       } catch {
         this.$router.replace("/notfound");
       }
@@ -186,6 +193,13 @@ export default {
       this.$anchor.href = img;
       this.$anchor.download = `${this.$route.params.title} ${this.$route.params.part} ${this.$route.params.index} 스크린샷`;
       this.$anchor.click();
+    },
+    async savePoint() {
+      this.$store.commit("auth/updateRecentWatched", this.nowEpisodeInfo);
+      const db = getFirestore();
+      await setDoc(doc(db, "user", this.auth.uid), {
+        ...this.auth,
+      });
     },
     loaded() {
       this.isLoading = false;
@@ -277,11 +291,7 @@ export default {
       if (this.isFullScreen) {
         await document.exitFullscreen();
       }
-      this.$store.commit("auth/updateRecentWatched", this.nowEpisodeInfo);
-      const db = getFirestore();
-      await setDoc(doc(db, "user", this.auth.uid), {
-        ...this.auth,
-      });
+      await this.savePoint();
       this.$router.replace(`/anime/${this.$route.params.title}`);
     },
     setTime() {
@@ -358,10 +368,30 @@ export default {
       const aniTitle = this.$route.params.title;
       let part = this.partNow;
       let index = this.indexNow;
+      const continueLink =
+        this.videoProgress === "100%"
+          ? this.nextLink
+          : `/player/${this.$route.params.title}/${this.$route.params.part}/${this.$route.params.index}`;
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const date = now.getDate();
+      const hour = now.getHours();
+      const min = now.getMinutes();
+      const sec = now.getSeconds();
       return {
         aniTitle: aniTitle,
         part: this.partNow,
         index: this.indexNow,
+        watchedPoint: {
+          year: year,
+          month: month,
+          date: date,
+          hour: hour,
+          min: min,
+          sec: sec,
+        },
+        continueLink: continueLink,
         episodeTitle: this.currentAnime[part - 1].episodes[index - 1].title,
         episodeThumbnail:
           this.currentAnime[part - 1].episodes[index - 1].thumbnail,

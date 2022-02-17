@@ -14,6 +14,12 @@
         class="basket-item"
         :develop-firebase="true"
       />
+      <li class="basket-item"></li>
+      <li class="basket-item"></li>
+      <li class="basket-item"></li>
+      <li class="basket-item"></li>
+      <li class="basket-item"></li>
+      <li class="basket-item"></li>
     </ul>
   </div>
 </template>
