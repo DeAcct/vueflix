@@ -83,27 +83,6 @@
       </div>
     </div>
     <div class="btn-area inner">
-      <!-- <anime-action-btn
-        @click="wannaSeeToggle"
-        :isEnabled="wannaSeeBool"
-        type="wanna-see"
-        v-if="notPC"
-        label="보고싶다"
-      >
-        <template v-slot:icon>
-          <icon-wanna-see />
-        </template>
-      </anime-action-btn>
-      <vueflix-btn
-        class="btn--continue-play"
-        component="router-link"
-        :to="continueLink"
-        :icon="true"
-        :type="undefined"
-      >
-        <template v-slot:icon><icon-play /></template>
-        <template v-slot:text>{{ continueString }}</template>
-      </vueflix-btn> -->
       <router-link
         :class="[
           'btn-area__continue',
@@ -401,7 +380,6 @@ export default {
       }
       .row-top {
         color: inherit;
-        width: 45vw;
         height: 6rem;
         transition: 150ms ease-out;
       }
@@ -424,6 +402,9 @@ export default {
           padding: 0.5rem 0.7rem;
           background-color: var(--anime-genre);
           border-radius: 0.3rem;
+          &:not(:last-child) {
+            margin-right: 0.5rem;
+          }
         }
       }
       .title {
