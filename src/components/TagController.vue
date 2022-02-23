@@ -281,7 +281,7 @@ export default {
       height: 0.5rem;
       border-radius: 0.25rem;
       margin-bottom: 2rem;
-      background-color: var(--bg-200);
+      background-color: var(--bg-400);
     }
     strong {
       font-size: 2rem;

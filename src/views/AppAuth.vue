@@ -86,7 +86,7 @@ export default {
         if (!docSnap.exists()) {
           await setDoc(doc(db, "user", auth.currentUser.uid), {
             uid: auth.currentUser.uid,
-            name: auth.currentUser.displayName,
+            nickname: auth.currentUser.displayName,
             profileImgSrc: auth.currentUser.photoURL,
             email: auth.currentUser.email,
             recentWatched: [],
@@ -174,6 +174,7 @@ header {
       height: 4rem;
       justify-content: space-between;
       box-shadow: none;
+      color: var(--google-login-text);
     }
   }
 }

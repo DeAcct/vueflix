@@ -51,6 +51,13 @@ export default {
     width: 4.8rem;
     height: 4.8rem;
     margin-right: 1rem;
+    border: 1px solid transparent;
+    &--male {
+      border-color: var(--gender-male);
+    }
+    &--female {
+      border-color: var(--gender-female);
+    }
   }
   h2 {
     font-size: 1.5rem;
@@ -59,6 +66,7 @@ export default {
     margin-top: 0.5rem;
     font-size: 1.1rem;
   }
+
   .btn {
     border-radius: 9999px;
     background-color: var(--theme-500);

@@ -89,8 +89,18 @@ const routes = [
         name: "membership",
         component: () => import("@/views/VueflixMembership"),
         meta: {
-          title: "뷰플릭스 멤버십",
+          title: "멤버십 및 포인트",
           appBar: true,
+          bottomTabMenu: false,
+        },
+      },
+      {
+        path: "account-setting",
+        name: "account-setting",
+        component: () => import("@/views/AccountSetting"),
+        meta: {
+          title: "계정 설정",
+          appBar: false,
           bottomTabMenu: false,
         },
       },

@@ -6,11 +6,15 @@
           <template v-slot:profile-img>
             <profile-img
               :input-profile="user ? user.profileImgSrc : undefined"
+              :class="[
+                { 'profile--male': user ? user.gender === 'male' : false },
+                { 'profile--female': user ? user.gender === 'female' : false },
+              ]"
             />
           </template>
           <template v-slot:text>
             <h2>
-              {{ user ? user.name : "로그인 전이에요" }}
+              {{ user ? user.nickname : "로그인 전이에요" }}
             </h2>
             <p v-if="user">{{ user.email }}</p>
           </template>
@@ -74,6 +78,7 @@
           </arrow-btn-widget>
         </div>
       </div>
+      <router-link to="#none">회원 탈퇴</router-link>
     </main>
     <router-view />
   </div>
@@ -90,6 +95,7 @@ import IconMembership from "../components/icons/IconMembership";
 import IconAccount from "../components/icons/IconAccount";
 import IconNotification from "../components/icons/IconNotification.vue";
 import LoginWidget from "../components/LoginWidget.vue";
+import IconBase from "../components/IconBase.vue";
 
 export default {
   name: "MyApp",
@@ -101,6 +107,7 @@ export default {
     IconNotification,
     IconAccount,
     LoginWidget,
+    IconBase,
   },
   computed: {
     ...mapState({
@@ -122,7 +129,7 @@ export default {
           {
             text: "계정 설정",
             icon: "IconAccount",
-            to: "#none",
+            to: "/my/account-setting",
           },
           {
             text: "알림 설정",
@@ -161,6 +168,7 @@ export default {
           },
         ],
       ],
+      imgData: undefined,
     };
   },
   methods: {

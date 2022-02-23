@@ -303,8 +303,7 @@ export default {
   }
   .anime-item-head {
     width: 100%;
-    min-height: 24rem;
-    border-radius: 0 0 0.6rem 0.6rem;
+    min-height: 60vh;
   }
   .optional-show {
     opacity: 0;

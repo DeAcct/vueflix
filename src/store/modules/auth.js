@@ -57,6 +57,9 @@ const mutations = {
       (anime) => anime.aniTitle !== payload
     );
   },
+  mergeUser(state, payload) {
+    state.user = { ...state.user, ...payload };
+  },
 };
 
 export default {

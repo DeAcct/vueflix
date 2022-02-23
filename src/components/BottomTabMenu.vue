@@ -15,7 +15,7 @@
                 :is="item.icon"
                 :key="item.item"
                 :input-profile="
-                  item.icon === 'Profile' && user
+                  item.icon === 'ProfileImg' && user
                     ? user.profileImgSrc
                     : undefined
                 "

@@ -134,6 +134,9 @@ export default {
         case "app-theme":
           this.headString = "앱 테마";
           break;
+        case "account-setting":
+          this.headString = "계정 설정";
+          break;
         default:
           this.headString = "";
       }

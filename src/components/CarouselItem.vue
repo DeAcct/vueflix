@@ -119,6 +119,7 @@ export default {
     .title {
       font-weight: 500;
       margin-bottom: 0.5rem;
+      line-height: 1.5;
     }
   }
 }

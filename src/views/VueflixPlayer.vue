@@ -107,16 +107,28 @@ export default {
 
     window.addEventListener("keydown", this.keyTrigger);
 
-    if (this.$refs.video) {
+    if (this.$refs.video && this.auth) {
       this.$refs.video.addEventListener(
         "leavepictureinpicture",
         this.PIPoff,
         false
       );
+      this.$refs.video.addEventListener("loadeddata", async () => {
+        const target = this.auth.recentWatched.find(
+          (anime) =>
+            anime.aniTitle === this.$route.params.title &&
+            anime.part === this.partNow &&
+            anime.index === this.indexNow
+        );
+        if (target && this.$refs.video) {
+          const unitChanged = Number(target.watchedPercent.slice(0, -1)) / 100;
+          this.videoProgress = target.watchedPercent;
+          this.$refs.video.currentTime =
+            this.$refs.video.duration * unitChanged;
+        }
+        await this.savePoint();
+      });
       this.$refs.video.playbackRate = this.videoSpeed;
-    }
-    if (this.auth) {
-      await this.savePoint();
     }
     document.addEventListener("fullscreenchange", this.updateFullScreen);
   },

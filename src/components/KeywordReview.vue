@@ -140,9 +140,10 @@ export default {
     content: "";
     width: 100%;
     height: 50%;
-    background: linear-gradient(transparent, var(--overflow-gradient-100));
+    background: var(--overflow-gradient);
     position: absolute;
     z-index: 10;
+    left: 0;
     bottom: 0;
   }
   .btn {
@@ -191,7 +192,7 @@ export default {
       height: 4rem;
       border-radius: 2rem;
       overflow: hidden;
-      background-color: var(--bg-100);
+      background-color: var(--new-review);
       transition: 150ms ease-out;
       span {
         position: absolute;

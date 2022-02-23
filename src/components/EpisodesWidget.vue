@@ -1,7 +1,7 @@
 <template>
   <section class="episodes">
     <h3 class="part-info">
-      <button @click="widgetToggle" class="inner">
+      <button @click="widgetToggle">
         <i :class="['open-icon', { 'open-icon--widget-opened': isWidgetOpen }]">
           <icon-base :icon-name="isWidgetOpen ? '닫기' : '열기'">
             <icon-arrow-next />
@@ -77,18 +77,18 @@ export default {
     top: 5.9rem;
     z-index: 50;
     display: flex;
-    width: 100%;
+    width: calc(100% - var(--inner-padding) * 2);
+    margin: 0 auto;
     align-items: center;
-    background-color: var(--episodes);
     border-radius: 0.6rem;
     button {
       width: 100%;
       display: flex;
       align-items: center;
-      padding: {
-        top: 1.5rem;
-        bottom: 1.5rem;
-      }
+      padding: 1.5rem 1rem;
+      background-color: var(--episodes-part-info);
+      backdrop-filter: blur(10px);
+      border-radius: 0.3rem;
     }
     .open-icon {
       display: flex;

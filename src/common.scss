@@ -43,6 +43,8 @@ video,
 svg {
   margin: 0;
   padding: 0;
+  margin-inline: 0;
+  padding-inline: 0;
   border: none;
   color: var(--text-800);
   font-family: "Noto Sans KR", sans-serif;
@@ -53,9 +55,9 @@ svg {
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
   word-break: keep-all;
+  float: none;
 }
-::selection,
-::-moz-selection {
+::selection {
   background-color: var(--theme-500);
   color: #fff;
 }
@@ -120,9 +122,6 @@ summary {
   white-space: nowrap;
 }
 
-@mixin inner {
-  padding: 0 var(--inner-padding);
-}
 .inner {
   padding: 0 var(--inner-padding);
 }
@@ -191,6 +190,27 @@ summary {
   }
 }
 
+input[type="date"] {
+  position: relative;
+  &::-webkit-calendar-picker-indicator {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    background: transparent;
+    color: transparent;
+    width: 100%;
+    height: 100%;
+    height: auto;
+    opacity: 0;
+  }
+  &::-webkit-datetime-edit {
+    position: absolute;
+    z-index: 1;
+    user-select: none;
+  }
+}
+
 @keyframes loading-animation {
   from {
     background-position-x: 0%;
@@ -215,7 +235,8 @@ summary {
 @media (hover: hover) and (pointer: fine) {
   a,
   button,
-  [role="progressbar"] {
+  [role="progressbar"],
+  [data-pointer="true"] {
     cursor: pointer;
   }
 }
