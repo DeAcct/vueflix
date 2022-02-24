@@ -83,7 +83,6 @@
           v-for="(part, index) in animeInfo.parts"
           :episodesData="part"
           :key="index"
-          :id="part.part"
           @login-require="openLoginModal"
         />
       </div>
@@ -304,6 +303,7 @@ export default {
   .anime-item-head {
     width: 100%;
     min-height: 60vh;
+    margin: -1px;
   }
   .optional-show {
     opacity: 0;
@@ -395,6 +395,7 @@ export default {
 @media screen and (min-width: 768px) {
   .anime {
     .anime-item-head {
+      min-height: unset;
       margin-top: 6.1rem;
     }
   }
@@ -404,7 +405,8 @@ export default {
     .anime-item-head {
       border-radius: 0;
       padding-top: 8rem;
-      height: 40rem;
+      height: 40vh;
+      margin-bottom: 0;
     }
     main {
       padding: 0 calc((100% - 118rem) / 2);

@@ -51,7 +51,7 @@ export default {
     width: 4.8rem;
     height: 4.8rem;
     margin-right: 1rem;
-    border: 1px solid transparent;
+    border: 1.8px solid transparent;
     &--male {
       border-color: var(--gender-male);
     }

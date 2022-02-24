@@ -47,9 +47,6 @@ export default {
     episodesData: {
       type: Object,
     },
-    id: {
-      type: String,
-    },
   },
   data() {
     return {
@@ -88,7 +85,7 @@ export default {
       padding: 1.5rem 1rem;
       background-color: var(--episodes-part-info);
       backdrop-filter: blur(10px);
-      border-radius: 0.3rem;
+      border-radius: 0.6rem;
     }
     .open-icon {
       display: flex;
@@ -132,11 +129,9 @@ export default {
 @media screen and (min-width: 1080px) {
   .episodes {
     .part-info {
+      width: 100%;
       button {
-        padding: {
-          top: 2rem;
-          bottom: 2rem;
-        }
+        padding: 2rem var(--inner-padding);
       }
 
       .open-icon {

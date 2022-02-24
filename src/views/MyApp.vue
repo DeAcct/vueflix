@@ -77,8 +77,10 @@
             <template v-slot:text>{{ item.text }}</template>
           </arrow-btn-widget>
         </div>
+        <router-link to="#none" class="leave-account-btn" v-if="user">
+          회원 탈퇴
+        </router-link>
       </div>
-      <router-link to="#none">회원 탈퇴</router-link>
     </main>
     <router-view />
   </div>
@@ -153,10 +155,6 @@ export default {
           {
             text: "앱 테마",
             to: "/my/app-theme",
-          },
-          {
-            text: "이미지 캐시 초기화",
-            to: "#none",
           },
           {
             text: "고객센터",
@@ -242,21 +240,11 @@ export default {
   &:not(:last-child) {
     margin-bottom: 1rem;
   }
-  .theme-toggle {
-    background-color: var(--top-item);
-    width: 100%;
-    display: flex;
-    padding: 1.8rem var(--inner-padding);
-  }
-  .crumbs {
-    display: flex;
-    align-items: center;
-    font-size: 1.2rem;
-    margin-right: 1rem;
-    background-color: var(--theme-300);
-    padding: 0.3rem 0.5rem;
-    border-radius: 9999px;
-  }
+}
+.leave-account-btn {
+  color: var(--bg-800);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--bg-800);
 }
 
 @media screen and (min-width: 1024px) {

@@ -25,17 +25,6 @@
         v-if="!notPC"
       >
         <img :src="poster" :alt="`${title} 포스터`" />
-        <anime-action-btn
-          @click="wannaSeeToggle"
-          :isEnabled="wannaSeeBool"
-          type="wanna-see"
-          v-if="!isMobile"
-        >
-          <template v-slot:icon>
-            <icon-wanna-see />
-          </template>
-          <template v-slot:label>보고싶다</template>
-        </anime-action-btn>
       </div>
       <div
         :class="[
@@ -57,50 +46,68 @@
           <h2 class="title">
             {{ title }}
           </h2>
+          <div class="row-bottom">
+            <p
+              :class="[
+                'star-rating-number',
+                { 'star-rating-number--loaded': type && rating && title },
+              ]"
+            >
+              <i class="icon">
+                <icon-base>
+                  <icon-star-rating />
+                </icon-base>
+              </i>
+              {{ starRatingAvg ? starRatingAvg.toFixed(1) : "" }}점
+            </p>
+            <p class="sub-info">
+              {{ type }}
+              &middot;
+              {{ rating }}
+              &middot;
+              {{ isEnd ? "완결" : "방영중" }}
+            </p>
+          </div>
         </div>
-        <div class="row-bottom">
-          <p
-            :class="[
-              'star-rating-number',
-              { 'star-rating-number--loaded': type && rating && title },
-            ]"
-          >
-            <i class="icon">
-              <icon-base>
-                <icon-star-rating />
-              </icon-base>
-            </i>
-            {{ starRatingAvg ? starRatingAvg.toFixed(1) : "" }}점
-          </p>
-          <p class="sub-info">
-            {{ type }}
-            &middot;
-            {{ rating }}
-            &middot;
-            {{ isEnd ? "완결" : "방영중" }}
-          </p>
+        <div
+          :class="['btn-area', { 'btn-area--loaded': type && rating && title }]"
+        >
+          <div class="col-left">
+            <router-link class="btn-area__continue" :to="continueLink">
+              <i class="icon">
+                <icon-base>
+                  <icon-play />
+                </icon-base>
+              </i>
+              <span class="text">{{ continueString }}</span>
+            </router-link>
+          </div>
+          <div class="col-right">
+            <button
+              @click="wannaSeeToggle"
+              :class="['bg-less btn-area__wanna-see', { added: wannaSeeBool }]"
+            >
+              <i class="icon">
+                <icon-base class="icon--added">
+                  <icon-wanna-see-added />
+                </icon-base>
+                <icon-base class="icon--not-added">
+                  <icon-wanna-see-add />
+                </icon-base>
+              </i>
+              <span class="text">보고싶다</span>
+            </button>
+            <button class="bg-less">
+              <i class="icon">
+                <icon-base>
+                  <icon-purchase />
+                </icon-base>
+              </i>
+              <span class="text">소장하기</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="btn-area inner">
-      <router-link
-        :class="[
-          'btn-area__continue',
-          'loading-target',
-          {
-            'btn-area__continue--loaded':
-              type && rating && title && genres && starRatingAvg,
-          },
-        ]"
-        :to="continueLink"
-      >
-        <i class="icon">
-          <icon-base>
-            <icon-play />
-          </icon-base>
-        </i>
-        <span class="text">{{ continueString }}</span>
-      </router-link>
     </div>
   </component>
 </template>
@@ -112,11 +119,13 @@ import VueflixBtn from "./VueflixBtn.vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconOverflow from "./icons/IconOverflow.vue";
-import AnimeActionBtn from "./AnimeActionBtn.vue";
 import IconWannaSee from "./icons/IconWannaSee.vue";
 import IconPlay from "./icons/IconPlay.vue";
 import { getFirestore, setDoc, doc, getDoc } from "firebase/firestore";
 import IconStarRating from "./icons/IconStarRating.vue";
+import IconWannaSeeAdd from "./icons/IconWannaSeeAdd.vue";
+import IconWannaSeeAdded from "./icons/IconWannaSeeAdded.vue";
+import IconPurchase from "./icons/IconPurchase.vue";
 
 export default {
   name: "AnimeItemHead",
@@ -125,10 +134,12 @@ export default {
     IconBase,
     IconArrowPrev,
     IconOverflow,
-    AnimeActionBtn,
     IconWannaSee,
     IconPlay,
     IconStarRating,
+    IconWannaSeeAdd,
+    IconWannaSeeAdded,
+    IconPurchase,
   },
   props: {
     isScroll: {
@@ -222,7 +233,6 @@ export default {
               sec: sec,
             },
           });
-          console.log(this.user);
         } else {
           this.$store.commit("auth/deleteWannaSee", aniTitle);
         }
@@ -253,9 +263,10 @@ export default {
       user: (state) => state.auth.user,
     }),
     posterBg() {
-      const bg = `
-        background-image: linear-gradient(transparent,var(--anime-bg)), url(${this.poster});
-      `;
+      const bg = `background-image: linear-gradient(transparent,var(--anime-bg) ${
+        !this.isMobile ? "90%" : "80%"
+      }), url(${this.poster});`;
+
       return bg;
     },
     continueLink() {
@@ -311,7 +322,6 @@ export default {
     justify-content: space-between;
     align-items: center;
     transition: 150ms ease-out;
-    overflow: hidden;
     background: linear-gradient(var(--anime-bg), transparent);
     .col-left {
       display: flex;
@@ -341,21 +351,30 @@ export default {
       height: 2.4rem;
     }
 
-    &--scrolled .col-left .scroll-title {
-      opacity: 1;
-      transform: translateX(0);
+    &--scrolled {
+      .col-left {
+        .scroll-title {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
     }
   }
   .anime-info {
+    display: flex;
+    margin-bottom: 1rem;
     .poster {
-      min-width: 9rem;
-      height: calc(9rem / 3 * 4);
+      width: 20rem;
+      height: calc(20rem / 5 * 7);
+      margin-right: 2rem;
+      box-shadow: var(--box-shadow);
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         font-size: 0.1rem;
         opacity: 0;
+        border-radius: 0.3rem;
         transition: opacity 150ms ease-out;
       }
       &--loaded {
@@ -366,13 +385,13 @@ export default {
       }
     }
     .col-right {
-      width: 50vw;
+      width: 100%;
+      height: 15rem;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
       color: transparent;
       &--loaded {
-        width: auto;
+        width: 100%;
         height: auto;
         color: var(--text-800);
         background: transparent;
@@ -380,8 +399,8 @@ export default {
       }
       .row-top {
         color: inherit;
-        height: 6rem;
         transition: 150ms ease-out;
+        margin-bottom: 1.5rem;
       }
 
       .row-bottom {
@@ -444,6 +463,49 @@ export default {
     }
   }
   .btn-area {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    opacity: 0;
+    visibility: hidden;
+    transition: 150ms ease-out;
+
+    &--loaded {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .col-right {
+      width: auto;
+      height: auto;
+      display: flex;
+    }
+    .bg-less {
+      height: 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      .icon {
+        position: relative;
+        width: 2.4rem;
+        height: 2.4rem;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        svg {
+          fill: transparent;
+          stroke: var(--text-800);
+          stroke-width: 2px;
+          stroke-linecap: round;
+        }
+      }
+      .text {
+        font-size: 1.1rem;
+      }
+    }
+
     &__continue {
       display: flex;
       align-items: center;
@@ -452,14 +514,12 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 4rem;
-        height: 4rem;
-        background-color: var(--theme-500);
+        width: 4.8rem;
+        height: 4.8rem;
+        background-color: var(--text-800);
+        color: var(--anime-bg);
         border-radius: 50%;
-        margin-right: 0.7rem;
-        opacity: 0;
-        visibility: hidden;
-        transition: 150ms ease-out;
+        margin-right: 1rem;
       }
       svg {
         width: 2rem;
@@ -467,91 +527,79 @@ export default {
       }
 
       .text {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
         font-weight: 700;
-        opacity: 0;
-        visibility: hidden;
-        transition: 150ms ease-out;
       }
-      &--loaded {
-        animation: none;
-        background: transparent;
-        .text,
-        .icon {
-          opacity: 1;
-          visibility: visible;
+    }
+
+    &__wanna-see {
+      .icon {
+        svg {
+          position: absolute;
+        }
+        &--added {
+          transition-delay: 0ms;
+          stroke-dasharray: 25;
+          stroke-dashoffset: 25;
+        }
+        &--not-added {
+          transition-delay: 150ms;
         }
       }
+      &.added .icon {
+        &--added {
+          transition-delay: 150ms;
+          stroke-dashoffset: 0;
+          stroke-linejoin: round;
+        }
+        &--not-added {
+          transition-delay: 0ms;
+          transform: translateY(2.5rem) scale(0);
+          opacity: 0;
+        }
+      }
+    }
+    button:not(:last-child) {
+      margin-right: 1rem;
     }
   }
 }
 
 @media screen and (min-width: 1080px) {
   .anime-item-head {
-    background-color: var(--anime-item-head-500);
-    background-image: none !important;
-    display: flex;
-    justify-content: space-between;
     padding: 0 calc((100% - 118rem) / 2);
     .anime-info {
       padding: 0;
-      margin-top: 0;
-      height: fit-content;
-      .poster {
-        position: relative;
-        width: 27rem;
-        height: calc(27rem / 3 * 4);
-        overflow: hidden;
-        border-radius: 0.6rem;
-        box-shadow: 0 0 3rem var(--box-shadow);
-        .anime-interact-btn {
-          position: absolute;
-          bottom: 0;
-          background-color: var(--anime-item-head-500);
-          width: 100%;
-          padding: 1.2rem 0 1.4rem;
-        }
-      }
+      margin-bottom: 2.5rem;
       .col-right {
-        flex: 1;
+        height: auto;
+        display: flex;
+        flex-direction: column;
         justify-content: space-between;
         align-items: flex-start;
-        margin-left: 2.5rem;
-        .division-pipe {
-          font-size: 1.5rem;
-          font-weight: 500;
-        }
-        .title {
-          font-size: 3rem;
-          font-weight: 900;
-          text-align: left;
-          margin-top: 1.5rem;
-        }
         .row-top {
-          height: auto;
-          align-items: flex-start;
-        }
-        .row-bottom {
-          width: 40rem;
-          margin-bottom: 8rem;
-          align-items: flex-start;
-        }
-        .genres .genre {
-          font-size: 1.6rem;
-          font-weight: 700;
-        }
-        .star-rating-number {
-          font-size: 1.6rem;
-          font-weight: 500;
-          margin-top: 1.5rem;
+          .genres .genre {
+            font-size: 1.5rem;
+          }
+          .title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+          }
+          .star-rating-number {
+            font-size: 1.8rem;
+            .icon {
+              width: 2.4rem;
+              height: 2.4rem;
+            }
+          }
+          .sub-info {
+            font-size: 1.5rem;
+          }
         }
       }
     }
     .btn-area {
-      width: 20rem;
-      align-self: flex-end;
       padding: 0;
-      margin-bottom: 3rem;
     }
   }
 }

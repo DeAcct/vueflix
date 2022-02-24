@@ -2,9 +2,7 @@
   <router-view v-slot="{ Component }">
     <vueflix-header v-if="headerVisible" />
     <bottom-tab-menu v-if="bottomTabMenuVisible" />
-    <transition name="fade">
-      <component :is="Component" :key="$route.path"></component>
-    </transition>
+    <component :is="Component" :key="$route.path"></component>
   </router-view>
 </template>
 
@@ -117,35 +115,4 @@ export default {
 
 <style lang="scss">
 @import "./common.scss";
-.fade-enter-active,
-.fade-leave-active,
-.anime-to-enter-active,
-.anime-to-leave-active,
-.anime-from-enter-active,
-.anime-from-leave-active {
-  transition: all 150ms ease-out;
-  transform-origin: top;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.toast {
-  position: fixed;
-  bottom: 7rem;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.toast-show-enter-active .toast-show-leave-active {
-  transition: all 150ms ease-out cubic-bezier(0.5, 0, 0.5, 1.3);
-}
-
-.toast-show-enter-from,
-.toast-show-leave-to {
-  transform: translateY(5rem);
-  opacity: 0;
-}
 </style>

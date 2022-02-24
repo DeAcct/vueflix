@@ -1,11 +1,18 @@
 <template>
   <li class="item">
     <router-link :to="`/anime/${aniTitle}`">
-      <span class="thumbnail">
+      <span
+        :class="[
+          'thumbnail',
+          'loading-target',
+          { 'thumbnail--loaded': isLoaded },
+        ]"
+      >
         <img
           :src="thumbnailSrc"
           :alt="`${aniTitle} 썸네일`"
-          class="thumbnail__img"
+          :class="['thumbnail__img', { 'thumbnail__img--loaded': isLoaded }]"
+          @load="loadTrigger"
         />
         <span class="thumbnail__progress-bar" v-if="isRecent">
           <span class="progress" :style="`width:${progress}`"></span>
@@ -51,6 +58,7 @@ export default {
   data() {
     return {
       thumbnailSrc: this.img,
+      isLoaded: false,
     };
   },
   async mounted() {
@@ -62,6 +70,11 @@ export default {
     this.thumbnailSrc = this.developFirebase
       ? await getDownloadURL(thumbnailRef)
       : this.episodeThumbnail;
+  },
+  methods: {
+    loadTrigger() {
+      this.isLoaded = true;
+    },
   },
 };
 </script>
@@ -91,6 +104,13 @@ export default {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      opacity: 0;
+      visibility: hidden;
+      transition: 150ms ease-out;
+      &--loaded {
+        opacity: 1;
+        visibility: visible;
+      }
     }
     &__progress-bar {
       position: absolute;

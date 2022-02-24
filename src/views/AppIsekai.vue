@@ -1,5 +1,5 @@
 <template>
-  <main class="not-found">
+  <main class="app-isekai">
     <h2>404 Not Found</h2>
     <i class="icon">
       <img
@@ -28,7 +28,7 @@
 <script>
 import VueflixBtn from "../components/VueflixBtn.vue";
 export default {
-  name: "NotFound",
+  name: "AppIsekai",
   components: {
     VueflixBtn,
   },
@@ -36,9 +36,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.not-found {
-  padding-top: 6rem;
-  height: calc(100vh - 5.6rem);
+.app-isekai {
+  background-color: var(--bg-100);
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -85,7 +85,7 @@ export default {
   }
 }
 @media screen and (min-width: 768px) {
-  .not-found {
+  .app-isekai {
     h2 {
       font-size: 3.5rem;
     }

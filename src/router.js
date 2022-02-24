@@ -139,7 +139,7 @@ const routes = [
   {
     path: "/isekai-404",
     name: "isekai-404",
-    component: () => import("@/views/NotFound"),
+    component: () => import("@/views/AppIsekai"),
     meta: {
       appBar: true,
       bottomTabMenu: false,

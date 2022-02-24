@@ -76,11 +76,15 @@
     </div>
     <div class="widget birthday inner">
       <h2 class="heading">생일</h2>
-      <input
-        type="date"
-        name="birthday"
+      <datepicker
         class="birthday__selection"
-        v-model="birthday"
+        inputClassName="birthday__selection_input"
+        :modelValue="`${birthday.year}/${birthday.month}/${birthday.date}`"
+        @update:modelValue="setBirthday"
+        :enableTimePicker="false"
+        format="yyyy/MM/dd"
+        placeholder="생일을 선택하세요"
+        auto-apply
       />
     </div>
     <vueflix-btn
@@ -89,7 +93,7 @@
       :icon="false"
       :disabled="!isSubmitAble"
     >
-      <template v-slot:text>변경</template>
+      <template v-slot:text>저장</template>
     </vueflix-btn>
   </form>
 </template>
@@ -97,6 +101,9 @@
 <script>
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { getStorage, getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
+import Datepicker from "vue3-date-time-picker";
+import "vue3-date-time-picker/src/Vue3DatePicker/style/main.scss";
 
 import { mapState } from "vuex";
 import ProfileImg from "../components/ProfileImg.vue";
@@ -116,10 +123,18 @@ export default {
     IconMale,
     IconFemale,
     VueflixBtn,
+    Datepicker,
   },
   unmounted() {
     if (this.profilePreview) {
-      URL.revokeObjectURL(this.profilePreview);
+      URL.revokeObjectURL(this.profileImg);
+    }
+  },
+  mounted() {
+    if (this.user) {
+      this.nickname = this.user.nickname;
+      this.gender = this.user.gender;
+      this.birthday = this.user.birthday;
     }
   },
   data() {
@@ -135,10 +150,16 @@ export default {
     fileChange(e) {
       const files = e.currentTarget.files;
       if (files) {
-        console.log(files[0]);
         this.profileImg = files[0];
         this.profilePreview = URL.createObjectURL(this.profileImg);
       }
+    },
+    setBirthday(e) {
+      this.birthday = {
+        year: e.getFullYear(),
+        month: e.getMonth() + 1,
+        date: e.getDate(),
+      };
     },
     async syncToFirebase() {
       const db = getFirestore();
@@ -150,9 +171,9 @@ export default {
       const profileURL = await getDownloadURL(storageRef);
 
       const submitObj = {
-        nickname: this.nickname ? this.nickname : this.user.nickname,
-        gender: this.gender ? this.gender : this.user.gender,
-        birthday: this.birthday ? this.birthday : this.user.birthday,
+        nickname: this.nickname,
+        gender: this.gender,
+        birthday: this.birthday,
         profileImgSrc: this.profileImg ? profileURL : this.user.profileImgSrc,
       };
 
@@ -169,6 +190,13 @@ export default {
       return (
         !!this.nickname || !!this.gender || !!this.birthday || !!this.profileImg
       );
+    },
+  },
+  watch: {
+    user() {
+      this.nickname = this.user.nickname;
+      this.gender = this.user.gender;
+      this.birthday = this.user.birthday;
     },
   },
 };
@@ -295,8 +323,11 @@ export default {
       width: 100%;
       height: 3rem;
       background-color: transparent;
-      border-bottom: 1px solid var(--bg-400);
-      color: #fff;
+      font-size: 1.3rem;
+      --dp-text-color: var(--text-800);
+      --dp-background-color: transparent;
+      --dp-border-color: var(--bg-400);
+      --dp-border-color-hover: var(--theme-500);
     }
   }
 
