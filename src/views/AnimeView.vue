@@ -1,19 +1,16 @@
 <template>
   <div class="anime" :style="`min-height: ${deviceHeight + 1}px`" v-if="!isSub">
     <anime-item-head
-      :isScroll="isScroll"
+      :is-scroll="isScroll"
       :title="animeInfo.name"
       :poster="animeInfo.poster"
       :type="animeInfo.type"
       :rating="animeInfo.rating"
-      :isEnd="animeInfo.isEnd"
+      :is-end="animeInfo.isEnd"
       :genres="animeInfo.genre"
-      :starRatingAvg="animeInfo.starRating"
-      @starModalOpened="starModalOpen"
-      :isUserRated="myRating !== 0"
-      @overflowMenuOpened="overflowMenuOpen"
-      :myRating="myRating"
-      @starChanged="starChanged"
+      :star-rating-avg="animeInfo.starRating"
+      :summary="animeInfo.summary"
+      @overflow-menu-opened="overflowMenuOpen"
       @require-login="openLoginModal"
       class="widget"
     />
@@ -103,14 +100,21 @@
       <template v-slot:yes-string>로그인</template>
     </vueflix-modal>
     <action-sheet
-      :class="[{ show: isOverflowMenuOpened }, 'optional-show']"
       title="더보기"
+      @sheet-close="overflowMenuClose"
       :actions="actions"
-      :close="actionSheetClose"
       v-if="isOverflowMenuOpened"
-    />
+    >
+      <template v-slot:actions>
+        <li class="action-item" v-for="action in actions" :key="action.text">
+          <button @click="action.method">
+            {{ action.text }}
+          </button>
+        </li>
+      </template>
+    </action-sheet>
   </div>
-  <router-view v-else :myRating="myRating" />
+  <router-view v-else />
 </template>
 <script>
 import {
@@ -159,14 +163,11 @@ export default {
     return {
       deviceHeight: window.innerHeight,
       animeInfo: {},
-      animeNumber: "",
-      myRating: 0,
-      isStarRatingOpened: false,
       isOverflowMenuOpened: false,
       actions: [
         {
-          text: "공유하기",
-          method: this.openSystemShare,
+          text: "시청기록 초기화",
+          method: this.removeWatchHistory,
         },
         {
           text: "관심없음",
@@ -218,60 +219,18 @@ export default {
         this.$router.replace("/notfound");
       }
     },
-    starModalOpen() {
-      this.isStarRatingOpened = true;
-    },
-    starModalClose(get) {
-      this.myRating = get;
-      this.isStarRatingOpened = false;
-    },
-    starModalCancel() {
-      this.isStarRatingOpened = false;
-    },
     overflowMenuOpen() {
       this.isOverflowMenuOpened = true;
     },
-    actionSheetClose() {
-      this.isOverflowMenuOpened = false;
+    overflowMenuClose() {
+      this.isLoginModalOpened = false;
+      console.log(this.isLoginModalOpened);
     },
-    delay(ms) {
-      return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-      });
+    async removeWatchHistory() {
+      console.log("시청기록 초기화");
     },
-    async openSystemShare() {
-      try {
-        await navigator.share({
-          title: document.title,
-          text: `뷰플릭스에서 ${this.animeInfo.name}을 다시 즐겨보세요!`,
-          url: `https://vueflix.hyse.kr/anime/${this.animeInfo.name}`,
-        });
-      } catch {
-        this.$store.commit("toast/changeToastMeta", {
-          isShown: true,
-          text: "공유하기 토스트를 불러오는데 실패했어요",
-        });
-        await this.delay(3000);
-        this.$store.commit("toast/changeToastMeta", {
-          isShown: false,
-          text: "",
-        });
-      }
-      this.actionSheetClose();
-    },
-    async notInterested() {
-      this.$store.commit("toast/changeToastMeta", {
-        isShown: true,
-        text: "취향에 반영했어요",
-      });
-      await this.delay(3000);
-      this.$store.commit("toast/changeToastMeta", {
-        isShown: false,
-        text: "",
-      });
-    },
-    starChanged(e) {
-      this.myRating = e;
+    notInterested() {
+      console.log("취향에 반영했어요");
     },
     openLoginModal(e) {
       this.loginModalText = e;
@@ -388,6 +347,16 @@ export default {
       margin: 0 0.5rem;
       font-size: 1.2rem;
       font-weight: 300;
+    }
+  }
+}
+
+.action-sheet {
+  .action-item {
+    button {
+      padding: 1.6rem 0 1.7rem;
+      font-size: 1.3rem;
+      font-weight: 500;
     }
   }
 }

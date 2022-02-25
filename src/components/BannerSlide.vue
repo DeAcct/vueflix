@@ -154,6 +154,7 @@ export default {
 <style lang="scss">
 .slide {
   min-height: 50vh;
+  border-radius: 0;
   background-image: linear-gradient(
     90deg,
     hsl(210, 29%, 10%),

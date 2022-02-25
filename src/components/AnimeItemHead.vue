@@ -13,11 +13,18 @@
         </a>
         <strong class="scroll-title">{{ title }}</strong>
       </div>
-      <button class="overflow-btn" @click="openOverflowMenu">
-        <icon-base icon-name="더보기 메뉴">
-          <icon-overflow />
-        </icon-base>
-      </button>
+      <div class="col-right">
+        <button class="share-btn" @click="openSystemShare">
+          <icon-base icon-name="공유">
+            <icon-share />
+          </icon-base>
+        </button>
+        <button class="overflow-btn" @click="openOverflowMenu">
+          <icon-base icon-name="더보기 메뉴">
+            <icon-overflow />
+          </icon-base>
+        </button>
+      </div>
     </div>
     <div class="anime-info inner">
       <div
@@ -97,10 +104,16 @@
               </i>
               <span class="text">보고싶다</span>
             </button>
-            <button class="bg-less">
+            <button
+              class="bg-less btn-area__purchase"
+              @mousedown="activeTrigger"
+              @mouseup="activeTrigger"
+              @touchstart="activeTrigger"
+              @touchend="activeTrigger"
+            >
               <i class="icon">
                 <icon-base>
-                  <icon-purchase />
+                  <icon-purchase :is-active="isPurchaseActive" />
                 </icon-base>
               </i>
               <span class="text">소장하기</span>
@@ -126,6 +139,7 @@ import IconStarRating from "./icons/IconStarRating.vue";
 import IconWannaSeeAdd from "./icons/IconWannaSeeAdd.vue";
 import IconWannaSeeAdded from "./icons/IconWannaSeeAdded.vue";
 import IconPurchase from "./icons/IconPurchase.vue";
+import IconShare from "./icons/IconShare.vue";
 
 export default {
   name: "AnimeItemHead",
@@ -140,6 +154,7 @@ export default {
     IconWannaSeeAdd,
     IconWannaSeeAdded,
     IconPurchase,
+    IconShare,
   },
   props: {
     isScroll: {
@@ -177,6 +192,10 @@ export default {
     myRating: {
       type: Number,
     },
+
+    summary: {
+      type: String,
+    },
   },
   async mounted() {
     this.component = this.notPC ? "header" : "div";
@@ -204,6 +223,7 @@ export default {
       isMobile: window.innerWidth <= 768,
       notPC: window.innerWidth <= 1080,
       component: "div",
+      isPurchaseActive: false,
     };
   },
   methods: {
@@ -248,14 +268,19 @@ export default {
       this.isMobile = window.innerWidth <= 768;
       this.notPC = window.innerWidth <= 1080;
     },
-    starModalOpen() {
-      this.$emit("starModalOpened");
+    async openSystemShare() {
+      const shareData = {
+        title: `뷰플릭스에서 ${this.$route.params.title} 다시보기`,
+        text: this.summary,
+        url: window.location.href,
+      };
+      await navigator.share(shareData);
     },
     openOverflowMenu() {
       this.$emit("overflowMenuOpened");
     },
-    starChanged(e) {
-      this.$emit("starChanged", e);
+    activeTrigger() {
+      this.isPurchaseActive = !this.isPurchaseActive;
     },
   },
   computed: {
@@ -336,16 +361,24 @@ export default {
         transform: translateX(2rem);
         transition: transform 150ms ease-out, opacity 150ms ease-out;
         //말줄임표 처리
-        width: 70vw;
+        width: 60vw;
         line-height: 2.4rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
     }
+    .col-right {
+      display: flex;
+      align-items: center;
+      button:not(:first-child) {
+        margin-left: 1rem;
+      }
+    }
 
     .back,
-    .overflow-btn {
+    .overflow-btn,
+    .share-btn {
       color: var(--text-800);
       width: 2.4rem;
       height: 2.4rem;
@@ -559,6 +592,7 @@ export default {
         }
       }
     }
+
     button:not(:last-child) {
       margin-right: 1rem;
     }
@@ -572,6 +606,8 @@ export default {
       padding: 0;
       margin-bottom: 2.5rem;
       .col-right {
+        flex: 1;
+        width: 100%;
         height: auto;
         display: flex;
         flex-direction: column;
@@ -596,10 +632,21 @@ export default {
             font-size: 1.5rem;
           }
         }
+        &--loaded {
+          width: auto;
+        }
       }
     }
     .btn-area {
       padding: 0;
+      &__continue .text {
+        font-size: 1.5rem;
+      }
+      .col-right {
+        flex: none;
+        width: auto;
+        flex-direction: row;
+      }
     }
   }
 }

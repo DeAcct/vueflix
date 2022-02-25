@@ -9,9 +9,6 @@
     </i>
     <p>
       <span class="line-break">여긴 아무것도 없어요ㅠㅠ</span>
-      <span class="line-break">
-        하지만 용사가 되어 라프텔을 구할 필요는 없으니
-      </span>
       <span class="line-break">대신 이 캐릭터가 나오는 애니는 어떠세요?</span>
     </p>
     <div class="btn-area">
