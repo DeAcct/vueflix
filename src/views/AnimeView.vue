@@ -99,20 +99,6 @@
       <template v-slot:no-string>나중에</template>
       <template v-slot:yes-string>로그인</template>
     </vueflix-modal>
-    <action-sheet
-      title="더보기"
-      @sheet-close="overflowMenuClose"
-      :actions="actions"
-      v-if="isOverflowMenuOpened"
-    >
-      <template v-slot:actions>
-        <li class="action-item" v-for="action in actions" :key="action.text">
-          <button @click="action.method">
-            {{ action.text }}
-          </button>
-        </li>
-      </template>
-    </action-sheet>
   </div>
   <router-view v-else />
 </template>
@@ -129,7 +115,6 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import AnimeItemHead from "../components/AnimeItemHead.vue";
 import EpisodesWidget from "../components/EpisodesWidget";
 import VueflixModal from "../components/VueflixModal.vue";
-import ActionSheet from "../components/ActionSheet.vue";
 import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconReview from "../components/icons/IconReview.vue";
 import { mapState } from "vuex";
@@ -139,7 +124,6 @@ export default {
     AnimeItemHead,
     EpisodesWidget,
     VueflixModal,
-    ActionSheet,
     ArrowBtnWidget,
     IconReview,
   },

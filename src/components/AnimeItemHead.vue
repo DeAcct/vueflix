@@ -19,11 +19,6 @@
             <icon-share />
           </icon-base>
         </button>
-        <button class="overflow-btn" @click="openOverflowMenu">
-          <icon-base icon-name="더보기 메뉴">
-            <icon-overflow />
-          </icon-base>
-        </button>
       </div>
     </div>
     <div class="anime-info inner">
@@ -131,7 +126,6 @@ import { mapState } from "vuex";
 import VueflixBtn from "./VueflixBtn.vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
-import IconOverflow from "./icons/IconOverflow.vue";
 import IconWannaSee from "./icons/IconWannaSee.vue";
 import IconPlay from "./icons/IconPlay.vue";
 import { getFirestore, setDoc, doc, getDoc } from "firebase/firestore";
@@ -147,7 +141,6 @@ export default {
     VueflixBtn,
     IconBase,
     IconArrowPrev,
-    IconOverflow,
     IconWannaSee,
     IconPlay,
     IconStarRating,
