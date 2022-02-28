@@ -6,7 +6,7 @@
       <p class="description">
         <slot name="description"></slot>
       </p>
-      <div class="cta" v-if="type !== 'star'">
+      <div class="cta">
         <vueflix-btn
           @click="noFunc"
           v-if="type === 'yes-no'"
@@ -36,9 +36,6 @@ export default {
   },
   name: "VueflixModal",
   props: {
-    title: {
-      type: String,
-    },
     type: {
       type: String,
     },
@@ -52,11 +49,11 @@ export default {
       type: Number,
     },
   },
-
-  methods: {
-    starChanged(e) {
-      this.$emit("starChanged", e);
-    },
+  mounted() {
+    document.documentElement.style.overflow = "hidden";
+  },
+  unmounted() {
+    document.documentElement.style.overflow = "visible";
   },
 };
 </script>
@@ -72,7 +69,7 @@ export default {
     bottom: 0;
     width: 100%;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.7);
   }
   .action-area {
     display: flex;
@@ -81,7 +78,7 @@ export default {
     bottom: 0;
     width: 100%;
     padding: 3rem 4rem;
-    background-color: var(--text-100);
+    background-color: var(--bg-200);
     border-radius: 0.6rem 0.6rem 0 0;
     .title {
       font-size: 2.5em;
@@ -98,11 +95,11 @@ export default {
       gap: 0.5em;
       .btn {
         &--later {
-          background-color: var(--top-item);
+          background-color: var(--bg-300);
         }
         &--install {
           background-color: var(--theme-500);
-          color: var(--top-item);
+          color: #fff;
         }
       }
     }

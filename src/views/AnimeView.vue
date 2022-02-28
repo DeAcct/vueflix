@@ -10,8 +10,9 @@
       :genres="animeInfo.genre"
       :star-rating-avg="animeInfo.starRating"
       :summary="animeInfo.summary"
-      @overflow-menu-opened="overflowMenuOpen"
+      @overflow-menu-open="actionSheetOpen"
       @require-login="openLoginModal"
+      @purchase="openPurchaseModal"
       class="widget"
     />
     <main>
@@ -78,9 +79,10 @@
         <h3 class="blind">에피소드</h3>
         <episodes-widget
           v-for="(part, index) in animeInfo.parts"
-          :episodesData="part"
+          :episodes-data="part"
           :key="index"
           @login-require="openLoginModal"
+          :part-top-padding="true"
         />
       </div>
     </main>
@@ -99,6 +101,21 @@
       <template v-slot:no-string>나중에</template>
       <template v-slot:yes-string>로그인</template>
     </vueflix-modal>
+    <purchase-modal
+      :anime-info="animeInfo"
+      v-if="isPurchaseModalOpen"
+      @close-purchase-modal="closePurchaseModal"
+    >
+      <template v-slot:title>구매 및 소장</template>
+      <template v-slot:description>
+        소장하면 판권이 만료되더라도 두고두고 볼 수 있어요
+      </template>
+    </purchase-modal>
+    <action-sheet
+      v-if="isActionSheetOpened"
+      @overflow-menu-close="actionSheetClose"
+      :action-origin="actions"
+    />
   </div>
   <router-view v-else />
 </template>
@@ -118,6 +135,8 @@ import VueflixModal from "../components/VueflixModal.vue";
 import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconReview from "../components/icons/IconReview.vue";
 import { mapState } from "vuex";
+import ActionSheet from "../components/ActionSheet.vue";
+import PurchaseModal from "../components/PurchaseModal.vue";
 
 export default {
   components: {
@@ -126,6 +145,8 @@ export default {
     VueflixModal,
     ArrowBtnWidget,
     IconReview,
+    ActionSheet,
+    PurchaseModal,
   },
   name: "AnimeView",
   mounted() {
@@ -147,7 +168,7 @@ export default {
     return {
       deviceHeight: window.innerHeight,
       animeInfo: {},
-      isOverflowMenuOpened: false,
+      isActionSheetOpened: false,
       actions: [
         {
           text: "시청기록 초기화",
@@ -155,13 +176,14 @@ export default {
         },
         {
           text: "관심없음",
-          method: this.notInterested,
+          method: this.handleInterest,
         },
       ],
       isLoginModalOpened: false,
       loginModalText: "",
       isSub: this.$route.name !== "anime",
       isScroll: false,
+      isPurchaseModalOpen: false,
     };
   },
   methods: {
@@ -203,17 +225,16 @@ export default {
         this.$router.replace("/notfound");
       }
     },
-    overflowMenuOpen() {
-      this.isOverflowMenuOpened = true;
+    actionSheetOpen() {
+      this.isActionSheetOpened = true;
     },
-    overflowMenuClose() {
-      this.isLoginModalOpened = false;
-      console.log(this.isLoginModalOpened);
+    actionSheetClose() {
+      this.isActionSheetOpened = false;
     },
     async removeWatchHistory() {
       console.log("시청기록 초기화");
     },
-    notInterested() {
+    handleInterest() {
       console.log("취향에 반영했어요");
     },
     openLoginModal(e) {
@@ -225,6 +246,12 @@ export default {
     },
     closeLoginModal() {
       this.isLoginModalOpened = false;
+    },
+    openPurchaseModal() {
+      this.isPurchaseModalOpen = true;
+    },
+    closePurchaseModal() {
+      this.isPurchaseModalOpen = false;
     },
   },
   computed: {
@@ -336,13 +363,14 @@ export default {
 }
 
 .action-sheet {
-  .action-item {
-    button {
-      padding: 1.6rem 0 1.7rem;
-      font-size: 1.3rem;
-      font-weight: 500;
-    }
-  }
+  position: fixed;
+  top: 0;
+  z-index: 100;
+}
+.purchase-modal {
+  position: fixed;
+  top: 0;
+  z-index: 110;
 }
 
 @media screen and (min-width: 768px) {

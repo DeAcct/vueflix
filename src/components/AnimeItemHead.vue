@@ -19,6 +19,11 @@
             <icon-share />
           </icon-base>
         </button>
+        <button class="overflow-btn" @click="openOverflowMenu" v-if="user">
+          <icon-base>
+            <icon-overflow />
+          </icon-base>
+        </button>
       </div>
     </div>
     <div class="anime-info inner">
@@ -105,6 +110,7 @@
               @mouseup="activeTrigger"
               @touchstart="activeTrigger"
               @touchend="activeTrigger"
+              @click="purchase"
             >
               <i class="icon">
                 <icon-base>
@@ -121,6 +127,11 @@
 </template>
 
 <script>
+/*
+ * 오버플로 트리거 추가
+ *
+ * 소장하기 뷰 추가
+ */
 import { mapState } from "vuex";
 
 import VueflixBtn from "./VueflixBtn.vue";
@@ -134,6 +145,7 @@ import IconWannaSeeAdd from "./icons/IconWannaSeeAdd.vue";
 import IconWannaSeeAdded from "./icons/IconWannaSeeAdded.vue";
 import IconPurchase from "./icons/IconPurchase.vue";
 import IconShare from "./icons/IconShare.vue";
+import IconOverflow from "./icons/IconOverflow.vue";
 
 export default {
   name: "AnimeItemHead",
@@ -148,6 +160,7 @@ export default {
     IconWannaSeeAdded,
     IconPurchase,
     IconShare,
+    IconOverflow,
   },
   props: {
     isScroll: {
@@ -270,10 +283,20 @@ export default {
       await navigator.share(shareData);
     },
     openOverflowMenu() {
-      this.$emit("overflowMenuOpened");
+      this.$emit("overflow-menu-open");
     },
     activeTrigger() {
       this.isPurchaseActive = !this.isPurchaseActive;
+    },
+    purchase() {
+      if (this.user) {
+        this.$emit("purchase");
+      } else {
+        this.$emit(
+          "require-login",
+          "로그인하면 애니메이션을 구매 및 소장할 수 있어요"
+        );
+      }
     },
   },
   computed: {
@@ -529,6 +552,7 @@ export default {
       }
       .text {
         font-size: 1.1rem;
+        font-weight: 500;
       }
     }
 

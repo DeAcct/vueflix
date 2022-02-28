@@ -1,14 +1,21 @@
 <template>
   <li class="episode-card">
-    <router-link
-      :to="auth ? toValue : '#none'"
+    <component
+      :is="type"
+      :to="type === 'router-link' ? (auth ? toValue : '#none') : undefined"
       class="episode-item"
       replace
       @click="loginRequire"
     >
-      <figure>
-        <div class="col-left">
-          <div class="thumbnail">
+      <input
+        v-if="type === 'label'"
+        class="blind select-skell"
+        type="checkbox"
+        v-model="checked"
+      />
+      <span class="wrap">
+        <span class="col-left">
+          <span class="thumbnail">
             <img
               :src="thumbnailURL"
               :alt="`${title} 썸네일`"
@@ -16,35 +23,48 @@
               loading="lazy"
               class="thumbnail__img"
             />
-            <p v-if="isCurrent" class="thumbnail__now-playing">현재 재생 중</p>
-            <i class="icon" v-else>
+            <span v-if="isCurrent" class="thumbnail__now-playing">
+              현재 재생 중
+            </span>
+            <i class="icon" v-else-if="type !== 'label'">
               <icon-base>
                 <icon-play />
               </icon-base>
             </i>
-          </div>
-          <div class="episode-info">
-            <figcaption
-              class="title"
-              :style="`color:${excludeTheme ? textColor : undefined}`"
-            >
-              {{ index }}화 {{ title }}
-            </figcaption>
-            <p
-              class="date"
-              :style="`color:${excludeTheme ? textColor : undefined}`"
-            >
-              {{ date }}
-            </p>
-          </div>
-        </div>
-        <div class="col-right" v-if="download">
+          </span>
+          <span class="episode-info">
+            <span class="row-top">
+              <span
+                class="title"
+                :style="`color:${excludeTheme ? textColor : undefined}`"
+              >
+                {{ index }}화 {{ title }}
+              </span>
+              <span
+                class="date"
+                :style="`color:${excludeTheme ? textColor : undefined}`"
+                v-if="type !== 'label'"
+              >
+                {{ date }}
+              </span>
+            </span>
+            <span class="row-bottom">
+              <span class="price" v-if="type === 'label'">{{ price }}원</span>
+            </span>
+          </span>
+        </span>
+        <i class="col-right" v-if="download">
           <icon-base>
             <icon-download />
           </icon-base>
-        </div>
-      </figure>
-    </router-link>
+        </i>
+        <i class="checked-state" v-else>
+          <icon-base>
+            <icon-wanna-see-added />
+          </icon-base>
+        </i>
+      </span>
+    </component>
   </li>
 </template>
 
@@ -64,6 +84,7 @@ import IconDownload from "./icons/IconDownload.vue";
 import IconBase from "../components/IconBase.vue";
 import IconPlay from "./icons/IconPlay.vue";
 import { mapState } from "vuex";
+import IconWannaSeeAdded from "./icons/IconWannaSeeAdded.vue";
 export default {
   name: "EpisodeCard",
   props: {
@@ -97,15 +118,28 @@ export default {
     isLoggedin: {
       type: Boolean,
     },
+
+    type: {
+      type: String,
+      default: "router-link",
+    },
+    inputChecked: {
+      type: Boolean,
+    },
+    price: {
+      type: Number,
+    },
   },
   components: {
     IconDownload,
     IconBase,
     IconPlay,
+    IconWannaSeeAdded,
   },
   data() {
     return {
       thumbnailURL: "",
+      checked: false,
     };
   },
   mounted() {
@@ -142,20 +176,50 @@ export default {
       auth: (state) => state.auth.user,
     }),
   },
+  watch: {
+    checked() {
+      if (this.checked) {
+        this.$emit("added", {
+          title: this.title,
+          part: this.part,
+          index: this.index,
+          thumbnail: this.thumbnail,
+        });
+      } else {
+        this.$emit("deleted", { title: this.title, date: this.date });
+      }
+    },
+    inputChecked() {
+      this.checked = this.inputChecked;
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .episode-card {
+  display: flex;
+
   &:not(:last-child) {
     margin-bottom: 1.5rem;
   }
   .episode-item {
-    display: flex;
-    figure {
+    width: 100%;
+    .select-skell:checked + .wrap {
+      .checked-state {
+        background-color: var(--theme-500);
+        svg {
+          stroke-dashoffset: 0;
+        }
+      }
+    }
+    .wrap {
+      position: relative;
       width: 100%;
       display: flex;
+      align-items: center;
       justify-content: space-between;
+      border-radius: 0.3rem;
       .col-left {
         display: flex;
       }
@@ -209,22 +273,62 @@ export default {
         }
       }
       .episode-info {
-        max-width: 60%;
+        text-align: left;
+        max-width: 45vw;
         margin-left: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .row-top,
+        .row-bottom {
+          display: flex;
+          flex-direction: column;
+        }
         .title {
           font-size: 1.3rem;
           font-weight: 700;
           line-height: 1.3;
+          margin-bottom: 0.5rem;
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: flex;
+          flex-direction: column;
+          -webkit-line-clamp: 2;
         }
         .date {
-          margin-top: 0.5rem;
           font-size: 1.1rem;
           font-weight: 500;
+        }
+        .price {
+          font-size: 1.2rem;
+          font-weight: 900;
+        }
+      }
+      .checked-state {
+        transition: 150ms ease-out;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        background-color: var(--bg-400);
+        svg {
+          width: 1.5rem;
+          height: 1.5rem;
+          fill: transparent;
+          stroke: #fff;
+          stroke-width: 3px;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-dasharray: 25;
+          stroke-dashoffset: 25;
         }
       }
     }
   }
-  &:hover .episode-item figure .thumbnail .icon {
+  &:hover .episode-item .wrap .thumbnail .icon {
     opacity: 1;
     visibility: visible;
   }
@@ -236,7 +340,7 @@ export default {
       margin-bottom: 2rem;
     }
 
-    .episode-item figure {
+    .episode-item .wrap {
       .thumbnail {
         width: 16rem;
         height: calc(16rem / 16 * 9);

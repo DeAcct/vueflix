@@ -1,7 +1,7 @@
 <template>
   <section class="episodes">
-    <h3 class="part-info">
-      <button @click="widgetToggle">
+    <h3 :class="['part-info', { 'part-info--top-padding': partTopPadding }]">
+      <button @click="widgetToggle" type="button">
         <i :class="['open-icon', { 'open-icon--widget-opened': isWidgetOpen }]">
           <icon-base :icon-name="isWidgetOpen ? '닫기' : '열기'">
             <icon-arrow-next />
@@ -25,8 +25,13 @@
         :thumbnail="`${this.$route.params.title}/${episode.thumbnail}`"
         :index="index + 1"
         :part="episodesData.part"
-        :download="true"
+        :download="download"
         @login-require="loginRequire"
+        @added="addedTrigger"
+        @deleted="deletedTrigger"
+        :type="type"
+        :input-checked="downChecked"
+        :price="price"
       />
     </ul>
   </section>
@@ -47,6 +52,23 @@ export default {
     episodesData: {
       type: Object,
     },
+    partTopPadding: {
+      type: Boolean,
+    },
+    type: {
+      type: String,
+      default: "router-link",
+    },
+    download: {
+      type: Boolean,
+      default: true,
+    },
+    downChecked: {
+      type: Boolean,
+    },
+    price: {
+      type: Number,
+    },
   },
   data() {
     return {
@@ -60,6 +82,12 @@ export default {
     loginRequire() {
       this.$emit("login-require", "로그인해야 애니를 감상할 수 있어요");
     },
+    addedTrigger(e) {
+      this.$emit("added", e);
+    },
+    deletedTrigger(e) {
+      this.$emit("deleted", e);
+    },
   },
 };
 </script>
@@ -71,10 +99,10 @@ export default {
   box-shadow: var(--box-shadow);
   .part-info {
     position: sticky;
-    top: 5.9rem;
+    top: 0;
     z-index: 50;
     display: flex;
-    width: calc(100% - var(--inner-padding) * 2);
+    width: 100%;
     margin: 0 auto;
     align-items: center;
     border-radius: 0.6rem;
@@ -82,10 +110,17 @@ export default {
       width: 100%;
       display: flex;
       align-items: center;
-      padding: 1.5rem 1rem;
+      padding: 1.5rem var(--inner-padding);
       background-color: var(--episodes-part-info);
       backdrop-filter: blur(10px);
       border-radius: 0.6rem;
+    }
+    &--top-padding {
+      top: 5.9rem;
+      width: calc(100% - var(--inner-padding) * 2);
+      button {
+        padding: 1.5rem 1rem;
+      }
     }
     .open-icon {
       display: flex;

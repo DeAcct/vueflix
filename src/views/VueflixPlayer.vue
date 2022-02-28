@@ -286,17 +286,29 @@ export default {
       this.isControllerShown = true;
     },
     openPlayerSetting() {
+      this.$refs.video.pause();
+      this.isPlaying = false;
       this.closeMiniEpisodeList();
       this.isSettingShown = true;
     },
     closePlayerSetting() {
+      if (!this.isEnd) {
+        this.$refs.video.play();
+        this.isPlaying = true;
+      }
       this.isSettingShown = false;
     },
     openMiniEpisodeList() {
+      this.$refs.video.pause();
+      this.isPlaying = false;
       this.closePlayerSetting();
       this.isMiniEpisodeListShown = true;
     },
     closeMiniEpisodeList() {
+      if (!this.isEnd) {
+        this.$refs.video.play();
+        this.isPlaying = true;
+      }
       this.isMiniEpisodeListShown = false;
     },
     async exitPlayer() {

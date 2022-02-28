@@ -80,7 +80,6 @@ export default {
           .matches
           ? "dark"
           : "light";
-        console.log(deviceTheme);
         this.$store.commit("theme/setTheme", deviceTheme);
       }
       const $app = document.getElementById("app");
