@@ -65,6 +65,7 @@ import IconBase from "./IconBase.vue";
 import DaySelector from "./DaySelector.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
+import { mapState } from "vuex";
 export default {
   name: "VueflixCarousel",
   components: {
@@ -90,7 +91,6 @@ export default {
       isRecent: this.type === "recent",
       isDaily: this.type === "daily",
       isRecommend: this.type === "recommend",
-      animeResult: {},
     };
   },
   computed: {
@@ -101,9 +101,7 @@ export default {
     },
     carouselLimit() {
       if (this.isDaily) {
-        return Math.floor(
-          this.$store.state.daily.shownList.length / this.shownItems
-        );
+        return Math.floor(this.dailyShownList.length / this.shownItems);
       } else {
         return Math.floor(this.animeList.length / this.shownItems);
       }
@@ -114,9 +112,9 @@ export default {
     prevActive() {
       return this.carouselNumber > 0;
     },
-    dailyShownList() {
-      return this.$store.state.daily.shownList;
-    },
+    ...mapState({
+      dailyShownList: (state) => state.daily.shownList,
+    }),
   },
   methods: {
     next() {
@@ -129,7 +127,7 @@ export default {
       this.carouselNumber = 0;
     },
   },
-  async mounted() {
+  mounted() {
     window.addEventListener("resize", () => {
       this.resolution = window.innerWidth;
       this.shownItems = this.resolution >= 1920 ? 7 : 4;

@@ -6,7 +6,7 @@
       @click="closePurchaseModal"
       ref="bg"
     ></button>
-    <form class="interact-area" @reset="resetTrigger" ref="actionArea">
+    <form class="interact-area" ref="actionArea">
       <div class="interact-area__heading">
         <h2 class="purchase-modal__title inner">
           <slot name="title"></slot>
@@ -30,17 +30,22 @@
         </div>
       </div>
       <div class="interact-area__episodes">
-        <episodes-widget
-          v-for="(part, index) in animeInfo.parts"
-          :episodes-data="part"
-          :key="index"
-          type="label"
-          :download="false"
-          @added="addedTrigger"
-          @deleted="deletedTrigger"
-          :down-checked="downChecked"
-          :price="animeInfo.price"
-        />
+        <template v-if="!notPurchased.isBlank">
+          <episodes-widget
+            v-for="(part, index) in notPurchased.all"
+            :episodes-data="part"
+            :key="index"
+            type="label"
+            :download="false"
+            @added="addedTrigger"
+            @deleted="deletedTrigger"
+            :down-checked="downChecked"
+            :price="animeInfo.price"
+          />
+        </template>
+        <div v-else class="interact-area__fallback">
+          <p>모든 에피소드를 소장했어요</p>
+        </div>
       </div>
       <div class="purchase-modal__cta-area inner">
         <vueflix-btn
@@ -56,6 +61,7 @@
           component="button"
           class="btn--purchase"
           :disabled="added.length === 0"
+          @click="purchase"
         >
           <template v-slot:text>
             {{
@@ -74,9 +80,12 @@
 </template>
 
 <script>
+import { doc, setDoc, getFirestore } from "firebase/firestore";
+
 import EpisodesWidget from "./EpisodesWidget.vue";
 import VueflixBtn from "./VueflixBtn.vue";
 import { modalAnimations } from "../mixins/modalAnimations";
+import { mapState } from "vuex";
 
 export default {
   name: "PurchaseModal",
@@ -117,17 +126,72 @@ export default {
         (item) => item.title !== e.title && item.date !== e.date
       );
     },
-    resetTrigger() {
-      this.added = [];
-    },
     selectAll() {
-      this.downChecked = !this.downChecked;
+      if (!this.notPurchased.isBlank) {
+        this.downChecked = !this.downChecked;
+      }
+    },
+    async purchase() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const date = now.getDate();
+      const hour = now.getHours();
+      const min = now.getMinutes();
+      const sec = now.getSeconds();
+      const thumbnail = this.animeInfo.posterOrigin;
+      this.$store.commit("auth/updatePurchased", {
+        aniTitle: this.$route.params.title,
+        episodes: this.added,
+        time: {
+          year,
+          month,
+          date,
+          hour,
+          min,
+          sec,
+        },
+        thumbnail,
+      });
+
+      const db = getFirestore();
+      await setDoc(doc(db, "user", this.user.uid), {
+        ...this.user,
+      });
+      this.closePurchaseModal();
     },
   },
   computed: {
     ActionAreaHeight() {
       return "80vh";
     },
+    notPurchased() {
+      let all = this.animeInfo.parts;
+      let isBlank = true;
+      const purchased = this.user.purchased.find(
+        (purchaseItem) => purchaseItem.aniTitle === this.$route.params.title
+      );
+      if (purchased) {
+        all = all.map((allPart) => ({
+          ...allPart,
+          episodes: allPart.episodes.filter((allEpisode) => {
+            for (const purchaseItem of purchased.episodes) {
+              if (purchaseItem.title === allEpisode.title) {
+                return false;
+              }
+            }
+            return true;
+          }),
+        }));
+      }
+      all.forEach((item) => {
+        isBlank = item.episodes.length === 0 && isBlank;
+      });
+      return { all, isBlank };
+    },
+    ...mapState({
+      user: (state) => state.auth.user,
+    }),
   },
   mixins: [modalAnimations],
 };
@@ -199,6 +263,16 @@ export default {
       }
       &::-webkit-scrollbar {
         display: none;
+      }
+    }
+    &__fallback {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      p {
+        font-size: 1.3rem;
+        color: var(--text-800);
       }
     }
   }

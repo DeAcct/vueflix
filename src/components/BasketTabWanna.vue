@@ -1,16 +1,21 @@
 <template>
-  <div class="inner result">
-    <strong class="result-number"> 총 {{ wannaSee.length }}개 </strong>
-    <ul class="basket-items">
-      <carousel-item
-        v-for="wannaItem in wannaSee"
-        :key="wannaItem.aniTitle"
-        :ani-title="wannaItem.aniTitle"
-        :episode-thumbnail="`${wannaItem.aniTitle}.webp`"
-        class="basket-item"
-        :develop-firebase="true"
-      />
-    </ul>
+  <div class="inner">
+    <div class="wrap" v-if="wannaSee.length">
+      <strong class="result-number"> 총 {{ wannaSee.length }}개 </strong>
+      <ul class="basket-items">
+        <carousel-item
+          v-for="wannaItem in wannaSee"
+          :key="wannaItem.aniTitle"
+          :ani-title="wannaItem.aniTitle"
+          :episode-thumbnail="`${wannaItem.aniTitle}.webp`"
+          class="basket-item"
+          :develop-firebase="true"
+        />
+      </ul>
+    </div>
+    <div class="fallback" v-else>
+      <strong class="guide-text">"보고싶다"를 표시한 작품이 아직 없어요</strong>
+    </div>
   </div>
 </template>
 
@@ -24,11 +29,8 @@ export default {
   },
   computed: {
     ...mapState({
-      user: (state) => state.auth.user,
+      wannaSee: (state) => (state.auth ? state.auth.user.wannaSee : []),
     }),
-    wannaSee() {
-      return this.user ? this.user.wannaSee : [];
-    },
   },
 };
 </script>
@@ -48,6 +50,10 @@ export default {
     width: auto;
     margin: 0;
   }
+}
+.fallback {
+  font-size: 1.3rem;
+  text-align: center;
 }
 
 @media screen and (min-width: 768px) {

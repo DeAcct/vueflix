@@ -216,7 +216,11 @@ export default {
           `${this.$route.params.title}/${rawData.poster}`
         );
         const posterURL = await getDownloadURL(posterRef);
-        this.animeInfo = { ...rawData, poster: posterURL };
+        this.animeInfo = {
+          ...rawData,
+          poster: posterURL,
+          posterOrigin: rawData.poster,
+        };
         this.$store.commit(
           "currentAnimeInfo/setCurrentAnimeInfo",
           this.animeInfo.parts

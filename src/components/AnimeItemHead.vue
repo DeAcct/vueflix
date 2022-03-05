@@ -50,9 +50,7 @@
               {{ genre }}
             </li>
           </ul>
-          <h2 class="title">
-            {{ title }}
-          </h2>
+          <h2 class="title">{{ title }}</h2>
           <div class="row-bottom">
             <p
               :class="[
@@ -80,7 +78,7 @@
           :class="['btn-area', { 'btn-area--loaded': type && rating && title }]"
         >
           <div class="col-left">
-            <router-link class="btn-area__continue" :to="continueLink">
+            <router-link class="btn-area__continue" :to="continueLink" replace>
               <i class="icon">
                 <icon-base>
                   <icon-play />
@@ -478,7 +476,7 @@ export default {
       .title {
         color: inherit;
         font-size: 2rem;
-        line-height: 1.3;
+        line-height: 1.5;
         margin-bottom: 0.7rem;
       }
       .star-rating-number {

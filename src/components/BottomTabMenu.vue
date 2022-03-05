@@ -136,6 +136,7 @@ export default {
       }
       .profile {
         width: 2.6rem;
+        height: 2.6rem;
         border: 2px solid transparent;
       }
     }

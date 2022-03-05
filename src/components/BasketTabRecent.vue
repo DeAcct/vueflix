@@ -1,26 +1,27 @@
 <template>
   <div class="inner result">
-    <strong class="result-number"> 총 {{ recentItems.length }}개 </strong>
-    <ul class="basket-items">
-      <carousel-item
-        v-for="recentItem in recentItems"
-        :key="recentItem.aniTitle"
-        :ani-title="recentItem.aniTitle"
-        :part="recentItem.part"
-        :index="recentItem.index"
-        :episode-thumbnail="recentItem.episodeThumbnail"
-        :isRecent="true"
-        :progress="recentItem.watchedPercent"
-        class="basket-item"
-        :develop-firebase="true"
-      />
-      <li class="basket-item"></li>
-      <li class="basket-item"></li>
-      <li class="basket-item"></li>
-      <li class="basket-item"></li>
-      <li class="basket-item"></li>
-      <li class="basket-item"></li>
-    </ul>
+    <div class="wrap" v-if="recentItems.length">
+      <strong class="result-number"> 총 {{ recentItems.length }}개 </strong>
+      <ul class="basket-items">
+        <carousel-item
+          v-for="recentItem in recentItems"
+          :key="recentItem.aniTitle"
+          :ani-title="recentItem.aniTitle"
+          :part="recentItem.part"
+          :index="recentItem.index"
+          :episode-thumbnail="recentItem.episodeThumbnail"
+          :isRecent="true"
+          :progress="recentItem.watchedPercent"
+          class="basket-item"
+          :develop-firebase="true"
+        />
+      </ul>
+    </div>
+    <div class="fallback" v-else>
+      <strong class="guide-text">
+        최근에 애니를 시청한 기록이 있으면 여기에 나타나요.
+      </strong>
+    </div>
   </div>
 </template>
 
@@ -55,6 +56,10 @@ export default {
     width: auto;
     margin: 0;
   }
+}
+.fallback {
+  font-size: 1.3rem;
+  text-align: center;
 }
 
 @media screen and (min-width: 768px) {

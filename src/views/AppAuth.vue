@@ -93,6 +93,7 @@ export default {
             wannaSee: [],
             reviews: [],
             maratonWatched: [],
+            purchased: [],
           });
         }
         this.$store.commit("auth/setUser", docSnap.data());

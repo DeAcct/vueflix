@@ -2,7 +2,9 @@
   <main class="basket">
     <basket-tab-menu @chageSelected="changeSelected" />
     <transition name="fade" mode="out-in">
-      <component :is="selectedTab" />
+      <keep-alive>
+        <component :is="selectedTab" />
+      </keep-alive>
     </transition>
   </main>
 </template>

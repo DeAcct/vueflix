@@ -6,6 +6,7 @@
       class="episode-item"
       replace
       @click="loginRequire"
+      :data-pointer="type === 'label'"
     >
       <input
         v-if="type === 'label'"
@@ -50,6 +51,7 @@
             </span>
             <span class="row-bottom">
               <span class="price" v-if="type === 'label'">{{ price }}원</span>
+              <span class="is-purchased" v-else-if="isPurchased">소장함</span>
             </span>
           </span>
         </span>
@@ -148,7 +150,10 @@ export default {
   methods: {
     async useURL() {
       const storage = getStorage();
-      const thumbnailRef = ref(storage, this.thumbnail);
+      const thumbnailRef = ref(
+        storage,
+        `${this.$route.params.title}/${this.thumbnail}`
+      );
       const URL = await getDownloadURL(thumbnailRef);
       this.thumbnailURL = URL;
     },
@@ -171,6 +176,21 @@ export default {
         this.part === this.$route.params.part &&
         this.index === Number(this.$route.params.index.slice(0, -1))
       );
+    },
+    isPurchased() {
+      if (this.auth) {
+        const target = this.auth.purchased.find(
+          (anime) => anime.aniTitle === this.$route.params.title
+        );
+        if (target) {
+          const result =
+            target.episodes.findIndex(
+              (episode) => episode.index === this.index
+            ) !== -1;
+          return result;
+        }
+      }
+      return false;
     },
     ...mapState({
       auth: (state) => state.auth.user,
@@ -303,6 +323,11 @@ export default {
         .price {
           font-size: 1.2rem;
           font-weight: 900;
+        }
+        .is-purchased {
+          font-size: 1.2rem;
+          font-weight: 500;
+          color: var(--theme-500);
         }
       }
       .checked-state {

@@ -18,12 +18,12 @@
       ]"
     >
       <episode-card
-        v-for="(episode, index) in episodesData.episodes"
+        v-for="episode in episodesData.episodes"
         :key="episode.title"
         :title="episode.title"
         :date="episode.date"
-        :thumbnail="`${this.$route.params.title}/${episode.thumbnail}`"
-        :index="index + 1"
+        :thumbnail="episode.thumbnail"
+        :index="episode.index"
         :part="episodesData.part"
         :download="download"
         @login-require="loginRequire"

@@ -1,32 +1,78 @@
 <template>
   <div class="inner result">
-    <strong class="guide-text">
-      판권이 만료되어도 볼 수 있도록 결제한 작품이 아직 없어요
-    </strong>
+    <div class="wrap" v-if="purchased.length">
+      <strong class="result-number"> 총 {{ purchased.length }}개 </strong>
+      <ul class="basket-items">
+        <carousel-item
+          v-for="purchasedItem in purchased"
+          :key="purchasedItem.aniTitle"
+          :ani-title="purchasedItem.aniTitle"
+          :episode-thumbnail="`${purchasedItem.aniTitle}.webp`"
+          class="basket-item"
+          :develop-firebase="true"
+        />
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+import CarouselItem from "./CarouselItem.vue";
+
 export default {
   name: "BasketTabPurchase",
+  components: {
+    CarouselItem,
+  },
+  computed: {
+    ...mapState({
+      purchased: (state) => (state.auth ? state.auth.user.purchased : []),
+    }),
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.result {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  .guide-text {
-    align-items: center;
-    text-align: center;
+.result-number {
+  font-size: 1.3rem;
+}
+.basket-items {
+  margin-top: 1.5rem;
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-flow: row dense;
+  gap: 2rem 1rem;
+  .basket-item {
+    width: auto;
+    margin: 0;
+  }
+}
+.fallback {
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+  .result-number {
     font-size: 1.5rem;
-    line-height: 1.3;
-    color: var(--bg-400);
-    .icon {
-      color: var(--theme-500);
-    }
+  }
+  .basket-items {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media screen and (min-width: 1024px) {
+  .result-number {
+    font-size: 2rem;
+  }
+  .basket-items {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media screen and (min-width: 1920px) {
+  .basket-items {
+    grid-template-columns: repeat(6, 1fr);
   }
 }
 </style>

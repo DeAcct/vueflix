@@ -60,6 +60,33 @@ const mutations = {
   mergeUser(state, payload) {
     state.user = { ...state.user, ...payload };
   },
+  updatePurchased(state, payload) {
+    const targetIndex = state.user.purchased.findIndex(
+      (purchase) => purchase.aniTitle === payload.aniTitle
+    );
+    if (targetIndex !== -1) {
+      state.user.purchased[targetIndex].episodes = [
+        ...state.user.purchased[targetIndex].episodes,
+        ...payload.episodes,
+      ];
+      if (state.user.purchased[targetIndex].episodes.length > 1) {
+        state.user.purchased[targetIndex].episodes = state.user.purchased[
+          targetIndex
+        ].episodes.sort((a, b) => a.index - b.index);
+      }
+    } else {
+      state.user.purchased.unshift(payload);
+      if (state.user.purchased.length > 1) {
+        state.user.purchased = state.user.purchased.sort((a, b) => {
+          if (a.aniTitle < b.aniTitle) {
+            return -1;
+          } else if (a.aniTitle > b.aniTitle) {
+            return 1;
+          }
+        });
+      }
+    }
+  },
 };
 
 export default {
