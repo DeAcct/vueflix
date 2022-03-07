@@ -79,11 +79,17 @@
       <datepicker
         class="birthday__selection"
         inputClassName="birthday__selection_input"
-        :modelValue="`${birthday.year}/${birthday.month}/${birthday.date}`"
+        :modelValue="
+          birthday
+            ? `${birthday.year}/${birthday.month}/${birthday.date}`
+            : undefined
+        "
         @update:modelValue="setBirthday"
         :enableTimePicker="false"
         format="yyyy/MM/dd"
+        locale="ko-KR"
         placeholder="생일을 선택하세요"
+        no-today
         auto-apply
       />
     </div>

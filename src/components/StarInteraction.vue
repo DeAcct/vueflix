@@ -1,15 +1,20 @@
 <template>
   <div class="star-interaction">
-    <star-graph
-      @starChanged="starChanged"
-      :rating="rating"
-      :disabled="!!disabled"
-    />
+    <div class="col-left">
+      <star-graph
+        @star-changed="starChanged"
+        @guide-text-change="guideTextTrigger"
+        :rating="rating"
+        :disabled="!!disabled"
+      />
+      <p class="guide-text">{{ guideText }}</p>
+    </div>
     <button
       class="rating-reset-btn"
       @click="ratingReset"
       :style="`color: ${textColor}; border-bottom-color:${textColor};`"
       :disabled="rating === 0"
+      type="button"
     >
       별점 초기화
     </button>
@@ -35,6 +40,11 @@ export default {
   components: {
     StarGraph,
   },
+  data() {
+    return {
+      guideText: "",
+    };
+  },
   methods: {
     starChanged(e) {
       this.$emit("starChanged", e);
@@ -43,6 +53,9 @@ export default {
       if (this.rating !== 0) {
         this.$emit("starChanged", 0);
       }
+    },
+    guideTextTrigger(e) {
+      this.guideText = e;
     },
   },
 };
@@ -53,7 +66,24 @@ export default {
   align-self: flex-end;
   width: 100%;
   display: flex;
+  .col-left {
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+    max-width: 60%;
+  }
 
+  .star-graph {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .guide-text {
+    display: flex;
+    align-items: center;
+    font-size: 1.3rem;
+    line-height: 1.3;
+    height: 3.4rem;
+  }
   .rating-reset-btn {
     margin-right: 1rem;
     padding-bottom: 0.3rem;

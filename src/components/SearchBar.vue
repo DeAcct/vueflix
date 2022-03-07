@@ -137,17 +137,17 @@ export default {
   }
   &--open {
     width: 100%;
-
+    background-color: var(--bg-100);
     position: absolute;
     left: 0;
     top: 0;
     .search-box {
-      background-color: #fff;
       padding: 0 1rem;
       width: 100vw;
       height: 6rem;
       .input-area {
         width: calc(100vw - 5.6rem);
+        background-color: var(--bg-100);
         padding-right: 2rem;
       }
       .placeholder {
@@ -170,15 +170,15 @@ export default {
     border-radius: 0.3rem;
     height: 4rem;
     &--open {
-      border: 1px solid var(--bg-200);
       position: static;
       width: 30rem;
       .search-box {
+        background-color: var(--bg-200);
         width: 30rem;
         height: 4rem;
-        background-color: #fff;
         padding: 0 1rem;
         .input-area {
+          background-color: var(--bg-200);
           position: static;
           width: 23.4rem;
         }

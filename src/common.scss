@@ -191,21 +191,23 @@ summary {
   }
 }
 
-.dp__theme_light {
-  --dp-background-color: var(--bg-200) !important;
-  --dp-primary-color: var(--theme-500) !important;
-  --dp-menu-border-color: var(--bg-400) !important;
-  --dp-border-color: var(--bg-400) !important;
-  --dp-text-color: var(--text-800) !important;
-  --dp-hover-color: var(--bg-400) !important;
-  --dp-hover-text-color: var(--text-800) !important;
-}
-.dp__input {
-  font-size: 1.2rem !important;
-  &::placeholder {
-    font-size: 1.2rem;
-    color: var(--text-800);
-    opacity: 1 !important;
+.dp {
+  &__theme_light {
+    --dp-background-color: var(--bg-200) !important;
+    --dp-primary-color: var(--theme-500) !important;
+    --dp-menu-border-color: var(--bg-400) !important;
+    --dp-border-color: var(--bg-400) !important;
+    --dp-text-color: var(--text-800) !important;
+    --dp-hover-color: var(--bg-400) !important;
+    --dp-hover-text-color: var(--text-800) !important;
+  }
+  &__input {
+    font-size: 1.2rem !important;
+    &::placeholder {
+      font-size: 1.2rem;
+      color: var(--text-800);
+      opacity: 1 !important;
+    }
   }
 }
 

@@ -5,25 +5,28 @@
         @starChanged="starChanged"
         :rating="starScore"
         :disabled="!isLoggedIn"
+        class="inner widget"
       />
-      <textarea
-        :placeholder="placeholder"
-        class="new-review-area"
-        v-model="reviewData"
-        :disabled="!isLoggedIn"
-      />
-      <div class="interaction-area">
-        <div class="col-left">
-          <strong class="length">{{ reviewData.length || 0 }}/300</strong>
-          <p v-if="!reviewDataValid" class="too-long-alert">너무 길어요!</p>
+      <div class="row-bottom widget inner">
+        <textarea
+          :placeholder="placeholder"
+          class="new-review-area"
+          v-model="reviewData"
+          :disabled="!isLoggedIn"
+        />
+        <div class="interaction-area">
+          <div class="col-left">
+            <strong class="length">{{ reviewData.length || 0 }}/300</strong>
+            <p v-if="!reviewDataValid" class="too-long-alert">너무 길어요!</p>
+          </div>
+          <vueflix-btn
+            :disabled="!reviewDataSubmitAble || !isLoggedIn"
+            @click="submit"
+            component="button"
+          >
+            <template v-slot:text> 등록 </template>
+          </vueflix-btn>
         </div>
-        <vueflix-btn
-          :disabled="!reviewDataSubmitAble || !isLoggedIn"
-          @click="submit"
-          component="button"
-        >
-          <template v-slot:text> 등록 </template>
-        </vueflix-btn>
       </div>
     </div>
   </form>
@@ -79,17 +82,23 @@ export default {
 <style lang="scss" scoped>
 .new-review {
   width: 100%;
-  background-color: var(--new-review);
   border-radius: 0.6rem;
-  padding: {
-    top: 1.5rem;
-    bottom: 1.5rem;
-  }
   .input-area {
+    .widget {
+      padding: {
+        top: 1.5rem;
+        bottom: 1.5rem;
+      }
+      border-radius: 0.6rem;
+      box-shadow: var(--box-shadow);
+      background-color: var(--new-review);
+      &:not(:last-child) {
+        margin-bottom: 1rem;
+      }
+    }
     .star-interaction {
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1rem;
     }
     .new-review-area {
       width: 100%;
@@ -143,9 +152,6 @@ export default {
 
 @media screen and (min-width: 1080px) {
   .new-review .input-area {
-    .star-interaction {
-      margin-bottom: 2rem;
-    }
     .new-review-area {
       font-size: 1.3rem;
     }

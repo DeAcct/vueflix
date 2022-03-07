@@ -98,7 +98,7 @@ export default {
   }
   .description {
     font-size: 1.3rem;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.8rem;
   }
 }
 </style>

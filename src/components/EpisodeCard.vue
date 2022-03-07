@@ -307,14 +307,12 @@ export default {
         .title {
           font-size: 1.3rem;
           font-weight: 700;
-          line-height: 1.3;
           margin-bottom: 0.5rem;
           width: 100%;
+          height: 1.3rem;
           overflow: hidden;
+          white-space: nowrap;
           text-overflow: ellipsis;
-          display: flex;
-          flex-direction: column;
-          -webkit-line-clamp: 2;
         }
         .date {
           font-size: 1.1rem;
@@ -374,8 +372,12 @@ export default {
         margin-left: 1.5rem;
         .title {
           font-size: 1.6rem;
+          height: 2rem;
         }
         .date {
+          font-size: 1.3rem;
+        }
+        .is-purchased {
           font-size: 1.3rem;
         }
       }
