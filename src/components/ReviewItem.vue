@@ -13,7 +13,7 @@
     <div class="interact-area">
       <p class="date">{{ formattedDate }}</p>
       <button v-if="!isMe">신고</button>
-      <button v-if="isMe">수정</button>
+      <button v-if="isMe" @click="editTrigger">수정</button>
       <button v-if="isMe" @click="deleteTrigger">삭제</button>
     </div>
   </li>
@@ -51,6 +51,9 @@ export default {
     },
     deleteTrigger() {
       this.$emit("delete-review");
+    },
+    editTrigger() {
+      this.$emit("edit-review");
     },
   },
   computed: {

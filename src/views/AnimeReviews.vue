@@ -7,7 +7,7 @@
       <template v-slot:login-state-text>로그인</template>
     </login-widget>
     <keyword-review class="widget" :isLoggedIn="user" />
-    <text-review class="widget" :myRating="myRating" :user="user" />
+    <text-review class="widget" :user="user" />
   </div>
 </template>
 
@@ -23,9 +23,6 @@ export default {
     KeywordReview,
     TextReview,
     LoginWidget,
-  },
-  props: {
-    myRating: Number,
   },
   mounted() {
     window.addEventListener("resize", () => {

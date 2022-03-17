@@ -1,5 +1,5 @@
 <template>
-  <form class="new-review">
+  <form class="write-review">
     <div class="input-area inner">
       <star-interaction
         @star-changed="starChanged"
@@ -21,10 +21,12 @@
           </div>
           <vueflix-btn
             :disabled="!reviewDataSubmitAble || !user"
-            @click="submit"
+            @click="reviewTrigger"
             component="button"
           >
-            <template v-slot:text> 등록 </template>
+            <template v-slot:text>
+              {{ type === "new-review" ? "등록" : "수정" }}
+            </template>
           </vueflix-btn>
         </div>
       </div>
@@ -36,7 +38,7 @@
 import VueflixBtn from "./VueflixBtn.vue";
 import StarInteraction from "./StarInteraction.vue";
 export default {
-  name: "NewReview",
+  name: "WriteReview",
   components: {
     VueflixBtn,
     StarInteraction,
@@ -47,6 +49,9 @@ export default {
     },
     showNewReview: {
       type: Boolean,
+    },
+    type: {
+      type: String,
     },
   },
   data() {
@@ -75,8 +80,9 @@ export default {
     },
   },
   methods: {
-    submit() {
-      this.$emit("review-data-submit", {
+    reviewTrigger() {
+      const eventType = this.type === "new-review" ? "new" : "edit";
+      this.$emit(`${eventType}-review`, {
         content: this.reviewData,
         rating: this.starScore,
       });
@@ -106,7 +112,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.new-review {
+.write-review {
   width: 100%;
   border-radius: 0.6rem;
   .input-area {
@@ -180,7 +186,7 @@ export default {
 }
 
 @media screen and (min-width: 1080px) {
-  .new-review .input-area {
+  .write-review .input-area {
     .new-review-area {
       font-size: 1.5rem;
     }
