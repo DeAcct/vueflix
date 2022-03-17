@@ -205,7 +205,15 @@ export default {
       display: flex;
       align-items: center;
       .notification {
-        margin-left: 0.5rem;
+        display: flex;
+      }
+      .profile {
+        width: 3.6rem;
+        height: 3.6rem;
+        border: 0.6rem solid transparent;
+      }
+      *:not(:last-child) {
+        margin-right: 1rem;
       }
     }
   }
@@ -234,9 +242,6 @@ export default {
       .col-left {
         margin-left: 0;
         transform: none;
-      }
-      .col-right .notification {
-        margin-left: 1.5rem;
       }
     }
     &--filled {

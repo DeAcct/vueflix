@@ -108,11 +108,7 @@ export default {
     window.addEventListener("keydown", this.keyTrigger);
 
     if (this.$refs.video && this.auth) {
-      this.$refs.video.addEventListener(
-        "leavepictureinpicture",
-        this.PIPoff,
-        false
-      );
+      this.$refs.video.addEventListener("leavepictureinpicture", this.PIPoff);
       this.$refs.video.addEventListener("loadeddata", async () => {
         const target = this.auth.recentWatched.find(
           (anime) =>
@@ -124,7 +120,7 @@ export default {
           const unitChanged = Number(target.watchedPercent.slice(0, -1)) / 100;
           this.videoProgress = target.watchedPercent;
           this.$refs.video.currentTime =
-            this.$refs.video.duration * unitChanged;
+            unitChanged !== 1 ? this.$refs.video.duration * unitChanged : 0;
         }
         await this.savePoint();
       });

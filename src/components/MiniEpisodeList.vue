@@ -19,10 +19,10 @@
       </h2>
       <ul class="accordion__body">
         <episode-card
-          v-for="(episode, index) in part.episodes"
+          v-for="episode in part.episodes"
           :key="episode.title"
-          :thumbnail="`${this.$route.params.title}/${episode.thumbnail}`"
-          :index="index + 1"
+          :thumbnail="`${episode.thumbnail}`"
+          :index="episode.index"
           :title="episode.title"
           :date="episode.date"
           :part="part.part"
@@ -30,6 +30,7 @@
           :exclude-theme="true"
           :accent-current="true"
           text-color="#fff"
+          type="router-link"
         />
       </ul>
     </div>

@@ -1,6 +1,5 @@
 import { register } from "register-service-worker";
 
-/*production 모드일때만 주석풀기*/
 if (process.env.NODE_ENV === "production") {
   register(`${process.env.BASE_URL}service-worker.js`, {
     ready() {
@@ -20,7 +19,7 @@ if (process.env.NODE_ENV === "production") {
     },
     offline() {
       console.log(
-        "No internet connection found. App is running in offline mode.",
+        "No internet connection found. App is running in offline mode."
       );
     },
     error(error) {

@@ -1,18 +1,21 @@
 <template>
   <section class="text-review">
-    <h2 class="title inner">긴 글 리뷰 ({{ reviewList.length }})</h2>
+    <h2 class="title inner">긴 글 리뷰</h2>
     <p class="description inner">키워드로 표현할 수 없는 무언가가 있다면!</p>
     <new-review
-      @reviewDataSubmit="add"
-      @scoreChanged="scoreChanged"
-      :isLoggedIn="isLoggedIn"
+      @review-data-submit="add"
+      @score-changed="scoreChanged"
+      :user="user"
+      :show-new-review="!myReview"
     />
-    <ul>
+    <ul :class="['inner', { 'review-list--exists': reviewList }]">
       <review-item
         v-for="(reviewItem, index) in reviewList"
         :key="index"
         :rating="reviewItem.rating"
-        :date="reviewItem.date"
+        :date="reviewItem.time"
+        :is-me="reviewItem.uid === user.uid"
+        @delete-review="deleteTrigger"
       >
         <template v-slot:author>{{ reviewItem.author }}</template>
         <template v-slot:content>{{ reviewItem.content }}</template>
@@ -24,6 +27,14 @@
 <script>
 import NewReview from "./NewReview.vue";
 import ReviewItem from "./ReviewItem.vue";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  getDoc,
+} from "firebase/firestore";
 export default {
   name: "TextReview",
   components: {
@@ -36,43 +47,132 @@ export default {
     };
   },
   props: {
-    isLoggedIn: {
+    user: {
       type: [Object, Boolean],
     },
   },
+  computed: {
+    db() {
+      return getFirestore();
+    },
+    animeRef() {
+      return doc(this.db, "anime", this.$route.params.title);
+    },
+    userRef() {
+      return doc(this.db, "user", this.user.uid);
+    },
+    myReview() {
+      const result = this.user
+        ? this.reviewList.find((reviewItem) => reviewItem.uid === this.user.uid)
+        : {};
+      return result;
+    },
+    othersReview() {
+      const result = this.user
+        ? this.reviewList.filter(
+            (reviewItem) => reviewItem.uid !== this.user.uid
+          )
+        : [];
+      return result;
+    },
+    /*
+     * todo
+     * 내 리뷰만 표시하는 특수 컴포넌트
+     */
+  },
+  watch: {
+    reviewList() {
+      this.sortReview();
+    },
+  },
+  async mounted() {
+    this.syncReviews();
+  },
   methods: {
-    add(e) {
+    async add(e) {
       const now = new Date();
       const year = now.getFullYear();
-      const month = this.formatter(now.getMonth() + 1, 10);
-      const date = this.formatter(now.getDate(), 10);
-      const hour = this.formatter(now.getHours(), 10);
-      const min = this.formatter(now.getMinutes(), 10);
-      const formattedDate = `${year}.${month}.${date} ${hour}:${min}`;
-      let review = {
-        author: "나",
+      const month = now.getMonth() + 1;
+      const date = now.getDate();
+      const hour = now.getHours();
+      const min = now.getMinutes();
+      const reviewItem = {
+        author: this.user.nickname,
+        uid: this.user.uid,
         ...e,
         thumbsUp: 0,
-        date: formattedDate,
+        time: {
+          year,
+          month,
+          date,
+          hour,
+          min,
+        },
+        aniTitle: this.$route.params.title,
       };
-      this.reviewList.unshift(review);
+
+      await setDoc(
+        this.animeRef,
+        { reviews: arrayUnion(reviewItem) },
+        { merge: true }
+      );
+      await setDoc(
+        this.userRef,
+        { reviews: arrayUnion(reviewItem) },
+        { merge: true }
+      );
+      await this.syncReviews();
     },
-    scoreChanged(e) {
-      this.reviewList = this.reviewList.map((reviewItem) => ({
-        ...reviewItem,
-        rating: e,
-      }));
+    async syncReviews() {
+      const animeSnapshot = await getDoc(this.animeRef);
+      const animeReviews = animeSnapshot.data().reviews;
+      this.reviewList = animeReviews;
+      this.sortReview();
     },
-    formatter(origin, digits) {
-      let result = `${origin}`;
-      for (let i = digits; i >= 10; i /= 10) {
-        if (origin < i) {
-          result = `0${result}`;
-        } else {
-          return result;
-        }
+    sortReview() {
+      if (this.user) {
+        this.reviewList = this.reviewList.sort((reviewItem) => {
+          if (reviewItem.uid === this.user.uid) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
       }
-      return result;
+    },
+    async deleteTrigger() {
+      await setDoc(
+        this.animeRef,
+        { reviews: this.othersReview },
+        { merge: true }
+      );
+      const userSnapshot = await getDoc(this.userRef);
+      const userReviews = userSnapshot.data().reviews;
+      const result = userReviews.filter((reviewItem) => {
+        reviewItem.aniTitle !== this.$route.params.title;
+      });
+      await setDoc(this.userRef, { reviews: result }, { merge: true });
+      await this.syncReviews();
+    },
+    async scoreChanged(e) {
+      const userSnapshot = await getDoc(this.userRef);
+      const userReviews = userSnapshot.data().reviews;
+      const animeSnapshot = await getDoc(this.animeRef);
+      const animeReviews = animeSnapshot.data().reviews;
+      animeReviews.forEach((reviewItem) => {
+        if (reviewItem.uid === this.user.uid) {
+          reviewItem.rating = e;
+        }
+      });
+      userReviews.forEach((reviewItem) => {
+        if (reviewItem.aniTitle === this.$route.params.title) {
+          reviewItem.rating = e;
+        }
+      });
+
+      await updateDoc(this.animeRef, { reviews: animeReviews });
+      await updateDoc(this.userRef, { reviews: userReviews });
+      await this.syncReviews();
     },
   },
 };
@@ -99,6 +199,9 @@ export default {
   .description {
     font-size: 1.3rem;
     margin-bottom: 1.8rem;
+  }
+  .review-list--exists {
+    margin-top: 1rem;
   }
 }
 </style>

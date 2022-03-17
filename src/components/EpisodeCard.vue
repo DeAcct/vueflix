@@ -55,18 +55,24 @@
             </span>
           </span>
         </span>
-        <i class="col-right" v-if="download">
-          <icon-base>
-            <icon-download />
-          </icon-base>
-        </i>
-        <i class="checked-state" v-else>
+
+        <i class="checked-state" v-if="type === 'label'">
           <icon-base>
             <icon-wanna-see-added />
           </icon-base>
         </i>
       </span>
     </component>
+    <a
+      :href="animeDownloadURL"
+      :download="`${this.$route.params.title} ${index}화 ${title}.mp4`"
+    >
+      <i class="col-right" v-if="download">
+        <icon-base>
+          <icon-download />
+        </icon-base>
+      </i>
+    </a>
   </li>
 </template>
 
@@ -142,10 +148,14 @@ export default {
     return {
       thumbnailURL: "",
       checked: false,
+      animeDownloadURL: "",
     };
   },
-  mounted() {
-    this.useURL();
+  async mounted() {
+    const storage = getStorage();
+    const videoRef = ref(storage, "testAnime.mp4");
+    this.animeDownloadURL = await getDownloadURL(videoRef);
+    await this.useURL();
   },
   methods: {
     async useURL() {
@@ -219,6 +229,7 @@ export default {
 <style lang="scss" scoped>
 .episode-card {
   display: flex;
+  align-items: center;
 
   &:not(:last-child) {
     margin-bottom: 1.5rem;
@@ -242,6 +253,7 @@ export default {
       border-radius: 0.3rem;
       .col-left {
         display: flex;
+        width: 100%;
       }
       .col-right {
         display: flex;
@@ -294,7 +306,7 @@ export default {
       }
       .episode-info {
         text-align: left;
-        max-width: 45vw;
+        max-width: 60%;
         margin-left: 1rem;
         display: flex;
         flex-direction: column;
@@ -382,6 +394,12 @@ export default {
         }
       }
     }
+  }
+}
+
+@media (orientation: landscape) {
+  .episode-card .episode-item .wrap .episode-info {
+    max-width: 45%;
   }
 }
 </style>

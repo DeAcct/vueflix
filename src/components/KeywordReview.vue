@@ -176,9 +176,9 @@ export default {
     flex-direction: column;
     .keyword-block {
       input[type="checkbox"]:checked + .keyword-item {
-        background-color: var(--theme-100);
+        background-color: var(--bg-500);
         .graph-bar {
-          background-color: var(--theme-300);
+          background-color: var(--theme-400);
         }
       }
       &:not(:last-child) {

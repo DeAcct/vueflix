@@ -44,6 +44,7 @@ import VueflixLogo from "../components/VueflixLogo.vue";
 import VueflixBtn from "../components/VueflixBtn.vue";
 import IconGoogle from "../components/icons/IconGoogle.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
+import { mapState } from "vuex";
 export default {
   name: "AppAuth",
   components: {
@@ -62,7 +63,11 @@ export default {
     };
   },
   mounted() {
-    window.addEventListener("resize", this.checkDevice);
+    if (this.user) {
+      this.goBack();
+    } else {
+      window.addEventListener("resize", this.checkDevice);
+    }
   },
   unmounted() {
     window.removeEventListener("resize", this.checkDevice);
@@ -102,6 +107,11 @@ export default {
         this.isLoginWaiting = false;
       }
     },
+  },
+  computed: {
+    ...mapState({
+      user: (state) => state.auth.user,
+    }),
   },
 };
 </script>

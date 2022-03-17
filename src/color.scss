@@ -83,7 +83,8 @@
   --gender-female: hsl(342, 91%, 55%);
 }
 
-#app[data-theme="dark"] {
+#app[data-theme="dark"],
+[data-theme="dark"] + * {
   --text-900: hsl(210, 20%, 95%);
   --text-800: hsl(210, 20%, 90%);
   --text-700: hsl(210, 20%, 70%);

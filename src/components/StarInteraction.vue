@@ -47,11 +47,11 @@ export default {
   },
   methods: {
     starChanged(e) {
-      this.$emit("starChanged", e);
+      this.$emit("star-changed", e);
     },
     ratingReset() {
       if (this.rating !== 0) {
-        this.$emit("starChanged", 0);
+        this.$emit("star-changed", 0);
       }
     },
     guideTextTrigger(e) {
@@ -79,13 +79,14 @@ export default {
   }
   .guide-text {
     display: flex;
+    justify-content: center;
     align-items: center;
+    text-align: center;
     font-size: 1.3rem;
     line-height: 1.3;
-    height: 3.4rem;
+    margin-bottom: 1rem;
   }
   .rating-reset-btn {
-    margin-right: 1rem;
     padding-bottom: 0.3rem;
     color: var(--text-900);
     font-size: 1.2rem;

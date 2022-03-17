@@ -32,8 +32,9 @@ export default {
       }
     });
     if (this.user) {
-      this.unsub = onSnapshot(doc(db, "user", this.user.uid), function (doc) {
-        this.$store.commit("auth/setUser", doc.data());
+      const userDoc = doc(db, "user", this.user.uid);
+      this.unsub = onSnapshot(userDoc, function () {
+        this.$store.commit("auth/setUser", userDoc.data());
       });
     }
     this.init();
@@ -44,7 +45,7 @@ export default {
   },
   unmounted() {
     if (this.user) {
-      this.unsub();
+      this.unsub;
     }
 
     window.removeEventListener("resize", () => {

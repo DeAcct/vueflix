@@ -42,7 +42,7 @@
     <div class="widget gender inner">
       <h2 class="heading">성별</h2>
       <div class="select-area">
-        <label class="gender__selection male">
+        <label class="gender__selection male" data-pointer="true">
           <input
             type="radio"
             name="gender"
@@ -57,7 +57,7 @@
           </i>
           <span>남자</span>
         </label>
-        <label class="gender__selection female">
+        <label class="gender__selection female" data-pointer="true">
           <input
             type="radio"
             name="gender"
@@ -97,9 +97,9 @@
       type="submit"
       component="button"
       :icon="false"
-      :disabled="!isSubmitAble"
+      :class="{ 'btn--saving': inProgress }"
     >
-      <template v-slot:text>저장</template>
+      <template v-slot:text>저장{{ inProgress ? "중..." : "" }}</template>
     </vueflix-btn>
   </form>
 </template>
@@ -150,6 +150,7 @@ export default {
       birthday: "",
       profileImg: "",
       profilePreview: "",
+      inProgress: "",
     };
   },
   methods: {
@@ -168,24 +169,32 @@ export default {
       };
     },
     async syncToFirebase() {
-      const db = getFirestore();
-      const storage = getStorage();
+      if (!this.inProgress) {
+        this.inProgress = true;
 
-      const storageRef = ref(storage, `user/${this.user.uid}/profile.png`);
-      await uploadBytes(storageRef, this.profileImg);
+        const submitObj = {
+          nickname: this.nickname,
+          gender: this.gender ? this.gender : "",
+          birthday: this.birthday ? this.birthday : "",
+          profileImgSrc: this.profileImg ? profileURL : this.user.profileImgSrc,
+        };
 
-      const profileURL = await getDownloadURL(storageRef);
+        const db = getFirestore();
+        const storage = getStorage();
 
-      const submitObj = {
-        nickname: this.nickname,
-        gender: this.gender,
-        birthday: this.birthday,
-        profileImgSrc: this.profileImg ? profileURL : this.user.profileImgSrc,
-      };
+        const storageRef = ref(storage, `user/${this.user.uid}/profile.png`);
+        const profileURL = await getDownloadURL(storageRef);
 
-      await setDoc(doc(db, "user", this.user.uid), submitObj, { merge: true });
-      this.$store.commit("auth/mergeUser", submitObj);
-      this.$router.back();
+        await uploadBytes(storageRef, this.profileImg);
+        await setDoc(doc(db, "user", this.user.uid), submitObj, {
+          merge: true,
+        });
+        this.$store.commit("auth/mergeUser", submitObj);
+        this.inProgress = false;
+        this.$router.back();
+      } else {
+        return;
+      }
     },
   },
   computed: {
@@ -340,8 +349,12 @@ export default {
   .btn {
     background-color: var(--theme-500);
     border-radius: 9999px;
+    color: #fff;
     &:disabled {
       background-color: var(--theme-300);
+    }
+    &--saving {
+      background-color: transparent;
     }
   }
 }

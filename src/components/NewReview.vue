@@ -2,17 +2,17 @@
   <form class="new-review">
     <div class="input-area inner">
       <star-interaction
-        @starChanged="starChanged"
+        @star-changed="starChanged"
         :rating="starScore"
-        :disabled="!isLoggedIn"
+        :disabled="!user"
         class="inner widget"
       />
-      <div class="row-bottom widget inner">
+      <div class="row-bottom widget inner" v-if="showNewReview">
         <textarea
           :placeholder="placeholder"
           class="new-review-area"
           v-model="reviewData"
-          :disabled="!isLoggedIn"
+          :disabled="!user"
         />
         <div class="interaction-area">
           <div class="col-left">
@@ -20,7 +20,7 @@
             <p v-if="!reviewDataValid" class="too-long-alert">너무 길어요!</p>
           </div>
           <vueflix-btn
-            :disabled="!reviewDataSubmitAble || !isLoggedIn"
+            :disabled="!reviewDataSubmitAble || !user"
             @click="submit"
             component="button"
           >
@@ -42,17 +42,18 @@ export default {
     StarInteraction,
   },
   props: {
-    isLoggedIn: {
+    user: {
       type: [Boolean, Object],
+    },
+    showNewReview: {
+      type: Boolean,
     },
   },
   data() {
     return {
       reviewData: "",
       starScore: 0,
-      placeholder: this.isLoggedIn
-        ? "솔직한 평가, 또는 작품의 매력을 알려주세요 (OST, 작화, 캐릭터 등)"
-        : "아직 로그인하지 않아서 긴 글 리뷰를 남길 수 없어요",
+      placeholder: "",
     };
   },
   computed: {
@@ -63,9 +64,19 @@ export default {
       return this.reviewData.length > 0 && this.reviewDataValid;
     },
   },
+  mounted() {
+    this.setPlaceHolder();
+    this.setStars();
+  },
+  watch: {
+    user() {
+      this.setPlaceHolder();
+      this.setStars();
+    },
+  },
   methods: {
     submit() {
-      this.$emit("reviewDataSubmit", {
+      this.$emit("review-data-submit", {
         content: this.reviewData,
         rating: this.starScore,
       });
@@ -73,7 +84,22 @@ export default {
     },
     starChanged(e) {
       this.starScore = e;
-      this.$emit("scoreChanged", this.starScore);
+      this.$emit("score-changed", this.starScore);
+    },
+    setStars() {
+      if (this.user) {
+        const result = this.user.reviews.find(
+          (reviewItem) => reviewItem.aniTitle === this.$route.params.title
+        );
+        this.starScore = result ? result.rating : 0;
+      }
+    },
+    setPlaceHolder() {
+      if (this.showNewReview) {
+        this.placeholder = this.user
+          ? "솔직한 평가, 또는 작품의 매력을 알려주세요 (OST, 작화, 캐릭터 등)"
+          : "아직 로그인하지 않아서 긴 글 리뷰를 남길 수 없어요";
+      }
     },
   },
 };
@@ -97,8 +123,11 @@ export default {
       }
     }
     .star-interaction {
+      flex-direction: column;
       align-items: center;
       justify-content: space-between;
+      box-shadow: none;
+      background-color: transparent;
     }
     .new-review-area {
       width: 100%;
@@ -153,7 +182,7 @@ export default {
 @media screen and (min-width: 1080px) {
   .new-review .input-area {
     .new-review-area {
-      font-size: 1.3rem;
+      font-size: 1.5rem;
     }
   }
 }

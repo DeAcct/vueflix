@@ -4,6 +4,7 @@
     viewBox="0 0 280 48"
     class="star-graph"
     @mouseover="setGuideHoveredPoint"
+    @mouseout="setGuideText"
     ref="starGraph"
   >
     <path
@@ -13,11 +14,13 @@
       @click="starClicked(index)"
       :class="[
         'star',
-        { 'star--filled': index * 0.5 < rating || index <= hoveredPoint },
+        { 'star--filled': index * 0.5 < rating },
+        { 'star--hovered': index <= hoveredPoint },
       ]"
       role="button"
       :title="`${index * 0.5}점`"
       :data-index="index"
+      id="star-graph"
     />
   </svg>
 </template>
@@ -57,20 +60,22 @@ export default {
       if (!this.disabled) {
         this.$emit("star-changed", (index + 1) * 0.5);
       }
+      this.$emit("guide-text-change", this.guideText);
     },
     setGuideHoveredPoint(e) {
       const path = e.target.closest("path");
       if (!path) return;
       if (!this.$refs.starGraph.contains(path)) return;
-      this.hoveredPoint = e.target.dataset.index;
+      this.hoveredPoint = Number(e.target.dataset.index);
+      this.$emit("guide-text-change", this.guideText);
     },
-    setGuideText(target) {
+    setGuideText(target = this.hoveredPoint) {
       switch (target) {
         case -1:
           this.guideText = "별점을 남겨주세요";
           break;
         case 0:
-          this.guideText = "이제부터 이 감독/작가/제작진이랑 원수지간이야!";
+          this.guideText = "너랑 나랑 원수지간";
           break;
         case 1:
           this.guideText = "그동안 즐거웠고 다시는 만나지 말자";
@@ -91,22 +96,19 @@ export default {
           this.guideText = "꽤 괜찮은 애니";
           break;
         case 7:
-          this.guideText = "앉은 자리에서 정주행 가능!";
+          this.guideText = "재밌어요";
           break;
         case 8:
-          this.guideText = "우주명작!";
+          this.guideText = "앉은 자리에서 정주행 가능!";
           break;
         case 9:
-          this.guideText = "제발 이 애니 안 본 덕후 없게 해주세요ㅠㅠㅠ";
+          this.guideText = "우주명작!";
           break;
       }
-      this.$emit("guide-text-change", this.guideText);
-    },
-    removeGuide() {
-      this.hoveredPoint = -1;
     },
   },
   mounted() {
+    this.setGuideText(this.rating * 2 - 1);
     this.$emit("guide-text-change", this.guideText);
   },
   watch: {
@@ -114,11 +116,11 @@ export default {
       this.setGuideText(this.hoveredPoint);
     },
     rating() {
-      if (this.rating !== 0) {
-        this.setGuideText(this.rating * 2 - 1);
-      } else {
-        this.removeGuide();
+      this.setGuideText(this.rating * 2 - 1);
+      if (this.rating === 0) {
+        this.hoveredPoint = -1;
       }
+      this.$emit("guide-text-change", this.guideText);
     },
   },
 };
@@ -129,7 +131,8 @@ export default {
   width: 24rem;
   .star {
     fill: var(--bg-300);
-    &--filled {
+    &--filled,
+    &--hovered {
       fill: var(--point-500);
     }
   }
