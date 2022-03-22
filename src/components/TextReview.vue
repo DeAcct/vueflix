@@ -5,6 +5,7 @@
     <write-review
       @new-review="addedTrigger"
       @edit-review="editedTrigger"
+      @edit-canceled="editModeOff"
       @score-changed="scoreChanged"
       :user="user"
       :show-new-review="isWriteReviewShown"
@@ -190,10 +191,12 @@ export default {
           mutator(reviewItem);
         }
       });
-      console.log(animeReviews, userReviews, e);
       await updateDoc(this.animeRef, { reviews: animeReviews });
       await updateDoc(this.userRef, { reviews: userReviews });
       await this.syncReviews();
+      this.editModeOff();
+    },
+    editModeOff() {
       this.editmode = false;
     },
     async scoreChanged(e) {

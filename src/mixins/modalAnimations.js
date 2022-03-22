@@ -22,6 +22,7 @@ export const modalAnimations = {
       return BgAnimation;
     },
     ActionAreaAnimation() {
+      const media = matchMedia("screen and (min-width: 1080px)").matches;
       const MobileKeyframe = new KeyframeEffect(
         this.$refs.actionArea,
         [
@@ -42,8 +43,26 @@ export const modalAnimations = {
           easing: "cubic-bezier(1,0,0,1)",
         }
       );
+      const PCKeyframe = new KeyframeEffect(
+        this.$refs.actionArea,
+        [
+          {
+            opacity: 0,
+            visibility: "hidden",
+          },
+          {
+            opacity: 1,
+            visibility: "visible",
+          },
+        ],
+        {
+          duration: 150,
+          fill: "forwards",
+          easing: "cubic-bezier(1,0,0,1)",
+        }
+      );
       const ActionAreaAnimation = new Animation(
-        MobileKeyframe,
+        media ? PCKeyframe : MobileKeyframe,
         document.timeline
       );
       return ActionAreaAnimation;

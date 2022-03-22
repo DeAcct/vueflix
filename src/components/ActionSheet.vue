@@ -6,19 +6,19 @@
       @click="closeOverflowMenu"
       ref="bg"
     />
-    <div class="interact inner" ref="actionArea">
+    <div class="interact" ref="actionArea">
       <ul class="action-sheet__actions">
         <li
           class="action-sheet__item"
           v-for="action in actions"
           :key="action.text"
         >
-          <button @click="action.method">
+          <button @click="action.method" class="inner">
             {{ action.text }}
           </button>
         </li>
       </ul>
-      <button class="action-sheet__close-btn" @click="closeOverflowMenu">
+      <button class="action-sheet__close-btn inner" @click="closeOverflowMenu">
         <i class="icon">
           <icon-base>
             <icon-close />
@@ -66,7 +66,7 @@ export default {
       return result;
     },
     ActionAreaHeight() {
-      return "14.4rem";
+      return "17.5rem";
     },
   },
   mixins: [modalAnimations],
@@ -85,7 +85,7 @@ export default {
   .interact {
     width: 100%;
     position: absolute;
-    bottom: -14.4rem;
+    bottom: -17.5rem;
     background-color: var(--bg-300);
     border-radius: 0.6rem 0.6rem 0 0;
   }
@@ -94,13 +94,22 @@ export default {
   }
   &__item {
     button {
-      padding: 1.6rem 0 1.7rem;
+      width: 100%;
+      text-align: left;
+      padding: {
+        top: 2rem;
+        bottom: 2rem;
+      }
       font-size: 1.3rem;
       font-weight: 500;
     }
   }
   &__close-btn {
-    padding: 1.6rem 0 1.7rem;
+    width: 100%;
+    padding: {
+      top: 2.5rem;
+      bottom: 2.5rem;
+    }
     font-size: 1.3rem;
     font-weight: 500;
     display: flex;
@@ -117,6 +126,32 @@ export default {
     }
     .text {
       font-weight: 500;
+    }
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .action-sheet {
+    width: auto;
+    height: auto;
+    &__bg {
+      background-color: transparent;
+    }
+    .interact {
+      width: 15rem;
+      display: flex;
+      position: static;
+      flex-direction: column;
+      border-radius: 0.6rem;
+      padding: 0 2rem;
+      box-shadow: var(--box-shadow);
+      background-color: var(--top-item);
+    }
+    &__actions {
+      border-bottom: none;
+    }
+    &__close-btn {
+      display: none;
     }
   }
 }

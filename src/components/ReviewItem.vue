@@ -77,7 +77,7 @@ export default {
     border-bottom: 1px solid var(--bg-100);
   }
   &--me {
-    background-color: var(--bg-300);
+    background-color: var(--bg-200);
     border-radius: 0.6rem;
     border: none !important;
   }
@@ -97,6 +97,7 @@ export default {
     white-space: pre-line;
     word-break: break-all;
     font-size: 1.2rem;
+    font-weight: 500;
     line-height: 1.3;
     margin-bottom: 1rem;
   }
@@ -105,9 +106,11 @@ export default {
     align-items: center;
     .date {
       font-size: 1.1rem;
+      font-weight: 500;
       margin-right: 0.5rem;
     }
     button {
+      visibility: hidden;
       color: var(--text-700);
       font-size: 1.1rem;
       font-weight: 500;
@@ -142,6 +145,7 @@ export default {
         font-size: 1.3rem;
       }
       button {
+        visibility: visible;
         font-size: 1.3rem;
       }
     }

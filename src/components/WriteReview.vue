@@ -19,15 +19,25 @@
             <strong class="length">{{ reviewData.length || 0 }}/300</strong>
             <p v-if="!reviewDataValid" class="too-long-alert">너무 길어요!</p>
           </div>
-          <vueflix-btn
-            :disabled="!reviewDataSubmitAble || !user"
-            @click="reviewTrigger"
-            component="button"
-          >
-            <template v-slot:text>
-              {{ type === "new-review" ? "등록" : "수정" }}
-            </template>
-          </vueflix-btn>
+          <div class="col-right">
+            <vueflix-btn
+              v-if="type === 'edit-review'"
+              @click="cancelTrigger"
+              component="button"
+              class="btn--cancel"
+            >
+              <template v-slot:text> 취소 </template>
+            </vueflix-btn>
+            <vueflix-btn
+              :disabled="!reviewDataSubmitAble || !user"
+              @click="reviewTrigger"
+              component="button"
+            >
+              <template v-slot:text>
+                {{ type === "new-review" ? "등록" : "수정" }}
+              </template>
+            </vueflix-btn>
+          </div>
         </div>
       </div>
     </div>
@@ -87,6 +97,9 @@ export default {
         rating: this.starScore,
       });
       this.reviewData = "";
+    },
+    cancelTrigger() {
+      this.$emit("edit-canceled");
     },
     starChanged(e) {
       this.starScore = e;
@@ -160,6 +173,18 @@ export default {
       flex-direction: column;
       justify-content: center;
       height: 2rem;
+    }
+    .col-right {
+      display: flex;
+      .btn {
+        &:not(:last-child) {
+          margin-right: 0.5rem;
+        }
+        &--cancel {
+          background-color: transparent;
+          color: var(--text-700);
+        }
+      }
     }
     .length {
       display: block;

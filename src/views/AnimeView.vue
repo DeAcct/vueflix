@@ -13,6 +13,8 @@
       @overflow-menu-open="actionSheetOpen"
       @require-login="openLoginModal"
       @purchase="openPurchaseModal"
+      @remove-watch-history="removeWatchHistory"
+      @handle-interest="handleInterest"
       class="widget"
     />
     <main>

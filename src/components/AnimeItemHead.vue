@@ -120,16 +120,19 @@
           </div>
         </div>
       </div>
+      <div class="overflow-btn" v-if="user">
+        <button class="icon" @click="actionSheetToggle">
+          <icon-base>
+            <icon-overflow />
+          </icon-base>
+        </button>
+        <action-sheet v-if="isActionSheetOpened" :action-origin="actions" />
+      </div>
     </div>
   </component>
 </template>
 
 <script>
-/*
- * 오버플로 트리거 추가
- *
- * 소장하기 뷰 추가
- */
 import { mapState } from "vuex";
 
 import VueflixBtn from "./VueflixBtn.vue";
@@ -144,6 +147,7 @@ import IconWannaSeeAdded from "./icons/IconWannaSeeAdded.vue";
 import IconPurchase from "./icons/IconPurchase.vue";
 import IconShare from "./icons/IconShare.vue";
 import IconOverflow from "./icons/IconOverflow.vue";
+import ActionSheet from "./ActionSheet.vue";
 
 export default {
   name: "AnimeItemHead",
@@ -159,6 +163,7 @@ export default {
     IconPurchase,
     IconShare,
     IconOverflow,
+    ActionSheet,
   },
   props: {
     isScroll: {
@@ -228,6 +233,17 @@ export default {
       notPC: window.innerWidth <= 1080,
       component: "div",
       isPurchaseActive: false,
+      isActionSheetOpened: false,
+      actions: [
+        {
+          text: "시청기록 초기화",
+          method: this.removeWatchHistory,
+        },
+        {
+          text: "관심없음",
+          method: this.handleInterest,
+        },
+      ],
     };
   },
   methods: {
@@ -286,6 +302,9 @@ export default {
     activeTrigger() {
       this.isPurchaseActive = !this.isPurchaseActive;
     },
+    actionSheetToggle() {
+      this.isActionSheetOpened = !this.isActionSheetOpened;
+    },
     purchase() {
       if (this.user) {
         this.$emit("purchase");
@@ -295,6 +314,12 @@ export default {
           "로그인하면 애니메이션을 구매 및 소장할 수 있어요"
         );
       }
+    },
+    removeWatchHistory() {
+      this.$emit("remove-watch-history");
+    },
+    handleInterest() {
+      this.$emit("handle-interest");
     },
   },
   computed: {
@@ -508,6 +533,9 @@ export default {
         font-size: 1.2rem;
       }
     }
+    .overflow-btn {
+      display: none;
+    }
   }
   .btn-area {
     width: 100%;
@@ -617,9 +645,11 @@ export default {
 @media screen and (min-width: 1080px) {
   .anime-item-head {
     padding: 0 calc((100% - 118rem) / 2);
+
     .anime-info {
       padding: 0;
       margin-bottom: 2.5rem;
+      position: relative;
       .col-right {
         flex: 1;
         width: 100%;
@@ -649,6 +679,26 @@ export default {
         }
         &--loaded {
           width: auto;
+        }
+      }
+      .overflow-btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        .icon {
+          width: 4rem;
+          height: 4rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: var(--overflow-btn-pc);
+          border-radius: 50%;
+        }
+        .action-sheet {
+          justify-self: flex-end;
         }
       }
     }
