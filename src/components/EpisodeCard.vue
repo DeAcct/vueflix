@@ -39,7 +39,7 @@
                 class="title"
                 :style="`color:${excludeTheme ? textColor : undefined}`"
               >
-                {{ index }}화 {{ title }}
+                {{ formattedIndex }} {{ title }}
               </span>
               <span
                 class="date"
@@ -63,16 +63,6 @@
         </i>
       </span>
     </component>
-    <a
-      :href="animeDownloadURL"
-      :download="`${this.$route.params.title} ${index}화 ${title}.mp4`"
-    >
-      <i class="col-right" v-if="download">
-        <icon-base>
-          <icon-download />
-        </icon-base>
-      </i>
-    </a>
   </li>
 </template>
 
@@ -103,7 +93,7 @@ export default {
       type: String,
     },
     index: {
-      type: Number,
+      type: [Number, String],
     },
     date: {
       type: String,
@@ -148,14 +138,10 @@ export default {
     return {
       thumbnailURL: "",
       checked: false,
-      animeDownloadURL: "",
     };
   },
-  async mounted() {
-    const storage = getStorage();
-    const videoRef = ref(storage, "testAnime.mp4");
-    this.animeDownloadURL = await getDownloadURL(videoRef);
-    await this.useURL();
+  mounted() {
+    this.useURL();
   },
   methods: {
     async useURL() {
@@ -174,11 +160,14 @@ export default {
     },
   },
   computed: {
+    formattedIndex() {
+      return typeof this.index === "string" ? this.index : `${this.index}화`;
+    },
     toValue() {
       return this.part === this.$route.params.part &&
         this.index === Number(this.$route.params.index.slice(0, -1))
         ? "#none"
-        : `/player/${this.$route.params.title}/${this.part}/${this.index}화`;
+        : `/player/${this.$route.params.title}/${this.part}/${this.formattedIndex}`;
     },
     isCurrent() {
       return (

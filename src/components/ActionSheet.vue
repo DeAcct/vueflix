@@ -143,12 +143,17 @@ export default {
       position: static;
       flex-direction: column;
       border-radius: 0.6rem;
-      padding: 0 2rem;
       box-shadow: var(--box-shadow);
       background-color: var(--top-item);
     }
     &__actions {
       border-bottom: none;
+    }
+    &__item button {
+      padding: {
+        left: 2rem;
+        right: 2rem;
+      }
     }
     &__close-btn {
       display: none;

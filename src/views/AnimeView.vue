@@ -151,9 +151,9 @@ export default {
     PurchaseModal,
   },
   name: "AnimeView",
-  mounted() {
+  async mounted() {
     document.title = `${this.$route.params.title} 다시보기`;
-    this.animeInit();
+    await this.animeInit();
     window.addEventListener("resize", () => {
       this.deviceHeight = window.innerHeight;
       this.isPC = window.innerWidth >= 1024;

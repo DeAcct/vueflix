@@ -88,15 +88,8 @@ export default {
     },
   },
   watch: {
-    $route(to, from) {
+    $route() {
       this.init();
-      if (this.isMobile && to.name === "anime") {
-        this.transitionName = "anime-to";
-      } else if (this.isMobile && from.name === "anime") {
-        this.transitionName = "anime-from";
-      } else {
-        this.transitionName = "fade";
-      }
     },
     isMobile() {
       this.init();

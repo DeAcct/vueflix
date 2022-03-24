@@ -351,10 +351,48 @@ export default {
       auth: (state) => state.auth.user,
     }),
     partNow() {
-      return Number(this.$route.params.part.slice(0, -1));
+      const currentPart = this.$route.params.part;
+      const result =
+        this.currentAnime.findIndex((part) => part.part === currentPart) + 1;
+      return result;
     },
     indexNow() {
-      return Number(this.$route.params.index.slice(0, -1));
+      /*
+       * 총집편, 특별편 등을 구분.
+       * 총집편이나 특별편 등은 문자 그대로 되어 있으므로 Number 변환시 NaN이 나오는걸 이용한다.
+       */
+      const currentIndex = isNaN(Number(this.$route.params.index.slice(0, -1)))
+        ? this.$route.params.index
+        : Number(this.$route.params.index.slice(0, -1));
+
+      let result =
+        this.currentAnime[this.partNow - 1].episodes.findIndex(
+          (episode) => episode.index === currentIndex
+        ) + 1;
+
+      /*
+       * 파트는 나뉘어 있는데, 화수가 이어질 경우
+       * ex) 13화부터 part2로 분류하는 하얀 모래의 아쿠아톱 등
+       *
+       * 모든 애니가 12화를 기준으로 파트/쿨을 구분하는건 아니므로
+       * ex) 에이티식스 1쿨은 1~11화, 2쿨은 12~23화
+       * 이전 파트의 화수를 모두 더한걸 $route.params를 기반으로 구한 화수에서 빼준다.
+       */
+      if (result > this.partMax) {
+        const previousPartsEpisodes =
+          this.partNow !== 1
+            ? this.partMax.reduce((prev, current, index) => {
+                console.log(prev, current, index);
+                if (index < this.partNow - 1) {
+                  return prev + current;
+                } else {
+                  return prev;
+                }
+              })
+            : 0;
+        result = result - previousPartsEpisodes;
+      }
+      return result;
     },
     episodeCurrentTitle() {
       return this.currentAnime
@@ -363,7 +401,7 @@ export default {
     },
     partMax() {
       return this.currentAnime
-        ? this.currentAnime.map((part) => part.episodes.length)
+        ? this.currentAnime.map((part) => part.maxIndex)
         : undefined;
     },
     nextLink() {

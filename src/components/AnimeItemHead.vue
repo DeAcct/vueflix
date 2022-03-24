@@ -126,7 +126,11 @@
             <icon-overflow />
           </icon-base>
         </button>
-        <action-sheet v-if="isActionSheetOpened" :action-origin="actions" />
+        <action-sheet
+          v-if="isActionSheetOpened"
+          :action-origin="actions"
+          @overflow-menu-close="actionSheetClose"
+        />
       </div>
     </div>
   </component>
@@ -304,6 +308,9 @@ export default {
     },
     actionSheetToggle() {
       this.isActionSheetOpened = !this.isActionSheetOpened;
+    },
+    actionSheetClose() {
+      this.isActionSheetOpened = false;
     },
     purchase() {
       if (this.user) {
