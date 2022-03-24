@@ -172,6 +172,12 @@ export default {
       if (!this.inProgress) {
         this.inProgress = true;
 
+        const db = getFirestore();
+        const storage = getStorage();
+        const storageRef = ref(storage, `user/${this.user.uid}/profile.png`);
+        await uploadBytes(storageRef, this.profileImg);
+        const profileURL = await getDownloadURL(storageRef);
+
         const submitObj = {
           nickname: this.nickname,
           gender: this.gender ? this.gender : "",
@@ -179,13 +185,6 @@ export default {
           profileImgSrc: this.profileImg ? profileURL : this.user.profileImgSrc,
         };
 
-        const db = getFirestore();
-        const storage = getStorage();
-
-        const storageRef = ref(storage, `user/${this.user.uid}/profile.png`);
-        const profileURL = await getDownloadURL(storageRef);
-
-        await uploadBytes(storageRef, this.profileImg);
         await setDoc(doc(db, "user", this.user.uid), submitObj, {
           merge: true,
         });
