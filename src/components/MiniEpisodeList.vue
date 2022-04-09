@@ -26,7 +26,6 @@
           :title="episode.title"
           :date="episode.date"
           :part="part.part"
-          :download="false"
           :exclude-theme="true"
           :accent-current="true"
           text-color="#fff"

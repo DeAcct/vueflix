@@ -4,7 +4,7 @@
       <banner-slide />
       <div class="contents">
         <vueflix-carousel
-          :animeList="auth.recentWatched"
+          :anime-list="auth.recentWatched"
           type="recent"
           v-if="auth ? auth.recentWatched.length : auth"
         >
@@ -15,7 +15,7 @@
           type="recommend"
           v-for="recommended in recommendedAnime"
           :key="recommended.subject"
-          :animeList="recommended.list"
+          :anime-list="recommended.list"
         >
           {{ recommended.subject }}
         </vueflix-carousel>
@@ -23,8 +23,8 @@
     </main>
     <vueflix-modal
       type="yes-no"
-      :yesFunc="install"
-      :noFunc="dismiss"
+      :yes-func="install"
+      :no-func="dismiss"
       :class="{ show: isModalOpened }"
       v-if="isModalOpened"
     >

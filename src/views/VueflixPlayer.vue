@@ -204,6 +204,7 @@ export default {
     },
     async savePoint() {
       this.$store.commit("auth/updateRecentWatched", this.nowEpisodeInfo);
+      this.$store.commit("auth/updateMaratonWatch", this.maratonInfo);
       const db = getFirestore();
       await setDoc(doc(db, "user", this.auth.uid), {
         ...this.auth,
@@ -275,11 +276,12 @@ export default {
       this.isEnd = false;
       this.$refs.video.currentTime = this.$refs.video.duration * e;
     },
-    videoEnd() {
+    async videoEnd() {
       this.isEnd = true;
       clearTimeout(this.controllerTimer);
       this.controllerTimer = undefined;
       this.isControllerShown = true;
+      await this.savePoint();
     },
     openPlayerSetting() {
       this.$refs.video.pause();
@@ -382,7 +384,6 @@ export default {
         const previousPartsEpisodes =
           this.partNow !== 1
             ? this.partMax.reduce((prev, current, index) => {
-                console.log(prev, current, index);
                 if (index < this.partNow - 1) {
                   return prev + current;
                 } else {
@@ -393,6 +394,9 @@ export default {
         result = result - previousPartsEpisodes;
       }
       return result;
+    },
+    allEpisodes() {
+      return this.partMax.reduce((prev, current) => prev + current, 0);
     },
     episodeCurrentTitle() {
       return this.currentAnime
@@ -422,14 +426,7 @@ export default {
         }
       }
     },
-    nowEpisodeInfo() {
-      const aniTitle = this.$route.params.title;
-      let part = this.partNow;
-      let index = this.indexNow;
-      const continueLink =
-        this.videoProgress === "100%"
-          ? this.nextLink
-          : `/player/${this.$route.params.title}/${this.$route.params.part}/${this.$route.params.index}`;
+    nowTime() {
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
@@ -438,22 +435,50 @@ export default {
       const min = now.getMinutes();
       const sec = now.getSeconds();
       return {
-        aniTitle: aniTitle,
+        year,
+        month,
+        date,
+        hour,
+        min,
+        sec,
+      };
+    },
+    nowEpisodeInfo() {
+      const aniTitle = this.$route.params.title;
+      const part = this.partNow;
+      const index = this.indexNow;
+      const continueLink =
+        this.videoProgress === "100%"
+          ? this.nextLink
+          : `/player/${this.$route.params.title}/${this.$route.params.part}/${this.$route.params.index}`;
+
+      return {
+        aniTitle,
         part: this.partNow,
         index: this.indexNow,
-        watchedPoint: {
-          year: year,
-          month: month,
-          date: date,
-          hour: hour,
-          min: min,
-          sec: sec,
-        },
-        continueLink: continueLink,
+        watchedPoint: this.nowTime,
+        continueLink,
         episodeTitle: this.currentAnime[part - 1].episodes[index - 1].title,
         episodeThumbnail:
           this.currentAnime[part - 1].episodes[index - 1].thumbnail,
         watchedPercent: this.videoProgress,
+      };
+    },
+    maratonInfo() {
+      const aniTitle = this.$route.params.title;
+      const part = this.partNow;
+      const index = this.indexNow;
+      const recentTime = this.nowTime;
+      const allEpisodes = this.allEpisodes;
+      return {
+        aniTitle,
+        recentTime,
+        allEpisodes,
+        item: {
+          part,
+          index,
+          episodePercent: this.videoProgress,
+        },
       };
     },
     nextEpisodeInfo() {

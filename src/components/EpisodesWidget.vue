@@ -25,7 +25,6 @@
         :thumbnail="episode.thumbnail"
         :index="episode.index"
         :part="episodesData.part"
-        :download="download"
         @login-require="loginRequire"
         @added="addedTrigger"
         @deleted="deletedTrigger"
@@ -58,10 +57,6 @@ export default {
     type: {
       type: String,
       default: "router-link",
-    },
-    download: {
-      type: Boolean,
-      default: true,
     },
     downChecked: {
       type: Boolean,

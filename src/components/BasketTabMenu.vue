@@ -22,7 +22,6 @@ export default {
       tabItems: [
         { text: "최근 본", type: "recent", selected: true },
         { text: "보고싶다", type: "wanna", selected: false },
-        { text: "다운로드", type: "downloaded", selected: false },
         { text: "구매한", type: "purchase", selected: false },
         { text: "관심없음", type: "not-interested", selected: false },
       ],

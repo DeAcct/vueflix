@@ -24,6 +24,13 @@
               loading="lazy"
               class="thumbnail__img"
             />
+            <span class="thumbnail__progress" v-if="progress">
+              <span
+                class="thumbnail__progress__body"
+                :style="`width:${progress}`"
+              ></span>
+              <span class="blind">{{ progress }}퍼센트</span>
+            </span>
             <span v-if="isCurrent" class="thumbnail__now-playing">
               현재 재생 중
             </span>
@@ -78,7 +85,6 @@
  */
 
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import IconDownload from "./icons/IconDownload.vue";
 import IconBase from "../components/IconBase.vue";
 import IconPlay from "./icons/IconPlay.vue";
 import { mapState } from "vuex";
@@ -100,9 +106,6 @@ export default {
     },
     part: {
       type: String,
-    },
-    download: {
-      type: Boolean,
     },
     excludeTheme: {
       type: Boolean,
@@ -129,7 +132,6 @@ export default {
     },
   },
   components: {
-    IconDownload,
     IconBase,
     IconPlay,
     IconWannaSeeAdded,
@@ -194,6 +196,21 @@ export default {
     ...mapState({
       auth: (state) => state.auth.user,
     }),
+    progress() {
+      const anime = this.auth
+        ? this.auth.maratonWatch.find(
+            (anime) => anime.aniTitle === this.$route.params.title
+          )
+        : undefined;
+      const episodeTarget = anime
+        ? anime.items.find(
+            (episode) =>
+              episode.index === this.index &&
+              episode.part === Number(this.part.slice(0, -1))
+          )
+        : undefined;
+      return episodeTarget ? episodeTarget.episodePercent : 0;
+    },
   },
   watch: {
     checked() {
@@ -250,6 +267,9 @@ export default {
       }
       .thumbnail {
         position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         width: 12rem;
         height: calc(12rem / 16 * 9);
         border-radius: 0.2rem;
@@ -258,6 +278,22 @@ export default {
           width: 100%;
           height: 100%;
           object-fit: cover;
+        }
+        &__progress {
+          position: absolute;
+          bottom: 1rem;
+          display: flex;
+          width: calc(100% - 2rem);
+          height: 0.5rem;
+          border-radius: 9999px;
+          overflow: hidden;
+          background-color: var(--bg-100);
+          &__body {
+            width: 0;
+            height: 100%;
+            border-radius: 9999px;
+            background-color: var(--theme-500);
+          }
         }
         &__now-playing {
           position: absolute;

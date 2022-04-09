@@ -10,6 +10,7 @@
       :user="user"
       :show-new-review="isWriteReviewShown"
       :type="writeReviewType"
+      :current-my-review="myReview"
     />
     <ul
       :class="['inner', { 'review-list--exists': reviewList }]"
@@ -139,6 +140,9 @@ export default {
     async syncReviews() {
       const animeSnapshot = await getDoc(this.animeRef);
       const animeReviews = animeSnapshot.data().reviews;
+      const userSnapshot = await getDoc(this.userRef);
+      const userReviews = userSnapshot.data().reviews;
+      this.$store.commit("auth/setReviews", userReviews);
       this.reviewList = animeReviews;
       this.sortReview();
     },
@@ -161,9 +165,9 @@ export default {
       );
       const userSnapshot = await getDoc(this.userRef);
       const userReviews = userSnapshot.data().reviews;
-      const result = userReviews.filter((reviewItem) => {
-        reviewItem.aniTitle !== this.$route.params.title;
-      });
+      const result = userReviews.filter(
+        (reviewItem) => reviewItem.aniTitle !== this.$route.params.title
+      );
       await setDoc(this.userRef, { reviews: result }, { merge: true });
       await this.syncReviews();
     },

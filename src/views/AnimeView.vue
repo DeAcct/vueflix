@@ -2,14 +2,7 @@
   <div class="anime" :style="`min-height: ${deviceHeight + 1}px`" v-if="!isSub">
     <anime-item-head
       :is-scroll="isScroll"
-      :title="animeInfo.name"
-      :poster="animeInfo.poster"
-      :type="animeInfo.type"
-      :rating="animeInfo.rating"
-      :is-end="animeInfo.isEnd"
-      :genres="animeInfo.genre"
-      :star-rating-avg="animeInfo.starRating"
-      :summary="animeInfo.summary"
+      :anime-info="animeInfo"
       @overflow-menu-open="actionSheetOpen"
       @require-login="openLoginModal"
       @purchase="openPurchaseModal"
@@ -319,6 +312,7 @@ export default {
         font-size: 1.2rem;
         line-height: 1.3;
         height: 2.6rem;
+        text-align: center;
         &--loaded {
           height: auto;
           background: transparent;

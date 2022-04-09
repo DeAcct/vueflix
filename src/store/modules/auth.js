@@ -87,6 +87,52 @@ const mutations = {
       }
     }
   },
+  setReviews(state, payload) {
+    state.reviews = payload;
+  },
+  updateMaratonWatch(state, payload) {
+    const targetIndex = state.user.maratonWatch.findIndex(
+      (anime) => anime.aniTitle === payload.aniTitle
+    );
+    if (targetIndex === -1) {
+      const data = {
+        aniTitle: payload.aniTitle,
+        recentTime: payload.recentTime,
+        allEpisodes: payload.allEpisodes,
+        items: [payload.item],
+        maratonEnd: false,
+      };
+      state.user.maratonWatch.push(data);
+    } else {
+      /* 시간정보 업데이트 */
+      state.user.maratonWatch[targetIndex] = {
+        ...state.user.maratonWatch[targetIndex],
+        recentTime: payload.recentTime,
+      };
+      /*
+       * 100%면 안건들기
+       * 100% 아니면 건들기
+       * 아예 그걸 본 흔적이 없으면 push()
+       */
+      const target = state.user.maratonWatch[targetIndex];
+      const mutateTargetEpIndex = target.items.findIndex(
+        (item) =>
+          item.part === payload.item.part && item.index === payload.item.index
+      );
+      const maratonEnd =
+        target.items.reduce(
+          (prev, next) => prev && next.episodePercent === "100%",
+          true
+        ) && target.items.length === target.allEpisodes;
+      if (mutateTargetEpIndex === -1) {
+        target.items.push(payload.item);
+      } else {
+        target.items[mutateTargetEpIndex].episodePercent =
+          payload.item.episodePercent;
+      }
+      state.user.maratonWatch[targetIndex].maratonEnd = maratonEnd;
+    }
+  },
 };
 
 export default {

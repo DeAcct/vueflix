@@ -35,7 +35,7 @@
             </li>
             <li class="stat-item">
               <h3>정주행</h3>
-              <p>{{ user.maratonWatched.length }}개</p>
+              <p>{{ maratonWatched }}개</p>
             </li>
           </ul>
         </section>
@@ -115,6 +115,12 @@ export default {
     ...mapState({
       user: (state) => state.auth.user,
     }),
+    maratonWatched() {
+      const result = this.user
+        ? this.user.maratonWatch.filter((anime) => anime.maratonEnd).length
+        : 0;
+      return result;
+    },
   },
   data() {
     return {

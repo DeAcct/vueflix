@@ -63,6 +63,9 @@ export default {
     type: {
       type: String,
     },
+    currentMyReview: {
+      type: [Object, undefined],
+    },
   },
   data() {
     return {
@@ -82,11 +85,15 @@ export default {
   mounted() {
     this.setPlaceHolder();
     this.setStars();
+    this.setData();
   },
   watch: {
     user() {
       this.setPlaceHolder();
       this.setStars();
+    },
+    currentMyReview() {
+      this.setData();
     },
   },
   methods: {
@@ -119,6 +126,11 @@ export default {
           ? "솔직한 평가, 또는 작품의 매력을 알려주세요 (OST, 작화, 캐릭터 등)"
           : "아직 로그인하지 않아서 긴 글 리뷰를 남길 수 없어요";
       }
+    },
+    setData() {
+      this.reviewData = this.currentMyReview
+        ? this.currentMyReview.content
+        : "";
     },
   },
 };

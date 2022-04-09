@@ -13,7 +13,6 @@
 import BasketTabMenu from "../components/BasketTabMenu.vue";
 import BasketTabRecent from "../components/BasketTabRecent.vue";
 import BasketTabWanna from "../components/BasketTabWanna.vue";
-import BasketTabDownloaded from "../components/BasketTabDownloaded.vue";
 import BasketTabPurchase from "../components/BasketTabPurchase.vue";
 import BasketTabNotInterested from "../components/BasketTabNotInterested.vue";
 
@@ -23,7 +22,6 @@ export default {
     BasketTabMenu,
     BasketTabRecent,
     BasketTabWanna,
-    BasketTabDownloaded,
     BasketTabPurchase,
     BasketTabNotInterested,
   },

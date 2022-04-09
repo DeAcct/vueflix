@@ -11,7 +11,7 @@
             <icon-arrow-prev />
           </icon-base>
         </a>
-        <strong class="scroll-title">{{ title }}</strong>
+        <strong class="scroll-title">{{ animeInfo.name }}</strong>
       </div>
       <div class="col-right">
         <button class="share-btn" @click="openSystemShare">
@@ -28,54 +28,71 @@
     </div>
     <div class="anime-info inner">
       <div
-        :class="['poster', 'loading-target', { 'poster--loaded': poster }]"
+        :class="[
+          'poster',
+          'loading-target',
+          { 'poster--loaded': animeInfo.poster },
+        ]"
         v-if="!notPC"
       >
-        <img :src="poster" :alt="`${title} 포스터`" />
+        <img :src="animeInfo.poster" :alt="`${animeInfo.name} 포스터`" />
       </div>
       <div
         :class="[
           'col-right',
           'loading-target',
-          { 'col-right--loaded': type && rating && title },
+          {
+            'col-right--loaded':
+              animeInfo.type && animeInfo.rating && animeInfo.name,
+          },
         ]"
       >
         <div class="row-top">
           <ul class="genres">
             <li
-              v-for="genre in genres"
+              v-for="genre in animeInfo.genre"
               :key="genre"
               class="genre division-pipe"
             >
               {{ genre }}
             </li>
           </ul>
-          <h2 class="title">{{ title }}</h2>
+          <h2 class="title">{{ animeInfo.name }}</h2>
           <div class="row-bottom">
             <p
               :class="[
                 'star-rating-number',
-                { 'star-rating-number--loaded': type && rating && title },
+                {
+                  'star-rating-number--loaded':
+                    animeInfo.type && animeInfo.rating && animeInfo.name,
+                },
               ]"
+              v-if="starRatingAvg"
             >
               <i class="icon">
                 <icon-base>
                   <icon-star-rating />
                 </icon-base>
               </i>
-              {{ starRatingAvg ? starRatingAvg.toFixed(1) : "" }}점
+              {{ starRatingAvg.toFixed(1) }}점
             </p>
             <p class="sub-info">
-              {{ type }}
+              {{ animeInfo.type }}
               &middot;
-              {{ rating }}
+              {{ animeInfo.rating }}
               &middot;
-              {{ isEnd ? "완결" : "방영중" }}
+              {{ animeInfo.isEnd ? "완결" : "방영중" }}
             </p>
           </div>
         </div>
         <div
-          :class="['btn-area', { 'btn-area--loaded': type && rating && title }]"
+          :class="[
+            'btn-area',
+            {
+              'btn-area--loaded':
+                animeInfo.type && animeInfo.rating && animeInfo.name,
+            },
+          ]"
         >
           <div class="col-left">
             <router-link class="btn-area__continue" :to="continueLink" replace>
@@ -174,36 +191,8 @@ export default {
       type: Boolean,
     },
 
-    title: {
-      type: String,
-    },
-    poster: {
-      type: String,
-    },
-
-    type: {
-      type: String,
-    },
-    rating: {
-      //방송심의 prop
-      type: String,
-    },
-    isEnd: {
-      type: Boolean,
-    },
-    isUserRated: {
-      type: Boolean,
-    },
-
-    genres: {
-      type: Array,
-    },
-    starRatingAvg: {
-      //별점 평균 prop
-      type: Number,
-    },
-    myRating: {
-      type: Number,
+    animeInfo: {
+      type: Object,
     },
 
     summary: {
@@ -336,7 +325,7 @@ export default {
     posterBg() {
       const bg = `background-image: linear-gradient(transparent,var(--anime-bg) ${
         !this.isMobile ? "90%" : "80%"
-      }), url(${this.poster});`;
+      }), url(${this.animeInfo.poster});`;
 
       return bg;
     },
@@ -364,6 +353,13 @@ export default {
         }
       }
       return "1화 무료보기";
+    },
+    starRatingAvg() {
+      const reviews =
+        Object.keys(this.animeInfo).length !== 0 ? this.animeInfo.reviews : [];
+      const total = reviews.reduce((prev, next) => prev + next.rating, 0);
+      const average = total / reviews.length;
+      return average;
     },
   },
 
@@ -517,8 +513,6 @@ export default {
         color: inherit;
         font-size: 1.3rem;
         font-weight: 500;
-        opacity: 0;
-        transition: 150ms ease-out;
         margin-right: 1.5rem;
         .icon {
           display: flex;
@@ -527,8 +521,9 @@ export default {
           width: 1.8rem;
           height: 1.8rem;
           margin-right: 0.5rem;
+          opacity: 0;
         }
-        &--loaded {
+        &--loaded .icon {
           opacity: 1;
         }
       }
