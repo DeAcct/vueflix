@@ -59,23 +59,6 @@
           </ul>
           <h2 class="title">{{ animeInfo.name }}</h2>
           <div class="row-bottom">
-            <p
-              :class="[
-                'star-rating-number',
-                {
-                  'star-rating-number--loaded':
-                    animeInfo.type && animeInfo.rating && animeInfo.name,
-                },
-              ]"
-              v-if="starRatingAvg"
-            >
-              <i class="icon">
-                <icon-base>
-                  <icon-star-rating />
-                </icon-base>
-              </i>
-              {{ starRatingAvg.toFixed(1) }}점
-            </p>
             <p class="sub-info">
               {{ animeInfo.type }}
               &middot;
@@ -162,7 +145,6 @@ import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconWannaSee from "./icons/IconWannaSee.vue";
 import IconPlay from "./icons/IconPlay.vue";
 import { getFirestore, setDoc, doc, getDoc } from "firebase/firestore";
-import IconStarRating from "./icons/IconStarRating.vue";
 import IconWannaSeeAdd from "./icons/IconWannaSeeAdd.vue";
 import IconWannaSeeAdded from "./icons/IconWannaSeeAdded.vue";
 import IconPurchase from "./icons/IconPurchase.vue";
@@ -178,7 +160,6 @@ export default {
     IconArrowPrev,
     IconWannaSee,
     IconPlay,
-    IconStarRating,
     IconWannaSeeAdd,
     IconWannaSeeAdded,
     IconPurchase,
@@ -354,13 +335,6 @@ export default {
       }
       return "1화 무료보기";
     },
-    starRatingAvg() {
-      const reviews =
-        Object.keys(this.animeInfo).length !== 0 ? this.animeInfo.reviews : [];
-      const total = reviews.reduce((prev, next) => prev + next.rating, 0);
-      const average = total / reviews.length;
-      return average;
-    },
   },
 
   watch: {
@@ -507,26 +481,6 @@ export default {
         line-height: 1.5;
         margin-bottom: 0.7rem;
       }
-      .star-rating-number {
-        display: flex;
-        align-items: center;
-        color: inherit;
-        font-size: 1.3rem;
-        font-weight: 500;
-        margin-right: 1.5rem;
-        .icon {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 1.8rem;
-          height: 1.8rem;
-          margin-right: 0.5rem;
-          opacity: 0;
-        }
-        &--loaded .icon {
-          opacity: 1;
-        }
-      }
 
       .sub-info {
         display: flex;
@@ -667,13 +621,6 @@ export default {
           .title {
             font-size: 3.5rem;
             margin-bottom: 1.5rem;
-          }
-          .star-rating-number {
-            font-size: 1.8rem;
-            .icon {
-              width: 2.4rem;
-              height: 2.4rem;
-            }
           }
           .sub-info {
             font-size: 1.5rem;

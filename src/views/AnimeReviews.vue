@@ -6,21 +6,21 @@
       </template>
       <template v-slot:login-state-text>로그인</template>
     </login-widget>
-    <keyword-review class="widget" :isLoggedIn="user" />
+    <keyword-reviews class="widget" :isLoggedIn="user" />
     <text-review class="widget" :user="user" />
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import KeywordReview from "../components/KeywordReview.vue";
+import KeywordReviews from "../components/KeywordReviews.vue";
 import TextReview from "../components/TextReview.vue";
 import LoginWidget from "../components/LoginWidget.vue";
 
 export default {
   name: "AnimeReviews",
   components: {
-    KeywordReview,
+    KeywordReviews,
     TextReview,
     LoginWidget,
   },

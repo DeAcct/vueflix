@@ -1,31 +1,33 @@
 <template>
-  <li :class="['review-item', { 'review-item--me': isMe }]">
+  <component
+    :is="component"
+    :class="[
+      'review-item',
+      { 'review-item--me': isMe },
+      { 'review-item--other': !isMe },
+    ]"
+  >
     <div class="row-top">
       <strong class="author" v-if="!isMe">
         <slot name="author"></slot>
       </strong>
       <strong class="author" v-else>나</strong>
-      <star-graph :rating="rating" v-if="rating !== 0" />
+      <p class="date">{{ formattedDate }}</p>
     </div>
     <p class="content">
       <slot name="content"></slot>
     </p>
     <div class="interact-area">
-      <p class="date">{{ formattedDate }}</p>
       <button v-if="!isMe">신고</button>
       <button v-if="isMe" @click="editTrigger">수정</button>
       <button v-if="isMe" @click="deleteTrigger">삭제</button>
     </div>
-  </li>
+  </component>
 </template>
 
 <script>
-import StarGraph from "./StarGraph.vue";
 export default {
   name: "ReviewItem",
-  components: {
-    StarGraph,
-  },
   props: {
     rating: {
       type: Number,
@@ -35,6 +37,10 @@ export default {
     },
     isMe: {
       type: Boolean,
+    },
+    component: {
+      type: String,
+      default: "li",
     },
   },
   methods: {
@@ -50,6 +56,7 @@ export default {
       return result;
     },
     deleteTrigger() {
+      console.log("dd");
       this.$emit("delete-review");
     },
     editTrigger() {
@@ -73,23 +80,22 @@ export default {
 <style lang="scss" scoped>
 .review-item {
   padding: 1rem 2rem;
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--bg-100);
-  }
   &--me {
-    background-color: var(--bg-200);
     border-radius: 0.6rem;
-    border: none !important;
+    background-color: var(--bg-300);
   }
+  &--other {
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--bg-300);
+    }
+  }
+
   .row-top {
     display: flex;
     align-items: center;
     .author {
       font-size: 1.3rem;
       margin-right: 1rem;
-    }
-    .star-graph {
-      width: 6rem;
     }
     margin-bottom: 0.5rem;
   }
@@ -110,7 +116,6 @@ export default {
       margin-right: 0.5rem;
     }
     button {
-      visibility: hidden;
       color: var(--text-700);
       font-size: 1.1rem;
       font-weight: 500;
@@ -132,9 +137,6 @@ export default {
         font-size: 1.7rem;
         margin-right: 1.5rem;
       }
-      .star-graph {
-        width: 8rem;
-      }
       margin-bottom: 0.5rem;
     }
     .content {
@@ -145,7 +147,6 @@ export default {
         font-size: 1.3rem;
       }
       button {
-        visibility: visible;
         font-size: 1.3rem;
       }
     }

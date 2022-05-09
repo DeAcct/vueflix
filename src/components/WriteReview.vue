@@ -1,12 +1,6 @@
 <template>
   <form class="write-review">
-    <div class="input-area inner">
-      <star-interaction
-        @star-changed="starChanged"
-        :rating="starScore"
-        :disabled="!user"
-        class="inner widget"
-      />
+    <div class="input-area">
       <div class="row-bottom widget inner" v-if="showNewReview">
         <textarea
           :placeholder="placeholder"
@@ -46,12 +40,10 @@
 
 <script>
 import VueflixBtn from "./VueflixBtn.vue";
-import StarInteraction from "./StarInteraction.vue";
 export default {
   name: "WriteReview",
   components: {
     VueflixBtn,
-    StarInteraction,
   },
   props: {
     user: {
@@ -70,7 +62,6 @@ export default {
   data() {
     return {
       reviewData: "",
-      starScore: 0,
       placeholder: "",
     };
   },
@@ -84,13 +75,11 @@ export default {
   },
   mounted() {
     this.setPlaceHolder();
-    this.setStars();
     this.setData();
   },
   watch: {
     user() {
       this.setPlaceHolder();
-      this.setStars();
     },
     currentMyReview() {
       this.setData();
@@ -101,24 +90,11 @@ export default {
       const eventType = this.type === "new-review" ? "new" : "edit";
       this.$emit(`${eventType}-review`, {
         content: this.reviewData,
-        rating: this.starScore,
       });
       this.reviewData = "";
     },
     cancelTrigger() {
       this.$emit("edit-canceled");
-    },
-    starChanged(e) {
-      this.starScore = e;
-      this.$emit("score-changed", this.starScore);
-    },
-    setStars() {
-      if (this.user) {
-        const result = this.user.reviews.find(
-          (reviewItem) => reviewItem.aniTitle === this.$route.params.title
-        );
-        this.starScore = result ? result.rating : 0;
-      }
     },
     setPlaceHolder() {
       if (this.showNewReview) {
@@ -152,13 +128,6 @@ export default {
       &:not(:last-child) {
         margin-bottom: 1rem;
       }
-    }
-    .star-interaction {
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: none;
-      background-color: transparent;
     }
     .new-review-area {
       width: 100%;

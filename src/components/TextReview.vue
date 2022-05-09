@@ -1,34 +1,42 @@
 <template>
-  <section class="text-review">
-    <h2 class="title inner">긴 글 리뷰</h2>
-    <p class="description inner">키워드로 표현할 수 없는 무언가가 있다면!</p>
+  <section class="text-review inner">
+    <h2 class="title">긴 글</h2>
+    <p class="description">키워드로 표현할 수 없는 무언가가 있다면!</p>
     <write-review
       @new-review="addedTrigger"
       @edit-review="editedTrigger"
       @edit-canceled="editModeOff"
-      @score-changed="scoreChanged"
       :user="user"
       :show-new-review="isWriteReviewShown"
       :type="writeReviewType"
       :current-my-review="myReview"
     />
-    <ul
-      :class="['inner', { 'review-list--exists': reviewList }]"
-      v-if="!isWriteReviewShown"
-    >
+    <div :class="{ 'review-list--exists': reviewList }">
       <review-item
-        v-for="(reviewItem, index) in reviewList"
-        :key="index"
-        :rating="reviewItem.rating"
-        :date="reviewItem.time"
-        :is-me="reviewItem.uid === user.uid"
-        @delete-review="deleteTrigger"
+        v-if="!isWriteReviewShown"
+        class="my-review"
+        :is-me="true"
+        :date="myReview.time"
         @edit-review="editModeOn"
+        @delete-review="deleteTrigger"
+        component="div"
       >
-        <template v-slot:author>{{ reviewItem.author }}</template>
-        <template v-slot:content>{{ reviewItem.content }}</template>
+        <template v-slot:author>나</template>
+        <template v-slot:content>{{ myReview.content }}</template>
       </review-item>
-    </ul>
+      <ul :class="['others-list', { 'others-list--exists': othersReview }]">
+        <review-item
+          v-for="(reviewItem, index) in othersReview"
+          :key="index"
+          :rating="reviewItem.rating"
+          :date="reviewItem.time"
+          :is-me="false"
+        >
+          <template v-slot:author>{{ reviewItem.author }}</template>
+          <template v-slot:content>{{ reviewItem.content }}</template>
+        </review-item>
+      </ul>
+    </div>
   </section>
 </template>
 
@@ -68,7 +76,7 @@ export default {
       return doc(this.db, "anime", this.$route.params.title);
     },
     userRef() {
-      return doc(this.db, "user", this.user.uid);
+      return this.user ? doc(this.db, "user", this.user.uid) : undefined;
     },
     myReview() {
       const result = this.user
@@ -106,11 +114,6 @@ export default {
       };
     },
   },
-  watch: {
-    reviewList() {
-      this.sortReview();
-    },
-  },
   async mounted() {
     this.syncReviews();
   },
@@ -144,18 +147,6 @@ export default {
       const userReviews = userSnapshot.data().reviews;
       this.$store.commit("auth/setReviews", userReviews);
       this.reviewList = animeReviews;
-      this.sortReview();
-    },
-    sortReview() {
-      if (this.user) {
-        this.reviewList = this.reviewList.sort((reviewItem) => {
-          if (reviewItem.uid === this.user.uid) {
-            return -1;
-          } else {
-            return 1;
-          }
-        });
-      }
     },
     async deleteTrigger() {
       await setDoc(
@@ -203,27 +194,6 @@ export default {
     editModeOff() {
       this.editmode = false;
     },
-    async scoreChanged(e) {
-      const userSnapshot = await getDoc(this.userRef);
-      const userReviews = userSnapshot.data().reviews;
-      const animeSnapshot = await getDoc(this.animeRef);
-      const animeReviews = animeSnapshot.data().reviews;
-
-      animeReviews.forEach((reviewItem) => {
-        if (reviewItem.uid === this.user.uid) {
-          reviewItem.rating = e;
-        }
-      });
-      userReviews.forEach((reviewItem) => {
-        if (reviewItem.aniTitle === this.$route.params.title) {
-          reviewItem.rating = e;
-        }
-      });
-
-      await updateDoc(this.animeRef, { reviews: animeReviews });
-      await updateDoc(this.userRef, { reviews: userReviews });
-      await this.syncReviews();
-    },
   },
 };
 </script>
@@ -248,10 +218,19 @@ export default {
   }
   .description {
     font-size: 1.3rem;
-    margin-bottom: 1.8rem;
+  }
+  .write-review {
+    margin-top: 1.5rem;
   }
   .review-list--exists {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
+  }
+  .others-list {
+    background-color: var(--bg-200);
+    border-radius: 0.6rem;
+    &--exists {
+      margin-top: 1rem;
+    }
   }
 }
 </style>
