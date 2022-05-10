@@ -99,7 +99,7 @@ export default {
     setPlaceHolder() {
       if (this.showNewReview) {
         this.placeholder = this.user
-          ? "솔직한 평가, 또는 작품의 매력을 알려주세요 (OST, 작화, 캐릭터 등)"
+          ? "솔직한 평가를 작성해 주세요!"
           : "아직 로그인하지 않아서 긴 글 리뷰를 남길 수 없어요";
       }
     },

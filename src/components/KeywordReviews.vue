@@ -2,14 +2,27 @@
   <section class="keyword-reviews inner">
     <h2 class="keyword-reviews__title">키워드</h2>
     <div class="sub-widgets">
-      <keyword-others-chart :data="labels" class="sub-widget" />
-      <div class="sub-widget"></div>
+      <div class="row-top">
+        <keyword-others-chart :data="labels" class="sub-widget" />
+        <keyword-my :data="labels" class="sub-widget" />
+      </div>
+      <router-link to="#" class="suggestion-link sub-widget">
+        그림체와 작화는 같은거 아닌가요?
+        <i class="icon">
+          <icon-base>
+            <icon-arrow-next />
+          </icon-base>
+        </i>
+      </router-link>
     </div>
   </section>
 </template>
 
 <script>
 import KeywordOthersChart from "./KeywordOthersChart.vue";
+import KeywordMy from "./KeywordMy.vue";
+import IconBase from "./IconBase.vue";
+import IconArrowNext from "./icons/IconArrowNext.vue";
 
 export default {
   name: "KeyworkReview",
@@ -20,16 +33,19 @@ export default {
   },
   components: {
     KeywordOthersChart,
+    KeywordMy,
+    IconBase,
+    IconArrowNext,
   },
-  //내용 전개, 그림체, 작화, 연출, 캐릭터
   data() {
     return {
       labels: [
-        { keyword: "그림체", value: 50 },
-        { keyword: "작화", value: 30 },
-        { keyword: "연출", value: 10 },
-        { keyword: "캐릭터", value: 7 },
-        { keyword: "내용 전개", value: 3 },
+        { id: "drawing-style", keyword: "그림체", value: 50 },
+        { id: "animating", keyword: "작화", value: 25 },
+        { id: "directing", keyword: "연출", value: 12.5 },
+        { id: "character", keyword: "캐릭터", value: 6.25 },
+        { id: "probability", keyword: "스토리", value: 3.125 },
+        { id: "bgm", keyword: "배경음악", value: 1.5625 },
       ],
     };
   },
@@ -59,15 +75,24 @@ export default {
     display: flex;
     flex-direction: column;
     .row-top {
-      margin-bottom: 3rem;
-    }
-    .keyword-others-chart {
-      max-width: 768px;
+      margin-bottom: 1rem;
     }
     .sub-widget {
       padding: 1.5rem 0;
-      &:not(:last-child) {
-        border-bottom: 1px solid var(--bg-200);
+      flex: 1 1rem;
+      transition: 150ms ease-out;
+    }
+    .suggestion-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-200);
+      border-radius: 0.6rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      padding: {
+        left: var(--inner-padding);
+        right: var(--inner-padding);
       }
     }
   }
@@ -75,13 +100,11 @@ export default {
 
 @media screen and (min-width: 1024px) {
   .keyword-reviews {
-    .sub-widgets .sub-widget {
-      flex: 1;
-      width: auto;
+    .sub-widgets {
+      flex-direction: row;
+      justify-content: space-between;
       &:not(:last-child) {
-        padding: {
-          bottom: 0;
-        }
+        margin-right: 1rem;
       }
     }
   }

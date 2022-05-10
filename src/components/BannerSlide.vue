@@ -155,12 +155,7 @@ export default {
 .slide {
   min-height: 50vh;
   border-radius: 0;
-  background-image: linear-gradient(
-    90deg,
-    hsl(210, 29%, 10%),
-    hsl(210, 20%, 20%)
-  );
-  transition: opacity 150ms ease-out;
+  background-image: linear-gradient(90deg, var(--bg-100), var(--bg-300));
   &--loaded {
     min-height: auto;
     background: transparent;

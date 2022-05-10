@@ -93,11 +93,16 @@ export default {
   .row-top {
     display: flex;
     align-items: center;
+    margin-bottom: 0.5rem;
     .author {
       font-size: 1.3rem;
       margin-right: 1rem;
     }
-    margin-bottom: 0.5rem;
+    .date {
+      font-size: 1.1rem;
+      font-weight: 300;
+      margin-right: 0.5rem;
+    }
   }
   .content {
     white-space: pre-line;
@@ -110,11 +115,7 @@ export default {
   .interact-area {
     display: flex;
     align-items: center;
-    .date {
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin-right: 0.5rem;
-    }
+
     button {
       color: var(--text-700);
       font-size: 1.1rem;
@@ -133,19 +134,19 @@ export default {
 @media screen and (min-width: 1080px) {
   .review-item {
     .row-top {
+      margin-bottom: 0.5rem;
       .author {
         font-size: 1.7rem;
         margin-right: 1.5rem;
       }
-      margin-bottom: 0.5rem;
+      .date {
+        font-size: 1.3rem;
+      }
     }
     .content {
       font-size: 1.5rem;
     }
     .interact-area {
-      .date {
-        font-size: 1.3rem;
-      }
       button {
         font-size: 1.3rem;
       }
