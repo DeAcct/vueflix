@@ -54,7 +54,6 @@ export default {
 
 <style lang="scss" scoped>
 .keyword-reviews {
-  align-items: center;
   width: 100%;
   max-width: 1080px;
   box-shadow: var(--box-shadow);
@@ -72,17 +71,23 @@ export default {
   }
 
   .sub-widgets {
-    display: flex;
-    flex-direction: column;
     .row-top {
+      display: flex;
+      flex-direction: column;
       margin-bottom: 1rem;
+      width: 100%;
     }
     .sub-widget {
       padding: 1.5rem 0;
-      flex: 1 1rem;
+      flex: 1;
       transition: 150ms ease-out;
+      &:not(:last-child) {
+        margin-right: 2rem;
+      }
     }
     .suggestion-link {
+      width: 100%;
+      max-width: 500px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -101,10 +106,15 @@ export default {
 @media screen and (min-width: 1024px) {
   .keyword-reviews {
     .sub-widgets {
-      flex-direction: row;
-      justify-content: space-between;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       &:not(:last-child) {
         margin-right: 1rem;
+      }
+      .row-top {
+        margin-bottom: 3rem;
+        flex-direction: row;
       }
     }
   }
