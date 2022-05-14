@@ -1,7 +1,7 @@
 <template>
   <router-view v-slot="{ Component }">
     <vueflix-header v-if="headerVisible" />
-    <bottom-tab-menu v-if="bottomTabMenuVisible" />
+    <bottom-tab-menu v-if="this.$route.meta.bottomTabMenu" />
     <component :is="Component" :key="$route.path"></component>
   </router-view>
 </template>
@@ -40,7 +40,7 @@ export default {
     this.init();
 
     window.addEventListener("resize", () => {
-      this.isMobile = window.innerWidth <= 768;
+      this.isMobile = window.innerWidth <= 1024;
     });
   },
   unmounted() {
@@ -49,14 +49,13 @@ export default {
     }
 
     window.removeEventListener("resize", () => {
-      this.isMobile = window.innerWidth <= 768;
+      this.isMobile = window.innerWidth <= 1024;
     });
   },
   data() {
     return {
       headerVisible: this.$route.meta.appBar || !this.isMobile,
-      bottomTabMenuVisible: this.$route.meta.bottomTabMenu && this.isMobile,
-      isMobile: window.innerWidth <= 768,
+      isMobile: window.innerWidth <= 1024,
       isPlayer: false,
       unsub: undefined,
     };
@@ -66,8 +65,6 @@ export default {
       this.isPlayer = this.$route.name === "player";
       this.headerVisible =
         (this.$route.meta.appBar || !this.isMobile) && !this.isPlayer;
-      this.bottomTabMenuVisible =
-        this.$route.meta.bottomTabMenu && this.isMobile;
       document.title = this.$route.meta.title || process.env.VUE_APP_KR_NAME;
       if (!this.isPlayer && this.$route.name !== "anime") {
         this.$store.commit("currentAnimeInfo/setCurrentAnimeInfo", undefined);
@@ -108,4 +105,9 @@ export default {
 
 <style lang="scss">
 @import "./common.scss";
+@media screen and (min-width: 769px) {
+  .bottom-tab-menu {
+    display: none;
+  }
+}
 </style>

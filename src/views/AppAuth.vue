@@ -97,6 +97,7 @@ export default {
             recentWatched: [],
             wannaSee: [],
             reviews: [],
+            keywordReviews: [],
             maratonWatch: [],
             purchased: [],
           });

@@ -133,6 +133,9 @@ const mutations = {
       state.user.maratonWatch[targetIndex].maratonEnd = maratonEnd;
     }
   },
+  newKeywordReviews(state, payload) {
+    state.user.keywordReviews = payload;
+  },
 };
 
 export default {

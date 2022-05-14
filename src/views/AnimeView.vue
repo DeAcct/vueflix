@@ -372,21 +372,12 @@ export default {
   top: 0;
   z-index: 110;
 }
-
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1024px) {
   .anime {
     .anime-item-head {
-      min-height: unset;
-      margin-top: 6.1rem;
-    }
-  }
-}
-@media screen and (min-width: 1080px) {
-  .anime {
-    .anime-item-head {
+      min-height: 50vh;
       border-radius: 0;
       padding-top: 8rem;
-      height: 40vh;
       margin-bottom: 0;
     }
     main {

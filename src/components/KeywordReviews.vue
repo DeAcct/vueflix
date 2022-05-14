@@ -6,14 +6,6 @@
         <keyword-others-chart :data="labels" class="sub-widget" />
         <keyword-my :data="labels" class="sub-widget" />
       </div>
-      <router-link to="#" class="suggestion-link sub-widget">
-        그림체와 작화는 같은거 아닌가요?
-        <i class="icon">
-          <icon-base>
-            <icon-arrow-next />
-          </icon-base>
-        </i>
-      </router-link>
     </div>
   </section>
 </template>
@@ -21,8 +13,6 @@
 <script>
 import KeywordOthersChart from "./KeywordOthersChart.vue";
 import KeywordMy from "./KeywordMy.vue";
-import IconBase from "./IconBase.vue";
-import IconArrowNext from "./icons/IconArrowNext.vue";
 
 export default {
   name: "KeyworkReview",
@@ -34,17 +24,15 @@ export default {
   components: {
     KeywordOthersChart,
     KeywordMy,
-    IconBase,
-    IconArrowNext,
   },
   data() {
     return {
       labels: [
-        { id: "drawing-style", keyword: "그림체", value: 50 },
-        { id: "animating", keyword: "작화", value: 25 },
+        { id: "drawing", keyword: "그림체", value: 50 },
+        { id: "voice", keyword: "성우", value: 50 },
         { id: "directing", keyword: "연출", value: 12.5 },
         { id: "character", keyword: "캐릭터", value: 6.25 },
-        { id: "probability", keyword: "스토리", value: 3.125 },
+        { id: "story", keyword: "스토리", value: 3.125 },
         { id: "bgm", keyword: "배경음악", value: 1.5625 },
       ],
     };
@@ -81,9 +69,6 @@ export default {
       padding: 1.5rem 0;
       flex: 1;
       transition: 150ms ease-out;
-      &:not(:last-child) {
-        margin-right: 2rem;
-      }
     }
     .suggestion-link {
       width: 100%;
@@ -115,6 +100,11 @@ export default {
       .row-top {
         margin-bottom: 3rem;
         flex-direction: row;
+      }
+      .sub-widget {
+        &:not(:last-child) {
+          margin-right: 2rem;
+        }
       }
     }
   }

@@ -32,7 +32,7 @@ export default {
 <style lang="scss">
 .login-widget {
   width: 100%;
-  max-width: 1080px;
+  max-width: 768px;
   display: flex;
   justify-content: space-between;
   align-items: center;

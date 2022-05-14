@@ -196,10 +196,15 @@ export default {
 .my {
   display: flex;
   flex-direction: column;
+  align-items: center;
   padding: 7rem 0 9rem;
 }
 .login-widget {
   margin: 0 auto 1rem;
+}
+.tab-one {
+  width: 100%;
+  max-width: 768px;
 }
 .my-stats {
   width: 100%;
@@ -235,13 +240,14 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 .my-cards {
+  width: 100%;
   max-width: 768px;
   border-radius: 0.6rem;
   overflow: hidden;
   box-shadow: var(--box-shadow);
-  width: 100%;
 
   &:not(:last-child) {
     margin-bottom: 1rem;
@@ -267,6 +273,8 @@ export default {
     flex-direction: column;
     justify-content: center;
     background-color: var(--top-item);
+    max-width: unset;
+    width: auto;
     height: 100%;
   }
   .login-widget {

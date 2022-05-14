@@ -1,7 +1,7 @@
 <template>
   <div class="keyword-my">
     <div class="row-top">
-      <h3 class="keyword-my__description">당신은 어떤 점이 좋으신가요?</h3>
+      <h3 class="keyword-my__description">당신은 어떤 점이 마음에 드시나요?</h3>
       <form class="survey">
         <label v-for="label in data" :key="label" class="survey__keyword">
           <input
@@ -32,9 +32,17 @@
 </template>
 
 <script>
+import {
+  getFirestore,
+  updateDoc,
+  increment,
+  doc /*getDoc, doc, setDoc*/,
+} from "firebase/firestore";
+
 import IconBase from "./IconBase.vue";
 import IconSelected from "./icons/IconSelected.vue";
 import IconNotSelected from "./icons/IconNotSelected.vue";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -52,9 +60,42 @@ export default {
       surveyData: [],
     };
   },
+  computed: {
+    db: () => getFirestore(),
+    ...mapState({
+      user: (state) => state.auth.user,
+    }),
+  },
   watch: {
-    surveyData() {
-      console.log(this.surveyData);
+    async surveyData(afterSurvey) {
+      const beforeSurvey =
+        this.user.keywordReviews.length > 0
+          ? this.user.keywordReviews.find(
+              (item) => item.aniTitle === this.$route.params.title
+            ).likeIt
+          : [];
+      const changes =
+        beforeSurvey.length < afterSurvey.length
+          ? afterSurvey
+              .filter((afterItem) => !beforeSurvey.includes(afterItem))
+              .map((item) => ({ item, method: "+" }))
+          : beforeSurvey
+              .filter((beforeItem) => !afterSurvey.includes(beforeItem))
+              .map((item) => ({ item, method: "-" }));
+      // updateDoc(docdata, {number: increment(1)})
+
+      this.$store.commit("auth/newKeywordReviews", [
+        {
+          aniTitle: this.$route.params.title,
+          likeIt: afterSurvey,
+        },
+      ]);
+      await updateDoc(doc(this.db, ""), { number: increment(1) });
+      // try {
+      //   await setDoc(doc(this.db, "user", this.user.uid), this.user);
+      // } catch (err) {
+      //   console.log("오류", err);
+      // }
     },
   },
 };
@@ -87,7 +128,7 @@ export default {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 0 1rem;
+    padding: 0 1.5rem;
     .survey-item {
       display: flex;
       align-items: center;

@@ -3,7 +3,7 @@
     <h1 class="blind" v-if="notPC">뷰플릭스</h1>
     <div
       :class="['navigation', 'inner', { 'navigation--scrolled': isScroll }]"
-      v-if="isMobile"
+      v-if="notPC"
     >
       <div class="col-left">
         <a class="back" @click="goBack">
@@ -204,7 +204,7 @@ export default {
     return {
       wannaSeeBool: false,
       isMobile: window.innerWidth <= 768,
-      notPC: window.innerWidth <= 1080,
+      notPC: window.innerWidth <= 1024,
       component: "div",
       isPurchaseActive: false,
       isActionSheetOpened: false,
@@ -260,7 +260,7 @@ export default {
     },
     checkResolution() {
       this.isMobile = window.innerWidth <= 768;
-      this.notPC = window.innerWidth <= 1080;
+      this.notPC = window.innerWidth <= 1024;
     },
     async openSystemShare() {
       const shareData = {
@@ -598,7 +598,7 @@ export default {
   }
 }
 
-@media screen and (min-width: 1080px) {
+@media screen and (min-width: 1024px) {
   .anime-item-head {
     padding: 0 calc((100% - 118rem) / 2);
 
