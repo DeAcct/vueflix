@@ -90,6 +90,7 @@ export default {
           likeIt: afterSurvey,
         },
       ]);
+      console.log(changes)
       await updateDoc(doc(this.db, ""), { number: increment(1) });
       // try {
       //   await setDoc(doc(this.db, "user", this.user.uid), this.user);
