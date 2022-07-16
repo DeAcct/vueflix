@@ -10,7 +10,7 @@
         >
           최근 본 애니
         </vueflix-carousel>
-        <vueflix-carousel type="daily">요일별 신작</vueflix-carousel>
+        <!-- <vueflix-carousel type="daily">요일별 신작</vueflix-carousel> -->
         <vueflix-carousel
           type="recommend"
           v-for="recommended in recommendedAnime"

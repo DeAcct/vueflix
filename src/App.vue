@@ -65,7 +65,7 @@ export default {
       this.isPlayer = this.$route.name === "player";
       this.headerVisible =
         (this.$route.meta.appBar || !this.isMobile) && !this.isPlayer;
-      document.title = this.$route.meta.title || process.env.VUE_APP_KR_NAME;
+      document.title = this.$route.meta.title || import.meta.env.VITE_KR_NAME;
       if (!this.isPlayer && this.$route.name !== "anime") {
         this.$store.commit("currentAnimeInfo/setCurrentAnimeInfo", undefined);
       }

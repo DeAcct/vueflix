@@ -5,8 +5,9 @@
         <textarea
           :placeholder="placeholder"
           class="new-review-area"
-          v-model="reviewData"
           :disabled="!user"
+          @input="setReviewData"
+          ref="reviewTextArea"
         />
         <div class="interaction-area">
           <div class="col-left">
@@ -19,6 +20,7 @@
               @click="cancelTrigger"
               component="button"
               class="btn--cancel"
+              type="button"
             >
               <template v-slot:text> 취소 </template>
             </vueflix-btn>
@@ -55,7 +57,7 @@ export default {
     type: {
       type: String,
     },
-    currentMyReview: {
+    myReview: {
       type: [Object, undefined],
     },
   },
@@ -81,7 +83,7 @@ export default {
     user() {
       this.setPlaceHolder();
     },
-    currentMyReview() {
+    myReview() {
       this.setData();
     },
   },
@@ -104,9 +106,11 @@ export default {
       }
     },
     setData() {
-      this.reviewData = this.currentMyReview
-        ? this.currentMyReview.content
-        : "";
+      this.reviewData = this.myReview ? this.myReview.content : "";
+      this.$refs.reviewTextArea.value = this.reviewData;
+    },
+    setReviewData(e) {
+      this.reviewData.content = e.target.value;
     },
   },
 };

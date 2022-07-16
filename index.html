@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
@@ -18,29 +18,10 @@
       property="og:description"
       content="당당하게 애니 볼 땐, 뷰플릭스! 고전 명작부터 이번 분기 화제작까지 모든 애니를 고화질로 스트리밍할 수 있는 곳은 이곳 뿐."
     />
-    <link rel="manifest" href="/manifest.json" />
-    <link
-      rel="apple-touch-icon"
-      sizes="192x192"
-      href="./icons/icon-192x192.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="256x256"
-      href="./icons/icon-256x256.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="384x384"
-      href="./icons/icon-384x384.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="512x512"
-      href="./icons/icon-512x512.png"
-    />
-    <link rel="shortcut icon" href="<%= BASE_URL %>favicon.svg" />
-    <link rel="shortcut icon" href="<%= BASE_URL %>favicon.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512x512.png" />
+    <meta name="theme-color" content="#d62929" />
+    <link rel="favicon" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.svg" />
     <script type="text/javascript">
       // Single Page Apps for GitHub Pages
       // MIT License
@@ -64,15 +45,8 @@
     </script>
     <title>뷰플릭스</title>
   </head>
-
   <body>
-    <noscript>
-      <strong>
-        We're sorry but vueflix doesn't work properly without JavaScript
-        enabled. Please enable it to continue.
-      </strong>
-    </noscript>
     <div id="app"></div>
-    <!-- built files will be auto injected -->
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

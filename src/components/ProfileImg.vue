@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import NotFoundAqua from "../assets/NotFoundAqua.svg";
+
 export default {
   name: "ProfileImg",
   props: {
@@ -18,7 +20,7 @@ export default {
   },
   data() {
     return {
-      defaultProfile: require("../assets/NotFoundAqua.svg"),
+      defaultProfile: NotFoundAqua,
     };
   },
 };

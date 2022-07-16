@@ -6,6 +6,7 @@
       { 'review-item--me': isMe },
       { 'review-item--other': !isMe },
     ]"
+    v-if="isMyReviewShown"
   >
     <div class="row-top">
       <strong class="author" v-if="!isMe">
@@ -26,37 +27,31 @@
 </template>
 
 <script>
+import { numberFormatter } from "../mixins/numberFormatter";
+
 export default {
   name: "ReviewItem",
   props: {
-    rating: {
-      type: Number,
-    },
     date: {
       type: Object,
-    },
-    isMe: {
-      type: Boolean,
     },
     component: {
       type: String,
       default: "li",
     },
-  },
-  methods: {
-    formatter(origin, digits = 10) {
-      let result = String(origin);
-      for (let i = digits; i >= 10; i /= 10) {
-        if (origin < i) {
-          result = `0${result}`;
-        } else {
-          return result;
-        }
-      }
-      return result;
+    myUid: {
+      type: String,
     },
+    uid: {
+      type: String,
+    },
+    isMyReviewShown: {
+      type: Boolean,
+    },
+  },
+  mixins: [numberFormatter],
+  methods: {
     deleteTrigger() {
-      console.log("dd");
       this.$emit("delete-review");
     },
     editTrigger() {
@@ -65,13 +60,16 @@ export default {
   },
   computed: {
     formattedDate() {
-      const month = this.date ? this.formatter(this.date.month) : "";
-      const date = this.date ? this.formatter(this.date.date) : "";
-      const hour = this.date ? this.formatter(this.date.hour) : "";
-      const min = this.date ? this.formatter(this.date.min) : "";
+      const month = this.date ? this.numberFormatter(this.date.month) : "";
+      const date = this.date ? this.numberFormatter(this.date.date) : "";
+      const hour = this.date ? this.numberFormatter(this.date.hour) : "";
+      const min = this.date ? this.numberFormatter(this.date.min) : "";
       return this.date
         ? `${this.date.year}.${month}.${date} ${hour}:${min}`
         : "";
+    },
+    isMe() {
+      return this.myUid === this.uid;
     },
   },
 };

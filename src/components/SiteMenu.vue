@@ -4,7 +4,7 @@
     <ul class="items">
       <li v-for="(item, index) in items" :key="index" class="item">
         <router-link :to="`/${item.to}`">
-          {{ item.item }}
+          {{ item.disabled ? "" : item.item }}
         </router-link>
       </li>
     </ul>
@@ -32,10 +32,11 @@ export default {
           to: "tag-search",
           item: "태그검색",
         },
-        {
-          to: "daily",
-          item: "요일별 신작",
-        },
+        // {
+        //   to: "daily",
+        //   item: "요일별 신작",
+        //   disabled: true,
+        // },
         {
           to: "basket",
           item: "보관함",
@@ -67,6 +68,10 @@ export default {
   }
   &--fill .items .item a {
     color: var(--text-800);
+    position: relative;
+    &.disabled {
+      pointer-events: none;
+    }
   }
   .vueflix-active-link {
     color: var(--theme-500) !important;

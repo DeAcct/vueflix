@@ -76,7 +76,7 @@
     </div>
     <div class="widget birthday inner">
       <h2 class="heading">생일</h2>
-      <datepicker
+      <!-- <datepicker
         class="birthday__selection"
         inputClassName="birthday__selection_input"
         :modelValue="
@@ -91,7 +91,8 @@
         placeholder="생일을 선택하세요"
         no-today
         auto-apply
-      />
+      /> -->
+      <input type="date" v-model="birthday" class="birthday__selection" />
     </div>
     <vueflix-btn
       type="submit"
@@ -108,8 +109,7 @@
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { getStorage, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
-import Datepicker from "vue3-date-time-picker";
-import "vue3-date-time-picker/src/Vue3DatePicker/style/main.scss";
+//import Datepicker from "vue3-date-time-picker";
 
 import { mapState } from "vuex";
 import ProfileImg from "../components/ProfileImg.vue";
@@ -129,18 +129,11 @@ export default {
     IconMale,
     IconFemale,
     VueflixBtn,
-    Datepicker,
+    //Datepicker,
   },
   unmounted() {
     if (this.profilePreview) {
       URL.revokeObjectURL(this.profileImg);
-    }
-  },
-  mounted() {
-    if (this.user) {
-      this.nickname = this.user.nickname;
-      this.gender = this.user.gender;
-      this.birthday = this.user.birthday;
     }
   },
   data() {
@@ -161,13 +154,13 @@ export default {
         this.profilePreview = URL.createObjectURL(this.profileImg);
       }
     },
-    setBirthday(e) {
-      this.birthday = {
-        year: e.getFullYear(),
-        month: e.getMonth() + 1,
-        date: e.getDate(),
-      };
-    },
+    // setBirthday(e) {
+    //   this.birthday = {
+    //     year: e.getFullYear(),
+    //     month: e.getMonth() + 1,
+    //     date: e.getDate(),
+    //   };
+    // },
     async syncToFirebase() {
       if (!this.inProgress) {
         this.inProgress = true;
@@ -210,7 +203,15 @@ export default {
     user() {
       this.nickname = this.user.nickname;
       this.gender = this.user.gender;
-      this.birthday = this.user.birthday;
+      this.birthday = `${this.user.birthday.year}-${this.user.birthday.month}-${this.user.birthday.date}`;
+      console.log(this.birthday);
+    },
+    birthday() {
+      if (typeof this.birthday === "string") {
+        // 파이어베이스에 object 형태로 저장하므로 split을 수행할 수 없음.
+        // 타입이 string으로 변했다는 것은 수정이 이루어졌다는 것이다.
+        console.log(this.birthday.split("-"));
+      }
     },
   },
 };

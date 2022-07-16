@@ -125,7 +125,7 @@ import {
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import AnimeItemHead from "../components/AnimeItemHead.vue";
-import EpisodesWidget from "../components/EpisodesWidget";
+import EpisodesWidget from "../components/EpisodesWidget.vue";
 import VueflixModal from "../components/VueflixModal.vue";
 import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconReview from "../components/icons/IconReview.vue";

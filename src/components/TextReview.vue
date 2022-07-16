@@ -9,28 +9,20 @@
       :user="user"
       :show-new-review="isWriteReviewShown"
       :type="writeReviewType"
-      :current-my-review="myReview"
+      :my-review="myReview"
+      v-if="editmode"
     />
     <div :class="{ 'review-list--exists': reviewList }">
-      <review-item
-        v-if="!isWriteReviewShown"
-        class="my-review"
-        :is-me="true"
-        :date="myReview.time"
-        @edit-review="editModeOn"
-        @delete-review="deleteTrigger"
-        component="div"
-      >
-        <template v-slot:author>나</template>
-        <template v-slot:content>{{ myReview.content }}</template>
-      </review-item>
-      <ul :class="['others-list', { 'others-list--exists': othersReview }]">
+      <ul class="others-list">
         <review-item
-          v-for="(reviewItem, index) in othersReview"
+          v-for="(reviewItem, index) in reviewList"
           :key="index"
-          :rating="reviewItem.rating"
           :date="reviewItem.time"
-          :is-me="false"
+          :my-uid="myReview.uid"
+          :uid="reviewItem.uid"
+          :is-my-review-shown="!editmode"
+          @edit-review="editModeOn"
+          @delete-review="deleteTrigger"
         >
           <template v-slot:author>{{ reviewItem.author }}</template>
           <template v-slot:content>{{ reviewItem.content }}</template>
@@ -69,9 +61,7 @@ export default {
     },
   },
   computed: {
-    db() {
-      return getFirestore();
-    },
+    db: () => getFirestore(),
     animeRef() {
       return doc(this.db, "anime", this.$route.params.title);
     },
@@ -79,17 +69,15 @@ export default {
       return this.user ? doc(this.db, "user", this.user.uid) : undefined;
     },
     myReview() {
-      const result = this.user
-        ? this.reviewList.find((reviewItem) => reviewItem.uid === this.user.uid)
-        : undefined;
+      const result = this.reviewList.find(
+        (reviewItem) => reviewItem.uid === this.user.uid
+      );
       return result;
     },
     othersReview() {
-      const result = this.user
-        ? this.reviewList.filter(
-            (reviewItem) => reviewItem.uid !== this.user.uid
-          )
-        : [];
+      const result = this.reviewList.filter(
+        (reviewItem) => reviewItem.uid !== this.user.uid
+      );
       return result;
     },
     isWriteReviewShown() {
@@ -114,10 +102,17 @@ export default {
       };
     },
   },
+  watch: {
+    async user() {
+      await this.syncTextReviews();
+    },
+  },
   async mounted() {
-    this.syncReviews();
+    await this.syncTextReviews();
   },
   methods: {
+    //CRUD
+    //Create
     async addedTrigger(e) {
       const reviewItem = {
         author: this.user.nickname,
@@ -138,33 +133,22 @@ export default {
         { reviews: arrayUnion(reviewItem) },
         { merge: true }
       );
-      await this.syncReviews();
+      await this.syncTextReviews();
     },
-    async syncReviews() {
+
+    //Read
+    async syncTextReviews() {
       const animeSnapshot = await getDoc(this.animeRef);
       const animeReviews = animeSnapshot.data().reviews;
-      const userSnapshot = await getDoc(this.userRef);
-      const userReviews = userSnapshot.data().reviews;
-      this.$store.commit("auth/setReviews", userReviews);
-      this.reviewList = animeReviews;
+      if (this.userRef) {
+        const userSnapshot = await getDoc(this.userRef);
+        const userReviews = userSnapshot.data().reviews;
+        this.$store.commit("auth/setReviews", userReviews);
+        this.reviewList = animeReviews;
+      }
     },
-    async deleteTrigger() {
-      await setDoc(
-        this.animeRef,
-        { reviews: this.othersReview },
-        { merge: true }
-      );
-      const userSnapshot = await getDoc(this.userRef);
-      const userReviews = userSnapshot.data().reviews;
-      const result = userReviews.filter(
-        (reviewItem) => reviewItem.aniTitle !== this.$route.params.title
-      );
-      await setDoc(this.userRef, { reviews: result }, { merge: true });
-      await this.syncReviews();
-    },
-    editModeOn() {
-      this.editmode = true;
-    },
+
+    //Update
     async editedTrigger(e) {
       const userSnapshot = await getDoc(this.userRef);
       const userReviews = userSnapshot.data().reviews;
@@ -173,7 +157,6 @@ export default {
 
       const mutator = (reviewItem) => {
         reviewItem.content = e.content;
-        reviewItem.rating = e.rating;
         reviewItem.time = this.currentTime;
       };
       animeReviews.forEach((reviewItem) => {
@@ -186,13 +169,40 @@ export default {
           mutator(reviewItem);
         }
       });
+      console.log(
+        this.animeRef,
+        ":",
+        { reviews: animeReviews },
+        this.userRef,
+        ":",
+        { reviews: userReviews }
+      );
       await updateDoc(this.animeRef, { reviews: animeReviews });
       await updateDoc(this.userRef, { reviews: userReviews });
-      await this.syncReviews();
+      await this.syncTextReviews();
       this.editModeOff();
+    },
+    editModeOn() {
+      this.editmode = true;
     },
     editModeOff() {
       this.editmode = false;
+    },
+
+    //Delete
+    async deleteTrigger() {
+      await setDoc(
+        this.animeRef,
+        { reviews: this.othersReview },
+        { merge: true }
+      );
+      const userSnapshot = await getDoc(this.userRef);
+      const userReviews = userSnapshot.data().reviews;
+      const result = userReviews.filter(
+        (reviewItem) => reviewItem.aniTitle !== this.$route.params.title
+      );
+      await setDoc(this.userRef, { reviews: result }, { merge: true });
+      await this.syncTextReviews();
     },
   },
 };

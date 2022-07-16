@@ -1,3 +1,6 @@
+import "@/assets/carousel_thumbnail_tokyorevenger.webp";
+console.log(tokyoRevenger);
+
 const state = {
   dailyAnime: [
     {
@@ -5,7 +8,7 @@ const state = {
       animes: [
         {
           title: "도쿄 리벤저스 part 2",
-          img: require("@/assets/carousel_thumbnail_tokyorevenger.webp"),
+          img: tokyoRevenger,
           url: "#none",
           genre: "액션 / 드라마",
         },
