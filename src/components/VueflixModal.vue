@@ -13,7 +13,7 @@
           class="btn--later"
           component="button"
         >
-          <template v-slot:text><slot name="no-string" /></template>
+          <template #text><slot name="no-string" /></template>
         </vueflix-btn>
         <vueflix-btn
           @click="yesFunc"
@@ -21,7 +21,7 @@
           class="btn--install"
           component="button"
         >
-          <template v-slot:text><slot name="yes-string" /></template>
+          <template #text><slot name="yes-string" /></template>
         </vueflix-btn>
       </div>
     </div>

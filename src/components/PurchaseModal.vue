@@ -54,7 +54,7 @@
           class="btn--cancel"
           @click="closePurchaseModal"
         >
-          <template v-slot:text>취소</template>
+          <template #text>취소</template>
         </vueflix-btn>
         <vueflix-btn
           type="button"
@@ -63,7 +63,7 @@
           :disabled="added.length === 0"
           @click="purchase"
         >
-          <template v-slot:text>
+          <template #text>
             {{
               added.length !== 0
                 ? `${(animeInfo.price * added.length).toLocaleString(

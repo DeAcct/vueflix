@@ -22,14 +22,14 @@
               class="btn--cancel"
               type="button"
             >
-              <template v-slot:text> 취소 </template>
+              <template #text> 취소 </template>
             </vueflix-btn>
             <vueflix-btn
               :disabled="!reviewDataSubmitAble || !user"
               @click="reviewTrigger"
               component="button"
             >
-              <template v-slot:text>
+              <template #text>
                 {{ type === "new-review" ? "등록" : "수정" }}
               </template>
             </vueflix-btn>

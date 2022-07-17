@@ -61,8 +61,8 @@
             class="selector"
           >
             <accordion-widget>
-              <template v-slot:title>{{ selector.name }}</template>
-              <template v-slot:content>
+              <template #title>{{ selector.name }}</template>
+              <template #content>
                 <triple-checkbox
                   v-for="selectorItem in selector.selectorItem"
                   :key="selectorItem"

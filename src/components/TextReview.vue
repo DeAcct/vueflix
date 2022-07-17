@@ -24,8 +24,8 @@
           @edit-review="editModeOn"
           @delete-review="deleteTrigger"
         >
-          <template v-slot:author>{{ reviewItem.author }}</template>
-          <template v-slot:content>{{ reviewItem.content }}</template>
+          <template #author>{{ reviewItem.author }}</template>
+          <template #content>{{ reviewItem.content }}</template>
         </review-item>
       </ul>
     </div>

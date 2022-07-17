@@ -7,7 +7,7 @@
       </div>
     </div>
     <vueflix-btn class="widget" component="button" @click="btnFunc">
-      <template v-slot:text>
+      <template #text>
         <slot name="login-state-text"></slot>
       </template>
     </vueflix-btn>

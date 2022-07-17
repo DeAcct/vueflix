@@ -6,7 +6,7 @@
       :class="[{ 'tab-item--selected': tabItem.selected }, 'tab-item']"
     >
       <vueflix-btn @click="changeSelected" bg="transparent" component="button">
-        <template v-slot:text>{{ tabItem.text }}</template>
+        <template #text>{{ tabItem.text }}</template>
       </vueflix-btn>
     </li>
   </ul>

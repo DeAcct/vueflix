@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "gh-pages -d docs",
-    "predeploy": "vite build && echo vueflix.hyse.kr > ./docs/CNAME"
+    "deploy": "gh-pages -d dist",
+    "predeploy": "vite build && echo vueflix.hyse.kr > ./dist/CNAME"
   },
   "dependencies": {
     "chart.js": "^3.7.1",
