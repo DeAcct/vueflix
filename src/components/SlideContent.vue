@@ -1,6 +1,6 @@
 <template>
   <router-link :to="slideData.link ? slideData.link : '#'">
-    <span :class="['bg', { 'bg--loaded': bgLoaded }, 'loading-target']">
+    <span :class="['bg', { 'bg--loaded': bgLoaded }]">
       <picture>
         <source media="(max-width: 1024px)" :srcset="slideData.mWebpBg" />
         <source media="(max-width: 1024px)" :srcset="slideData.mJpegBg" />
@@ -91,6 +91,9 @@ export default {
   position: relative;
   max-height: 70vh;
   border-radius: 0;
+  height: calc(100vw / 768 * 1024);
+  opacity: 0;
+  transition: opacity 150ms ease-out;
   &::before {
     position: absolute;
     width: 100vw;
@@ -108,15 +111,11 @@ export default {
     transition: 150ms ease-out;
   }
   .bg-place {
-    opacity: 0;
     width: 100vw;
   }
   &--loaded {
-    height: fit-content;
+    opacity: 1;
     &::before {
-      opacity: 1;
-    }
-    .bg-place {
       opacity: 1;
     }
   }
@@ -162,6 +161,7 @@ export default {
     max-height: 18em;
   }
   .bg {
+    height: calc(100vw / 2560 * 1043);
     &::before {
       padding-bottom: 40.742%;
     }

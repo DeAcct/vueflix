@@ -1,6 +1,6 @@
 <template>
   <component :is="component" class="anime-item-head" :style="posterBg">
-    <h1 class="blind" v-if="notPC">뷰플릭스</h1>
+    <h1 class="blind" v-if="isMobileSize">뷰플릭스</h1>
     <div :class="['navigation', 'inner', { 'navigation--scrolled': isScroll }]">
       <div class="col-left">
         <a class="back" @click="goBack">
@@ -16,7 +16,11 @@
             <icon-share />
           </icon-base>
         </button>
-        <button class="overflow-btn" @click="openOverflowMenu" v-if="user">
+        <button
+          class="overflow-btn"
+          @click="openOverflowMenu"
+          v-if="user && isMobileSize"
+        >
           <icon-base>
             <icon-overflow />
           </icon-base>
@@ -30,7 +34,7 @@
           'loading-target',
           { 'poster--loaded': animeInfo.poster },
         ]"
-        v-if="!notPC"
+        v-if="!isMobileSize"
       >
         <img :src="animeInfo.poster" :alt="`${animeInfo.name} 포스터`" />
       </div>
@@ -117,7 +121,7 @@
           </div>
         </div>
       </div>
-      <div class="overflow-btn" v-if="user">
+      <div class="overflow-btn" v-if="user && !isMobileSize">
         <button class="icon" @click="actionSheetToggle">
           <icon-base>
             <icon-overflow />
@@ -178,7 +182,12 @@ export default {
     },
   },
   async mounted() {
-    this.component = this.notPC ? "header" : "div";
+    this.screenSizeQuery.addEventListener("change", (e) => {
+      this.isMobileSize = e.matches;
+    });
+    this.touchDeviceQuery.addEventListener("change", (e) => {
+      this.isTouchDevice = e.matches;
+    });
     window.addEventListener("resize", this.checkResolution);
     if (this.user) {
       const db = getFirestore();
@@ -195,13 +204,24 @@ export default {
     }
   },
   unmounted() {
-    window.removeEventListener("resize", this.checkResolution);
+    this.screenSizeQuery.removeEventListener("change", (e) => {
+      this.isMobileSize = e.matches;
+    });
+    this.touchDeviceQuery.removeEventListener("change", (e) => {
+      this.isTouchDevice = e.matches;
+    });
   },
   data() {
+    const screenSizeQuery = window.matchMedia("screen and (max-width: 820px)");
+    const touchDeviceQuery = window.matchMedia(
+      "(hover: none) and (pointer: coarse)"
+    );
     return {
       wannaSeeBool: false,
-      notPC: window.innerWidth <= 1024,
-      component: "div",
+      screenSizeQuery,
+      touchDeviceQuery,
+      isMobileSize: screenSizeQuery.matches,
+      isTouchDevice: touchDeviceQuery.matches,
       isPurchaseActive: false,
       isActionSheetOpened: false,
       actions: [
@@ -254,10 +274,6 @@ export default {
         this.$emit("require-login", "로그인해야 '보고싶다'를 체크할 수 있어요");
       }
     },
-    checkResolution() {
-      this.isMobile = window.innerWidth <= 768;
-      this.notPC = window.innerWidth <= 1024;
-    },
     async openSystemShare() {
       const shareData = {
         title: `뷰플릭스에서 ${this.$route.params.title} 다시보기`,
@@ -301,7 +317,7 @@ export default {
     }),
     posterBg() {
       const bg = `background-image: linear-gradient(transparent,var(--anime-bg) ${
-        !this.isMobile ? "90%" : "80%"
+        !this.isMobileSize ? "90%" : "80%"
       }), url(${this.animeInfo.poster});`;
       return bg;
     },
@@ -330,18 +346,8 @@ export default {
       }
       return "1화 무료보기";
     },
-    isMobile() {
-      const deviceQuery = window.matchMedia(
-        "(hover: none) and (pointer: coarse), screen and (max-width: 820px)"
-      ).matches;
-      console.log("isMobile", deviceQuery);
-      return deviceQuery;
-    },
-  },
-
-  watch: {
-    notPC() {
-      this.component = this.notPC ? "header" : "div";
+    component() {
+      return this.isMobileSize ? "header" : "div";
     },
   },
 };
@@ -358,6 +364,7 @@ export default {
   .navigation {
     position: fixed;
     z-index: 10;
+    left: 0;
     top: 0;
     width: 100%;
     padding: 2rem var(--inner-padding) 6rem;
@@ -491,9 +498,6 @@ export default {
         font-size: 1.2rem;
       }
     }
-    .overflow-btn {
-      display: none;
-    }
   }
   .btn-area {
     width: 100%;
@@ -603,6 +607,15 @@ export default {
 @media screen and (min-width: 1024px) {
   .anime-item-head {
     padding: 0 calc((100% - 118rem) / 2);
+    .navigation {
+      padding: {
+        left: calc((100% - 118rem) / 2);
+        right: calc((100% - 118rem) / 2);
+      }
+      .col-left .scroll-title {
+        font-size: 2rem;
+      }
+    }
 
     .anime-info {
       padding: 0;

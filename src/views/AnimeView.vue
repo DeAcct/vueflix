@@ -80,6 +80,15 @@
           :part-top-padding="true"
         />
       </div>
+
+      <button class="to-top-btn" @click="toTop">
+        <i class="to-top-btn__icon">
+          <icon-base>
+            <icon-arrow-prev />
+          </icon-base>
+        </i>
+        <span class="to-top-btn__text">맨 위로</span>
+      </button>
     </main>
     <vueflix-modal
       title="로그인 필요 알림"
@@ -128,7 +137,9 @@ import AnimeItemHead from "../components/AnimeItemHead.vue";
 import EpisodesWidget from "../components/EpisodesWidget.vue";
 import VueflixModal from "../components/VueflixModal.vue";
 import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
+import IconBase from "../components/IconBase.vue";
 import IconReview from "../components/icons/IconReview.vue";
+import IconArrowPrev from "../components/icons/IconArrowPrev.vue";
 import { mapState } from "vuex";
 import ActionSheet from "../components/ActionSheet.vue";
 import PurchaseModal from "../components/PurchaseModal.vue";
@@ -139,9 +150,11 @@ export default {
     EpisodesWidget,
     VueflixModal,
     ArrowBtnWidget,
-    IconReview,
     ActionSheet,
     PurchaseModal,
+    IconBase,
+    IconArrowPrev,
+    IconReview,
   },
   name: "AnimeView",
   async mounted() {
@@ -252,6 +265,9 @@ export default {
     closePurchaseModal() {
       this.isPurchaseModalOpen = false;
     },
+    toTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
   },
   computed: {
     ...mapState({
@@ -266,6 +282,9 @@ export default {
   display: flex;
   flex-direction: column;
   background-color: var(--anime-bg);
+  main {
+    position: relative;
+  }
   .widget {
     margin-bottom: 1rem;
   }
@@ -344,6 +363,31 @@ export default {
         margin-bottom: 1rem;
       }
     }
+    margin-bottom: 8.5rem;
+  }
+  .to-top-btn {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background-color: var(--theme-500);
+    border-radius: 9999px;
+    box-shadow: var(--box-shadow);
+    color: #fff;
+    &__icon {
+      color: #fff;
+      transform: rotate(90deg);
+      margin-right: 1rem;
+    }
+    &__text {
+      color: #fff;
+      font-weight: 700;
+    }
   }
   .loading-target {
     background-image: linear-gradient(135deg, var(--bg-300), var(--bg-200));
@@ -420,6 +464,13 @@ export default {
           margin-bottom: 2rem;
         }
       }
+      margin-bottom: 3rem;
+    }
+    .to-top-btn {
+      left: auto;
+      right: calc((100% - 118rem) / 2);
+      transform: none;
+      background-color: var(--theme-500);
     }
   }
 }

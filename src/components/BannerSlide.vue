@@ -1,5 +1,5 @@
 <template>
-  <section class="slide">
+  <section class="slide loading-target">
     <h2 class="blind">이미지 슬라이드</h2>
     <swiper
       effect="fade"
@@ -91,6 +91,9 @@ export default {
 </script>
 
 <style lang="scss">
+.slide {
+  height: fit-content;
+}
 .swiper-pagination {
   display: flex;
   justify-content: center;

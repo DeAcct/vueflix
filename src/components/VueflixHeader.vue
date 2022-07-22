@@ -3,13 +3,13 @@
     :class="[
       'header',
       { 'header--filled': isScroll || (!isHome && !isAuth) },
-      { 'header--centered': isHome && isMobile },
+      { 'header--centered': isHome && isMobileSize },
     ]"
     @scroll="handleScroll"
   >
     <div class="inner">
       <div class="col-left">
-        <h1 :class="['header__logo', { blind: isMobile && !isHome }]">
+        <h1 :class="['header__logo', { blind: isMobileSize && !isHome }]">
           <router-link to="/">
             <vueflix-logo />
           </router-link>
@@ -17,11 +17,11 @@
         <a class="go-back" @click="goBack" v-if="isPrevVisible">
           <icon-base icon-name="뒤로가기"><icon-arrow-prev /></icon-base>
         </a>
-        <h2 v-if="isMobile && !isHome" class="header__title">
+        <h2 v-if="isMobileSize && !isHome" class="header__title">
           {{ headString }}
         </h2>
         <site-menu
-          v-if="!isMobile"
+          v-if="!isMobileSize"
           :is-scroll="isScroll"
           :is-home="isHome"
           :is-auth="isAuth"
@@ -58,7 +58,10 @@ export default {
     IconArrowPrev,
   },
   props: {
-    isMobile: {
+    isMobileSize: {
+      type: Boolean,
+    },
+    isTouchDevice: {
       type: Boolean,
     },
   },
@@ -74,7 +77,7 @@ export default {
         this.page !== "daily" &&
         this.page !== "basket" &&
         this.page !== "my" &&
-        this.isMobile,
+        this.isTouchDevice,
       page: this.$route.name,
       headString: undefined,
     };
@@ -100,7 +103,7 @@ export default {
         this.page !== "daily" &&
         this.page !== "basket" &&
         this.page !== "my" &&
-        this.isMobile;
+        this.isTouchDevice;
       switch (this.page) {
         case "tag-search":
           this.headString = "태그검색";

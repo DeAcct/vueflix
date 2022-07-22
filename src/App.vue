@@ -1,7 +1,11 @@
 <template>
   <router-view v-slot="{ Component }">
-    <vueflix-header v-if="headerVisible" :is-mobile="isMobile" />
-    <bottom-tab-menu v-if="this.$route.meta.bottomTabMenu" />
+    <vueflix-header
+      v-if="headerVisible"
+      :is-mobile-size="isMobileSize"
+      :is-touch-device="isTouchDevice"
+    />
+    <bottom-tab-menu v-if="$route.meta.bottomTabMenu && isMobileSize" />
     <component :is="Component" :key="$route.path"></component>
   </router-view>
 </template>
@@ -22,20 +26,24 @@ export default {
     this.init();
   },
   data() {
+    const screenSizeQuery = window.matchMedia("screen and (max-width: 820px)");
+    const touchDeviceQuery = window.matchMedia(
+      "(hover: none) and (pointer: coarse)"
+    );
     return {
-      isMobile: false,
       isPlayer: false,
-      unsub: undefined,
+      screenSizeQuery,
+      touchDeviceQuery,
+      isMobileSize: screenSizeQuery.matches,
+      isTouchDevice: touchDeviceQuery.matches,
     };
   },
   methods: {
     setUser() {
       const auth = getAuth();
-      const db = getFirestore();
       onAuthStateChanged(auth, async (user) => {
         if (user) {
-          const db = getFirestore();
-          const userRef = doc(db, "user", user.uid);
+          const userRef = doc(this.db, "user", user.uid);
           const userSnap = await getDoc(userRef);
           this.$store.commit("auth/setUser", userSnap.data());
         } else {
@@ -43,8 +51,9 @@ export default {
         }
       });
       if (this.user) {
-        const userDoc = doc(db, "user", this.user.uid);
-        this.unsub = onSnapshot(userDoc, function () {
+        const userDoc = doc(this.db, "user", this.user.uid);
+        this.unsub = onSnapshot(userDoc, () => {
+          console.log(userDoc);
           this.$store.commit("auth/setUser", userDoc.data());
         });
       }
@@ -56,6 +65,7 @@ export default {
         this.clearStoredAnimeData();
       }
       this.changeTitle();
+      this.setDeviceInfo();
       this.setTheme();
     },
     changeTitle() {
@@ -78,6 +88,14 @@ export default {
       const $app = document.getElementById("app");
       $app.dataset.theme = this.theme;
     },
+    setDeviceInfo() {
+      this.screenSizeQuery.addEventListener("change", (e) => {
+        this.isMobileSize = e.matches;
+      });
+      this.touchDeviceQuery.addEventListener("change", (e) => {
+        this.isTouchDevice = e.matches;
+      });
+    },
   },
   watch: {
     $route() {
@@ -95,23 +113,13 @@ export default {
       theme: (state) => state.theme.theme,
     }),
     headerVisible() {
-      return (this.$route.meta.appBar || !this.isMobile) && !this.isPlayer;
+      return this.$route.meta.appBar && !this.isPlayer;
     },
-    isMobile() {
-      const deviceQuery = window.matchMedia(
-        "(hover: none) and (pointer: coarse), screen and (max-width: 820px)"
-      ).matches;
-      return deviceQuery;
-    },
+    db: () => getFirestore(),
   },
 };
 </script>
 
 <style lang="scss">
 @import "./common.scss";
-@media (hover: hover) and (pointer: fine), screen and (min-width: 821px) {
-  .bottom-tab-menu {
-    display: none;
-  }
-}
 </style>
