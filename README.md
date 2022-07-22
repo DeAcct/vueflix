@@ -1,4 +1,5 @@
 # vueflix
+[![Netlify Status](https://api.netlify.com/api/v1/badges/1555cce5-c385-4481-a01a-0d9ec5340b08/deploy-status)](https://app.netlify.com/sites/boisterous-khapse-9ffb12/deploys)
 
 ```
 라프텔 클론코딩, 그런데 이제 넷플릭스를 곁들인
