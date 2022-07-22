@@ -14,13 +14,7 @@
             <vueflix-logo />
           </router-link>
         </h1>
-        <a
-          class="go-back"
-          @click="goBack"
-          v-if="isPrevVisible"
-          role="link"
-          id="뒤로가기"
-        >
+        <a class="go-back" @click="goBack" v-if="isPrevVisible">
           <icon-base icon-name="뒤로가기"><icon-arrow-prev /></icon-base>
         </a>
         <h2 v-if="isMobile && !isHome" class="header__title">
@@ -63,10 +57,14 @@ export default {
     IconBase,
     IconArrowPrev,
   },
+  props: {
+    isMobile: {
+      type: Boolean,
+    },
+  },
   data() {
     return {
       isScroll: false,
-      isMobile: window.innerWidth <= 768,
       isSearchVisible: false,
       isHome: this.page === "home",
       isAuth: this.page === "auth",
@@ -84,9 +82,6 @@ export default {
   methods: {
     handleScroll() {
       setTimeout((this.isScroll = 0 < Math.round(window.scrollY)), 500);
-    },
-    checkResolution() {
-      this.isMobile = window.innerWidth <= 768;
     },
     goBack() {
       this.$router.go(-1);

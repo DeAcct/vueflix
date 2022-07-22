@@ -10,7 +10,6 @@
       :show-new-review="isWriteReviewShown"
       :type="writeReviewType"
       :my-review="myReview"
-      v-if="editmode"
     />
     <div :class="{ 'review-list--exists': reviewList }">
       <ul class="others-list">
@@ -103,12 +102,12 @@ export default {
     },
   },
   watch: {
-    async user() {
-      await this.syncTextReviews();
+    user: {
+      async handler() {
+        await this.syncTextReviews();
+      },
+      immediate: true,
     },
-  },
-  async mounted() {
-    await this.syncTextReviews();
   },
   methods: {
     //CRUD

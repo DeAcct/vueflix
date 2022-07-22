@@ -1,10 +1,7 @@
 <template>
   <component :is="component" class="anime-item-head" :style="posterBg">
     <h1 class="blind" v-if="notPC">뷰플릭스</h1>
-    <div
-      :class="['navigation', 'inner', { 'navigation--scrolled': isScroll }]"
-      v-if="notPC"
-    >
+    <div :class="['navigation', 'inner', { 'navigation--scrolled': isScroll }]">
       <div class="col-left">
         <a class="back" @click="goBack">
           <icon-base icon-name="뒤로가기">
@@ -203,7 +200,6 @@ export default {
   data() {
     return {
       wannaSeeBool: false,
-      isMobile: window.innerWidth <= 768,
       notPC: window.innerWidth <= 1024,
       component: "div",
       isPurchaseActive: false,
@@ -307,7 +303,6 @@ export default {
       const bg = `background-image: linear-gradient(transparent,var(--anime-bg) ${
         !this.isMobile ? "90%" : "80%"
       }), url(${this.animeInfo.poster});`;
-
       return bg;
     },
     continueLink() {
@@ -334,6 +329,13 @@ export default {
         }
       }
       return "1화 무료보기";
+    },
+    isMobile() {
+      const deviceQuery = window.matchMedia(
+        "(hover: none) and (pointer: coarse), screen and (max-width: 820px)"
+      ).matches;
+      console.log("isMobile", deviceQuery);
+      return deviceQuery;
     },
   },
 
