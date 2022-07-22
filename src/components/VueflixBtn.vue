@@ -24,7 +24,7 @@ export default {
     },
     icon: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   components: {
