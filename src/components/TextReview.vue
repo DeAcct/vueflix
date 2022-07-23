@@ -168,14 +168,6 @@ export default {
           mutator(reviewItem);
         }
       });
-      console.log(
-        this.animeRef,
-        ":",
-        { reviews: animeReviews },
-        this.userRef,
-        ":",
-        { reviews: userReviews }
-      );
       await updateDoc(this.animeRef, { reviews: animeReviews });
       await updateDoc(this.userRef, { reviews: userReviews });
       await this.syncTextReviews();

@@ -1,15 +1,23 @@
 <template>
   <div class="keyword-my">
     <div class="row-top">
-      <h3 class="keyword-my__description">당신은 어떤 점이 마음에 드시나요?</h3>
+      <h3 class="keyword-my__description">
+        {{ user ? `${user.nickname}님` : "당신" }}은 어떤 점이 좋으세요?
+      </h3>
       <form class="survey">
-        <label v-for="label in data" :key="label" class="survey__keyword">
+        <label
+          v-for="label in data"
+          :key="label.keyword"
+          class="survey__keyword"
+        >
           <input
             type="checkbox"
             :id="label.id"
             class="blind"
             v-model="surveyData"
+            @change="setSurveyData"
             :value="label.id"
+            :ref="label.id"
           />
           <i
             :class="[
@@ -36,7 +44,8 @@ import {
   getFirestore,
   updateDoc,
   increment,
-  doc /*getDoc, doc, setDoc*/,
+  doc,
+  setDoc /*getDoc, doc, setDoc*/,
 } from "firebase/firestore";
 
 import IconBase from "./IconBase.vue";
@@ -56,8 +65,10 @@ export default {
     },
   },
   data() {
+    const currentAniTitle = this.$route.params.title;
     return {
       surveyData: [],
+      currentAniTitle,
     };
   },
   computed: {
@@ -66,37 +77,47 @@ export default {
       user: (state) => state.auth.user,
     }),
   },
-  watch: {
-    async surveyData(afterSurvey) {
-      const beforeSurvey =
-        this.user.keywordReviews.length > 0
-          ? this.user.keywordReviews.find(
-              (item) => item.aniTitle === this.$route.params.title
-            ).likeIt
-          : [];
+  methods: {
+    async setSurveyData() {
+      const beforeSurvey = this.user.keywordReview.find(
+        (item) => item.aniTitle === this.currentAniTitle
+      ).likeIt;
       const changes =
-        beforeSurvey.length < afterSurvey.length
-          ? afterSurvey
+        beforeSurvey.length < this.surveyData.length
+          ? this.surveyData
               .filter((afterItem) => !beforeSurvey.includes(afterItem))
-              .map((item) => ({ item, method: "+" }))
+              .map((item) => ({ item, method: 1 }))[0]
           : beforeSurvey
-              .filter((beforeItem) => !afterSurvey.includes(beforeItem))
-              .map((item) => ({ item, method: "-" }));
-      // updateDoc(docdata, {number: increment(1)})
+              .filter((beforeItem) => !this.surveyData.includes(beforeItem))
+              .map((item) => ({ item, method: -1 }))[0];
 
-      this.$store.commit("auth/newKeywordReviews", [
+      this.$store.commit("auth/newKeywordReview", [
         {
-          aniTitle: this.$route.params.title,
-          likeIt: afterSurvey,
+          aniTitle: this.currentAniTitle,
+          likeIt: this.surveyData,
         },
       ]);
-      console.log(changes)
-      await updateDoc(doc(this.db, ""), { number: increment(1) });
-      // try {
-      //   await setDoc(doc(this.db, "user", this.user.uid), this.user);
-      // } catch (err) {
-      //   console.log("오류", err);
-      // }
+      // const updateObj =
+      const animeUpdateObj = {};
+      animeUpdateObj[`keywordReview.${changes.item}.value`] = increment(
+        changes.method
+      );
+      await updateDoc(
+        doc(this.db, "anime", this.currentAniTitle),
+        animeUpdateObj
+      );
+      const userUpdateObj = {};
+      await setDoc(doc(this.db, "user", this.user.uid), this.user);
+    },
+  },
+  watch: {
+    user() {
+      const myCheckedKeyword = this.user
+        ? this.user.keywordReview.find(
+            (anime) => anime.aniTitle === this.currentAniTitle
+          ).likeIt
+        : [];
+      this.surveyData = myCheckedKeyword;
     },
   },
 };

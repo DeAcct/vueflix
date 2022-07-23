@@ -107,7 +107,9 @@ export default {
     },
     setData() {
       this.reviewData = this.myReview ? this.myReview.content : "";
-      this.$refs.reviewTextArea.value = this.reviewData;
+      if (this.$refs.reviewTextArea) {
+        this.$refs.reviewTextArea.value = this.reviewData;
+      }
     },
     setReviewData(e) {
       this.reviewData.content = e.target.value;

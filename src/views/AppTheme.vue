@@ -21,13 +21,18 @@
         <circle class="infographic__sun-mask" cx="454.3" cy="393.4" r="0.5" />
         <circle class="infographic__sun-line" cx="673.6" cy="374.6" r="238.6" />
       </svg>
-      <p class="darkmode__description">
-        <strong class="line-break">
-          어두운 테마를 적용하여 밤에도 편하게 보세요!
-        </strong>
-        이 기능을 한 번도 사용한 적 없거나 인터넷 사용기록을 삭제할 경우
-        브라우저나 운영체제의 다크 모드 설정을 따라요.
-      </p>
+      <strong class="darkmode__description">
+        어두운 테마를 적용하여 밤에도 편하게 보세요!
+      </strong>
+    </div>
+    <div class="note-that">
+      <strong class="note-that__head"
+        >아래의 경우 사용 중인 기기의 다크 모드 설정을 따라요.</strong
+      >
+      <ul class="reason-list">
+        <li class="reason-list__item">이 기능을 한 번도 사용한 적 없는 경우</li>
+        <li class="reason-list__item">인터넷 사용기록을 삭제할 경우</li>
+      </ul>
     </div>
   </div>
 </template>
@@ -122,14 +127,33 @@ export default {
     }
   }
   &__description {
-    font-size: 1.3rem;
-    font-weight: 500;
-    line-height: 1.5;
+    display: block;
+    width: 100%;
     padding: 2rem 3rem;
     background-color: var(--top-item);
     border-radius: 0 0 0.6rem 0.6rem;
-    strong {
-      line-height: 1.5;
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+  .note-that {
+    width: 100%;
+    padding: 2rem 3rem;
+    &__head {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+      color: var(--bg-800);
+    }
+    .reason-list {
+      &__item {
+        line-height: 1.5rem;
+        font-size: 1.1rem;
+        color: var(--bg-800);
+        &::before {
+          content: "- ";
+        }
+      }
     }
   }
 }

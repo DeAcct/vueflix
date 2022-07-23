@@ -88,7 +88,7 @@ const mutations = {
     }
   },
   setReviews(state, payload) {
-    state.reviews = payload;
+    state.user.reviews = payload;
   },
   updateMaratonWatch(state, payload) {
     const targetIndex = state.user.maratonWatch.findIndex(
@@ -133,8 +133,8 @@ const mutations = {
       state.user.maratonWatch[targetIndex].maratonEnd = maratonEnd;
     }
   },
-  newKeywordReviews(state, payload) {
-    state.user.keywordReviews = payload;
+  newKeywordReview(state, payload) {
+    state.user.keywordReview = payload;
   },
 };
 
