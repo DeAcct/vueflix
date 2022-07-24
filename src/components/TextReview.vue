@@ -1,7 +1,9 @@
 <template>
   <section class="text-review inner">
-    <h2 class="title">긴 글</h2>
-    <p class="description">키워드로 표현할 수 없는 무언가가 있다면!</p>
+    <h2 class="text-review__title">긴 글</h2>
+    <p class="text-review__description">
+      키워드로 표현할 수 없는 무언가가 있다면!
+    </p>
     <write-review
       @new-review="addedTrigger"
       @edit-review="editedTrigger"
@@ -208,16 +210,12 @@ export default {
   background-color: var(--top-item);
   border-radius: 0.6rem;
   overflow: hidden;
-  padding: {
-    top: 1.8rem;
-    bottom: 1.8rem;
-  }
-  .title {
+  &__title {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 0.7rem;
   }
-  .description {
+  &__description {
     font-size: 1.3rem;
   }
   .write-review {
@@ -231,6 +229,15 @@ export default {
     border-radius: 0.6rem;
     &--exists {
       margin-top: 1rem;
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .text-review {
+    &__title {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
     }
   }
 }

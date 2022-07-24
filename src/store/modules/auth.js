@@ -134,7 +134,14 @@ const mutations = {
     }
   },
   newKeywordReview(state, payload) {
-    state.user.keywordReview = payload;
+    const exists = state.user.keywordReview.findIndex(
+      (krItem) => krItem.aniTitle === payload.aniTitle
+    );
+    if (exists !== -1) {
+      state.user.keywordReview[exists].likeIt = payload.likeIt;
+    } else {
+      state.user.keywordReview.push(payload);
+    }
   },
 };
 

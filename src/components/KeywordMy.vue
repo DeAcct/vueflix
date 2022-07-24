@@ -76,28 +76,31 @@ export default {
     ...mapState({
       user: (state) => state.auth.user,
     }),
+    beforeKeyword() {
+      const myCheckedKeyword = this.user
+        ? this.user.keywordReview.find(
+            (anime) => anime.aniTitle === this.currentAniTitle
+          )
+        : [];
+      return myCheckedKeyword ? myCheckedKeyword.likeIt : [];
+    },
   },
   methods: {
-    async setSurveyData() {
-      const beforeSurvey = this.user.keywordReview.find(
-        (item) => item.aniTitle === this.currentAniTitle
-      ).likeIt;
+    async setSurveyData(e) {
+      const beforeSurvey = this.beforeKeyword;
+      const afterSurvey = this.surveyData;
       const changes =
-        beforeSurvey.length < this.surveyData.length
-          ? this.surveyData
+        beforeSurvey.length < afterSurvey.length
+          ? afterSurvey
               .filter((afterItem) => !beforeSurvey.includes(afterItem))
               .map((item) => ({ item, method: 1 }))[0]
           : beforeSurvey
-              .filter((beforeItem) => !this.surveyData.includes(beforeItem))
+              .filter((beforeItem) => !afterSurvey.includes(beforeItem))
               .map((item) => ({ item, method: -1 }))[0];
-
-      this.$store.commit("auth/newKeywordReview", [
-        {
-          aniTitle: this.currentAniTitle,
-          likeIt: this.surveyData,
-        },
-      ]);
-      // const updateObj =
+      this.$store.commit("auth/newKeywordReview", {
+        aniTitle: this.currentAniTitle,
+        likeIt: afterSurvey,
+      });
       const animeUpdateObj = {};
       animeUpdateObj[`keywordReview.${changes.item}.value`] = increment(
         changes.method
@@ -106,18 +109,14 @@ export default {
         doc(this.db, "anime", this.currentAniTitle),
         animeUpdateObj
       );
-      const userUpdateObj = {};
+
       await setDoc(doc(this.db, "user", this.user.uid), this.user);
+      this.$emit("data-changed");
     },
   },
   watch: {
     user() {
-      const myCheckedKeyword = this.user
-        ? this.user.keywordReview.find(
-            (anime) => anime.aniTitle === this.currentAniTitle
-          ).likeIt
-        : [];
-      this.surveyData = myCheckedKeyword;
+      this.surveyData = this.beforeKeyword;
     },
   },
 };

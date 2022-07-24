@@ -4,7 +4,11 @@
     <div class="sub-widgets">
       <div class="row-top">
         <keyword-others-chart :data="labels" class="sub-widget" />
-        <keyword-my :data="labels" class="sub-widget" />
+        <keyword-my
+          :data="labels"
+          class="sub-widget"
+          @data-changed="syncData"
+        />
       </div>
     </div>
   </section>
@@ -13,6 +17,8 @@
 <script>
 import KeywordOthersChart from "./KeywordOthersChart.vue";
 import KeywordMy from "./KeywordMy.vue";
+
+import { getFirestore, getDoc, doc } from "firebase/firestore";
 
 export default {
   name: "KeyworkReview",
@@ -27,15 +33,35 @@ export default {
   },
   data() {
     return {
-      labels: [
-        { id: "drawing", keyword: "그림체", value: 50 },
-        { id: "voice", keyword: "성우", value: 50 },
-        { id: "directing", keyword: "연출", value: 12.5 },
-        { id: "character", keyword: "캐릭터", value: 6.25 },
-        { id: "story", keyword: "스토리", value: 3.125 },
-        { id: "bgm", keyword: "배경음악", value: 1.5625 },
-      ],
+      labels: [],
     };
+  },
+  computed: {
+    db: () => getFirestore(),
+  },
+  async created() {
+    this.syncData();
+  },
+  methods: {
+    async syncData() {
+      const docRef = doc(this.db, "anime", this.$route.params.title);
+      const originData = (await getDoc(docRef)).data().keywordReview;
+
+      this.labels = Object.keys(originData)
+        .map((item) => ({
+          id: item,
+          ...originData[`${item}`],
+        }))
+        .sort((a, b) => {
+          if (a.keyword > b.keyword) {
+            return 1;
+          } else if (a.keyword < b.keyword) {
+            return -1;
+          } else {
+            return 0;
+          }
+        });
+    },
   },
 };
 </script>
@@ -48,10 +74,6 @@ export default {
   background-color: var(--top-item);
   border-radius: 0.6rem;
   overflow: hidden;
-  padding: {
-    top: 1.8rem;
-    bottom: 1.8rem;
-  }
 
   &__title {
     font-size: 1.5rem;
@@ -90,6 +112,10 @@ export default {
 
 @media screen and (min-width: 1024px) {
   .keyword-reviews {
+    &__title {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
     .sub-widgets {
       display: flex;
       flex-direction: column;
@@ -98,12 +124,13 @@ export default {
         margin-right: 1rem;
       }
       .row-top {
-        margin-bottom: 3rem;
+        margin-bottom: 0;
         flex-direction: row;
       }
       .sub-widget {
         &:not(:last-child) {
           margin-right: 2rem;
+          padding: 0;
         }
       }
     }

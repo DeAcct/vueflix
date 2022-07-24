@@ -29,12 +29,12 @@
   --bg-200: hsl(0, 5%, 95%);
   --bg-100: #fff;
 
-  --chart-palette-100: var(--theme-800);
-  --chart-palette-200: var(--theme-700);
-  --chart-palette-300: var(--theme-600);
-  --chart-palette-400: var(--theme-500);
-  --chart-palette-500: var(--theme-400);
-  --chart-palette-600: var(--theme-300);
+  --chart-palette-1: var(--theme-600);
+  --chart-palette-2: var(--theme-500);
+  --chart-palette-3: var(--theme-400);
+  --chart-palette-4: var(--theme-300);
+  --chart-palette-5: var(--theme-200);
+  --chart-palette-6: var(--theme-100);
 }
 
 #app {
@@ -69,7 +69,12 @@
   --anime-useful-widget: hsl(0, 5%, 85%);
   --box-shadow: rgba(0, 0, 0, 0.15);
   --modal-shadow: var(--box-shadow);
-  --overflow-gradient: linear-gradient(90deg,rgba(255, 255, 255, 0.95) 1%,transparent, rgba(255, 255, 255, 0.95) 99%);
+  --overflow-gradient: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.95) 1%,
+    transparent,
+    rgba(255, 255, 255, 0.95) 99%
+  );
   --player-gradient: linear-gradient(
     rgba(0, 0, 0, 0.3),
     transparent,
@@ -125,7 +130,12 @@
   --anime-genre: hsla(0, 5%, 13%, 0.8);
 
   --box-shadow: none;
-  --overflow-gradient: linear-gradient(90deg,var(--top-item),transparent, var(--top-item));
+  --overflow-gradient: linear-gradient(
+    90deg,
+    var(--top-item),
+    transparent,
+    var(--top-item)
+  );
   --new-review: var(--bg-100);
   --chart-legend: var(--bg-100);
 }

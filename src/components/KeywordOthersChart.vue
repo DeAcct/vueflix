@@ -30,23 +30,20 @@ import { Chart, DoughnutController, ArcElement } from "chart.js";
 Chart.register(DoughnutController, ArcElement);
 export default {
   mounted() {
-    const ctx = this.$refs["keyword-others-chart__canvas"];
-    const values = this.data.map((label) => label.value);
-    const data = {
-      datasets: [
-        {
-          data: values,
-        },
-      ],
-    };
-    new Chart(ctx, {
-      type: "doughnut",
-      data,
-      options: {
-        responsive: true,
-        borderWidth: 0,
-        backgroundColor: this.Palette,
-      },
+    this.$nextTick(() => {
+      const ctx = this.$refs["keyword-others-chart__canvas"].getContext("2d");
+      const values = this.chartValue;
+      const data = {
+        datasets: [
+          {
+            data: values,
+          },
+        ],
+      };
+      this.chart = new Chart(ctx, {
+        type: "doughnut",
+        data,
+      });
     });
   },
   props: {
@@ -54,16 +51,36 @@ export default {
       type: Array,
     },
   },
+  unmounted() {
+    this.chart.destroy();
+  },
   computed: {
     Palette() {
       const root = getComputedStyle(document.body);
       let palette = [];
       for (let i = 1; i <= this.data.length; i++) {
-        const key = `--chart-palette-${i}00`;
+        const key = `--chart-palette-${i}`;
         const value = root.getPropertyValue(key);
         palette.push(value);
       }
       return palette;
+    },
+    chartValue() {
+      return this.data.length !== 0
+        ? this.data.map((label) => label.value)
+        : [];
+    },
+  },
+  watch: {
+    data() {
+      const values = this.chartValue;
+      this.chart.data.datasets[0].data = values;
+      this.chart.options = {
+        responsive: true,
+        borderWidth: 0,
+        backgroundColor: this.Palette,
+      };
+      this.chart.update();
     },
   },
 };
@@ -101,17 +118,19 @@ export default {
     border-radius: 0.6rem;
     .item {
       display: flex;
-      width: 33%;
+      width: 32%;
       align-items: center;
       justify-content: space-between;
       margin: 0.5rem 0;
-      padding: 0.5rem;
+      padding: 1rem;
+      border-radius: 9999px;
     }
     &__icon {
-      width: 0.7rem;
+      width: 1.4rem;
       height: 0.7rem;
       border-radius: 9999px;
       margin-right: 0.7rem;
+      box-shadow: var(--box-shadow);
     }
     .col-left {
       display: flex;
@@ -140,6 +159,7 @@ export default {
     }
     .row-top {
       flex-direction: column;
+      margin-bottom: 0;
     }
     .chart-legend {
       max-width: 768px;

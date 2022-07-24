@@ -52,8 +52,8 @@ export default {
       });
       if (this.user) {
         const userDoc = doc(this.db, "user", this.user.uid);
-        this.unsub = onSnapshot(userDoc, () => {
-          console.log(userDoc);
+        onSnapshot(userDoc, async () => {
+          const userSnap = await getDoc(userDoc);
           this.$store.commit("auth/setUser", userDoc.data());
         });
       }

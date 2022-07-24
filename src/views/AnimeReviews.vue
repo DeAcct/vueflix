@@ -60,8 +60,25 @@ export default {
   flex-direction: column;
   align-items: center;
 
-  .widget:not(:last-child) {
-    margin-bottom: 1rem;
+  .widget {
+    padding: {
+      top: 1.8rem;
+      bottom: 1.8rem;
+    }
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .reviews {
+    .widget {
+      padding: {
+        top: 3rem;
+        bottom: 3rem;
+      }
+    }
   }
 }
 </style>
