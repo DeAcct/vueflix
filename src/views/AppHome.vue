@@ -23,8 +23,8 @@
     </main>
     <vueflix-modal
       type="yes-no"
-      :yes-func="install"
-      :no-func="dismiss"
+      :yes-func="PWAinstall"
+      :no-func="PWAdismiss"
       :class="{ show: isModalOpened }"
       v-if="isModalOpened"
     >
@@ -71,11 +71,11 @@ export default {
     await this.recommendInit();
   },
   methods: {
-    async dismiss() {
+    async PWAdismiss() {
       Cookies.set("add-to-home-screen", null, { expires: 15 });
       this.isModalOpened = null;
     },
-    async install() {
+    async PWAinstall() {
       this.isModalOpened.prompt();
     },
     async recommendInit() {
@@ -96,6 +96,7 @@ export default {
         }));
       this.recommendedAnime = data;
     },
+    async dailyInit() {},
   },
   computed: {
     ...mapState({

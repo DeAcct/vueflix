@@ -46,12 +46,8 @@ export default {
   },
   mixins: [useFirebase],
   async mounted() {
-    const data = await this.useQuery(
-      "anime",
-      "slideMeta.idNumber",
-      "==",
-      this.animeId
-    );
+    const data = await this.useQuery("anime", "idNumber", "==", this.animeId);
+    console.log(data);
     const name = data.name;
     const queryBase = `${name}/${data.slideMeta.shortName}_banner`;
     const pcJpgBg = await this.useMultimediaURL(`${queryBase}.jpg`);
