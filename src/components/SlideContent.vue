@@ -47,18 +47,15 @@ export default {
   mixins: [useFirebase],
   async mounted() {
     const data = await this.useQuery("anime", "idNumber", "==", this.animeId);
-    console.log(data);
     const name = data.name;
-    const queryBase = `${name}/${data.slideMeta.shortName}_banner`;
+    const queryBase = `${name}/${data.shortName}_banner`;
     const pcJpgBg = await this.useMultimediaURL(`${queryBase}.jpg`);
     const pcWebpBg = await this.useMultimediaURL(`${queryBase}.webp`);
     const mJpgBg = await this.useMultimediaURL(`${queryBase}_m.jpg`);
     const mWebpBg = await this.useMultimediaURL(`${queryBase}_m.webp`);
-    const logo = await this.useMultimediaURL(
-      `${name}/${data.slideMeta.shortName}.png`
-    );
+    const logo = await this.useMultimediaURL(`${name}/${data.shortName}.png`);
     const link = `/anime/${name}`;
-    const copy = data.slideMeta.copy;
+    const copy = data.slideCopy;
     this.slideData = {
       pcJpgBg,
       pcWebpBg,
