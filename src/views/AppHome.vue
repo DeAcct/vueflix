@@ -96,7 +96,6 @@ export default {
         }));
       this.recommendedAnime = data;
     },
-    async dailyInit() {},
   },
   computed: {
     ...mapState({

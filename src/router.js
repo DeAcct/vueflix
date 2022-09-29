@@ -1,9 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-const date = new Date();
-const year = date.getFullYear();
-const month = date.getMonth();
-const quarter = Math.floor((month + 3) / 3);
 const routes = [
   {
     path: "/",
@@ -50,16 +46,6 @@ const routes = [
     component: () => import("@/views/TagSearch.vue"),
     meta: {
       title: "필터로 취향저격 애니찾기",
-      appBar: true,
-      bottomTabMenu: true,
-    },
-  },
-  {
-    path: "/daily",
-    name: "daily",
-    component: () => import("@/views/AppDaily.vue"),
-    meta: {
-      title: `${year}년 ${quarter}분기 신작 애니 편성표`,
       appBar: true,
       bottomTabMenu: true,
     },

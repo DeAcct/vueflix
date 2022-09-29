@@ -67,9 +67,7 @@ export default {
       storage,
       `${this.aniTitle}/${this.episodeThumbnail}`
     );
-    this.thumbnailSrc = this.developFirebase
-      ? await getDownloadURL(thumbnailRef)
-      : this.episodeThumbnail;
+    this.thumbnailSrc = await getDownloadURL(thumbnailRef);
   },
   methods: {
     loadTrigger() {

@@ -29,7 +29,6 @@
             :index="anime.index"
             :isRecent="isRecent"
             :progress="anime.watchedPercent"
-            :develop-firebase="true"
           />
         </template>
         <template v-else-if="isDaily">
@@ -38,8 +37,6 @@
             :key="anime.title"
             :ani-title="anime.title"
             :episode-thumbnail="anime.img"
-            :url="`/anime/${anime.aniTitle}/`"
-            :develop-firebase="false"
           />
         </template>
         <template v-else-if="isRecommend">
@@ -48,9 +45,7 @@
             :key="anime.aniTitle"
             :ani-title="anime.aniTitle"
             :episode-thumbnail="anime.episodeThumbnail"
-            :url="`/anime/${anime.aniTitle}/`"
             :progress="anime.watchedPercent"
-            :develop-firebase="true"
           />
         </template>
       </ul>
@@ -87,7 +82,6 @@ export default {
     return {
       resolution: window.innerWidth,
       carouselNumber: 0,
-      shownItems: this.resolution >= 1920 ? 7 : 4,
       isRecent: this.type === "recent",
       isDaily: this.type === "daily",
       isRecommend: this.type === "recommend",
@@ -112,6 +106,17 @@ export default {
     prevActive() {
       return this.carouselNumber > 0;
     },
+    shownItems() {
+      if (this.resolution >= 1920) {
+        return 7;
+      } else if (this.resolution >= 1080) {
+        return 4;
+      } else if (this.resolution >= 768) {
+        return 3;
+      } else {
+        return 2;
+      }
+    },
     ...mapState({
       dailyShownList: (state) => state.daily.shownList,
     }),
@@ -130,8 +135,7 @@ export default {
   mounted() {
     window.addEventListener("resize", () => {
       this.resolution = window.innerWidth;
-      this.shownItems = this.resolution >= 1920 ? 7 : 4;
-      this.carouselNumber = 0;
+      this.dailyReset();
     });
   },
 };
@@ -144,7 +148,11 @@ export default {
     margin-top: 2rem;
   }
   &__head-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 0 2rem;
+    width: 100%;
     h2 {
       font-size: 1.8rem;
       margin-right: 2rem;
@@ -183,9 +191,6 @@ export default {
       h2 {
         font-size: 2.3rem;
       }
-      .btn-wrap {
-        display: none;
-      }
     }
     &__track {
       width: 100%;
@@ -199,13 +204,8 @@ export default {
 @media screen and (min-width: 1024px) {
   .carousel {
     position: relative;
-    &__head-control {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      h2 {
-        font-size: 2.8rem;
-      }
+    &__head-control h2 {
+      font-size: 2.8rem;
     }
     &__track {
       width: 100%;
@@ -214,12 +214,11 @@ export default {
   }
 }
 
-@media screen and (min-width: 1025px) {
+@media (hover: hover) and (pointer: fine) {
   .carousel {
     &__head-control .btn-wrap {
       display: flex;
       justify-content: flex-end;
-      flex: 2;
       height: 4rem;
       button {
         width: 4rem;
