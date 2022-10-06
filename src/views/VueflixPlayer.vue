@@ -39,8 +39,8 @@
       :is-end="isEnd"
       :next-link="nextLink"
     >
-      <template v-slot:video-current>{{ videoCurrent }}</template>
-      <template v-slot:video-duration>{{ videoDuration }}</template>
+      <template #video-current>{{ videoCurrent }}</template>
+      <template #video-duration>{{ videoDuration }}</template>
     </video-controller>
     <player-setting
       :class="{ 'player-setting--open': isSettingShown }"
@@ -152,8 +152,6 @@ export default {
       videoResolution: "1080p",
       videoAutoskip: false,
       videoAutoplay: false,
-      $canvas: undefined,
-      $anchor: undefined,
     };
   },
   methods: {
@@ -181,26 +179,21 @@ export default {
       }
     },
     screenshot() {
-      if (!this.$canvas) {
-        this.$canvas = document.createElement("canvas");
-      }
-      if (!this.$anchor) {
-        this.$anchor = document.createElement("a");
-      }
-      this.$canvas.width = 1920;
-      this.$canvas.height = 1080;
-      const ctx = this.$canvas.getContext("2d");
-      ctx.drawImage(
-        this.$refs.video,
-        0,
-        0,
-        this.$canvas.width,
-        this.$canvas.height
-      );
-      const img = this.$canvas.toDataURL("image/png");
-      this.$anchor.href = img;
-      this.$anchor.download = `${this.$route.params.title} ${this.$route.params.part} ${this.$route.params.index} 스크린샷`;
-      this.$anchor.click();
+      const $canvas = document.createElement("canvas");
+      const $anchor = document.createElement("a");
+
+      $canvas.width = 1920;
+      $canvas.height = 1080;
+      const ctx = $canvas.getContext("2d");
+      ctx.drawImage(this.$refs.video, 0, 0, $canvas.width, $canvas.height);
+      const img = $canvas.toDataURL("image/png");
+      $anchor.href = img;
+      $anchor.download = `${this.$route.params.title} ${this.$route.params.part} ${this.$route.params.index}`;
+      $anchor.click();
+
+      $anchor.remove();
+      $canvas.remove();
+      console.log($anchor);
     },
     async savePoint() {
       this.$store.commit("auth/updateRecentWatched", this.nowEpisodeInfo);
