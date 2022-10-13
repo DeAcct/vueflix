@@ -2,6 +2,7 @@ import { router } from "./router";
 import { createApp } from "vue";
 import store from "./store/store";
 import { initializeApp } from "firebase/app";
+import "./common.scss";
 
 import App from "./App.vue";
 

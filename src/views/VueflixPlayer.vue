@@ -1,7 +1,6 @@
 <template>
   <div class="player">
     <video
-      :src="videoSrc"
       autoplay
       playsinline
       crossorigin="anonymous"
@@ -12,7 +11,9 @@
       @timeupdate="setTime"
       @ended="videoEnd"
       class="player__video"
-    ></video>
+    >
+      <source :src="videoSrc" />
+    </video>
 
     <loading-spinner :is-loading="isLoading" />
     <video-controller
@@ -170,10 +171,6 @@ export default {
       this.isLoading = true;
       try {
         this.videoSrc = await getDownloadURL(videoRef);
-        /*
-         * this.$refs.video.duration * (어디까지 봤는지 %) 계산해서 반영하기,
-         * (어디까지 봤는지 %) 없으면 놔두기
-         */
       } catch {
         this.$router.replace("/notfound");
       }
@@ -193,7 +190,6 @@ export default {
 
       $anchor.remove();
       $canvas.remove();
-      console.log($anchor);
     },
     async savePoint() {
       this.$store.commit("auth/updateRecentWatched", this.nowEpisodeInfo);
@@ -321,7 +317,6 @@ export default {
 
         this.videoCurrent =
           this.formatter(nowMin, 10) + ":" + this.formatter(nowSec, 10);
-        //prettier 버그로 인해 개행문자가 섞이는 문제가 있음
         this.videoDuration = duration
           ? `${this.formatter(durMin, 10)}:${this.formatter(durSec, 10)}`
           : "00:00";

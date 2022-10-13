@@ -7,6 +7,7 @@
     />
     <bottom-tab-menu v-if="$route.meta.bottomTabMenu && isMobileSize" />
     <component :is="Component" :key="$route.path"></component>
+    <toast-renderer />
   </router-view>
 </template>
 
@@ -16,11 +17,13 @@ import VueflixHeader from "./components/VueflixHeader.vue";
 import BottomTabMenu from "./components/BottomTabMenu.vue";
 import { mapState } from "vuex";
 import { doc, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
+import ToastRenderer from "./components/ToastRenderer.vue";
 export default {
   name: "App",
   components: {
     VueflixHeader,
     BottomTabMenu,
+    ToastRenderer,
   },
   mounted() {
     this.init();
@@ -119,7 +122,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-@import "./common.scss";
-</style>

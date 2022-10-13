@@ -63,7 +63,6 @@ export default {
   },
   async mounted() {
     const storage = getStorage();
-    console.log(this.aniTitle, this.episodeThumbnail);
     const thumbnailRef = ref(
       storage,
       `${this.aniTitle}/${this.episodeThumbnail}`
