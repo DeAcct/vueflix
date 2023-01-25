@@ -112,7 +112,7 @@ export default {
       }
     },
     setReviewData(e) {
-      this.reviewData.content = e.target.value;
+      this.reviewData = e.target.value;
     },
   },
 };

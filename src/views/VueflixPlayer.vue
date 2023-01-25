@@ -11,9 +11,8 @@
       @timeupdate="setTime"
       @ended="videoEnd"
       class="player__video"
-    >
-      <source :src="videoSrc" />
-    </video>
+      :src="videoSrc"
+    ></video>
 
     <loading-spinner :is-loading="isLoading" />
     <video-controller

@@ -2,7 +2,7 @@
   <div class="wrap">
     <main class="my" v-if="isMyRoot">
       <div class="tab-one">
-        <login-widget :btn-func="route">
+        <login-widget :btn-func="onLoginButtonClick">
           <template v-slot:profile-img>
             <profile-img
               :input-profile="user ? user.profileImgSrc : undefined"
@@ -32,10 +32,6 @@
             <li class="stat-item">
               <h3>리뷰</h3>
               <p>{{ user.reviews.length }}개</p>
-            </li>
-            <li class="stat-item">
-              <h3>정주행</h3>
-              <p>{{ maratonWatched }}개</p>
             </li>
           </ul>
         </section>
@@ -115,12 +111,6 @@ export default {
     ...mapState({
       user: (state) => state.auth.user,
     }),
-    maratonWatched() {
-      const result = this.user
-        ? this.user.maratonWatch.filter((anime) => anime.maratonEnd).length
-        : 0;
-      return result;
-    },
   },
   data() {
     return {
@@ -176,13 +166,21 @@ export default {
     };
   },
   methods: {
-    async route() {
-      if (this.user) {
-        const auth = getAuth();
-        await signOut(auth);
-      } else {
-        this.$router.push("auth");
+    async onLoginButtonClick() {
+      if (!this.user) {
+        this.login();
+        return;
       }
+      this.logout();
+    },
+    login() {
+      this.$router.push("auth");
+    },
+    async logout() {
+      const auth = getAuth();
+      await signOut(auth);
+      this.$store.commit("auth/setUser", null);
+      sessionStorage.setItem("user", JSON.stringify(this.user));
     },
   },
 };

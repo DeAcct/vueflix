@@ -53,29 +53,16 @@ export default {
           this.$store.commit("auth/setUser", undefined);
         }
       });
-      if (this.user) {
-        const userDoc = doc(this.db, "user", this.user.uid);
-        onSnapshot(userDoc, async () => {
-          const userSnap = await getDoc(userDoc);
-          this.$store.commit("auth/setUser", userDoc.data());
-        });
-      }
     },
     init() {
       this.setUser();
       this.isPlayer = this.$route.name === "player";
-      if (!this.isPlayer && this.$route.name !== "anime") {
-        this.clearStoredAnimeData();
-      }
       this.changeTitle();
       this.setDeviceInfo();
       this.setTheme();
     },
     changeTitle() {
       document.title = this.$route.meta.title || import.meta.env.VITE_KR_NAME;
-    },
-    clearStoredAnimeData() {
-      this.$store.commit("currentAnimeInfo/setCurrentAnimeInfo", undefined);
     },
     setTheme() {
       const currentTheme = localStorage.getItem("theme");
