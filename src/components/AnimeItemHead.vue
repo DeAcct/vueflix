@@ -426,6 +426,7 @@ export default {
       height: calc(20rem / 5 * 7);
       margin-right: 2rem;
       box-shadow: var(--box-shadow);
+      border-radius: 0.3rem;
       img {
         width: 100%;
         height: 100%;
@@ -448,6 +449,7 @@ export default {
       justify-content: space-between;
       align-items: center;
       color: transparent;
+      border-radius: 0.3rem;
       &--loaded {
         width: 100%;
         height: auto;

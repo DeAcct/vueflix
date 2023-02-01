@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import { getFirestore, collection, query, where } from "firebase/firestore";
 import { useFirebase } from "../mixins/useFirebase.js";
 
 export default {
@@ -83,8 +82,7 @@ export default {
   display: flex;
   position: relative;
   max-height: 70vh;
-  border-radius: 0;
-  height: calc(100vw / 768 * 1024);
+  width: 100vw;
   opacity: 0;
   transition: opacity 150ms ease-out;
   &::before {

@@ -67,7 +67,7 @@ export default {
     setTheme() {
       const currentTheme = localStorage.getItem("theme");
       if (currentTheme) {
-        this.$store.commit("theme/setTheme", currentTheme);
+        this.$store.commit("theme/setTheme", JSON.parse(currentTheme));
       } else {
         const deviceTheme = window.matchMedia("(prefers-color-scheme:dark)")
           .matches

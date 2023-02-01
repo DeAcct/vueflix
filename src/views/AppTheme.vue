@@ -52,7 +52,7 @@ export default {
     themeToggle(e) {
       const currentTheme = e ? "dark" : "light";
       this.$store.commit("theme/setTheme", currentTheme);
-      localStorage.setItem("theme", currentTheme);
+      localStorage.setItem("theme", JSON.stringify(currentTheme));
     },
   },
   components: { StateToggle },

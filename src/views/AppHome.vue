@@ -1,31 +1,39 @@
 <template>
-  <div class="wrap">
+  <div class="app-home">
     <main>
       <banner-slide />
-      <div class="contents">
-        <vueflix-carousel
+      <div class="app-home__curated">
+        <!--vueflix-carousel
           :anime-list="auth.recentWatched"
           type="recent"
           v-if="auth ? auth.recentWatched.length : auth"
-        >
+          >
           최근 본 애니
         </vueflix-carousel>
-        <!-- <vueflix-carousel type="daily">요일별 신작</vueflix-carousel> -->
-        <vueflix-carousel
-          type="recommend"
-          v-for="recommended in recommendedAnime"
-          :key="recommended.subject"
-          :anime-list="recommended.list"
+        < <vueflix-carousel type="daily">요일별 신작</vueflix-carousel>>
+        <vueflix-carousel--
+        type="recommend"
+        v-for="recommended in recommendedAnime"
+        :key="recommended.subject"
+        :anime-list="recommended.list"
         >
-          {{ recommended.subject }}
-        </vueflix-carousel>
+        {{ recommended.subject }}
+      </vueflix-carousel-->
+        <div class="app-home__curated-item">
+          <h2 class="app-home__curated-title inner">최근 본 애니</h2>
+          <vueflix-carousel
+            :anime-list="auth?.recentWatched"
+            progress
+          ></vueflix-carousel>
+        </div>
       </div>
     </main>
     <vueflix-modal
+      class="app-home__modal"
       type="yes-no"
       :yes-func="PWAinstall"
       :no-func="PWAdismiss"
-      :class="{ show: isModalOpened }"
+      :class="{ 'app-home__modal--show': isModalOpened }"
       v-if="isModalOpened"
     >
       <template v-slot:title>뷰플릭스 앱 써보실래요?</template>
@@ -106,27 +114,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.contents {
-  padding: 2.8rem 0 5.6rem;
-  background-color: var(--bg-100);
-}
-.modal {
-  transition: 150ms ease-out;
-  transform: translateY(100vh);
-  bottom: 5.6rem;
-  &.show {
-    transform: translateY(0);
+.app-home {
+  &__curated {
+    padding: 2.8rem 0 5.6rem;
+    background-color: var(--bg-100);
+  }
+  &__curated-title {
+    font-size: 2rem;
+  }
+  &__modal {
+    transition: 150ms ease-out;
+    transform: translateY(100vh);
+    bottom: 5.6rem;
+    &--show {
+      transform: translateY(0);
+    }
   }
 }
 @media screen and (min-width: 768px) {
-  .contents {
-    padding-top: 3.6rem;
-  }
-  .modal {
-    top: 0;
-    bottom: auto;
-    transform: none;
-    transition: 150ms ease-out;
+  .app-home {
+    &__curated {
+      padding-top: 3.6rem;
+    }
+    &__modal {
+      top: 0;
+      bottom: auto;
+      transform: none;
+      transition: 150ms ease-out;
+    }
   }
 }
 </style>

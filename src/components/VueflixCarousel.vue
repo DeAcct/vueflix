@@ -1,66 +1,24 @@
 <template>
   <section class="carousel">
-    <div class="carousel__head-control">
-      <h2><slot></slot></h2>
-      <day-selector v-if="isDaily" @dayBtnClick="dailyReset" />
-      <div class="btn-wrap">
-        <button class="prev-btn" @click="prev" :disabled="!prevActive">
-          <icon-base icon-name="이전"><icon-arrow-prev /></icon-base>
-        </button>
-        <button
-          class="next-btn"
-          title="다음"
-          @click="next"
-          :disabled="!nextActive"
-        >
-          <icon-base icon-name="다음"><icon-arrow-next /></icon-base>
-        </button>
-      </div>
-    </div>
     <div class="carousel__track">
-      <ul class="items" :style="style">
-        <template v-if="isRecent">
-          <carousel-item
-            v-for="anime in animeList"
-            :key="anime.aniTitle"
-            :ani-title="anime.aniTitle"
-            :episode-thumbnail="anime.episodeThumbnail"
-            :part="anime.part"
-            :index="anime.index"
-            :isRecent="isRecent"
-            :progress="anime.watchedPercent"
-          />
-        </template>
-        <template v-else-if="isDaily">
-          <carousel-item
-            v-for="anime in dailyShownList"
-            :key="anime.title"
-            :ani-title="anime.title"
-            :episode-thumbnail="anime.img"
-          />
-        </template>
-        <template v-else-if="isRecommend">
-          <carousel-item
-            v-for="anime in animeList"
-            :key="anime.aniTitle"
-            :ani-title="anime.aniTitle"
-            :episode-thumbnail="anime.episodeThumbnail"
-            :progress="anime.watchedPercent"
-          />
-        </template>
+      <ul class="carousel__body">
+        <carousel-item
+          v-for="anime in animeList"
+          :key="anime.aniTitle"
+          :data="anime"
+          :progress="progress"
+        />
       </ul>
     </div>
   </section>
 </template>
 
 <script>
-/*데일리를 파이어베이스로 옮길 때까기 develop-firebase prop 유지*/
 import CarouselItem from "./CarouselItem.vue";
 import IconBase from "./IconBase.vue";
 import DaySelector from "./DaySelector.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
-import { mapState } from "vuex";
 export default {
   name: "VueflixCarousel",
   components: {
@@ -74,9 +32,12 @@ export default {
     animeList: {
       type: Array,
     },
-    type: {
-      type: String,
+    progress: {
+      type: Boolean,
     },
+  },
+  mounted() {
+    console.log(this.progress);
   },
   data() {
     return {
@@ -87,57 +48,6 @@ export default {
       isRecommend: this.type === "recommend",
     };
   },
-  computed: {
-    style() {
-      return {
-        transform: `translateX(${-this.carouselNumber * this.resolution}px)`,
-      };
-    },
-    carouselLimit() {
-      if (this.isDaily) {
-        return Math.floor(this.dailyShownList.length / this.shownItems);
-      } else {
-        return Math.floor(this.animeList.length / this.shownItems);
-      }
-    },
-    nextActive() {
-      return this.carouselNumber < this.carouselLimit;
-    },
-    prevActive() {
-      return this.carouselNumber > 0;
-    },
-    shownItems() {
-      if (this.resolution >= 1920) {
-        return 7;
-      } else if (this.resolution >= 1080) {
-        return 4;
-      } else if (this.resolution >= 768) {
-        return 3;
-      } else {
-        return 2;
-      }
-    },
-    ...mapState({
-      dailyShownList: (state) => state.daily.shownList,
-    }),
-  },
-  methods: {
-    next() {
-      this.carouselNumber++;
-    },
-    prev() {
-      this.carouselNumber--;
-    },
-    dailyReset() {
-      this.carouselNumber = 0;
-    },
-  },
-  mounted() {
-    window.addEventListener("resize", () => {
-      this.resolution = window.innerWidth;
-      this.dailyReset();
-    });
-  },
 };
 </script>
 
@@ -146,20 +56,6 @@ export default {
   width: 100%;
   &:not(:first-of-type) {
     margin-top: 2rem;
-  }
-  &__head-control {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 2rem;
-    width: 100%;
-    h2 {
-      font-size: 1.8rem;
-      margin-right: 2rem;
-    }
-    .btn-wrap {
-      display: none;
-    }
   }
   &__track {
     width: 100%;
@@ -171,13 +67,12 @@ export default {
     &::-webkit-scrollbar {
       display: none;
     }
-    .items {
-      display: flex;
-      width: fit-content;
-      padding: 0 2rem;
-      margin: 0;
-      transition: 300ms ease-out;
-    }
+  }
+  &__body {
+    display: flex;
+    width: fit-content;
+    padding: 0 2rem;
+    margin: 0;
   }
 }
 
@@ -195,9 +90,9 @@ export default {
     &__track {
       width: 100%;
       margin-top: 1.5rem;
-      .items {
-        padding: 0 5rem;
-      }
+    }
+    &__body {
+      padding: 0 5rem;
     }
   }
 }

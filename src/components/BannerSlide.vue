@@ -1,12 +1,8 @@
 <template>
-  <section class="slide">
+  <section class="slide loading-target">
     <h2 class="blind">이미지 슬라이드</h2>
     <swiper
       effect="fade"
-      :autoplay="{
-        delay: 2500,
-        disableOnInteraction: false,
-      }"
       :loop="true"
       navigation
       :pagination="{ clickable: true }"
@@ -22,9 +18,7 @@
   </section>
 </template>
 <script>
-import { getFirestore, collection, getDoc, doc } from "firebase/firestore";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
+import { getFirestore, getDoc, doc } from "firebase/firestore";
 import SlideContent from "./SlideContent.vue";
 
 import SwiperCore, {
@@ -91,9 +85,14 @@ export default {
 </script>
 
 <style lang="scss">
-.slide {
-  height: fit-content;
+.swiper {
+  position: relative;
+  padding-bottom: 133.333%;
+  .swiper-wrapper {
+    position: absolute;
+  }
 }
+
 .swiper-pagination {
   display: flex;
   justify-content: center;
