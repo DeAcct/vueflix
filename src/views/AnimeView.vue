@@ -229,10 +229,6 @@ export default {
           poster: posterURL,
           posterOrigin: rawData.poster,
         };
-        this.$store.commit(
-          "currentAnimeInfo/setCurrentAnimeInfo",
-          this.animeInfo.parts
-        );
       } catch {
         this.$router.replace("/notfound");
       }
@@ -268,11 +264,6 @@ export default {
     toTop() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
-  },
-  computed: {
-    ...mapState({
-      currentAnime: (state) => state.currentAnimeInfo.currentAnimeInfo,
-    }),
   },
 };
 </script>
