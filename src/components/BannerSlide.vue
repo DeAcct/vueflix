@@ -1,5 +1,5 @@
 <template>
-  <section class="slide loading-target">
+  <section class="slide">
     <h2 class="blind">이미지 슬라이드</h2>
     <swiper
       effect="fade"
@@ -14,7 +14,7 @@
       <swiper-slide
         v-for="animeID in animeIDArray"
         :key="`slide-${animeID}`"
-        class="slide-item"
+        class="slide-item loading-target"
       >
         <slide-content :anime-id="animeID"> </slide-content>
       </swiper-slide>

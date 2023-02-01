@@ -31,15 +31,15 @@ const routes = [
       },
     ],
   },
-  {
-    path: "/player/:title/:part/:index",
-    name: "player",
-    component: () => import("@/views/VueflixPlayer.vue"),
-    meta: {
-      appBar: false,
-      bottomTabMenu: false,
-    },
-  },
+  // {
+  //   path: "/player/:title/:part/:index",
+  //   name: "player",
+  //   component: () => import("@/views/VueflixPlayer.vue"),
+  //   meta: {
+  //     appBar: false,
+  //     bottomTabMenu: false,
+  //   },
+  // },
   {
     path: "/tag-search",
     name: "tag-search",
