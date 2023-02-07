@@ -1,30 +1,37 @@
 <template>
   <li class="carousel-item">
-    <router-link :to="data.continueLink">
+    <router-link
+      :to="data.continueLink || `/anime/${data.aniTitle}`"
+      @click.prevent
+    >
       <span :class="['carousel-item__ratio-holder', 'loading-target']">
         <img
           :src="thumbnailSrc"
-          :alt="`${aniTitle} 썸네일`"
+          :alt="`${data.aniTitle} 썸네일`"
           :class="[
             'carousel-item__thumbnail',
             { 'carousel-item__thumbnail--loaded': isLoaded },
           ]"
           @load="loadTrigger"
         />
-        <!--span class="carousel-item__progress-bar">
+        <!--span class="carousel-item__watched-percent">
           <span class="progress" :style="`width:${data.watchedPercent}`"></span>
         </span-->
       </span>
     </router-link>
     <div class="carousel-item__info">
-      <router-link class="carousel-item__text" :to="`/anime/${data.aniTitle}`">
+      <router-link
+        class="carousel-item__text"
+        :to="`/anime/${data.aniTitle}`"
+        @click.prevent
+      >
         <span class="carousel-item__title">{{ data.aniTitle }}</span>
         <strong class="carousel-item__part-index" v-if="data.watchedPercent">
           {{ data.part }}기 {{ data.index }}화
         </strong>
       </router-link>
       <progress-widget
-        class="carousel-item__progress-bar"
+        class="carousel-item__watched-percent"
         :percent="data.watchedPercent"
         v-if="progress"
       ></progress-widget>
@@ -57,7 +64,6 @@ export default {
     };
   },
   async mounted() {
-    console.log(this.progress);
     const { aniTitle, episodeThumbnail } = this.data;
     const storage = getStorage();
     const thumbnailRef = ref(storage, `${aniTitle}/${episodeThumbnail}`);
@@ -81,7 +87,7 @@ export default {
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding-bottom: 65.25%;
+    padding-bottom: 56.25%;
     border-radius: 0.3rem;
     overflow: hidden;
     margin-bottom: 1rem;
@@ -104,26 +110,31 @@ export default {
       visibility: visible;
     }
   }
-  &__progress-bar {
+  &__watched-percent {
     width: 3.6rem;
     height: 3.6rem;
+    flex-shrink: 0;
   }
   &__info {
     display: flex;
     justify-content: space-between;
-    align-items: center;
   }
   &__text {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.5rem;
     flex-direction: column;
   }
   &__title {
-    font-size: 1.5rem;
-    font-weight: 500;
-    width: 20ch;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     text-overflow: ellipsis;
+    overflow-wrap: break-word;
+    width: 20ch;
     overflow: hidden;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    font-weight: 500;
   }
   &__part-index {
     font-size: 1.3rem;
@@ -140,6 +151,7 @@ export default {
     width: 28vw;
     &__title {
       font-size: 1.7rem;
+      width: 30ch;
     }
     &__part-index {
       font-size: 1.5rem;
@@ -157,6 +169,7 @@ export default {
       gap: 1rem;
     }
     &__title {
+      width: 20ch;
       font-size: 2rem;
     }
   }

@@ -1,12 +1,7 @@
 <template>
   <section class="slide loading-target">
     <h2 class="blind">이미지 슬라이드</h2>
-    <swiper
-      effect="fade"
-      :loop="true"
-      navigation
-      :pagination="{ clickable: true }"
-    >
+    <swiper effect="fade" :loop="true" navigation>
       <swiper-slide
         v-for="animeID in animeIDArray"
         :key="`slide-${animeID}`"
@@ -21,15 +16,9 @@
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 import SlideContent from "./SlideContent.vue";
 
-import SwiperCore, {
-  Autoplay,
-  Pagination,
-  A11y,
-  Navigation,
-  EffectFade,
-} from "swiper";
+import SwiperCore, { Autoplay, A11y, Navigation, EffectFade } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/vue";
-SwiperCore.use([Autoplay, Pagination, A11y, Navigation, EffectFade]);
+SwiperCore.use([Autoplay, A11y, Navigation, EffectFade]);
 import "swiper/swiper-bundle.min.css";
 
 export default {
@@ -54,7 +43,7 @@ export default {
         const res = await getDoc(docRef);
         if (res) {
           this.randomMaxNumber = res.data().numbersofAnime;
-          this.animeIDArray = await this.useAnimeIDArray(5);
+          this.animeIDArray = await this.useAnimeIDArray(this.randomMaxNumber);
         }
       },
       immediate: true,
@@ -93,39 +82,12 @@ export default {
   }
 }
 
-.swiper-pagination {
-  display: flex;
-  justify-content: center;
-  padding-bottom: 0;
-  .swiper-pagination-bullet {
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.5);
-    width: 0.6rem;
-    height: 0.6rem;
-
-    &-active {
-      background: rgba(255, 255, 255, 1);
-    }
-  }
-}
-
 .swiper-button-next,
 .swiper-button-prev {
   display: none;
 }
 .slide-item {
   position: relative;
-}
-@media screen and (min-width: 768px) {
-  .swiper-container-horizontal
-    .swiper-pagination-bullets
-    .swiper-pagination-bullet {
-    width: 1vw;
-    height: 1vw;
-    max-width: 1.5rem;
-    max-height: 1.5rem;
-    margin: 0 0.6rem;
-  }
 }
 @media screen and (min-width: 769px) {
   .swiper-button-next,
@@ -141,9 +103,12 @@ export default {
       font-size: 3rem;
     }
   }
-  .swiper-pagination {
-    justify-content: flex-end;
-    padding: 0 5rem 4rem;
+}
+
+@media screen and (min-width: 1025px) {
+  .swiper {
+    height: calc(100vw / 2560 * 1043);
+    padding-bottom: 24.545%;
   }
 }
 </style>

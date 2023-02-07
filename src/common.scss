@@ -155,6 +155,7 @@ summary {
   align-items: center;
   border-radius: 0.3rem;
 
+  width: -moz-fit-content;
   width: fit-content;
   transition: 150ms ease-out;
   box-shadow: var(--box-shadow);

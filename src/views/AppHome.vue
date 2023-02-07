@@ -3,28 +3,22 @@
     <main>
       <banner-slide />
       <div class="app-home__curated">
-        <!--vueflix-carousel
-          :anime-list="auth.recentWatched"
-          type="recent"
-          v-if="auth ? auth.recentWatched.length : auth"
-          >
-          최근 본 애니
-        </vueflix-carousel>
-        < <vueflix-carousel type="daily">요일별 신작</vueflix-carousel>>
-        <vueflix-carousel--
-        type="recommend"
-        v-for="recommended in recommendedAnime"
-        :key="recommended.subject"
-        :anime-list="recommended.list"
-        >
-        {{ recommended.subject }}
-      </vueflix-carousel-->
-        <div class="app-home__curated-item">
+        <div class="app-home__curated-item" v-if="auth?.recentWatched">
           <h2 class="app-home__curated-title inner">최근 본 애니</h2>
           <vueflix-carousel
             :anime-list="auth?.recentWatched"
             progress
           ></vueflix-carousel>
+        </div>
+        <!--vueflix-carousel type="daily">요일별 신작</vueflix-carousel-->
+        <div
+          class="app-home__curated-item"
+          v-for="recommended in recommendedAnime"
+        >
+          <h2 class="app-home__curated-title inner">
+            {{ recommended.subject }}
+          </h2>
+          <vueflix-carousel :anime-list="recommended.list"></vueflix-carousel>
         </div>
       </div>
     </main>
@@ -119,8 +113,14 @@ export default {
     padding: 2.8rem 0 5.6rem;
     background-color: var(--bg-100);
   }
+  &__curated-item {
+    &:not(:last-child) {
+      margin-bottom: 3rem;
+    }
+  }
   &__curated-title {
     font-size: 2rem;
+    margin-bottom: 1.5rem;
   }
   &__modal {
     transition: 150ms ease-out;
@@ -136,11 +136,27 @@ export default {
     &__curated {
       padding-top: 3.6rem;
     }
+    &__curated-title {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    &__curated-item {
+      &:not(:last-child) {
+        margin-bottom: 4.5rem;
+      }
+    }
     &__modal {
       top: 0;
       bottom: auto;
       transform: none;
       transition: 150ms ease-out;
+    }
+  }
+}
+@media screen and (min-width: 1024px) {
+  .app-home {
+    &__curated-title {
+      font-size: 3rem;
     }
   }
 }

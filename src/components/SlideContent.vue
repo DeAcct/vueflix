@@ -99,7 +99,6 @@ export default {
       rgba(0, 0, 0, 0.6) 100%
     );
     opacity: 0;
-    transition: 150ms ease-out;
   }
   .bg-place {
     width: 100vw;
