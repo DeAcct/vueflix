@@ -1,23 +1,30 @@
 <template>
-  <component :is="component" class="anime-item-head" :style="posterBg">
+  <component :is="component" class="anime-item-head">
     <h1 class="blind" v-if="isMobileSize">뷰플릭스</h1>
-    <div :class="['navigation', 'inner', { 'navigation--scrolled': isScroll }]">
+    <div class="anime-item-head__navigation inner">
       <div class="col-left">
         <a class="back" @click="goBack">
           <icon-base icon-name="뒤로가기">
             <icon-arrow-prev />
           </icon-base>
         </a>
-        <strong class="scroll-title">{{ animeInfo.name }}</strong>
+        <strong
+          :class="[
+            'anime-item-head__scroll-title',
+            { 'anime-item-head__scroll-title--scrolled': isScroll },
+          ]"
+        >
+          {{ animeInfo.name }}
+        </strong>
       </div>
       <div class="col-right">
-        <button class="share-btn" @click="openSystemShare">
+        <button class="anime-item-head__share-btn" @click="openSystemShare">
           <icon-base icon-name="공유">
             <icon-share />
           </icon-base>
         </button>
         <button
-          class="overflow-btn"
+          class="anime-item-head__overflow-btn"
           @click="openOverflowMenu"
           v-if="user && isMobileSize"
         >
@@ -27,12 +34,12 @@
         </button>
       </div>
     </div>
-    <div class="anime-info inner">
+    <div class="anime-item-head__anime-info inner">
       <div
         :class="[
-          'poster',
+          'anime-item-head__poster',
           'loading-target',
-          { 'poster--loaded': animeInfo.poster },
+          { 'anime-item-head__poster--loaded': animeInfo.poster },
         ]"
         v-if="!isMobileSize"
       >
@@ -49,7 +56,7 @@
         ]"
       >
         <div class="row-top">
-          <ul class="genres">
+          <!--ul class="genres">
             <li
               v-for="genre in animeInfo.genre"
               :key="genre"
@@ -57,8 +64,8 @@
             >
               {{ genre }}
             </li>
-          </ul>
-          <h2 class="title">{{ animeInfo.name }}</h2>
+          </ul-->
+          <h2 class="anime-item-head__title">{{ animeInfo.name }}</h2>
           <div class="row-bottom">
             <p class="sub-info">
               {{ animeInfo.type }}
@@ -120,8 +127,11 @@
             </button>
           </div>
         </div>
+        <p class="anime-item-head__summary">
+          {{ animeInfo.summary }}
+        </p>
       </div>
-      <div class="overflow-btn" v-if="user && !isMobileSize">
+      <div class="anime-item-head__overflow-btn" v-if="user && !isMobileSize">
         <button class="icon" @click="actionSheetToggle">
           <icon-base>
             <icon-overflow />
@@ -315,11 +325,11 @@ export default {
     ...mapState({
       user: (state) => state.auth.user,
     }),
-    posterBg() {
-      const bg = `background-image: linear-gradient(transparent,var(--anime-bg) ${
-        !this.isMobileSize ? "90%" : "80%"
-      }), url(${this.animeInfo.poster});`;
-      return bg;
+    gradientPercent() {
+      return !this.isMobileSize ? "90%" : "80%";
+    },
+    bgURL() {
+      return `url(${this.animeInfo.poster})`;
     },
     continueLink() {
       if (this.user) {
@@ -358,12 +368,17 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  background: linear-gradient(
+      transparent,
+      var(--anime-bg) v-bind(gradientPercent)
+    ),
+    v-bind(bgURL);
   background-position: center;
   background-size: cover;
   padding-bottom: 2rem;
-  .navigation {
+  &__navigation {
     position: fixed;
-    z-index: 10;
+    z-index: 20;
     left: 0;
     top: 0;
     width: 100%;
@@ -377,21 +392,6 @@ export default {
       display: flex;
       align-items: center;
       height: 2.4rem;
-      .scroll-title {
-        margin-left: 0.5rem;
-        font-size: 1.7rem;
-        height: 2.4rem;
-        color: var(--text-800);
-        opacity: 0;
-        transform: translateX(2rem);
-        transition: transform 150ms ease-out, opacity 150ms ease-out;
-        //말줄임표 처리
-        width: 60vw;
-        line-height: 2.4rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
     }
     .col-right {
       display: flex;
@@ -400,49 +400,37 @@ export default {
         margin-left: 1rem;
       }
     }
-
-    .back,
-    .overflow-btn,
-    .share-btn {
-      color: var(--text-800);
-      width: 2.4rem;
-      height: 2.4rem;
-    }
-
+  }
+  .back,
+  &__overflow-btn,
+  &__share-btn {
+    color: var(--text-800);
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+  &__scroll-title {
+    margin-left: 0.5rem;
+    font-size: 1.7rem;
+    height: 2.4rem;
+    color: var(--text-800);
+    opacity: 0;
+    transform: translateX(2rem);
+    transition: transform 150ms ease-out, opacity 150ms ease-out;
+    //말줄임표 처리
+    width: 60vw;
+    line-height: 2.4rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     &--scrolled {
-      .col-left {
-        .scroll-title {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
+      opacity: 1;
+      transform: translateX(0);
     }
   }
-  .anime-info {
+  &__anime-info {
     display: flex;
     margin-bottom: 1rem;
-    .poster {
-      width: 20rem;
-      height: calc(20rem / 5 * 7);
-      margin-right: 2rem;
-      box-shadow: var(--box-shadow);
-      border-radius: 0.3rem;
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        font-size: 0.1rem;
-        opacity: 0;
-        border-radius: 0.3rem;
-        transition: opacity 150ms ease-out;
-      }
-      &--loaded {
-        animation: none;
-        img {
-          opacity: 1;
-        }
-      }
-    }
+
     .col-right {
       width: 100%;
       height: 15rem;
@@ -486,12 +474,6 @@ export default {
           }
         }
       }
-      .title {
-        color: inherit;
-        font-size: 2rem;
-        line-height: 1.5;
-        margin-bottom: 0.7rem;
-      }
 
       .sub-info {
         display: flex;
@@ -500,6 +482,34 @@ export default {
         font-size: 1.2rem;
       }
     }
+  }
+  &__poster {
+    width: 20rem;
+    height: calc(20rem / 5 * 7);
+    margin-right: 2rem;
+    box-shadow: var(--box-shadow);
+    border-radius: 0.3rem;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      font-size: 0.1rem;
+      opacity: 0;
+      border-radius: 0.3rem;
+      transition: opacity 150ms ease-out;
+    }
+    &--loaded {
+      animation: none;
+      img {
+        opacity: 1;
+      }
+    }
+  }
+  &__title {
+    color: inherit;
+    font-size: 2rem;
+    line-height: 1.5;
+    margin-bottom: 0.7rem;
   }
   .btn-area {
     width: 100%;
@@ -604,22 +614,26 @@ export default {
       margin-right: 1rem;
     }
   }
+  &__summary {
+    margin-top: 2.5rem;
+    font-size: 1.2rem;
+  }
 }
 
 @media screen and (min-width: 1024px) {
   .anime-item-head {
     padding: 0 calc((100% - 118rem) / 2);
-    .navigation {
+    &__navigation {
       padding: {
         left: calc((100% - 118rem) / 2);
         right: calc((100% - 118rem) / 2);
       }
-      .col-left .scroll-title {
-        font-size: 2rem;
-      }
+    }
+    &__scroll-title {
+      font-size: 2rem;
     }
 
-    .anime-info {
+    &__anime-info {
       padding: 0;
       margin-bottom: 2.5rem;
       position: relative;
@@ -635,10 +649,7 @@ export default {
           .genres .genre {
             font-size: 1.5rem;
           }
-          .title {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-          }
+
           .sub-info {
             font-size: 1.5rem;
           }
@@ -647,26 +658,30 @@ export default {
           width: auto;
         }
       }
-      .overflow-btn {
-        position: absolute;
-        top: 0;
-        right: 0;
+    }
+    &__overflow-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      .icon {
+        width: 4rem;
+        height: 4rem;
         display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        .icon {
-          width: 4rem;
-          height: 4rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background-color: var(--overflow-btn-pc);
-          border-radius: 50%;
-        }
-        .action-sheet {
-          justify-self: flex-end;
-        }
+        align-items: center;
+        justify-content: center;
+        background-color: var(--anime-item-head__overflow-btn-pc);
+        border-radius: 50%;
       }
+      .action-sheet {
+        justify-self: flex-end;
+      }
+    }
+    &__title {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
     }
     .btn-area {
       padding: 0;

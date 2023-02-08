@@ -271,6 +271,7 @@ export default {
         flex-direction: column;
         align-items: center;
         width: 12rem;
+        flex-shrink: 0;
         height: calc(12rem / 16 * 9);
         border-radius: 0.2rem;
         overflow: hidden;
@@ -331,24 +332,26 @@ export default {
       }
       .episode-info {
         text-align: left;
-        max-width: 60%;
         margin-left: 1rem;
         display: flex;
+        flex-shrink: 1;
         flex-direction: column;
         justify-content: space-between;
         .row-top,
         .row-bottom {
           display: flex;
           flex-direction: column;
+          gap: 0.5rem;
         }
         .title {
           font-size: 1.3rem;
           font-weight: 700;
-          margin-bottom: 0.5rem;
           width: 100%;
-          height: 1.3rem;
+          line-height: 1.5;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
           overflow: hidden;
-          white-space: nowrap;
           text-overflow: ellipsis;
         }
         .date {

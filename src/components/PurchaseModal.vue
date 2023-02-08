@@ -333,7 +333,6 @@ export default {
       transform: translateY(-50%) !important;
 
       border-radius: 0.6rem;
-      height: 1080px;
     }
   }
 }

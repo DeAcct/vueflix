@@ -1,5 +1,9 @@
 <template>
-  <div class="anime" :style="`min-height: ${deviceHeight + 1}px`" v-if="!isSub">
+  <div
+    class="anime-view"
+    :style="`min-height: ${deviceHeight + 1}px`"
+    v-if="!isSub"
+  >
     <anime-item-head
       :is-scroll="isScroll"
       :anime-info="animeInfo"
@@ -10,66 +14,8 @@
       @handle-interest="handleInterest"
       class="widget"
     />
-    <main>
-      <section class="anime-useful-widget widget">
-        <ul class="info">
-          <li>
-            <ul class="makers">
-              <li>
-                <h3 class="title">제작사</h3>
-                <p
-                  :class="[
-                    'text',
-                    'loading-target',
-                    { 'text--loaded': animeInfo.summary },
-                  ]"
-                >
-                  <span
-                    v-for="madeBy in animeInfo.madeBy"
-                    :key="madeBy"
-                    class="division-pipe"
-                  >
-                    {{ madeBy }}
-                  </span>
-                </p>
-              </li>
-              <li>
-                <h3 class="title">감독</h3>
-                <p
-                  :class="[
-                    'text',
-                    'loading-target',
-                    { 'text--loaded': animeInfo.director },
-                  ]"
-                >
-                  <span class="division-pipe">
-                    {{ animeInfo.director }}
-                  </span>
-                </p>
-              </li>
-            </ul>
-          </li>
-          <li class="inner">
-            <h3 class="title">한 줄 요약</h3>
-            <p
-              :class="[
-                'text',
-                'loading-target',
-                { 'text--loaded': animeInfo.summary },
-              ]"
-            >
-              {{ animeInfo.summary }}
-            </p>
-          </li>
-        </ul>
-        <arrow-btn-widget :to="`${$route.params.title}/reviews`" :icon="true">
-          <template v-slot:icon>
-            <icon-review />
-          </template>
-          <template v-slot:text>리뷰</template>
-        </arrow-btn-widget>
-      </section>
-
+    <main class="anime-view__main">
+      <anime-meta :anime-info="animeInfo"></anime-meta>
       <div class="episodes-widget widget">
         <h3 class="blind">에피소드</h3>
         <episodes-widget
@@ -78,10 +24,14 @@
           :key="index"
           @login-require="openLoginModal"
           :part-top-padding="true"
+          :open="index === 0"
         />
       </div>
 
-      <button class="to-top-btn" @click="toTop">
+      <button
+        :class="['to-top-btn', { 'to-top-btn--scrolled': isScroll }]"
+        @click="toTop"
+      >
         <i class="to-top-btn__icon">
           <icon-base>
             <icon-arrow-prev />
@@ -134,6 +84,7 @@ import {
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import AnimeItemHead from "../components/AnimeItemHead.vue";
+import AnimeMeta from "../components/AnimeMeta.vue";
 import EpisodesWidget from "../components/EpisodesWidget.vue";
 import VueflixModal from "../components/VueflixModal.vue";
 import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
@@ -147,6 +98,7 @@ import PurchaseModal from "../components/PurchaseModal.vue";
 export default {
   components: {
     AnimeItemHead,
+    AnimeMeta,
     EpisodesWidget,
     VueflixModal,
     ArrowBtnWidget,
@@ -269,12 +221,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.anime {
+.anime-view {
   display: flex;
   flex-direction: column;
-  background-color: var(--anime-bg);
-  main {
-    position: relative;
+  &__main {
+    background-color: var(--anime-bg);
+    flex-direction: column;
   }
   .widget {
     margin-bottom: 1rem;
@@ -294,66 +246,7 @@ export default {
       transform: translateY(0);
     }
   }
-  .anime-useful-widget {
-    border-radius: 0.6rem;
-    overflow: hidden;
-    box-shadow: var(--box-shadow);
-    .info {
-      background-color: var(--episodes);
-      & > li {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: {
-          top: 1.8rem;
-          bottom: 1.8rem;
-        }
-      }
-      & > li:not(:last-child) {
-        border-bottom: 1px solid var(--anime-useful-widget);
-      }
-      .title {
-        display: block;
-        font-size: 1.4rem;
-        margin-bottom: 0.5rem;
-      }
-      .text {
-        display: flex;
-        font-size: 1.2rem;
-        line-height: 1.3;
-        height: 2.6rem;
-        text-align: center;
-        &--loaded {
-          height: auto;
-          background: transparent;
-          animation: none;
-        }
-      }
-
-      .makers {
-        width: 100%;
-        display: flex;
-        li {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          width: 50%;
-          &:not(:last-child) {
-            border-right: 1px solid var(--anime-useful-widget);
-          }
-        }
-      }
-    }
-    .arrow-btn-widget {
-      background-color: var(--anime-useful-widget);
-    }
-  }
   .episodes-widget {
-    .episodes {
-      &:not(:last-child) {
-        margin-bottom: 1rem;
-      }
-    }
     margin-bottom: 8.5rem;
   }
   .to-top-btn {
@@ -364,12 +257,13 @@ export default {
     padding: 1rem 1.5rem;
     bottom: 2rem;
     left: 50%;
-    transform: translateX(-50%);
     z-index: 100;
     background-color: var(--theme-500);
     border-radius: 9999px;
     box-shadow: var(--box-shadow);
     color: #fff;
+    transform: translate(-50%, 10rem);
+    transition: 150ms ease-out;
     &__icon {
       color: #fff;
       transform: rotate(90deg);
@@ -378,6 +272,9 @@ export default {
     &__text {
       color: #fff;
       font-weight: 700;
+    }
+    &--scrolled {
+      transform: translate(-50%, 0);
     }
   }
   .loading-target {
@@ -408,7 +305,7 @@ export default {
   z-index: 110;
 }
 @media screen and (min-width: 1024px) {
-  .anime {
+  .anime-view {
     .anime-item-head {
       min-height: 50vh;
       border-radius: 0;
@@ -420,7 +317,6 @@ export default {
       margin-top: 6rem;
       display: flex;
       justify-content: space-between;
-      flex-direction: row-reverse;
     }
     .optional-show {
       display: none;
@@ -450,18 +346,16 @@ export default {
       }
     }
     .episodes-widget {
-      .episodes {
-        &:not(:last-child) {
-          margin-bottom: 2rem;
-        }
-      }
       margin-bottom: 3rem;
     }
     .to-top-btn {
       left: auto;
       right: calc((100% - 118rem) / 2);
-      transform: none;
+      transform: translateY(10rem);
       background-color: var(--theme-500);
+      &--scrolled {
+        transform: none;
+      }
     }
   }
 }

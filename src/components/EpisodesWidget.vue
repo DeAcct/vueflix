@@ -2,12 +2,12 @@
   <section class="episodes">
     <h3 :class="['part-info', { 'part-info--top-padding': partTopPadding }]">
       <button @click="widgetToggle" type="button">
+        <span class="part-title">{{ episodesData.part }}</span>
         <i :class="['open-icon', { 'open-icon--widget-opened': isWidgetOpen }]">
           <icon-base :icon-name="isWidgetOpen ? '닫기' : '열기'">
-            <icon-arrow-next />
+            <icon-arrow-prev />
           </icon-base>
         </i>
-        <span class="part-title">{{ episodesData.part }}</span>
       </button>
     </h3>
     <ul
@@ -38,14 +38,14 @@
 
 <script>
 import IconBase from "./IconBase.vue";
-import IconArrowNext from "./icons/IconArrowNext.vue";
+import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import EpisodeCard from "./EpisodeCard.vue";
 export default {
   name: "EpisodesWidget",
   components: {
     EpisodeCard,
     IconBase,
-    IconArrowNext,
+    IconArrowPrev,
   },
   props: {
     episodesData: {
@@ -64,10 +64,13 @@ export default {
     price: {
       type: Number,
     },
+    open: {
+      type: Boolean,
+    },
   },
   data() {
     return {
-      isWidgetOpen: true,
+      isWidgetOpen: this.open,
     };
   },
   methods: {
@@ -89,9 +92,7 @@ export default {
 
 <style lang="scss" scoped>
 .episodes {
-  background-color: var(--episodes);
   border-radius: 0.6rem;
-  box-shadow: var(--box-shadow);
   .part-info {
     position: sticky;
     top: 0;
@@ -99,22 +100,21 @@ export default {
     display: flex;
     width: 100%;
     margin: 0 auto;
-    align-items: center;
+    justify-content: center;
     border-radius: 0.6rem;
+    background-color: var(--episodes-part-info);
+    backdrop-filter: blur(10px);
     button {
       width: 100%;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      padding: 1.5rem var(--inner-padding);
-      background-color: var(--episodes-part-info);
-      backdrop-filter: blur(10px);
-      border-radius: 0.6rem;
+      padding: 1.5rem 0;
     }
     &--top-padding {
       top: 5.9rem;
-      width: calc(100% - var(--inner-padding) * 2);
       button {
-        padding: 1.5rem 1rem;
+        width: calc(100% - var(--inner-padding) * 2);
       }
     }
     .open-icon {
@@ -125,7 +125,7 @@ export default {
       height: 1.8rem;
       transition: 150ms ease-in-out;
       &--widget-opened {
-        transform: rotate(90deg);
+        transform: rotate(-90deg);
       }
       svg {
         width: 100%;
@@ -135,7 +135,6 @@ export default {
     .part-title {
       font-size: 1.3rem;
       font-weight: 700;
-      margin-left: 0.5rem;
     }
   }
   .episode-widget {
@@ -161,7 +160,8 @@ export default {
     .part-info {
       width: 100%;
       button {
-        padding: 2rem var(--inner-padding);
+        width: 100%;
+        padding: 2rem;
       }
 
       .open-icon {
@@ -170,11 +170,13 @@ export default {
       }
       .part-title {
         font-size: 1.5rem;
-        margin-left: 1rem;
       }
     }
-    .episode-widget--opened {
-      padding-bottom: 4rem;
+    .episode-widget {
+      padding: 0;
+      &--opened {
+        padding-bottom: 4rem;
+      }
     }
   }
 }

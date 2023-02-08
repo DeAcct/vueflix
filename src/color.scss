@@ -44,7 +44,7 @@
   --toggle-true: hsl(209, 100%, 50%);
   --toggle-mixed: var(--theme-500);
 
-  --anime-bg: var(--bg-200);
+  --anime-bg: var(--bg-100);
 
   --anime-item-head-700: hsl(288, 79%, 7%);
   --anime-item-head-500: hsl(288, 79%, 10%);
@@ -61,7 +61,7 @@
 
   --top-item: #fff;
   --episodes: #fff;
-  --episodes-part-info: rgba(255, 255, 255, 0.8);
+  --episodes-part-info: rgb(255, 255, 255);
   --anime-genre: rgba(255, 255, 255, 0.8);
 
   --new-review: var(--bg-200);
@@ -124,7 +124,7 @@
 
   --top-item: hsl(0, 5%, 7%);
   --episodes: var(--bg-300);
-  --episodes-part-info: hsla(0, 5%, 13%, 0.5);
+  --episodes-part-info: hsl(0, 0%, 0%, 0.8);
   --anime-useful-widget: hsl(0, 5%, 20%);
   --anime-genre: hsla(0, 5%, 13%, 0.8);
 

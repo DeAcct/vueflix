@@ -27,6 +27,10 @@ export default {
   },
   mounted() {
     this.init();
+    window.addEventListener("resize", this.setViewPort);
+  },
+  unmounted() {
+    window.removeEventListener("resize", this.setViewPort);
   },
   data() {
     const screenSizeQuery = window.matchMedia("screen and (max-width: 820px)");
@@ -60,6 +64,7 @@ export default {
       this.changeTitle();
       this.setDeviceInfo();
       this.setTheme();
+      this.setViewPort();
     },
     changeTitle() {
       document.title = this.$route.meta.title || import.meta.env.VITE_KR_NAME;
@@ -77,6 +82,16 @@ export default {
       }
       const $app = document.getElementById("app");
       $app.dataset.theme = this.theme;
+    },
+    setViewPort() {
+      document.documentElement.style.setProperty(
+        "--vw",
+        window.innerWidth / 100
+      );
+      document.documentElement.style.setProperty(
+        "--vh",
+        window.innerHeight / 100
+      );
     },
     setDeviceInfo() {
       this.screenSizeQuery.addEventListener("change", (e) => {
