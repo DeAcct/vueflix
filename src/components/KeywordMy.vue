@@ -127,6 +127,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+
   background-color: var(--bg-200);
   border-radius: 0.6rem;
   .row-top {
@@ -150,19 +151,13 @@ export default {
     flex-direction: column;
     width: 100%;
     padding: 0 1.5rem;
-    .survey-item {
-      display: flex;
-      align-items: center;
-    }
+    gap: 1rem;
     &__keyword {
       display: flex;
       align-items: center;
       padding: 1rem 1.5rem;
-      background-color: var(--bg-300);
+      border: 1px solid var(--bg-300);
       border-radius: 0.3rem;
-      &:not(:last-child) {
-        margin-bottom: 1rem;
-      }
       .icon {
         width: 1.8rem;
         height: 1.8rem;
@@ -182,9 +177,4 @@ export default {
     }
   }
 }
-
-/* @media screen and (min-width: 1024px) {
-  .keyword-my {
-  }
-} */
 </style>

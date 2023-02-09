@@ -2,14 +2,8 @@
   <section class="keyword-reviews inner">
     <h2 class="keyword-reviews__title">키워드</h2>
     <div class="sub-widgets">
-      <div class="row-top">
-        <keyword-others-chart :data="labels" class="sub-widget" />
-        <keyword-my
-          :data="labels"
-          class="sub-widget"
-          @data-changed="syncData"
-        />
-      </div>
+      <keyword-others-chart :data="labels" class="sub-widget" />
+      <keyword-my :data="labels" class="sub-widget" @data-changed="syncData" />
     </div>
   </section>
 </template>
@@ -70,7 +64,6 @@ export default {
 .keyword-reviews {
   width: 100%;
   max-width: 1080px;
-  background-color: var(--top-item);
   border-radius: 0.6rem;
   overflow: hidden;
 
@@ -81,12 +74,8 @@ export default {
   }
 
   .sub-widgets {
-    .row-top {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 1rem;
-      width: 100%;
-    }
+    display: flex;
+    flex-direction: column;
     .sub-widget {
       padding: 1.5rem 0;
       flex: 1;
@@ -112,27 +101,16 @@ export default {
 
 @media screen and (min-width: 1024px) {
   .keyword-reviews {
+    padding: 0;
     &__title {
       font-size: 1.8rem;
       margin-bottom: 1rem;
     }
     .sub-widgets {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      &:not(:last-child) {
-        margin-right: 1rem;
-      }
-      .row-top {
-        margin-bottom: 0;
-        flex-direction: row;
-      }
-      .sub-widget {
-        &:not(:last-child) {
-          margin-right: 2rem;
-          padding: 0;
-        }
-      }
+      gap: 5rem;
     }
   }
 }

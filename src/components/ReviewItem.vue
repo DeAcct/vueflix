@@ -80,11 +80,11 @@ export default {
   padding: 1rem 2rem;
   &--me {
     border-radius: 0.6rem;
-    background-color: var(--bg-300);
+    background-color: var(--bg-200);
   }
   &--other {
     &:not(:last-child) {
-      border-bottom: 1px solid var(--bg-300);
+      border-bottom: 1px solid var(--bg-200);
     }
   }
 

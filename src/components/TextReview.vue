@@ -206,7 +206,6 @@ export default {
   width: 100%;
   max-width: 1080px;
   position: relative;
-  background-color: var(--top-item);
   border-radius: 0.6rem;
   overflow: hidden;
   &__title {
