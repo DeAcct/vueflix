@@ -1,77 +1,133 @@
 <template>
-  <!-- <section class="anime-meta" v-if="false">
-    <ul class="info">
-      <li>
-        <h3 class="title">제작사</h3>
-        <p
-          :class="[
-            'text',
-            'loading-target',
-            { 'text--loaded': animeInfo.summary },
-          ]"
-        >
-          <span
-            v-for="madeBy in animeInfo.madeBy"
-            :key="madeBy"
-            class="division-pipe"
-          >
-            {{ madeBy }}
-          </span>
-        </p>
-      </li>
-      <li>
-        <h3 class="title">감독</h3>
-        <p
-          :class="[
-            'text',
-            'loading-target',
-            { 'text--loaded': animeInfo.director },
-          ]"
-        >
-          <span class="division-pipe">
-            {{ animeInfo.director }}
-          </span>
-        </p>
-      </li>
-      <li class="inner">
-        <h3 class="title">요약</h3>
-        <p
-          :class="[
-            'text',
-            'loading-target',
-            { 'text--loaded': animeInfo.summary },
-          ]"
-        >
-          {{ animeInfo.summary }}
-        </p>
-      </li>
-    </ul>
-    <arrow-btn-widget :to="`${$route.params.title}/reviews`" :icon="true">
-      <template v-slot:icon>
-        <icon-review />
-      </template>
-      <template v-slot:text>리뷰</template>
-    </arrow-btn-widget>
-  </section> -->
   <section class="anime-meta">
-    <div class="anime-meta__track">
-      <ul class="anime-meta__body">
+    <p class="anime-meta__summary">
+      {{ animeInfo.summary }}
+    </p>
+    <vueflix-carousel type="break" class="anime-meta__tags">
+      <template v-if="Object.keys(animeInfo).length === 0">
         <li
-          class="anime-meta__item"
-          v-for="madeBy in animeInfo.madeBy"
-          :key="madeBy"
+          class="anime-meta__item anime-meta__item--dummy loading-target"
+          v-for="_ in 5"
         >
-          {{ madeBy }}
+          <span class="blind">로딩중</span>
         </li>
-      </ul>
+      </template>
+      <li v-for="madeBy in animeInfo.madeBy" :key="madeBy">
+        <router-link to="#none" class="anime-meta__item">
+          {{ madeBy }}
+        </router-link>
+      </li>
+      <li>
+        <router-link to="#none" class="anime-meta__item">
+          {{ animeInfo.director }}
+        </router-link>
+      </li>
+      <li v-for="genre in animeInfo.genre" :key="genre">
+        <router-link to="#none" class="anime-meta__item">
+          {{ genre }}
+        </router-link>
+      </li>
+    </vueflix-carousel>
+    <div class="anime-meta__outer-box">
+      <router-link to="#none" class="anime-meta__info-link">
+        <icon-base class="anime-meta__info-link-icon">
+          <icon-short-content />
+        </icon-base>
+        짤레이
+      </router-link>
+      <router-link
+        :to="`${$route.params.title}/reviews`"
+        class="anime-meta__info-link"
+      >
+        <icon-base class="anime-meta__info-link-icon">
+          <icon-review />
+        </icon-base>
+        리뷰
+      </router-link>
     </div>
   </section>
 </template>
 
 <script>
+import ArrowBtnWidget from "./ArrowBtnWidget.vue";
+import IconBase from "./IconBase.vue";
+import IconReview from "./icons/IconReview.vue";
+import IconShortContent from "./icons/IconShortContent.vue";
+import VueflixCarousel from "./VueflixCarousel.vue";
 export default {
   props: {
-    animeInfo: Object,
+    animeInfo: {
+      type: Object,
+    },
+    themeBaseSrc: {
+      type: String,
+    },
+  },
+  components: {
+    ArrowBtnWidget,
+    IconBase,
+    IconReview,
+    IconShortContent,
+    VueflixCarousel,
+  },
+  mounted() {
+    console.log(this.animeInfo);
   },
 };
+// todo
+// canvas 이용하여 이미지에서 태그의 개수만큼 주요색상 뽑아내 적용
 </script>
+
+<style lang="scss" scoped>
+.anime-meta {
+  &__summary {
+    margin: 0 2rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+  &__tags {
+    margin-bottom: 1.5rem;
+    height: 3.5rem;
+  }
+  &__item {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 0 1.5rem;
+    height: 3.5rem;
+    white-space: nowrap;
+    background-color: var(--bg-200);
+    border-radius: 9999px;
+    &--dummy {
+      width: 10rem;
+      &:nth-child(2n) {
+        width: 5rem;
+      }
+    }
+  }
+  &__outer-box {
+    display: flex;
+    margin: 0 2rem;
+    gap: 1rem;
+  }
+  &__info-link {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.6rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border: 1px solid var(--bg-200);
+  }
+  &__info-link-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+</style>

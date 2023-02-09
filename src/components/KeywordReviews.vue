@@ -70,12 +70,12 @@ export default {
 .keyword-reviews {
   width: 100%;
   max-width: 1080px;
-  box-shadow: var(--box-shadow);
   background-color: var(--top-item);
   border-radius: 0.6rem;
   overflow: hidden;
 
   &__title {
+    display: inline;
     font-size: 1.5rem;
     font-weight: 700;
   }

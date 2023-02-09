@@ -80,7 +80,6 @@ export default {
 <style lang="scss" scoped>
 .carousel-item {
   width: 55vw;
-  margin-right: 1rem;
   &__ratio-holder {
     position: relative;
     display: flex;

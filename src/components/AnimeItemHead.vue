@@ -56,15 +56,6 @@
         ]"
       >
         <div class="row-top">
-          <!--ul class="genres">
-            <li
-              v-for="genre in animeInfo.genre"
-              :key="genre"
-              class="genre division-pipe"
-            >
-              {{ genre }}
-            </li>
-          </ul-->
           <h2 class="anime-item-head__title">{{ animeInfo.name }}</h2>
           <div class="row-bottom">
             <p class="sub-info">
@@ -127,9 +118,6 @@
             </button>
           </div>
         </div>
-        <p class="anime-item-head__summary">
-          {{ animeInfo.summary }}
-        </p>
       </div>
       <div class="anime-item-head__overflow-btn" v-if="user && !isMobileSize">
         <button class="icon" @click="actionSheetToggle">
@@ -375,7 +363,6 @@ export default {
     v-bind(bgURL);
   background-position: center;
   background-size: cover;
-  padding-bottom: 2rem;
   &__navigation {
     position: fixed;
     z-index: 20;
@@ -429,7 +416,6 @@ export default {
   }
   &__anime-info {
     display: flex;
-    margin-bottom: 1rem;
 
     .col-right {
       width: 100%;
@@ -613,10 +599,6 @@ export default {
     button:not(:last-child) {
       margin-right: 1rem;
     }
-  }
-  &__summary {
-    margin-top: 2.5rem;
-    font-size: 1.2rem;
   }
 }
 

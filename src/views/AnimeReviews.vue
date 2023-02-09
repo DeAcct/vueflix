@@ -54,19 +54,15 @@ export default {
 
 <style lang="scss" scoped>
 .reviews {
-  padding: 7rem 0 2rem;
+  padding: 9rem 0 2rem;
   background-color: var(--anime-bg);
   display: flex;
   flex-direction: column;
   align-items: center;
 
   .widget {
-    padding: {
-      top: 1.8rem;
-      bottom: 1.8rem;
-    }
     &:not(:last-child) {
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
     }
   }
 }

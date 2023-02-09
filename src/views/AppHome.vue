@@ -6,9 +6,16 @@
         <div class="app-home__curated-item" v-if="auth?.recentWatched">
           <h2 class="app-home__curated-title inner">최근 본 애니</h2>
           <vueflix-carousel
-            :anime-list="auth?.recentWatched"
-            progress
-          ></vueflix-carousel>
+            :length="auth?.recentWatched.length"
+            class="app-home__carousel"
+          >
+            <carousel-item
+              v-for="anime in auth?.recentWatched"
+              :key="anime.aniTitle"
+              :data="anime"
+              progress
+            />
+          </vueflix-carousel>
         </div>
         <!--vueflix-carousel type="daily">요일별 신작</vueflix-carousel-->
         <div
@@ -18,7 +25,16 @@
           <h2 class="app-home__curated-title inner">
             {{ recommended.subject }}
           </h2>
-          <vueflix-carousel :anime-list="recommended.list"></vueflix-carousel>
+          <vueflix-carousel
+            :length="recommended.list.length"
+            class="app-home__carousel"
+          >
+            <carousel-item
+              v-for="anime in recommended.list"
+              :key="anime.aniTitle"
+              :data="anime"
+            />
+          </vueflix-carousel>
         </div>
       </div>
     </main>
@@ -44,6 +60,7 @@
 import BannerSlide from "../components/BannerSlide.vue";
 import VueflixModal from "../components/VueflixModal.vue";
 import VueflixCarousel from "../components/VueflixCarousel.vue";
+import CarouselItem from "../components/CarouselItem.vue";
 import Cookies from "js-cookie";
 import { mapState } from "vuex";
 import { getFirestore, getDocs, collection } from "firebase/firestore";
@@ -53,6 +70,7 @@ export default {
     BannerSlide,
     VueflixModal,
     VueflixCarousel,
+    CarouselItem,
   },
   data() {
     return {
@@ -121,6 +139,9 @@ export default {
   &__curated-title {
     font-size: 2rem;
     margin-bottom: 1.5rem;
+  }
+  &__carousel {
+    min-height: 21rem;
   }
   &__modal {
     transition: 150ms ease-out;

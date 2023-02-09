@@ -1,40 +1,40 @@
 <template>
   <section class="vueflix-carousel">
-    <div class="vueflix-carousel__track">
-      <ul class="vueflix-carousel__body">
-        <carousel-item
-          v-for="anime in animeList"
-          :key="anime.aniTitle"
-          :data="anime"
-          :progress="progress"
-        />
+    <div
+      :class="['vueflix-carousel__track', `vueflix-carousel__track--${type}`]"
+    >
+      <ul
+        :class="['vueflix-carousel__body', `vueflix-carousel__body--${type}`]"
+      >
+        <slot></slot>
       </ul>
-      <button
-        class="vueflix-carousel__button vueflix-carousel__button--prev"
-        v-if="prevActive"
-        @click="prev"
-      >
-        <icon-base class="icon">
-          <icon-arrow-prev></icon-arrow-prev>
-        </icon-base>
-        <span class="blind">이전</span>
-      </button>
-      <button
-        class="vueflix-carousel__button vueflix-carousel__button--next"
-        v-if="nextActive"
-        @click="next"
-      >
-        <icon-base class="icon">
-          <icon-arrow-next></icon-arrow-next>
-        </icon-base>
-        <span class="blind">다음</span>
-      </button>
+      <template v-if="type === 'arrow'">
+        <button
+          class="vueflix-carousel__button vueflix-carousel__button--prev"
+          v-if="prevActive"
+          @click="prev"
+        >
+          <icon-base class="icon">
+            <icon-arrow-prev></icon-arrow-prev>
+          </icon-base>
+          <span class="blind">이전</span>
+        </button>
+        <button
+          class="vueflix-carousel__button vueflix-carousel__button--next"
+          v-if="nextActive"
+          @click="next"
+        >
+          <icon-base class="icon">
+            <icon-arrow-next></icon-arrow-next>
+          </icon-base>
+          <span class="blind">다음</span>
+        </button>
+      </template>
     </div>
   </section>
 </template>
 
 <script>
-import CarouselItem from "./CarouselItem.vue";
 import IconBase from "./IconBase.vue";
 import DaySelector from "./DaySelector.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
@@ -42,18 +42,22 @@ import IconArrowPrev from "./icons/IconArrowPrev.vue";
 export default {
   name: "VueflixCarousel",
   components: {
-    CarouselItem,
     IconBase,
     IconArrowNext,
     IconArrowPrev,
     DaySelector,
   },
   props: {
-    animeList: {
-      type: Array,
+    length: {
+      type: Number,
     },
-    progress: {
-      type: Boolean,
+    type: {
+      validator(value) {
+        return ["arrow", "break"].includes(value);
+      },
+      default() {
+        return "arrow";
+      },
     },
   },
   data: () => ({
@@ -62,7 +66,7 @@ export default {
   }),
   computed: {
     carouselLimit() {
-      return Math.floor(this.animeList.length / this.shownItems);
+      return this.length ? Math.floor(this.length / this.shownItems) : 0;
     },
     nextActive() {
       return this.carouselNumber < this.carouselLimit;
@@ -92,11 +96,13 @@ export default {
     },
   },
   mounted() {
+    if (this.type === "break") return;
     window.addEventListener("resize", () => {
       this.resolution = window.innerWidth;
     });
   },
   unmounted() {
+    if (this.type === "break") return;
     window.removeEventListener("resize", () => {
       this.resolution = window.innerWidth;
     });
@@ -107,31 +113,29 @@ export default {
 <style lang="scss" scoped>
 .vueflix-carousel {
   width: 100%;
-  min-height: 21rem;
-  &:not(:first-of-type) {
-    margin-top: 2rem;
-  }
   &__track {
     width: 100%;
     position: relative;
+    scrollbar-width: none;
     overflow-x: scroll;
     overflow-y: hidden;
-    scrollbar-width: none;
     &::-webkit-scrollbar {
       display: none;
     }
   }
   &__body {
     display: flex;
+    gap: 1rem;
     width: fit-content;
     padding: 0 2rem;
     margin: 0;
-    transition: 300ms ease-out;
-    transform: translate(
-      calc(v-bind(carouselNumber) * -1px * v-bind(resolution))
-    );
-    user-select: none;
-    cursor: pointer;
+
+    &--arrow {
+      transition: 300ms ease-out;
+      transform: translate(
+        calc(v-bind(carouselNumber) * -1px * v-bind(resolution))
+      );
+    }
   }
   &__button {
     display: none;
@@ -140,9 +144,6 @@ export default {
 
 @media screen and (min-width: 768px) {
   .vueflix-carousel {
-    &:not(:first-of-type) {
-      margin-top: 3rem;
-    }
     &__track {
       width: 100%;
     }
@@ -161,6 +162,18 @@ export default {
 }
 @media (hover: hover) and (pointer: fine) {
   .vueflix-carousel {
+    &__track {
+      &--break {
+        overflow: visible;
+      }
+    }
+    &__body {
+      gap: 2rem;
+      &--break {
+        flex-wrap: wrap;
+      }
+    }
+
     &__button {
       position: absolute;
       top: 0;

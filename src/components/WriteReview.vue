@@ -101,7 +101,7 @@ export default {
     setPlaceHolder() {
       if (this.showNewReview) {
         this.placeholder = this.user
-          ? "솔직한 평가를 작성해 주세요!"
+          ? `솔직한 평가를 작성해 주세요!\n취향을 존중하는 좋은 리뷰를 만들어가요~`
           : "아직 로그인하지 않아서 긴 글 리뷰를 남길 수 없어요";
       }
     },
@@ -129,7 +129,6 @@ export default {
         bottom: 1.5rem;
       }
       border-radius: 0.6rem;
-      box-shadow: var(--box-shadow);
       background-color: var(--new-review);
       &:not(:last-child) {
         margin-bottom: 1rem;
@@ -188,7 +187,6 @@ export default {
     .btn {
       border-radius: 2rem;
       background-color: var(--theme-500);
-      box-shadow: none;
       color: #fff;
       &:disabled {
         background-color: var(--theme-200);

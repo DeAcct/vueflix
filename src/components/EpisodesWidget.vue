@@ -124,8 +124,9 @@ export default {
       width: 1.8rem;
       height: 1.8rem;
       transition: 150ms ease-in-out;
+      transform: rotate(-90deg);
       &--widget-opened {
-        transform: rotate(-90deg);
+        transform: rotate(0);
       }
       svg {
         width: 100%;

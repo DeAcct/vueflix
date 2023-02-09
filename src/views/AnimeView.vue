@@ -12,11 +12,11 @@
       @purchase="openPurchaseModal"
       @remove-watch-history="removeWatchHistory"
       @handle-interest="handleInterest"
-      class="widget"
+      class="anime-view__head"
     />
     <main class="anime-view__main">
-      <anime-meta :anime-info="animeInfo"></anime-meta>
-      <div class="episodes-widget widget">
+      <anime-meta :anime-info="animeInfo" :theme-base-src="bgURL"></anime-meta>
+      <div class="episodes-widget">
         <h3 class="blind">에피소드</h3>
         <episodes-widget
           v-for="(part, index) in animeInfo.parts"
@@ -91,7 +91,6 @@ import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconBase from "../components/IconBase.vue";
 import IconReview from "../components/icons/IconReview.vue";
 import IconArrowPrev from "../components/icons/IconArrowPrev.vue";
-import { mapState } from "vuex";
 import ActionSheet from "../components/ActionSheet.vue";
 import PurchaseModal from "../components/PurchaseModal.vue";
 
@@ -217,6 +216,11 @@ export default {
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
   },
+  computed: {
+    bgURL() {
+      return `url(${this.animeInfo.poster})`;
+    },
+  },
 };
 </script>
 
@@ -224,17 +228,19 @@ export default {
 .anime-view {
   display: flex;
   flex-direction: column;
-  &__main {
-    background-color: var(--anime-bg);
-    flex-direction: column;
-  }
-  .widget {
-    margin-bottom: 1rem;
-  }
-  .anime-item-head {
+  &__head {
     width: 100%;
-    min-height: 60vh;
-    margin: -1px;
+    min-height: 55vh;
+    padding-bottom: 0.5px;
+  }
+  &__main {
+    // anime-item-head는 포스터이미지 + 그라디언트로 이루어져 있다.
+    // 그라디언트가 끝까지 차지 않고 약간의 여백이 있는 이슈를 개선하기 위해 nagative margin을 적용했다.
+    position: relative;
+    z-index: 2;
+    margin-top: -0.5px;
+    padding-top: 2rem;
+    background-color: var(--anime-bg);
   }
   .optional-show {
     opacity: 0;
@@ -306,17 +312,18 @@ export default {
 }
 @media screen and (min-width: 1024px) {
   .anime-view {
-    .anime-item-head {
+    &__head {
       min-height: 50vh;
       border-radius: 0;
       padding-top: 8rem;
       margin-bottom: 0;
     }
-    main {
+    &__main {
       padding: 0 calc((100% - 118rem) / 2);
       margin-top: 6rem;
       display: flex;
       justify-content: space-between;
+      flex-direction: row-reverse;
     }
     .optional-show {
       display: none;
