@@ -1,43 +1,70 @@
 <template>
   <main class="basket">
-    <basket-tab-menu @chageSelected="changeSelected" />
-    <transition name="fade" mode="out-in">
-      <keep-alive>
-        <component :is="selectedTab" />
-      </keep-alive>
+    <div class="basket__button-group">
+      <button
+        @click="changeSelected"
+        class="basket__button"
+        v-for="tabItem in tabItems"
+        :key="tabItem.type"
+        :data-key="tabItem.type"
+      >
+        <span
+          :class="[
+            'basket__active-holder',
+            { 'basket__active-holder--active': selectedTab === tabItem.type },
+          ]"
+        >
+          {{ tabItem.text }}
+        </span>
+      </button>
+    </div>
+    <transition>
+      <ul class="basket__list" @mousedown="swipeStart" @touchstart="swipeStart">
+        <carousel-item
+          :type="selectedTab === 'recentWatched' ? 'episode' : 'series'"
+          v-for="basketItem in basketList"
+          :key="basketItem.aniTitle"
+          :data="basketItem"
+          :progress="selectedTab === 'recentWatched'"
+          class="basket__item"
+        />
+      </ul>
     </transition>
   </main>
 </template>
 
 <script>
-import BasketTabMenu from "../components/BasketTabMenu.vue";
-import BasketTabRecent from "../components/BasketTabRecent.vue";
-import BasketTabWanna from "../components/BasketTabWanna.vue";
-import BasketTabPurchase from "../components/BasketTabPurchase.vue";
-import BasketTabNotInterested from "../components/BasketTabNotInterested.vue";
+import { mapState } from "vuex";
+import CarouselItem from "../components/CarouselItem.vue";
 
 export default {
   name: "AppBasket",
-  components: {
-    BasketTabMenu,
-    BasketTabRecent,
-    BasketTabWanna,
-    BasketTabPurchase,
-    BasketTabNotInterested,
-  },
+  components: { CarouselItem },
   data() {
     return {
-      currentTab: "recent",
+      tabItems: [
+        { text: "최근 본", type: "recentWatched" },
+        { text: "보고싶다", type: "wannaSee" },
+        { text: "구매한", type: "purchased" },
+        { text: "관심없음", type: "notInterested" },
+      ],
+      selectedTab: "recentWatched",
     };
   },
   methods: {
     changeSelected(e) {
-      this.currentTab = e;
+      this.selectedTab = e.currentTarget.dataset.key;
+    },
+    swipeStart(e) {
+      console.log(e);
     },
   },
   computed: {
-    selectedTab() {
-      return `basket-tab-${this.currentTab}`;
+    ...mapState({
+      user: (state) => state.auth.user,
+    }),
+    basketList() {
+      return this.user?.[this.selectedTab];
     },
   },
 };
@@ -45,27 +72,60 @@ export default {
 
 <style lang="scss" scoped>
 .basket {
-  padding: 12rem 0 6rem;
-  background-color: var(--bg-200);
-  min-height: 100vh;
-  .basket-tab-menu {
-    position: fixed;
-    z-index: 25;
+  padding: 6rem 0;
+  &__button-group {
+    display: flex;
+    position: sticky;
+    z-index: 10;
     top: 6rem;
-    max-width: 1024px;
+    width: 100%;
+    border-bottom: 1px solid var(--bg-200);
+    background-color: var(--bg-100);
   }
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: 100ms ease-out;
+  &__button {
+    flex: 1 0;
+    height: 4.8rem;
+    display: flex;
+    justify-content: center;
   }
-  .fade-enter-from,
-  .fade-leave-to {
-    opacity: 0;
-    transform: translateY(-2rem);
+  &__active-holder {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 1.5rem;
+    height: 100%;
+    position: relative;
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 0.4rem;
+      border-radius: 9999px 9999px 0 0;
+    }
+    &--active {
+      color: var(--theme-500);
+      &::after {
+        background-color: var(--theme-500);
+      }
+    }
+  }
+  &__list {
+    margin-top: 1.5rem;
+    width: 100%;
+    display: grid;
+    grid: auto-flow / 1fr 1fr;
+    gap: 1.5rem 1rem;
+    padding: 0 2rem;
+    min-height: calc(100 * var(--vh) * 1px);
+  }
+  &__item {
+    width: 100%;
   }
 }
 
-@media screen and (min-width: 1024px) {
+/* @media screen and (min-width: 1024px) {
   .basket {
     padding-top: 14rem;
     .basket-tab-menu {
@@ -76,5 +136,5 @@ export default {
       border-bottom: none;
     }
   }
-}
+} */
 </style>

@@ -238,7 +238,7 @@ export default {
     // 그라디언트가 끝까지 차지 않고 약간의 여백이 있는 이슈를 개선하기 위해 nagative margin을 적용했다.
     position: relative;
     z-index: 2;
-    margin-top: -0.5px;
+    margin-top: -1px;
     padding-top: 2rem;
     background-color: var(--anime-bg);
   }
@@ -320,9 +320,9 @@ export default {
     }
     &__main {
       padding: 0 calc((100% - 118rem) / 2);
-      margin-top: 6rem;
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
       flex-direction: row-reverse;
     }
     .optional-show {

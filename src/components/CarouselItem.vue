@@ -14,9 +14,6 @@
           ]"
           @load="loadTrigger"
         />
-        <!--span class="carousel-item__watched-percent">
-          <span class="progress" :style="`width:${data.watchedPercent}`"></span>
-        </span-->
       </span>
     </router-link>
     <div class="carousel-item__info">
@@ -47,8 +44,10 @@ export default {
   name: "CarouselItem",
   components: { ProgressWidget },
   props: {
-    aniTitle: {
-      type: String,
+    type: {
+      validator(value) {
+        return ["series", "episode"].includes(value);
+      },
     },
     data: {
       type: Object,
@@ -66,7 +65,12 @@ export default {
   async mounted() {
     const { aniTitle, episodeThumbnail } = this.data;
     const storage = getStorage();
-    const thumbnailRef = ref(storage, `${aniTitle}/${episodeThumbnail}`);
+    const thumbnailRef = ref(
+      storage,
+      `${aniTitle}/${
+        this.type === "episode" ? episodeThumbnail : `${aniTitle}.webp`
+      }`
+    );
     this.thumbnailSrc = await getDownloadURL(thumbnailRef);
   },
   methods: {
@@ -129,7 +133,7 @@ export default {
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     overflow-wrap: break-word;
-    width: 20ch;
+    width: min(20ch, 100%);
     overflow: hidden;
     font-size: 1.5rem;
     line-height: 1.5;

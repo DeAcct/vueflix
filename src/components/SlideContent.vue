@@ -45,16 +45,19 @@ export default {
   },
   mixins: [useFirebase],
   async mounted() {
-    const data = await this.useQuery("anime", "idNumber", "==", this.animeId);
-    const name = data.name;
-    const queryBase = `${name}/${data.shortName}_banner`;
+    const {
+      name,
+      slideCopy: copy,
+      shortName,
+    } = await this.useQuery("anime", "idNumber", "==", this.animeId);
+
+    const queryBase = `${name}/${shortName}_banner`;
     const pcJpgBg = await this.useMultimediaURL(`${queryBase}.jpg`);
     const pcWebpBg = await this.useMultimediaURL(`${queryBase}.webp`);
     const mJpgBg = await this.useMultimediaURL(`${queryBase}_m.jpg`);
     const mWebpBg = await this.useMultimediaURL(`${queryBase}_m.webp`);
-    const logo = await this.useMultimediaURL(`${name}/${data.shortName}.png`);
+    const logo = await this.useMultimediaURL(`${name}/${shortName}.png`);
     const link = `/anime/${name}`;
-    const copy = data.slideCopy;
     this.slideData = {
       pcJpgBg,
       pcWebpBg,

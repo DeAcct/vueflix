@@ -1,10 +1,11 @@
 <template>
   <section class="anime-meta">
+    <h2 class="blind">{{ animeInfo.aniTitle }} 관련 정보</h2>
     <p class="anime-meta__summary">
       {{ animeInfo.summary }}
     </p>
     <vueflix-carousel type="break" class="anime-meta__tags">
-      <template v-if="Object.keys(animeInfo).length === 0">
+      <template v-if="!isLoaded">
         <li
           class="anime-meta__item anime-meta__item--dummy loading-target"
           v-for="_ in 5"
@@ -33,7 +34,7 @@
         <icon-base class="anime-meta__info-link-icon">
           <icon-short-content />
         </icon-base>
-        짤레이
+        짤 공작소
       </router-link>
       <router-link
         :to="`${$route.params.title}/reviews`"
@@ -70,8 +71,10 @@ export default {
     IconShortContent,
     VueflixCarousel,
   },
-  mounted() {
-    console.log(this.animeInfo);
+  computed: {
+    isLoaded() {
+      return Object.keys(this.animeInfo).length !== 0;
+    },
   },
 };
 // todo
@@ -81,14 +84,14 @@ export default {
 <style lang="scss" scoped>
 .anime-meta {
   &__summary {
-    margin: 0 2rem;
+    padding: 0 2rem 1.5rem;
     font-size: 1.3rem;
     font-weight: 500;
-    margin-bottom: 1.5rem;
   }
   &__tags {
     margin-bottom: 1.5rem;
     height: 3.5rem;
+    --carousel-padding: 2rem;
   }
   &__item {
     display: flex;
@@ -115,10 +118,10 @@ export default {
   }
   &__info-link {
     display: flex;
-    flex-grow: 1;
+    flex: 1 0;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
     padding: 1rem 1.5rem;
     border-radius: 0.6rem;
     font-size: 1.5rem;
@@ -128,6 +131,23 @@ export default {
   &__info-link-icon {
     width: 2rem;
     height: 2rem;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .anime-meta {
+    width: 50rem;
+    padding: 2rem 0;
+    border-radius: 0.6rem;
+    border: 1px solid var(--bg-200);
+    &__tags {
+      margin-bottom: 1.5rem;
+      height: auto;
+      --carousel-padding: 2rem;
+      --carousel-gap: 1rem;
+    }
+    &__info-link {
+      background-color: var(--bg-200);
+    }
   }
 }
 </style>

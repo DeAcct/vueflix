@@ -10,6 +10,7 @@
             class="app-home__carousel"
           >
             <carousel-item
+              type="episode"
               v-for="anime in auth?.recentWatched"
               :key="anime.aniTitle"
               :data="anime"
@@ -30,6 +31,7 @@
             class="app-home__carousel"
           >
             <carousel-item
+              type="series"
               v-for="anime in recommended.list"
               :key="anime.aniTitle"
               :data="anime"

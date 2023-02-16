@@ -60,7 +60,6 @@ export default {
     },
     init() {
       this.setUser();
-      this.isPlayer = this.$route.name === "player";
       this.changeTitle();
       this.setDeviceInfo();
       this.setTheme();
@@ -72,7 +71,7 @@ export default {
     setTheme() {
       const currentTheme = localStorage.getItem("theme");
       if (currentTheme) {
-        this.$store.commit("theme/setTheme", JSON.parse(currentTheme));
+        this.$store.commit("theme/setTheme", currentTheme);
       } else {
         const deviceTheme = window.matchMedia("(prefers-color-scheme:dark)")
           .matches
@@ -105,7 +104,6 @@ export default {
   watch: {
     $route() {
       this.init();
-      this.isPlayer = this.$route.name === "player";
     },
     theme() {
       const $app = document.getElementById("app");
@@ -118,7 +116,7 @@ export default {
       theme: (state) => state.theme.theme,
     }),
     headerVisible() {
-      return this.$route.meta.appBar && !this.isPlayer;
+      return this.$route.meta.appBar;
     },
     db: () => getFirestore(),
   },

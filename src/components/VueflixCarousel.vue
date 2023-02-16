@@ -1,5 +1,5 @@
 <template>
-  <section class="vueflix-carousel">
+  <div class="vueflix-carousel">
     <div
       :class="['vueflix-carousel__track', `vueflix-carousel__track--${type}`]"
     >
@@ -31,7 +31,7 @@
         </button>
       </template>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -125,9 +125,9 @@ export default {
   }
   &__body {
     display: flex;
-    gap: 1rem;
+    gap: var(--carousel-gap, 1rem);
     width: fit-content;
-    padding: 0 2rem;
+    padding: 0 var(--carousel-padding, 2rem);
     margin: 0;
 
     &--arrow {
@@ -148,7 +148,7 @@ export default {
       width: 100%;
     }
     &__body {
-      padding: 0 5rem;
+      padding: 0 var(--carousel-padding, 5rem);
     }
   }
 }
@@ -168,7 +168,7 @@ export default {
       }
     }
     &__body {
-      gap: 2rem;
+      gap: var(--carousel-gap, 2rem);
       &--break {
         flex-wrap: wrap;
       }
