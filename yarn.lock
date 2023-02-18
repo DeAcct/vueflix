@@ -4256,7 +4256,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.16.3":
+"esbuild@npm:^0.16.14":
   version: 0.16.17
   resolution: "esbuild@npm:0.16.17"
   dependencies:
@@ -7267,7 +7267,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.1.10, postcss@npm:^8.4.20":
+"postcss@npm:^8.1.10, postcss@npm:^8.4.21":
   version: 8.4.21
   resolution: "postcss@npm:8.4.21"
   dependencies:
@@ -7924,7 +7924,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^3.7.0, rollup@npm:^3.7.2":
+"rollup@npm:^3.10.0":
+  version: 3.17.0
+  resolution: "rollup@npm:3.17.0"
+  dependencies:
+    fsevents: ~2.3.2
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    rollup: dist/bin/rollup
+  checksum: 1111d8faf72caa255732f01c298b5b8e02f3cf1a8905ff3b98a8b4899c7b62639f32bc50a872b09910ac22a0665f2299af5c41754aadd678ab04172610a86a92
+  languageName: node
+  linkType: hard
+
+"rollup@npm:^3.7.2":
   version: 3.10.1
   resolution: "rollup@npm:3.10.1"
   dependencies:
@@ -9096,15 +9110,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^4.0.4":
-  version: 4.0.4
-  resolution: "vite@npm:4.0.4"
+"vite@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "vite@npm:4.1.2"
   dependencies:
-    esbuild: ^0.16.3
+    esbuild: ^0.16.14
     fsevents: ~2.3.2
-    postcss: ^8.4.20
+    postcss: ^8.4.21
     resolve: ^1.22.1
-    rollup: ^3.7.0
+    rollup: ^3.10.0
   peerDependencies:
     "@types/node": ">= 14"
     less: "*"
@@ -9130,7 +9144,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: eb86c8cdfe8dcb6644005486b31cb60bc596f2aa683cb194abb5c0afca7c2a5dfdb02bbc7f83f419ad170227ac9c3b898f4406a6d1433105fb61d79d78e47d52
+  checksum: c3d92b7ab59095498e80e70a7847c7a4c4fd7f16f859c57dc93c0dc09ec57584819a929924e8d8858bdde157f0386ec37322bdb064da7f8f4854c8aa22d0beec
   languageName: node
   linkType: hard
 
@@ -9181,7 +9195,7 @@ __metadata:
     js-cookie: ^3.0.1
     sass: ^1.53.0
     swiper: ^9.0.0
-    vite: ^4.0.4
+    vite: ^4.1.2
     vite-plugin-pwa: ^0.14.1
     vue: ^3.2.45
     vue-router: ^4.1.6

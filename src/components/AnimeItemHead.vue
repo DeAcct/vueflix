@@ -442,25 +442,6 @@ export default {
         color: inherit;
       }
 
-      .genres {
-        display: flex;
-        color: inherit;
-        margin-bottom: 0.5rem;
-        .genre {
-          display: flex;
-          align-items: center;
-          color: inherit;
-          font-size: 1.1rem;
-          font-weight: 500;
-          padding: 0.5rem 0.7rem;
-          background-color: var(--anime-genre);
-          border-radius: 0.3rem;
-          &:not(:last-child) {
-            margin-right: 0.5rem;
-          }
-        }
-      }
-
       .sub-info {
         display: flex;
         align-items: center;
@@ -617,7 +598,6 @@ export default {
 
     &__anime-info {
       padding: 0;
-      margin-bottom: 2.5rem;
       position: relative;
       .col-right {
         flex: 1;

@@ -1,34 +1,28 @@
 <template>
-  <li class="carousel-item">
+  <li class="thumbnail-set">
     <router-link
       :to="data.continueLink || `/anime/${data.aniTitle}`"
       @click.prevent
     >
-      <span :class="['carousel-item__ratio-holder', 'loading-target']">
-        <img
-          :src="thumbnailSrc"
-          :alt="`${data.aniTitle} 썸네일`"
-          :class="[
-            'carousel-item__thumbnail',
-            { 'carousel-item__thumbnail--loaded': isLoaded },
-          ]"
-          @load="loadTrigger"
-        />
-      </span>
+      <optimized-image
+        class="thumbnail-set__thumbnail"
+        :src="thumbnailSrc"
+        :alt="`${data.aniTitle} 썸네일`"
+      ></optimized-image>
     </router-link>
-    <div class="carousel-item__info">
+    <div class="thumbnail-set__info">
       <router-link
-        class="carousel-item__text"
+        class="thumbnail-set__text"
         :to="`/anime/${data.aniTitle}`"
         @click.prevent
       >
-        <span class="carousel-item__title">{{ data.aniTitle }}</span>
-        <strong class="carousel-item__part-index" v-if="data.watchedPercent">
+        <span class="thumbnail-set__title">{{ data.aniTitle }}</span>
+        <strong class="thumbnail-set__part-index" v-if="data.watchedPercent">
           {{ data.part }}기 {{ data.index }}화
         </strong>
       </router-link>
       <progress-widget
-        class="carousel-item__watched-percent"
+        class="thumbnail-set__watched-percent"
         :percent="data.watchedPercent"
         v-if="progress"
       ></progress-widget>
@@ -40,9 +34,10 @@
 import ProgressWidget from "./ProgressWidget.vue";
 
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import OptimizedImage from "./OptimizedImage.vue";
 export default {
-  name: "CarouselItem",
-  components: { ProgressWidget },
+  name: "ThumbnailSet",
+  components: { ProgressWidget, OptimizedImage },
   props: {
     type: {
       validator(value) {
@@ -59,7 +54,6 @@ export default {
   data() {
     return {
       thumbnailSrc: this.img,
-      isLoaded: false,
     };
   },
   async mounted() {
@@ -73,45 +67,16 @@ export default {
     );
     this.thumbnailSrc = await getDownloadURL(thumbnailRef);
   },
-  methods: {
-    loadTrigger() {
-      this.isLoaded = true;
-    },
-  },
 };
 </script>
 
 <style lang="scss" scoped>
-.carousel-item {
+.thumbnail-set {
   width: 55vw;
-  &__ratio-holder {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding-bottom: 56.25%;
-    border-radius: 0.3rem;
-    overflow: hidden;
-    margin-bottom: 1rem;
-
-    &:focus {
-      opacity: 0.5;
-    }
-  }
   &__thumbnail {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    visibility: hidden;
-    transition: 150ms ease-out;
-    &--loaded {
-      opacity: 1;
-      visibility: visible;
-    }
+    --radius: 0.3rem;
+    --aspect-ratio: calc(9 / 16 * 100%);
+    margin-bottom: 1rem;
   }
   &__watched-percent {
     width: 3.6rem;
@@ -144,13 +109,13 @@ export default {
   }
 }
 @media all and (min-width: 768px) {
-  .carousel-item {
+  .thumbnail-set {
     width: 32vw;
   }
 }
 
 @media all and (min-width: 1024px) {
-  .carousel-item {
+  .thumbnail-set {
     width: 28vw;
     &__title {
       font-size: 1.7rem;
@@ -163,7 +128,7 @@ export default {
 }
 
 @media all and (min-width: 1920px) {
-  .carousel-item {
+  .thumbnail-set {
     width: 15vw;
     &__ratio-holder {
       margin-bottom: 1.7rem;

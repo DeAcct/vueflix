@@ -18,28 +18,26 @@
         </span>
       </button>
     </div>
-    <transition>
-      <ul class="basket__list" @mousedown="swipeStart" @touchstart="swipeStart">
-        <carousel-item
-          :type="selectedTab === 'recentWatched' ? 'episode' : 'series'"
-          v-for="basketItem in basketList"
-          :key="basketItem.aniTitle"
-          :data="basketItem"
-          :progress="selectedTab === 'recentWatched'"
-          class="basket__item"
-        />
-      </ul>
-    </transition>
+    <ul class="basket__list">
+      <thumbnail-set
+        :type="selectedTab === 'recentWatched' ? 'episode' : 'series'"
+        v-for="basketItem in basketList"
+        :key="basketItem.aniTitle"
+        :data="basketItem"
+        :progress="selectedTab === 'recentWatched'"
+        class="basket__item"
+      />
+    </ul>
   </main>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import CarouselItem from "../components/CarouselItem.vue";
+import ThumbnailSet from "../components/ThumbnailSet.vue";
 
 export default {
   name: "AppBasket",
-  components: { CarouselItem },
+  components: { ThumbnailSet },
   data() {
     return {
       tabItems: [
@@ -118,11 +116,20 @@ export default {
     grid: auto-flow / 1fr 1fr;
     gap: 1.5rem 1rem;
     padding: 0 2rem;
-    min-height: calc(100 * var(--vh) * 1px);
   }
   &__item {
     width: 100%;
   }
+}
+
+.basket-move-enter-active,
+.basket-move-leave-active {
+  transition: all 150ms ease-out;
+}
+.basket-move-enter-from,
+.basket-move-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
 }
 
 /* @media screen and (min-width: 1024px) {

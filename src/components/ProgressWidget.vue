@@ -1,18 +1,6 @@
 <template>
   <figure class="progress-widget">
     <svg viewBox="0 0 24 24" class="progress-widget__graph">
-      <!-- <style>
-                .cls-1 {
-                    opacity: 0.1;
-                }
-                .cls-2 {
-                    fill: none;
-                    stroke: #000;
-                    stroke-linecap: round;
-                    stroke-linejoin: round;
-                    stroke-width: 2px;
-                }
-            </style> -->
       <circle class="progress-widget__track" cx="12" cy="12" r="9" />
       <circle class="progress-widget__body" cx="12" cy="12" r="9" ref="body" />
     </svg>
@@ -48,6 +36,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: var(--gap, 0);
   &__graph {
     width: 100%;
     height: 100%;
@@ -69,8 +58,9 @@ export default {
     animation: 300ms ani;
   }
   &__percent {
-    position: absolute;
+    position: var(--position, absolute);
     font-weight: 500;
+    font-size: var(--font-size, 1rem);
   }
 }
 

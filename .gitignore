@@ -9,7 +9,6 @@
 !.yarn/sdks
 !.yarn/versions
 
-
 # local env files
 .env.local
 .env.*.local
@@ -21,13 +20,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Editor directories and files
-.idea
 .vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 
 # asset files
 *.ai

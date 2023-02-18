@@ -1,75 +1,26 @@
 <template>
   <li class="episode-card">
-    <component
-      :is="type"
-      :to="type === 'router-link' ? (auth ? toValue : '#none') : undefined"
-      class="episode-item"
-      replace
-      @click="loginRequire"
-      :data-pointer="type === 'label'"
-    >
-      <input
-        v-if="type === 'label'"
-        class="blind select-skell"
-        type="checkbox"
-        v-model="checked"
-      />
-      <span class="wrap">
-        <span class="col-left">
-          <span class="thumbnail">
-            <img
-              :src="thumbnailURL"
-              :alt="`${title} 썸네일`"
-              :ref="`thumbnail-${index}`"
-              loading="lazy"
-              class="thumbnail__img"
-            />
-            <span class="thumbnail__progress" v-if="progress">
-              <span
-                class="thumbnail__progress__body"
-                :style="`width:${progress}`"
-              ></span>
-              <span class="blind">{{ progress }}퍼센트</span>
-            </span>
-            <span v-if="isCurrent" class="thumbnail__now-playing">
-              현재 재생 중
-            </span>
-            <i class="icon" v-else-if="type !== 'label'">
-              <icon-base>
-                <icon-play />
-              </icon-base>
-            </i>
-          </span>
-          <span class="episode-info">
-            <span class="row-top">
-              <span
-                class="title"
-                :style="`color:${excludeTheme ? textColor : undefined}`"
-              >
-                {{ formattedIndex }} {{ title }}
-              </span>
-              <span
-                class="date"
-                :style="`color:${excludeTheme ? textColor : undefined}`"
-                v-if="type !== 'label'"
-              >
-                {{ date }}
-              </span>
-            </span>
-            <span class="row-bottom">
-              <span class="price" v-if="type === 'label'">{{ price }}원</span>
-              <span class="is-purchased" v-else-if="isPurchased">소장함</span>
-            </span>
-          </span>
-        </span>
+    <router-link to="#none" :data-to="toValue" class="episode-card__thumbnail">
+      <optimized-image :src="thumbnailURL"></optimized-image>
+    </router-link>
+    <router-link to="#none" class="episode-card__text-wrap">
+      <p class="episode-card__title">
+        <em class="episode-card__index"
+          >{{ formattedIndex }} &middot;
+          <span class="episode-card__date">{{ data.date }}</span></em
+        >
 
-        <i class="checked-state" v-if="type === 'label'">
-          <icon-base>
-            <icon-wanna-see-added />
-          </icon-base>
-        </i>
-      </span>
-    </component>
+        {{ data.title }}
+      </p>
+      <div class="col-bottom">
+        <progress-widget
+          class="episode-card__watched-percent"
+          :percent="progress"
+          v-if="progress"
+        ></progress-widget>
+        <span class="episode-card__purchased" v-if="isPurchased">소장함</span>
+      </div>
+    </router-link>
   </li>
 </template>
 
@@ -85,32 +36,13 @@
  */
 
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import IconBase from "../components/IconBase.vue";
-import IconPlay from "./icons/IconPlay.vue";
 import { mapState } from "vuex";
-import IconWannaSeeAdded from "./icons/IconWannaSeeAdded.vue";
+import OptimizedImage from "./OptimizedImage.vue";
+import ProgressWidget from "./ProgressWidget.vue";
 export default {
   name: "EpisodeCard",
   props: {
-    thumbnail: {
-      type: String,
-    },
-    title: {
-      type: String,
-    },
-    index: {
-      type: [Number, String],
-    },
-    date: {
-      type: String,
-    },
     part: {
-      type: String,
-    },
-    excludeTheme: {
-      type: Boolean,
-    },
-    textColor: {
       type: String,
     },
     accentCurrent: {
@@ -119,23 +51,17 @@ export default {
     isLoggedin: {
       type: Boolean,
     },
-
-    type: {
-      type: String,
-      default: "router-link",
-    },
     inputChecked: {
       type: Boolean,
     },
     price: {
       type: Number,
     },
+    data: {
+      type: Object,
+    },
   },
-  components: {
-    IconBase,
-    IconPlay,
-    IconWannaSeeAdded,
-  },
+  components: { OptimizedImage, ProgressWidget },
   data() {
     return {
       thumbnailURL: "",
@@ -150,7 +76,7 @@ export default {
       const storage = getStorage();
       const thumbnailRef = ref(
         storage,
-        `${this.$route.params.title}/${this.thumbnail}`
+        `${this.$route.params.title}/${this.data.thumbnail}`
       );
       const URL = await getDownloadURL(thumbnailRef);
       this.thumbnailURL = URL;
@@ -163,7 +89,12 @@ export default {
   },
   computed: {
     formattedIndex() {
-      return typeof this.index === "string" ? this.index : `${this.index}화`;
+      // 일부 회차 표기가 특이한 애니 대응
+      // 예시)
+      // <쟈히 님은 기죽지 않아> "부흥 계획 첫/두/세...번째"
+      return typeof this.data.index === "string"
+        ? this.data.index
+        : `${this.data.index}화`;
     },
     toValue() {
       return this.part === this.$route.params.part &&
@@ -175,7 +106,7 @@ export default {
       return (
         this.accentCurrent &&
         this.part === this.$route.params.part &&
-        this.index === Number(this.$route.params.index.slice(0, -1))
+        this.data.index === Number(this.$route.params.index.slice(0, -1))
       );
     },
     isPurchased() {
@@ -183,13 +114,11 @@ export default {
         const target = this.auth.purchased.find(
           (anime) => anime.aniTitle === this.$route.params.title
         );
-        if (target) {
-          const result =
-            target.episodes.findIndex(
-              (episode) => episode.index === this.index
-            ) !== -1;
-          return result;
-        }
+        const result =
+          target?.episodes.findIndex(
+            (episode) => episode.index === this.data.index
+          ) !== -1;
+        return result;
       }
       return false;
     },
@@ -197,18 +126,14 @@ export default {
       auth: (state) => state.auth.user,
     }),
     progress() {
-      const anime = this.auth
-        ? this.auth.maratonWatch.find(
-            (anime) => anime.aniTitle === this.$route.params.title
-          )
-        : undefined;
-      const episodeTarget = anime
-        ? anime.items.find(
-            (episode) =>
-              episode.index === this.index &&
-              episode.part === Number(this.part.slice(0, -1))
-          )
-        : undefined;
+      const anime = this.auth?.maratonWatch.find(
+        (anime) => anime.aniTitle === this.$route.params.title
+      );
+      const episodeTarget = anime?.items.find(
+        (episode) =>
+          episode.index === this.data.index &&
+          episode.part === Number(this.part.slice(0, -1))
+      );
       return episodeTarget ? episodeTarget.episodePercent : 0;
     },
   },
@@ -235,199 +160,72 @@ export default {
 <style lang="scss" scoped>
 .episode-card {
   display: flex;
-  align-items: center;
-
-  &:not(:last-child) {
-    margin-bottom: 1.5rem;
+  gap: 1rem;
+  &__thumbnail {
+    width: 12rem;
+    flex-shrink: 0;
   }
-  .episode-item {
+  &__text-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
     width: 100%;
-    .select-skell:checked + .wrap {
-      .checked-state {
-        background-color: var(--theme-500);
-        svg {
-          stroke-dashoffset: 0;
-        }
-      }
-    }
-    .wrap {
-      position: relative;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: 0.3rem;
-      .col-left {
-        display: flex;
-        width: 100%;
-      }
-      .col-right {
-        display: flex;
-        align-items: center;
-      }
-      .thumbnail {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 12rem;
-        flex-shrink: 0;
-        height: calc(12rem / 16 * 9);
-        border-radius: 0.2rem;
-        overflow: hidden;
-        &__img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        &__progress {
-          position: absolute;
-          bottom: 1rem;
-          display: flex;
-          width: calc(100% - 2rem);
-          height: 0.5rem;
-          border-radius: 9999px;
-          overflow: hidden;
-          background-color: var(--bg-100);
-          &__body {
-            width: 0;
-            height: 100%;
-            border-radius: 9999px;
-            background-color: var(--theme-500);
-          }
-        }
-        &__now-playing {
-          position: absolute;
-          top: 0;
-          left: 0;
-          z-index: 5;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background-color: var(--thumbnail-current-bg);
-          color: #fff;
-          font-size: 1.3rem;
-          font-weight: 500;
-        }
-        .icon {
-          position: absolute;
-          z-index: 7;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          color: #fff;
-          background-color: var(--thumbnail-current-bg);
-          width: 3.6rem;
-          height: 3.6rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          opacity: 0;
-          visibility: hidden;
-          transition: 150ms ease-out;
-        }
-      }
-      .episode-info {
-        text-align: left;
-        margin-left: 1rem;
-        display: flex;
-        flex-shrink: 1;
-        flex-direction: column;
-        justify-content: space-between;
-        .row-top,
-        .row-bottom {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-        .title {
-          font-size: 1.3rem;
-          font-weight: 700;
-          width: 100%;
-          line-height: 1.5;
-          display: -webkit-box;
-          -webkit-line-clamp: 1;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .date {
-          font-size: 1.1rem;
-          font-weight: 500;
-        }
-        .price {
-          font-size: 1.2rem;
-          font-weight: 900;
-        }
-        .is-purchased {
-          font-size: 1.2rem;
-          font-weight: 500;
-          color: var(--theme-500);
-        }
-      }
-      .checked-state {
-        transition: 150ms ease-out;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 2rem;
-        height: 2rem;
-        border-radius: 50%;
-        background-color: var(--bg-400);
-        svg {
-          width: 1.5rem;
-          height: 1.5rem;
-          fill: transparent;
-          stroke: #fff;
-          stroke-width: 3px;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-          stroke-dasharray: 25;
-          stroke-dashoffset: 25;
-        }
-      }
-    }
   }
-  &:hover .episode-item .wrap .thumbnail .icon {
-    opacity: 1;
-    visibility: visible;
+  &__index {
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  &__date {
+    display: inline-block;
+  }
+  &__title {
+    font-size: 1.3rem;
+    font-weight: 500;
+    line-height: 1.5;
+    width: 100%;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  .col-bottom {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  &__watched-percent {
+    --position: static;
+    --gap: 0.5rem;
+    --font-size: 1.2rem;
+    height: 2.4rem;
+  }
+  &__purchased {
+    font-size: 1.2rem;
+    color: var(--theme-500);
   }
 }
 
 @media screen and (min-width: 1080px) {
   .episode-card {
-    &:not(:last-child) {
-      margin-bottom: 2rem;
+    gap: 2rem;
+    &__thumbnail {
+      width: 20rem;
     }
-
-    .episode-item .wrap {
-      .thumbnail {
-        width: 16rem;
-        height: calc(16rem / 16 * 9);
-      }
-      .episode-info {
-        margin-left: 1.5rem;
-        .title {
-          font-size: 1.6rem;
-          height: 2rem;
-        }
-        .date {
-          font-size: 1.3rem;
-        }
-        .is-purchased {
-          font-size: 1.3rem;
-        }
-      }
+    &__title {
+      font-size: 1.7rem;
     }
-  }
-}
-
-@media (orientation: landscape) {
-  .episode-card .episode-item .wrap .episode-info {
-    max-width: 45%;
+    &__index {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    &__purchased {
+      font-size: 1.4rem;
+      color: var(--theme-500);
+    }
   }
 }
 </style>

@@ -15,8 +15,12 @@
       class="anime-view__head"
     />
     <main class="anime-view__main">
-      <anime-meta :anime-info="animeInfo" :theme-base-src="bgURL"></anime-meta>
-      <div class="episodes-widget">
+      <anime-meta
+        class="anime-view__meta"
+        :anime-info="animeInfo"
+        :theme-base-src="bgURL"
+      ></anime-meta>
+      <div class="anime-view__parts">
         <h3 class="blind">에피소드</h3>
         <episodes-widget
           v-for="(part, index) in animeInfo.parts"
@@ -29,15 +33,18 @@
       </div>
 
       <button
-        :class="['to-top-btn', { 'to-top-btn--scrolled': isScroll }]"
+        :class="[
+          'anime-view__top-btn',
+          { 'anime-view__top-btn--scrolled': isScroll },
+        ]"
         @click="toTop"
       >
-        <i class="to-top-btn__icon">
+        <i class="anime-view__top-icon">
           <icon-base>
             <icon-arrow-prev />
           </icon-base>
         </i>
-        <span class="to-top-btn__text">맨 위로</span>
+        <span class="anime-view__top-text">맨 위로</span>
       </button>
     </main>
     <vueflix-modal
@@ -231,16 +238,17 @@ export default {
   &__head {
     width: 100%;
     min-height: 55vh;
-    padding-bottom: 0.5px;
+    padding-bottom: 1px;
   }
   &__main {
     // anime-item-head는 포스터이미지 + 그라디언트로 이루어져 있다.
     // 그라디언트가 끝까지 차지 않고 약간의 여백이 있는 이슈를 개선하기 위해 nagative margin을 적용했다.
-    position: relative;
-    z-index: 2;
     margin-top: -1px;
     padding-top: 2rem;
     background-color: var(--anime-bg);
+  }
+  &__meta {
+    margin-bottom: 3rem;
   }
   .optional-show {
     opacity: 0;
@@ -252,10 +260,12 @@ export default {
       transform: translateY(0);
     }
   }
-  .episodes-widget {
+  &__parts {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 8.5rem;
   }
-  .to-top-btn {
+  &__top-btn {
     position: fixed;
     display: flex;
     justify-content: center;
@@ -270,33 +280,19 @@ export default {
     color: #fff;
     transform: translate(-50%, 10rem);
     transition: 150ms ease-out;
-    &__icon {
-      color: #fff;
-      transform: rotate(90deg);
-      margin-right: 1rem;
-    }
-    &__text {
-      color: #fff;
-      font-weight: 700;
-    }
+
     &--scrolled {
       transform: translate(-50%, 0);
     }
   }
-  .loading-target {
-    background-image: linear-gradient(135deg, var(--bg-300), var(--bg-200));
+  &__top-icon {
+    color: #fff;
+    transform: rotate(90deg);
+    margin-right: 1rem;
   }
-  .division-pipe {
-    display: flex;
-    align-items: center;
-    color: inherit;
-    font-size: 1.2rem;
-    &:not(:last-child):after {
-      content: "|";
-      margin: 0 0.5rem;
-      font-size: 1.2rem;
-      font-weight: 300;
-    }
+  &__top-text {
+    color: #fff;
+    font-weight: 700;
   }
 }
 
@@ -316,14 +312,17 @@ export default {
       min-height: 50vh;
       border-radius: 0;
       padding-top: 8rem;
-      margin-bottom: 0;
+    }
+    &__meta {
+      margin: 0;
     }
     &__main {
-      padding: 0 calc((100% - 118rem) / 2);
+      padding: 3.5rem calc((100% - 118rem) / 2) 0;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       flex-direction: row-reverse;
+      gap: 1.5rem;
     }
     .optional-show {
       display: none;
@@ -333,29 +332,11 @@ export default {
         display: block;
       }
     }
-    .episodes-widget {
-      width: calc(100% - 33% - 3rem);
+    &__parts {
+      width: calc(67% - 3rem);
+      margin-bottom: 2.5rem;
     }
-    .anime-useful-widget {
-      width: 33%;
-      height: fit-content;
-      .info > li {
-        padding: {
-          top: 2rem;
-          bottom: 2rem;
-        }
-        .title {
-          font-size: 1.5rem;
-        }
-        .text {
-          font-size: 1.3rem;
-        }
-      }
-    }
-    .episodes-widget {
-      margin-bottom: 3rem;
-    }
-    .to-top-btn {
+    &__top-btn {
       left: auto;
       right: calc((100% - 118rem) / 2);
       transform: translateY(10rem);

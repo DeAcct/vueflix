@@ -20,6 +20,7 @@ h5,
 h6,
 a,
 p,
+em,
 span,
 ul,
 li,
@@ -87,6 +88,9 @@ h6,
 strong,
 b {
   font-weight: 700;
+}
+em {
+  font-style: normal;
 }
 html {
   font-size: 0.625em;

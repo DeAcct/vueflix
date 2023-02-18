@@ -9,7 +9,7 @@
             :length="auth?.recentWatched.length"
             class="app-home__carousel"
           >
-            <carousel-item
+            <thumbnail-set
               type="episode"
               v-for="anime in auth?.recentWatched"
               :key="anime.aniTitle"
@@ -30,7 +30,7 @@
             :length="recommended.list.length"
             class="app-home__carousel"
           >
-            <carousel-item
+            <thumbnail-set
               type="series"
               v-for="anime in recommended.list"
               :key="anime.aniTitle"
@@ -62,17 +62,17 @@
 import BannerSlide from "../components/BannerSlide.vue";
 import VueflixModal from "../components/VueflixModal.vue";
 import VueflixCarousel from "../components/VueflixCarousel.vue";
-import CarouselItem from "../components/CarouselItem.vue";
 import Cookies from "js-cookie";
 import { mapState } from "vuex";
 import { getFirestore, getDocs, collection } from "firebase/firestore";
+import ThumbnailSet from "../components/ThumbnailSet.vue";
 export default {
   name: "AppHome",
   components: {
     BannerSlide,
     VueflixModal,
     VueflixCarousel,
-    CarouselItem,
+    ThumbnailSet,
   },
   data() {
     return {
