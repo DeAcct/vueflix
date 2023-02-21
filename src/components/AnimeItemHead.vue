@@ -187,19 +187,6 @@ export default {
       this.isTouchDevice = e.matches;
     });
     window.addEventListener("resize", this.checkResolution);
-    if (this.user) {
-      const db = getFirestore();
-      const userRef = doc(db, "user", this.user.uid);
-      const userSnap = await getDoc(userRef);
-      this.$store.commit("auth/setUser", userSnap.data());
-
-      const wannaSeeIndex = userSnap
-        .data()
-        .wannaSee.findIndex(
-          (wanna) => wanna.aniTitle === this.$route.params.title
-        );
-      this.wannaSeeBool = wannaSeeIndex !== -1;
-    }
   },
   unmounted() {
     this.screenSizeQuery.removeEventListener("change", (e) => {
@@ -215,7 +202,6 @@ export default {
       "(hover: none) and (pointer: coarse)"
     );
     return {
-      wannaSeeBool: false,
       screenSizeQuery,
       touchDeviceQuery,
       isMobileSize: screenSizeQuery.matches,
@@ -240,9 +226,11 @@ export default {
     },
     async wannaSeeToggle() {
       if (this.user) {
-        this.wannaSeeBool = !this.wannaSeeBool;
+        console.log("d", this.wannaSeeBool);
         const aniTitle = this.$route.params.title;
         if (this.wannaSeeBool) {
+          this.$store.commit("auth/deleteWannaSee", aniTitle);
+        } else {
           const now = new Date();
           const year = now.getFullYear();
           const month = now.getMonth() + 1;
@@ -261,8 +249,6 @@ export default {
               sec: sec,
             },
           });
-        } else {
-          this.$store.commit("auth/deleteWannaSee", aniTitle);
         }
         const db = getFirestore();
         await setDoc(doc(db, "user", this.user.uid), {
@@ -313,6 +299,11 @@ export default {
     ...mapState({
       user: (state) => state.auth.user,
     }),
+    wannaSeeBool() {
+      return !!this.user?.wannaSee.find(
+        (item) => item.aniTitle === this.$route.params.title
+      );
+    },
     gradientPercent() {
       return !this.isMobileSize ? "90%" : "80%";
     },

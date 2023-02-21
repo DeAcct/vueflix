@@ -2,63 +2,56 @@
   <div class="day-selector">
     <button
       v-for="day in days"
-      :key="day"
-      :class="{ active: selectedDay === day }"
-      @click="dayBtnClick($event)"
+      :key="day.key"
+      :class="{ active: day.key === selected }"
+      @click="dayBtnClick($event, day.key)"
     >
-      {{ day }}
+      {{ day.text }}
     </button>
   </div>
 </template>
 
 <script>
+const DAYS_ENUM = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
+
 export default {
   name: "DaySelector",
   props: {
     type: {
       type: String,
     },
+    selected: {
+      type: String,
+      validator(value) {
+        return DAYS_ENUM.includes(value);
+      },
+    },
   },
   data() {
     return {
-      days: ["월", "화", "수", "목", "금", "토", "일"],
-      selectedDay: undefined,
+      days: [
+        { text: "일", key: "sunday" },
+        { text: "월", key: "monday" },
+        { text: "화", key: "tuesday" },
+        { text: "수", key: "wednesday" },
+        { text: "목", key: "thursday" },
+        { text: "금", key: "friday" },
+        { text: "토", key: "saturday" },
+      ],
     };
   },
   methods: {
-    dayBtnClick(e) {
-      this.selectedDay = e.target.textContent;
-      this.$emit("dayBtnClick");
-      this.$store.commit("daily/changeAnime", this.selectedDay);
+    dayBtnClick(_, key) {
+      this.$emit("day-change", key);
     },
-  },
-  mounted() {
-    const todayNumber = new Date().getDay();
-    let today;
-    switch (todayNumber) {
-      case 0:
-        today = "일";
-        break;
-      case 1:
-        today = "월";
-        break;
-      case 2:
-        today = "화";
-        break;
-      case 3:
-        today = "수";
-        break;
-      case 4:
-        today = "목";
-        break;
-      case 5:
-        today = "금";
-        break;
-      default:
-        today = "토";
-    }
-    this.selectedDay = today;
-    this.$store.commit("daily/changeAnime", today);
   },
 };
 </script>
@@ -68,8 +61,7 @@ export default {
   display: flex;
   justify-content: space-between;
   height: 4rem;
-  gap: 0.5rem;
-  margin-top: 1.5rem;
+
   button {
     width: 4rem;
     height: 4rem;
@@ -92,6 +84,7 @@ export default {
 @media screen and (min-width: 769px) {
   .day-selector {
     justify-content: flex-start;
+    gap: 1rem;
   }
 }
 @media screen and (min-width: 1024px) {

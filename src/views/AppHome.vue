@@ -18,7 +18,25 @@
             />
           </vueflix-carousel>
         </div>
-        <!--vueflix-carousel type="daily">요일별 신작</vueflix-carousel-->
+        <div class="app-home__curated-item">
+          <h2 class="app-home__curated-title inner">요일별 신작</h2>
+          <day-selector
+            class="app-home__day-select inner"
+            :selected="selectedDay"
+            @day-change="onDayChange"
+          ></day-selector>
+          <vueflix-carousel
+            :length="selectedDailyAnime.length"
+            class="app-home__carousel"
+          >
+            <thumbnail-set
+              type="series"
+              v-for="anime in selectedDailyAnime"
+              :key="anime.aniTitle"
+              :data="anime"
+            />
+          </vueflix-carousel>
+        </div>
         <div
           class="app-home__curated-item"
           v-for="recommended in recommendedAnime"
@@ -60,24 +78,47 @@
 
 <script>
 import BannerSlide from "../components/BannerSlide.vue";
+import DaySelector from "../components/DaySelector.vue";
+import ThumbnailSet from "../components/ThumbnailSet.vue";
 import VueflixModal from "../components/VueflixModal.vue";
 import VueflixCarousel from "../components/VueflixCarousel.vue";
 import Cookies from "js-cookie";
 import { mapState } from "vuex";
-import { getFirestore, getDocs, collection } from "firebase/firestore";
-import ThumbnailSet from "../components/ThumbnailSet.vue";
+import {
+  getFirestore,
+  getDocs,
+  collection,
+  doc,
+  getDoc,
+} from "firebase/firestore";
+
+const DAYS_ENUM = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
+
 export default {
   name: "AppHome",
   components: {
     BannerSlide,
+    DaySelector,
     VueflixModal,
     VueflixCarousel,
     ThumbnailSet,
   },
   data() {
+    const now = new Date();
+    const selectedDay = DAYS_ENUM[now.getDay()];
     return {
       isModalOpened: false,
       recommendedAnime: {},
+      selectedDay,
+      selectedDailyAnime: [],
     };
   },
   async mounted() {
@@ -91,6 +132,7 @@ export default {
       this.isModalOpened = null;
     });
     await this.recommendInit();
+    await this.getSelectedDayList();
   },
   methods: {
     async PWAdismiss() {
@@ -118,6 +160,20 @@ export default {
         }));
       this.recommendedAnime = data;
     },
+    onDayChange(e) {
+      this.selectedDay = e;
+    },
+    async getSelectedDayList() {
+      const db = getFirestore();
+      const docReference = doc(db, "daily", this.selectedDay);
+      const docSnap = await getDoc(docReference);
+      this.selectedDailyAnime = docSnap.data().data;
+    },
+  },
+  watch: {
+    async selectedDay() {
+      await this.getSelectedDayList();
+    },
   },
   computed: {
     ...mapState({
@@ -140,10 +196,13 @@ export default {
   }
   &__curated-title {
     font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  &__day-select {
     margin-bottom: 1.5rem;
   }
   &__carousel {
-    min-height: 21rem;
+    height: 21rem;
   }
   &__modal {
     transition: 150ms ease-out;
@@ -174,12 +233,18 @@ export default {
       transform: none;
       transition: 150ms ease-out;
     }
+    &__carousel {
+      height: 26rem;
+    }
   }
 }
 @media screen and (min-width: 1024px) {
   .app-home {
     &__curated-title {
       font-size: 3rem;
+    }
+    &__carousel {
+      height: 30rem;
     }
   }
 }

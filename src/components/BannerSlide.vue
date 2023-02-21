@@ -1,7 +1,12 @@
 <template>
   <section class="slide loading-target">
     <h2 class="blind">이미지 슬라이드</h2>
-    <swiper effect="fade" :loop="true" navigation>
+    <swiper-container
+      effect="fade"
+      :loop="true"
+      :autoplay-delay="2500"
+      :autoplay-disable-on-interaction="false"
+    >
       <swiper-slide
         v-for="animeID in animeIDArray"
         :key="`slide-${animeID}`"
@@ -9,23 +14,24 @@
       >
         <slide-content :anime-id="animeID"> </slide-content>
       </swiper-slide>
-    </swiper>
+    </swiper-container>
   </section>
 </template>
+
 <script>
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 import SlideContent from "./SlideContent.vue";
 
-import SwiperCore, { Autoplay, A11y, Navigation, EffectFade } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/vue";
-SwiperCore.use([Autoplay, A11y, Navigation, EffectFade]);
-import "swiper/swiper-bundle.min.css";
+// todo::
+// swiper 수동 네비게이션 버튼 제작.
+import { register } from "swiper/element/bundle";
+register();
 
 export default {
   name: "BannerSlide",
   components: {
-    Swiper,
-    SwiperSlide,
+    //Swiper,
+    //SwiperSlide,
     SlideContent,
   },
   data() {
@@ -73,42 +79,14 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.swiper {
-  position: relative;
-  padding-bottom: 133.333%;
-  .swiper-wrapper {
-    position: absolute;
-  }
-}
-
-.swiper-button-next,
-.swiper-button-prev {
-  display: none;
-}
-.slide-item {
-  position: relative;
-}
-@media screen and (min-width: 769px) {
-  .swiper-button-next,
-  .swiper-button-prev {
-    display: flex;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.5);
-    transition: 150ms ease-out;
-    &:hover {
-      color: rgba(255, 255, 255, 1);
-    }
-    &::after {
-      font-size: 3rem;
-    }
-  }
+<style lang="scss" scoped>
+swiper-container {
+  aspect-ratio: 3/4;
 }
 
 @media screen and (min-width: 1025px) {
-  .swiper {
-    height: calc(100vw / 2560 * 1043);
-    padding-bottom: 24.545%;
+  swiper-container {
+    aspect-ratio: 2560/1043;
   }
 }
 </style>

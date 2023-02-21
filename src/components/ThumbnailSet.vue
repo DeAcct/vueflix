@@ -11,12 +11,10 @@
       ></optimized-image>
     </router-link>
     <div class="thumbnail-set__info">
-      <router-link
-        class="thumbnail-set__text"
-        :to="`/anime/${data.aniTitle}`"
-        @click.prevent
-      >
-        <span class="thumbnail-set__title">{{ data.aniTitle }}</span>
+      <router-link class="thumbnail-set__text" :to="`/anime/${data.aniTitle}`">
+        <span class="thumbnail-set__title" :style="titleWidth + titleBreak">
+          {{ data.aniTitle }}
+        </span>
         <strong class="thumbnail-set__part-index" v-if="data.watchedPercent">
           {{ data.part }}기 {{ data.index }}화
         </strong>
@@ -62,23 +60,42 @@ export default {
     const thumbnailRef = ref(
       storage,
       `${aniTitle}/${
-        this.type === "episode" ? episodeThumbnail : `${aniTitle}.webp`
+        this.type === "episode"
+          ? episodeThumbnail
+          : `${aniTitle.replaceAll(/:/g, "_")}.webp`
       }`
     );
     this.thumbnailSrc = await getDownloadURL(thumbnailRef);
+  },
+  computed: {
+    titleWidth() {
+      return `width: ${
+        this.type === "series"
+          ? "100%"
+          : "min(var(--episode-title-width), 100%)"
+      };`;
+    },
+    titleBreak() {
+      return `-webkit-line-clamp: ${this.type === "series" ? 2 : 1};`;
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .thumbnail-set {
+  display: flex;
+  flex-direction: column;
   width: 55vw;
+  position: relative;
   &__thumbnail {
     --radius: 0.3rem;
     --aspect-ratio: calc(9 / 16 * 100%);
     margin-bottom: 1rem;
   }
   &__watched-percent {
+    position: absolute;
+    right: 0;
     width: 3.6rem;
     height: 3.6rem;
     flex-shrink: 0;
@@ -91,6 +108,7 @@ export default {
     display: flex;
     gap: 0.5rem;
     flex-direction: column;
+    width: 100%;
   }
   &__title {
     display: -webkit-box;
@@ -98,7 +116,7 @@ export default {
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     overflow-wrap: break-word;
-    width: min(20ch, 100%);
+    --episode-title-width: 20ch;
     overflow: hidden;
     font-size: 1.5rem;
     line-height: 1.5;
@@ -119,7 +137,7 @@ export default {
     width: 28vw;
     &__title {
       font-size: 1.7rem;
-      width: 30ch;
+      --episode-title-width: 30ch;
     }
     &__part-index {
       font-size: 1.5rem;
@@ -137,7 +155,7 @@ export default {
       gap: 1rem;
     }
     &__title {
-      width: 20ch;
+      --episode-title-width: 20ch;
       font-size: 2rem;
     }
   }

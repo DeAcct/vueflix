@@ -133,6 +133,11 @@ const mutations = {
       state.user.maratonWatch[targetIndex].maratonEnd = maratonEnd;
     }
   },
+  clearMaraton(state, payload) {
+    state.user.maratonWatch = state.user.maratonWatch.filter(
+      (anime) => payload !== anime.aniTitle
+    );
+  },
   newKeywordReview(state, payload) {
     const exists = state.user.keywordReview.findIndex(
       (krItem) => krItem.aniTitle === payload.aniTitle

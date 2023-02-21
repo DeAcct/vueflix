@@ -15,11 +15,7 @@
       class="anime-view__head"
     />
     <main class="anime-view__main">
-      <anime-meta
-        class="anime-view__meta"
-        :anime-info="animeInfo"
-        :theme-base-src="bgURL"
-      ></anime-meta>
+      <anime-meta class="anime-view__meta" :anime-info="animeInfo"></anime-meta>
       <div class="anime-view__parts">
         <h3 class="blind">에피소드</h3>
         <episodes-widget
@@ -87,8 +83,11 @@ import {
   query,
   where,
   getDocs,
+  setDoc,
+  doc,
 } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { mapState } from "vuex";
 
 import AnimeItemHead from "../components/AnimeItemHead.vue";
 import AnimeMeta from "../components/AnimeMeta.vue";
@@ -198,7 +197,11 @@ export default {
       this.isActionSheetOpened = false;
     },
     async removeWatchHistory() {
-      console.log("시청기록 초기화");
+      this.$store.commit("auth/clearMaraton", this.$route.params.title);
+      const db = getFirestore();
+      await setDoc(doc(db, "user", this.user.uid), {
+        ...this.user,
+      });
     },
     handleInterest() {
       console.log("취향에 반영했어요");
@@ -224,9 +227,9 @@ export default {
     },
   },
   computed: {
-    bgURL() {
-      return `url(${this.animeInfo.poster})`;
-    },
+    ...mapState({
+      user: (state) => state.auth.user,
+    }),
   },
 };
 </script>

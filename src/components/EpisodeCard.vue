@@ -9,7 +9,6 @@
           >{{ formattedIndex }} &middot;
           <span class="episode-card__date">{{ data.date }}</span></em
         >
-
         {{ data.title }}
       </p>
       <div class="col-bottom">
@@ -173,6 +172,8 @@ export default {
     width: 100%;
   }
   &__index {
+    // 화수 + 날짜 뒤에 줄바꿈이 일어나도록
+    display: block;
     font-weight: 700;
     margin-bottom: 0.3rem;
   }
@@ -186,8 +187,8 @@ export default {
     width: 100%;
     display: -webkit-box;
     text-overflow: ellipsis;
-    -webkit-box-orient: vertical;
     overflow: hidden;
+    -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     line-clamp: 2;
   }
@@ -204,6 +205,7 @@ export default {
   }
   &__purchased {
     font-size: 1.2rem;
+    font-weight: 500;
     color: var(--theme-500);
   }
 }

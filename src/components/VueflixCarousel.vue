@@ -95,6 +95,11 @@ export default {
       this.carouselNumber--;
     },
   },
+  watch: {
+    length() {
+      this.carouselNumber = 0;
+    },
+  },
   mounted() {
     if (this.type === "break") return;
     window.addEventListener("resize", () => {
@@ -113,8 +118,10 @@ export default {
 <style lang="scss" scoped>
 .vueflix-carousel {
   width: 100%;
+  height: 100%;
   &__track {
     width: 100%;
+    height: 100%;
     position: relative;
     scrollbar-width: none;
     overflow-x: scroll;

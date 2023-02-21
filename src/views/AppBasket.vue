@@ -119,6 +119,7 @@ export default {
   }
   &__item {
     width: 100%;
+    min-width: 0;
   }
 }
 

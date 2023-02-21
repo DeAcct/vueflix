@@ -6,7 +6,7 @@
       @click="closeOverflowMenu"
       ref="bg"
     />
-    <div class="interact" ref="actionArea">
+    <div class="action-sheet__interact" ref="actionArea">
       <ul class="action-sheet__actions">
         <li
           class="action-sheet__item"
@@ -82,7 +82,7 @@ export default {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
   }
-  .interact {
+  &__interact {
     width: 100%;
     position: absolute;
     bottom: -17.5rem;
