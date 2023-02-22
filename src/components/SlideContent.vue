@@ -87,7 +87,6 @@ export default {
   max-height: 70vh;
   width: 100vw;
   opacity: 0;
-  transition: opacity 150ms ease-out;
   &::before {
     position: absolute;
     width: 100vw;

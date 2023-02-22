@@ -22,9 +22,8 @@
       <thumbnail-set
         :type="selectedTab === 'recentWatched' ? 'episode' : 'series'"
         v-for="basketItem in basketList"
-        :key="basketItem.aniTitle"
+        :key="`${selectedTab}-${basketItem.aniTitle}`"
         :data="basketItem"
-        :progress="selectedTab === 'recentWatched'"
         class="basket__item"
       />
     </ul>
@@ -32,6 +31,10 @@
 </template>
 
 <script>
+// v-for를 이용할 때는 key 속성을 제대로 설정하자.
+// unique한 키가 아닐 경우, 같은 아이템으로 인식하여 업데이트가 이루어지지 않는다.
+// 탭이 변경되었는데, 같은 인덱스에 같은 제목의 애니가 있을 경우 썸네일이 바뀌지 않는 오류가 있었다.
+
 import { mapState } from "vuex";
 import ThumbnailSet from "../components/ThumbnailSet.vue";
 
@@ -52,9 +55,6 @@ export default {
   methods: {
     changeSelected(e) {
       this.selectedTab = e.currentTarget.dataset.key;
-    },
-    swipeStart(e) {
-      console.log(e);
     },
   },
   computed: {
@@ -113,13 +113,13 @@ export default {
     margin-top: 1.5rem;
     width: 100%;
     display: grid;
-    grid: auto-flow / 1fr 1fr;
+    grid: auto-flow / 1fr;
     gap: 1.5rem 1rem;
     padding: 0 2rem;
   }
   &__item {
     width: 100%;
-    min-width: 0;
+    min-height: 25.5rem;
   }
 }
 

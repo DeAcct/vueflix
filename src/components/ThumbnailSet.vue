@@ -1,33 +1,31 @@
 <template>
   <li class="thumbnail-set">
-    <router-link
-      :to="data.continueLink || `/anime/${data.aniTitle}`"
-      @click.prevent
-    >
-      <optimized-image
-        class="thumbnail-set__thumbnail"
-        :src="thumbnailSrc"
-        :alt="`${data.aniTitle} 썸네일`"
-      ></optimized-image>
+    <router-link :to="link" @click.prevent class="thumbnail-set__thumbnail">
+      <optimized-image :src="thumbnailSrc" :alt="alt"></optimized-image>
     </router-link>
     <div class="thumbnail-set__info">
-      <router-link
-        class="thumbnail-set__text"
-        :to="`/anime/${data.aniTitle}`"
-        :style="titleWidth"
-      >
-        <span class="thumbnail-set__title" :style="titleBreak">
-          {{ data.aniTitle }}
-        </span>
-        <strong class="thumbnail-set__part-index" v-if="data.watchedPercent">
-          {{ data.part }}기 {{ data.index }}화
-        </strong>
-      </router-link>
-      <progress-widget
-        class="thumbnail-set__watched-percent"
-        :percent="data.watchedPercent"
-        v-if="progress"
-      ></progress-widget>
+      <template v-if="type === 'skeleton'">
+        <div class="thumbnail-set__skeleton-info loading-target"></div>
+      </template>
+      <template v-else>
+        <router-link
+          class="thumbnail-set__text"
+          :to="`/anime/${data.aniTitle}`"
+          :style="titleWidth"
+        >
+          <span class="thumbnail-set__title" :style="titleBreak">
+            {{ data.aniTitle }}
+          </span>
+          <strong class="thumbnail-set__part-index" v-if="type === 'episode'">
+            {{ data.part }}기 {{ data.index }}화
+          </strong>
+        </router-link>
+        <progress-widget
+          class="thumbnail-set__watched-percent"
+          :percent="data.watchedPercent"
+          v-if="type === 'episode'"
+        ></progress-widget>
+      </template>
     </div>
   </li>
 </template>
@@ -43,14 +41,11 @@ export default {
   props: {
     type: {
       validator(value) {
-        return ["series", "episode"].includes(value);
+        return ["series", "episode", "skeleton"].includes(value);
       },
     },
     data: {
       type: Object,
-    },
-    progress: {
-      type: Boolean,
     },
   },
   data() {
@@ -59,6 +54,9 @@ export default {
     };
   },
   async mounted() {
+    if (this.type === "skeleton") {
+      return;
+    }
     const { aniTitle, episodeThumbnail } = this.data;
     const storage = getStorage();
     const thumbnailRef = ref(
@@ -70,7 +68,6 @@ export default {
       }`
     );
     this.thumbnailSrc = await getDownloadURL(thumbnailRef);
-    console.clear();
   },
   computed: {
     titleWidth() {
@@ -80,6 +77,18 @@ export default {
     },
     titleBreak() {
       return `-webkit-line-clamp: ${this.type === "series" ? 2 : 1};`;
+    },
+    link() {
+      if (!this.data) {
+        return "#none";
+      }
+      return this.data.continueLink || `/anime/${this.data.aniTitle}`;
+    },
+    alt() {
+      if (!this.data) {
+        return "로딩중";
+      }
+      return this.data.continueLink || `/anime/${this.data.aniTitle}`;
     },
   },
 };
@@ -102,6 +111,11 @@ export default {
     width: 3.6rem;
     height: 3.6rem;
     flex-shrink: 0;
+  }
+  &__skeleton-info {
+    width: 100%;
+    height: 3rem;
+    border-radius: 0.3rem;
   }
   &__info {
     display: flex;

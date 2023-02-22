@@ -3,7 +3,7 @@
     <main>
       <banner-slide />
       <div class="app-home__curated">
-        <div class="app-home__curated-item" v-if="auth?.recentWatched">
+        <div class="app-home__curated-item">
           <h2 class="app-home__curated-title inner">최근 본 애니</h2>
           <vueflix-carousel
             :length="auth?.recentWatched.length"
@@ -14,7 +14,6 @@
               v-for="anime in auth?.recentWatched"
               :key="anime.aniTitle"
               :data="anime"
-              progress
             />
           </vueflix-carousel>
         </div>
