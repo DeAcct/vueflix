@@ -1,6 +1,6 @@
 {
-  "name": "vueflix-vite-rebuild",
-  "version": "0.5.1",
+  "name": "vueflix",
+  "version": "0.7.1",
   "type": "module",
   "scripts": {
     "dev": "vite",

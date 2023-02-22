@@ -11,8 +11,12 @@
       ></optimized-image>
     </router-link>
     <div class="thumbnail-set__info">
-      <router-link class="thumbnail-set__text" :to="`/anime/${data.aniTitle}`">
-        <span class="thumbnail-set__title" :style="titleWidth + titleBreak">
+      <router-link
+        class="thumbnail-set__text"
+        :to="`/anime/${data.aniTitle}`"
+        :style="titleWidth"
+      >
+        <span class="thumbnail-set__title" :style="titleBreak">
           {{ data.aniTitle }}
         </span>
         <strong class="thumbnail-set__part-index" v-if="data.watchedPercent">
@@ -66,13 +70,12 @@ export default {
       }`
     );
     this.thumbnailSrc = await getDownloadURL(thumbnailRef);
+    console.clear();
   },
   computed: {
     titleWidth() {
       return `width: ${
-        this.type === "series"
-          ? "100%"
-          : "min(var(--episode-title-width), 100%)"
+        this.type === "series" ? "100%" : "calc(100% - 3.6rem)"
       };`;
     },
     titleBreak() {
@@ -108,11 +111,9 @@ export default {
     display: flex;
     gap: 0.5rem;
     flex-direction: column;
-    width: 100%;
   }
   &__title {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     overflow-wrap: break-word;
