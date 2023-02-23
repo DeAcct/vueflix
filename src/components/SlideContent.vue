@@ -1,6 +1,14 @@
 <template>
-  <router-link :to="slideData.link ? slideData.link : '#'">
-    <span :class="['bg', { 'bg--loaded': bgLoaded }]">
+  <router-link
+    :to="slideData.link ? slideData.link : '#'"
+    class="slide-content"
+  >
+    <div
+      :class="[
+        'slide-content__bg-holder',
+        { 'slide-content__bg-holder--loaded': bgLoaded },
+      ]"
+    >
       <picture>
         <source media="(max-width: 1024px)" :srcset="slideData.mWebpBg" />
         <source media="(max-width: 1024px)" :srcset="slideData.mJpegBg" />
@@ -8,22 +16,25 @@
         <img
           :src="slideData.pcJpegBg"
           :alt="`${slideData.name} 배너`"
-          class="bg-place"
+          class="slide-content__bg"
           @load="bgComplete"
         />
       </picture>
-    </span>
-    <span class="slide-info">
+    </div>
+    <div class="slide-content__info">
       <h3>
         <img
           :src="slideData.logo"
           :alt="slideData.name"
-          :class="['ani-logo', { 'ani-logo--loaded': bgLoaded }]"
+          :class="[
+            'slide-content__ani-logo',
+            { 'slide-content__ani-logo--loaded': bgLoaded },
+          ]"
           @load="logoComplete"
         />
       </h3>
-      <strong class="slide-copy">{{ slideData.copy }}</strong>
-    </span>
+      <strong class="slide-content__copy">{{ slideData.copy }}</strong>
+    </div>
   </router-link>
 </template>
 
@@ -81,42 +92,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.bg {
-  display: flex;
-  position: relative;
-  max-height: 70vh;
-  width: 100vw;
-  opacity: 0;
-  &::before {
-    position: absolute;
+.slide-content {
+  &__bg-holder {
+    display: flex;
+    position: relative;
+    max-height: 70vh;
     width: 100vw;
-    padding-bottom: 133.333%;
-    top: 0;
-    content: "";
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.6) 0%,
-      rgba(0, 0, 0, 0.15) 40%,
-      rgba(0, 0, 0, 0.15) 60%,
-      rgba(0, 0, 0, 0.6) 100%
-    );
     opacity: 0;
-  }
-  .bg-place {
-    width: 100vw;
-  }
-  &--loaded {
-    opacity: 1;
     &::before {
+      position: absolute;
+      width: 100vw;
+      padding-bottom: 133.333%;
+      top: 0;
+      content: "";
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.6) 0%,
+        rgba(0, 0, 0, 0.15) 40%,
+        rgba(0, 0, 0, 0.15) 60%,
+        rgba(0, 0, 0, 0.6) 100%
+      );
+      opacity: 0;
+    }
+
+    &--loaded {
       opacity: 1;
+      &::before {
+        opacity: 1;
+      }
     }
   }
-}
-.slide-info {
-  position: absolute;
-  left: 2rem;
-  bottom: 10%;
-  .ani-logo {
+  &__bg {
+    width: 100vw;
+  }
+  &__info {
+    position: absolute;
+    left: 2rem;
+    bottom: 10%;
+  }
+  &__ani-logo {
     max-width: 70vw;
     max-height: 15em;
     margin-bottom: 2rem;
@@ -126,7 +140,7 @@ export default {
       opacity: 1;
     }
   }
-  .slide-copy {
+  &__copy {
     display: block;
     font-size: 1.5em;
     color: #fff;
@@ -135,27 +149,31 @@ export default {
 }
 
 @media screen and (min-width: 768px) {
-  .slide-info {
-    left: 5rem;
-    .ani-logo {
+  .slide-content {
+    &__info {
+      left: 5rem;
+    }
+    &__ani-logo {
       max-width: 40vw;
       max-height: 10em;
       margin-bottom: 3rem;
     }
-    .slide-copy {
+    &__copy {
       font-size: 2em;
     }
   }
 }
 @media screen and (min-width: 1025px) {
-  .slide-info .ani-logo {
-    max-width: 30vw;
-    max-height: 18em;
-  }
-  .bg {
-    height: calc(100vw / 2560 * 1043);
-    &::before {
-      padding-bottom: 40.742%;
+  .slide-content {
+    &__ani-logo {
+      max-width: 30vw;
+      max-height: 18em;
+    }
+    &__bg-holder {
+      height: calc(100vw / 2560 * 1043);
+      &::before {
+        padding-bottom: 40.742%;
+      }
     }
   }
 }

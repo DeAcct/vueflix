@@ -4,7 +4,7 @@
     <swiper-container
       effect="fade"
       :loop="true"
-      :autoplay-delay="2500"
+      :autoplay-delay="5000"
       :autoplay-disable-on-interaction="false"
       class="slide__container"
       ref="swiper"
@@ -18,24 +18,22 @@
         <slide-content :anime-id="animeID"></slide-content>
       </swiper-slide>
     </swiper-container>
-    <div class="slide__navigation">
-      <button class="slide__button slide__button--prev" @click="prevClick">
-        <span class="blind">이전</span>
-        <i class="slide__icon">
-          <icon-base>
-            <icon-arrow-prev></icon-arrow-prev>
-          </icon-base>
-        </i>
-      </button>
-      <button class="slide__button slide__button--next" @click="nextClick">
-        <span class="blind">다음</span>
-        <i class="slide__icon">
-          <icon-base>
-            <icon-arrow-next></icon-arrow-next>
-          </icon-base>
-        </i>
-      </button>
-    </div>
+    <button class="slide__button slide__button--prev" @click="prevClick">
+      <span class="blind">이전</span>
+      <i class="slide__icon">
+        <icon-base>
+          <icon-arrow-prev></icon-arrow-prev>
+        </icon-base>
+      </i>
+    </button>
+    <button class="slide__button slide__button--next" @click="nextClick">
+      <span class="blind">다음</span>
+      <i class="slide__icon">
+        <icon-base>
+          <icon-arrow-next></icon-arrow-next>
+        </icon-base>
+      </i>
+    </button>
     <div class="slide__progress"></div>
   </section>
 </template>
@@ -73,10 +71,8 @@ export default {
         const db = getFirestore();
         const docRef = doc(db, "statistics", "statistics");
         const res = await getDoc(docRef);
-        if (res) {
-          this.randomMaxNumber = res.data().numbersofAnime;
-          this.animeIDArray = this.useAnimeIDArray(this.randomMaxNumber);
-        }
+        this.randomMaxNumber = res?.data().numbersofAnime;
+        this.animeIDArray = this.useAnimeIDArray(5);
       },
       immediate: true,
     },
@@ -86,7 +82,9 @@ export default {
       let idArray = [];
       if (this.randomMaxNumber !== 0) {
         while (idArray.length < max) {
-          const candidateNum = Math.floor(Math.random() * max + 1);
+          const candidateNum = Math.floor(
+            Math.random() * this.randomMaxNumber + 1
+          );
           const isDuplicated = idArray.includes(candidateNum);
           if (!isDuplicated) {
             idArray.push(candidateNum);
@@ -96,7 +94,6 @@ export default {
       return idArray;
     },
     prevClick() {
-      console.log(this.$refs.swiper.swiper);
       this.$refs.swiper.swiper.slidePrev();
     },
     nextClick() {
@@ -116,9 +113,6 @@ export default {
   &__container {
     aspect-ratio: 3/4;
   }
-  &__navigation {
-    display: none;
-  }
   &__progress {
     position: absolute;
     bottom: -0.2rem;
@@ -129,6 +123,9 @@ export default {
     height: 0.2rem;
     background-color: var(--bg-900);
     z-index: 20;
+  }
+  &__button {
+    display: none;
   }
 }
 
@@ -142,15 +139,19 @@ export default {
 
 @media (hover: hover) and (pointer: fine) {
   .slide {
-    &__navigation {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: space-between;
+    &__button {
+      display: block;
       position: absolute;
       z-index: 20;
-      top: 0;
-      padding: 0 calc(var(--inner-padding) * 0.25);
+      top: 50%;
+      width: 3.6rem;
+      height: 3.6rem;
+      &--prev {
+        left: 0;
+      }
+      &--next {
+        right: 0;
+      }
     }
     &__icon {
       display: block;

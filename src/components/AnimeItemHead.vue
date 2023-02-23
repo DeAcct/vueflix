@@ -105,7 +105,7 @@
               class="bg-less btn-area__purchase"
               @mousedown="activeTrigger"
               @mouseup="activeTrigger"
-              @touchstart="activeTrigger"
+              @touchstart.passive="activeTrigger"
               @touchend="activeTrigger"
               @click="purchase"
             >
@@ -308,6 +308,7 @@ export default {
       return !this.isMobileSize ? "90%" : "80%";
     },
     bgURL() {
+      console.log(this.animeInfo.poster);
       return `url(${this.animeInfo.poster})`;
     },
     continueLink() {
