@@ -1,12 +1,20 @@
 <template>
   <li class="episode-card">
-    <router-link to="#none" :data-to="toValue" class="episode-card__thumbnail">
+    <component
+      :is="link ? 'router-link' : 'div'"
+      :to="link"
+      class="episode-card__thumbnail"
+    >
       <optimized-image :src="thumbnailURL"></optimized-image>
-    </router-link>
-    <router-link to="#none" class="episode-card__text-wrap">
+    </component>
+    <component
+      :is="link ? 'router-link' : 'div'"
+      :to="link"
+      class="episode-card__text-wrap"
+    >
       <p class="episode-card__title">
         <em class="episode-card__index"
-          >{{ formattedIndex }} &middot;
+          ><slot name="index"></slot> &middot;
           <span class="episode-card__date">{{ data.date }}</span></em
         >
         {{ data.title }}
@@ -19,7 +27,7 @@
         ></progress-widget>
         <span class="episode-card__purchased" v-if="isPurchased">소장함</span>
       </div>
-    </router-link>
+    </component>
   </li>
 </template>
 
@@ -44,13 +52,7 @@ export default {
     part: {
       type: String,
     },
-    accentCurrent: {
-      type: Boolean,
-    },
     isLoggedin: {
-      type: Boolean,
-    },
-    inputChecked: {
       type: Boolean,
     },
     price: {
@@ -58,6 +60,9 @@ export default {
     },
     data: {
       type: Object,
+    },
+    link: {
+      type: String,
     },
   },
   components: { OptimizedImage, ProgressWidget },
@@ -87,27 +92,6 @@ export default {
     },
   },
   computed: {
-    formattedIndex() {
-      // 일부 회차 표기가 특이한 애니 대응
-      // 예시)
-      // <쟈히 님은 기죽지 않아> "부흥 계획 첫/두/세...번째"
-      return typeof this.data.index === "string"
-        ? this.data.index
-        : `${this.data.index}화`;
-    },
-    toValue() {
-      return this.part === this.$route.params.part &&
-        this.index === Number(this.$route.params.index.slice(0, -1))
-        ? "#none"
-        : `/player/${this.$route.params.title}/${this.part}/${this.formattedIndex}`;
-    },
-    isCurrent() {
-      return (
-        this.accentCurrent &&
-        this.part === this.$route.params.part &&
-        this.data.index === Number(this.$route.params.index.slice(0, -1))
-      );
-    },
     isPurchased() {
       if (this.auth) {
         const target = this.auth.purchased.find(
@@ -148,9 +132,6 @@ export default {
       } else {
         this.$emit("deleted", { title: this.title, date: this.date });
       }
-    },
-    inputChecked() {
-      this.checked = this.inputChecked;
     },
   },
 };

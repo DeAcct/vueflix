@@ -103,7 +103,7 @@ export default {
   &__thumbnail {
     --radius: 0.3rem;
     --aspect-ratio: calc(9 / 16 * 100%);
-    margin-bottom: 1rem;
+    margin-bottom: var(--thumbnail-bottom, 1rem);
   }
   &__watched-percent {
     position: absolute;

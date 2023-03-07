@@ -133,16 +133,33 @@ export default {
   opacity: 0;
 }
 
-/* @media screen and (min-width: 1024px) {
+@media screen and (min-width: 769px) {
   .basket {
-    padding-top: 14rem;
-    .basket-tab-menu {
-      width: calc(100% - var(--inner-padding) * 2);
-      left: 50%;
-      transform: translateX(-50%);
-      top: 8rem;
-      border-bottom: none;
+    &__list {
+      grid: auto-flow / 1fr 1fr;
     }
   }
-} */
+}
+
+@media screen and (min-width: 1240px) {
+  .basket {
+    width: 1240px;
+    margin: 0 auto;
+    &__button-group {
+      border: none;
+    }
+    &__button {
+      height: 5.6rem;
+    }
+    &__active-holder {
+      font-size: 1.7rem;
+    }
+    &__list {
+      gap: 3rem 1.5rem;
+      padding: 0;
+      grid: auto-flow / 1fr 1fr 1fr;
+      --thumbnail-bottom: 0.7rem;
+    }
+  }
+}
 </style>

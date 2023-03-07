@@ -175,7 +175,6 @@ export default {
       }
     }
     &__body {
-      gap: var(--carousel-gap, 2rem);
       &--break {
         flex-wrap: wrap;
       }

@@ -76,23 +76,10 @@
     </div>
     <div class="widget birthday inner">
       <h2 class="heading">생일</h2>
-      <!-- <datepicker
-        class="birthday__selection"
-        inputClassName="birthday__selection_input"
-        :modelValue="
-          birthday
-            ? `${birthday.year}/${birthday.month}/${birthday.date}`
-            : undefined
-        "
-        @update:modelValue="setBirthday"
-        :enableTimePicker="false"
-        format="yyyy/MM/dd"
-        locale="ko-KR"
-        placeholder="생일을 선택하세요"
-        no-today
-        auto-apply
-      /> -->
-      <input type="date" v-model="birthday" class="birthday__selection" />
+      <label for="date" class="birthday__selection">
+        생일을 입력하세요
+        <input type="date" v-model="birthday" id="date" />
+      </label>
     </div>
     <vueflix-btn
       type="submit"
@@ -108,8 +95,6 @@
 <script>
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { getStorage, getDownloadURL, ref, uploadBytes } from "firebase/storage";
-
-//import Datepicker from "vue3-date-time-picker";
 
 import { mapState } from "vuex";
 import ProfileImg from "../components/ProfileImg.vue";
@@ -129,7 +114,6 @@ export default {
     IconMale,
     IconFemale,
     VueflixBtn,
-    //Datepicker,
   },
   unmounted() {
     if (this.profilePreview) {
@@ -279,7 +263,7 @@ export default {
   }
   .widget {
     width: 100%;
-    max-width: 1080px;
+    max-width: 768px;
     background-color: var(--top-item);
     border-radius: 0.6rem;
     padding: {
@@ -335,14 +319,23 @@ export default {
   }
   .birthday {
     &__selection {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       width: 100%;
-      height: 3rem;
-      background-color: transparent;
+      height: 4.8rem;
+      background-color: var(--bg-300);
+      border-radius: 0.3rem;
       font-size: 1.3rem;
-      --dp-text-color: var(--text-800);
-      --dp-background-color: transparent;
-      --dp-border-color: var(--bg-400);
-      --dp-border-color-hover: var(--theme-500);
+      padding: 0 1rem;
+      ::-webkit-calendar-picker-indicator {
+        width: 2.4rem;
+        height: 2.4rem;
+        filter: var(--calendar-picker-indicator-invert);
+      }
+      input {
+        background-color: transparent;
+      }
     }
   }
 

@@ -18,14 +18,33 @@
       <anime-meta class="anime-view__meta" :anime-info="animeInfo"></anime-meta>
       <div class="anime-view__parts">
         <h3 class="blind">에피소드</h3>
-        <episodes-widget
+        <accordion-widget
           v-for="(part, index) in animeInfo.parts"
-          :episodes-data="part"
           :key="index"
           @login-require="openLoginModal"
-          :part-top-padding="true"
           :open="index === 0"
-        />
+        >
+          <template v-slot:title>
+            {{ part.part }}
+          </template>
+          <template v-slot:content>
+            <episode-card
+              v-for="episode in part.episodes"
+              :key="episode.title"
+              :data="episode"
+              :part="part.part"
+              :link="`/player/${episode.title}/${part.part}/${episode.index}`"
+            >
+              <template v-slot:index>
+                {{
+                  typeof episode.index === "string"
+                    ? episode.index
+                    : `${episode.index}화`
+                }}
+              </template>
+            </episode-card>
+          </template>
+        </accordion-widget>
       </div>
 
       <button
@@ -91,7 +110,8 @@ import { mapState } from "vuex";
 
 import AnimeItemHead from "../components/AnimeItemHead.vue";
 import AnimeMeta from "../components/AnimeMeta.vue";
-import EpisodesWidget from "../components/EpisodesWidget.vue";
+import AccordionWidget from "../components/AccordionWidget.vue";
+import EpisodeCard from "../components/EpisodeCard.vue";
 import VueflixModal from "../components/VueflixModal.vue";
 import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconBase from "../components/IconBase.vue";
@@ -104,7 +124,8 @@ export default {
   components: {
     AnimeItemHead,
     AnimeMeta,
-    EpisodesWidget,
+    AccordionWidget,
+    EpisodeCard,
     VueflixModal,
     ArrowBtnWidget,
     ActionSheet,

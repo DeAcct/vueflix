@@ -31,25 +31,25 @@ const routes = [
       },
     ],
   },
-  // {
-  //   path: "/player/:title/:part/:index",
-  //   name: "player",
-  //   component: () => import("@/views/VueflixPlayer.vue"),
-  //   meta: {
-  //     appBar: false,
-  //     bottomTabMenu: false,
-  //   },
-  // },
   {
-    path: "/tag-search",
-    name: "tag-search",
-    component: () => import("@/views/TagSearch.vue"),
+    path: "/player/:title/:part/:index",
+    name: "player",
+    component: () => import("@/views/Player.vue"),
     meta: {
-      title: "필터로 취향저격 애니찾기",
-      appBar: true,
-      bottomTabMenu: true,
+      appBar: false,
+      bottomTabMenu: false,
     },
   },
+  // {
+  //   path: "/tag-search",
+  //   name: "tag-search",
+  //   component: () => import("@/views/TagSearch.vue"),
+  //   meta: {
+  //     title: "필터로 취향저격 애니찾기",
+  //     appBar: true,
+  //     bottomTabMenu: true,
+  //   },
+  // },
   {
     path: "/basket",
     name: "basket",

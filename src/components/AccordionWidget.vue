@@ -1,77 +1,147 @@
 <template>
-  <div class="accordion-widget">
-    <details ref="accordionWidget" @toggle="detailsToggle">
-      <summary>
-        <i class="icon">
-          <icon-base
-            width="2rem"
-            height="2rem"
-            :icon-name="isOpen ? '닫기' : '열기'"
-          >
-            <icon-arrow-next />
+  <section class="episodes">
+    <h3 class="episodes__part-wrap">
+      <button @click="widgetToggle" type="button" class="episodes__open-btn">
+        <span class="episodes__part-title"><slot name="title"></slot></span>
+        <i
+          :class="[
+            'episodes__open-icon',
+            { 'episodes__open-icon--widget-opened': isWidgetOpen },
+          ]"
+        >
+          <icon-base :icon-name="isWidgetOpen ? '닫기' : '열기'">
+            <icon-arrow-prev />
           </icon-base>
         </i>
-        <slot name="title"></slot>
-      </summary>
-      <ul class="sub-tags">
-        <slot name="content"></slot>
-      </ul>
-    </details>
-  </div>
+      </button>
+    </h3>
+    <ul
+      :class="[
+        'episodes__body',
+        'inner',
+        { 'episodes__body--opened': isWidgetOpen },
+      ]"
+    >
+      <slot name="content"></slot>
+    </ul>
+  </section>
 </template>
 
 <script>
 import IconBase from "./IconBase.vue";
-import IconArrowNext from "./icons/IconArrowNext.vue";
+import IconArrowPrev from "./icons/IconArrowPrev.vue";
 export default {
-  name: "AccordionWidget",
+  name: "EpisodesWidget",
   components: {
-    IconArrowNext,
     IconBase,
+    IconArrowPrev,
   },
   props: {
-    selectorItems: {
-      type: Array,
+    open: {
+      type: Boolean,
     },
   },
   data() {
     return {
-      isOpen: false,
+      isWidgetOpen: this.open,
     };
   },
   methods: {
-    detailsToggle(e) {
-      this.isOpen = e.currentTarget.open;
+    widgetToggle() {
+      this.isWidgetOpen = !this.isWidgetOpen;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-details {
-  summary {
+.episodes {
+  border-radius: 0.6rem;
+  &__part-wrap {
+    position: sticky;
+    top: 6rem;
+    z-index: 50;
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+    background-color: var(--bg-200);
+    border-radius: 0.6rem;
+    width: calc(100% - var(--inner-padding) * 2);
+  }
+  &__open-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem var(--inner-padding);
+    width: 100%;
+  }
+  &__part-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+  &__open-icon {
     display: flex;
     align-items: center;
-    font-size: 1.5rem;
-    font-weight: 700;
-    .icon {
-      width: 2rem;
-      height: 2rem;
-      margin-right: 0.5rem;
-      transition: 150ms ease-out;
+    justify-content: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    transition: 150ms ease-in-out;
+    transform: rotate(-90deg);
+    &--widget-opened {
+      transform: rotate(0);
     }
   }
-  &[open] {
-    summary {
-      margin-bottom: 1rem;
-      .icon {
-        transform: rotate(90deg);
+  &__body {
+    height: 0;
+    overflow: hidden;
+    transition: 150ms ease-in-out;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 1rem;
+    .episode-card {
+      transition: 150ms ease-in-out;
+      opacity: 0;
+    }
+    &--opened {
+      padding-top: 1.5rem;
+      padding-bottom: 2rem;
+      height: auto;
+      .episode-card {
+        opacity: 1;
       }
     }
   }
-  .sub-tags {
-    display: flex;
-    flex-direction: column;
+}
+
+@media screen and (min-width: 1080px) {
+  .episodes {
+    &__part-wrap {
+      width: 100%;
+    }
+    &__part-title {
+      font-size: 1.5rem;
+    }
+    &__open-btn {
+      width: 100%;
+      padding: 2rem;
+    }
+    &__open-icon {
+      width: 2rem;
+      height: 2rem;
+    }
+    &__body {
+      gap: 2.5rem;
+      padding-top: 3rem;
+      padding: {
+        left: 0;
+        right: 0;
+      }
+      &--opened {
+        padding-bottom: 3rem;
+      }
+    }
   }
 }
 </style>
