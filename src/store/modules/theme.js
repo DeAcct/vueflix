@@ -5,6 +5,8 @@ const state = {
 const mutations = {
   setTheme(state, payload) {
     state.theme = payload;
+    const $app = document.getElementById("app");
+    $app.dataset.theme = state.theme;
   },
 };
 

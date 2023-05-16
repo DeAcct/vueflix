@@ -70,7 +70,7 @@ export default {
     const mJpgBg = await this.useMultimediaURL(`${queryBase}_m.jpg`);
     const mWebpBg = await this.useMultimediaURL(`${queryBase}_m.webp`);
     const logo = await this.useMultimediaURL(`${name}/${shortName}.png`);
-    const link = `/anime/${name}`;
+    const link = `/anime/${name}/episodes`;
     this.slideData = {
       pcJpgBg,
       pcWebpBg,

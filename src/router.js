@@ -80,9 +80,7 @@ const routes = [
       title: "멤버십 및 포인트",
       appBar: {
         activityContent: "멤버십 및 포인트",
-        backButton: {
-          type: "replace",
-        },
+        backButton: true,
       },
       bottomTabMenu: false,
     },
@@ -95,6 +93,7 @@ const routes = [
       title: "계정 설정",
       appBar: {
         activityContent: "계정 설정",
+        backButton: true,
       },
       bottomTabMenu: false,
     },
@@ -107,6 +106,7 @@ const routes = [
       title: "앱 테마",
       appBar: {
         activityContent: "앱 테마",
+        backButton: true,
       },
       bottomTabMenu: false,
     },
@@ -119,6 +119,7 @@ const routes = [
       title: "뷰플릭스에 어서오세요!",
       appBar: {
         activityContent: "Logo",
+        backButton: true,
       },
       bottomTabMenu: false,
     },

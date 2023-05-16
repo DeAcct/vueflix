@@ -18,7 +18,7 @@ import { useStore } from "vuex";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import ToastRenderer from "./components/ToastRenderer.vue";
 import { useRoute } from "vue-router";
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 
 const route = useRoute();
 const store = useStore();
@@ -52,8 +52,6 @@ function setTheme() {
       : "light";
     store.commit("theme/setTheme", deviceTheme);
   }
-  const $app = document.getElementById("app");
-  $app.dataset.theme = theme.value.theme;
 }
 
 const touchDeviceQuery = window.matchMedia(
