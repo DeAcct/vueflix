@@ -57,12 +57,12 @@ function setTheme() {
 }
 
 const touchDeviceQuery = window.matchMedia(
-  "(hover: none) and (pointer: coarse)"
+  "(hover: hover) and (pointer: fine)"
 );
-const isTouchDevice = ref(touchDeviceQuery.matches);
+const isTouchDevice = ref(!touchDeviceQuery.matches);
 function setDeviceInfo() {
   touchDeviceQuery.addEventListener("change", (e) => {
-    isTouchDevice.value = e.matches;
+    isTouchDevice.value = !e.matches;
   });
 }
 
