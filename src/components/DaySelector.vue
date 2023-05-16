@@ -65,7 +65,7 @@ export default {
   button {
     width: 4rem;
     height: 4rem;
-    background-color: var(--bg-400);
+    background-color: hsl(var(--bg-400));
     color: #fff;
     border-radius: 50%;
     font-size: 1.5rem;
@@ -74,10 +74,10 @@ export default {
     transition: 150ms ease-out;
 
     &.active {
-      background-color: var(--theme-500) !important;
+      background-color: hsl(var(--theme-500)) !important;
     }
     &:focus {
-      background-color: var(--theme-300);
+      background-color: hsl(var(--theme-300));
     }
   }
 }

@@ -47,7 +47,7 @@ svg {
   margin-inline: 0;
   padding-inline: 0;
   border: none;
-  color: var(--text-800);
+  color: hsl(var(--text-800));
   font-family: "Noto Sans KR", sans-serif !important;
   font-weight: 300;
   line-height: 1;
@@ -59,7 +59,7 @@ svg {
   float: none;
 }
 ::selection {
-  background-color: var(--theme-500);
+  background-color: hsl(var(--theme-500));
   color: #fff;
 }
 :root {
@@ -67,7 +67,7 @@ svg {
 }
 #app {
   min-height: calc(var(--vh) * 100 * 1px);
-  background-color: var(--bg-100);
+  background-color: hsl(var(--bg-100));
 }
 
 header,
@@ -150,7 +150,11 @@ summary {
 
 .loading-target {
   animation: loading-animation 750ms ease-in-out infinite;
-  background: linear-gradient(135deg, var(--bg-200), var(--bg-300));
+  background-image: linear-gradient(
+    135deg,
+    hsl(var(--bg-200)),
+    hsl(var(--bg-300))
+  );
   background-size: 200%;
   background-repeat: repeat-x;
 }

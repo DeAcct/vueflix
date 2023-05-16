@@ -65,7 +65,7 @@ export default {
         }
         .adult-icon {
           left: 1rem;
-          background-color: var(--theme-500);
+          background-color: hsl(var(--theme-500));
           font-weight: 700;
         }
         .play-icon {

@@ -12,6 +12,7 @@
 </template>
 
 <script>
+//todo: composition api 전환
 import { mapState } from "vuex";
 import KeywordReviews from "../components/KeywordReviews.vue";
 import TextReview from "../components/TextReview.vue";
@@ -28,6 +29,7 @@ export default {
     window.addEventListener("resize", () => {
       this.deviceHeight = window.innerHeight;
     });
+    document.title = `${this.$route.params.title} 리뷰`;
   },
   unmounted() {
     window.removeEventListener("resize", () => {
@@ -54,7 +56,7 @@ export default {
 
 <style lang="scss" scoped>
 .reviews {
-  padding: 9rem 0 2rem;
+  padding: 0 0 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;

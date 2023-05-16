@@ -87,7 +87,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background-color: var(--bg-200);
+      background-color: hsl(var(--bg-200));
       border-radius: 0.6rem;
       font-size: 1.3rem;
       font-weight: 700;

@@ -6,10 +6,4 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "NotiAlert",
-};
-</script>
-
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

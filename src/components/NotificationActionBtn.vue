@@ -11,27 +11,26 @@
   </router-link>
 </template>
 
-<script>
+<script setup>
 import IconBase from "./IconBase.vue";
 import IconNotification from "./icons/IconNotification.vue";
-
-export default {
-  name: "NotificationActionBtn",
-  props: {
-    isScroll: {
-      type: Boolean,
-    },
+defineProps({
+  isScroll: {
+    type: Boolean,
   },
-  components: {
-    IconBase,
-    IconNotification,
+  iconColorDefault: {
+    type: String,
   },
-};
+  iconColorFill: {
+    type: String,
+  },
+});
 </script>
 
 <style lang="scss" scoped>
 .notification {
-  display: block;
+  display: flex;
+  align-items: center;
   .icon {
     width: 3.6rem;
     height: 3.6rem;
@@ -39,21 +38,14 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: v-bind("iconColorDefault");
     transition: background-color 150ms ease-out;
     &:hover {
       background-color: rgba(255, 255, 255, 0.3);
     }
   }
   &--scrolled .icon {
-    color: var(--text-800);
-  }
-}
-.fill .notification .icon {
-  color: inherit;
-  &:hover {
-    background-color: var(--theme-100);
-    color: var(--theme-500);
+    color: v-bind("iconColorFill");
   }
 }
 </style>

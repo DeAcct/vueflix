@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="anime-view"
-    :style="`min-height: ${deviceHeight + 1}px`"
-    v-if="!isSub"
-  >
+  <div class="anime-view">
     <anime-item-head
       :is-scroll="isScroll"
       :anime-info="animeInfo"
@@ -16,35 +12,18 @@
     />
     <main class="anime-view__main">
       <anime-meta class="anime-view__meta" :anime-info="animeInfo"></anime-meta>
-      <div class="anime-view__parts">
-        <h3 class="blind">에피소드</h3>
-        <accordion-widget
-          v-for="(part, index) in animeInfo.parts"
-          :key="index"
-          @login-require="openLoginModal"
-          :open="index === 0"
-        >
-          <template v-slot:title>
-            {{ part.part }}
-          </template>
-          <template v-slot:content>
-            <episode-card
-              v-for="episode in part.episodes"
-              :key="episode.title"
-              :data="episode"
-              :part="part.part"
-              :link="`/player/${episode.title}/${part.part}/${episode.index}`"
-            >
-              <template v-slot:index>
-                {{
-                  typeof episode.index === "string"
-                    ? episode.index
-                    : `${episode.index}화`
-                }}
-              </template>
-            </episode-card>
-          </template>
-        </accordion-widget>
+      <div class="anime-view__tab-view">
+        <div class="anime-view__tab-selector inner">
+          <router-link to="./episodes" replace>에피소드</router-link>
+          <router-link to="./reviews" replace>리뷰</router-link>
+        </div>
+        <router-view v-slot="{ Component }">
+          <component
+            :is="Component"
+            :anime-info="animeInfo"
+            :open-login-modal="openLoginModal"
+          ></component>
+        </router-view>
       </div>
 
       <button
@@ -93,9 +72,9 @@
       :action-origin="actions"
     />
   </div>
-  <router-view v-else />
 </template>
 <script>
+//todo: composition api 전환, 탭(에피소드<->리뷰) ui 마무리
 import {
   getFirestore,
   collection,
@@ -110,8 +89,6 @@ import { mapState } from "vuex";
 
 import AnimeItemHead from "../components/AnimeItemHead.vue";
 import AnimeMeta from "../components/AnimeMeta.vue";
-import AccordionWidget from "../components/AccordionWidget.vue";
-import EpisodeCard from "../components/EpisodeCard.vue";
 import VueflixModal from "../components/VueflixModal.vue";
 import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconBase from "../components/IconBase.vue";
@@ -124,8 +101,6 @@ export default {
   components: {
     AnimeItemHead,
     AnimeMeta,
-    AccordionWidget,
-    EpisodeCard,
     VueflixModal,
     ArrowBtnWidget,
     ActionSheet,
@@ -136,10 +111,8 @@ export default {
   },
   name: "AnimeView",
   async mounted() {
-    document.title = `${this.$route.params.title} 다시보기`;
     await this.animeInit();
     window.addEventListener("resize", () => {
-      this.deviceHeight = window.innerHeight;
       this.isPC = window.innerWidth >= 1024;
     });
     window.addEventListener("scroll", this.handleScroll);
@@ -152,7 +125,6 @@ export default {
   },
   data() {
     return {
-      deviceHeight: window.innerHeight,
       animeInfo: {},
       isActionSheetOpened: false,
       actions: [
@@ -167,7 +139,6 @@ export default {
       ],
       isLoginModalOpened: false,
       loginModalText: "",
-      isSub: this.$route.name !== "anime",
       isScroll: false,
       isPurchaseModalOpen: false,
     };
@@ -190,7 +161,7 @@ export default {
           return rawData;
         }
       } catch {
-        this.$router.replace("/notfound");
+        this.$router.replace("/isekai-404");
       }
     },
     async animeInit() {
@@ -208,7 +179,7 @@ export default {
           posterOrigin: rawData.poster,
         };
       } catch {
-        this.$router.replace("/notfound");
+        this.$router.replace("/isekai-404");
       }
     },
     actionSheetOpen() {
@@ -269,10 +240,35 @@ export default {
     // 그라디언트가 끝까지 차지 않고 약간의 여백이 있는 이슈를 개선하기 위해 nagative margin을 적용했다.
     margin-top: -1px;
     padding-top: 2rem;
-    background-color: var(--anime-bg);
+    background-color: var(--anime-layout-bg);
   }
   &__meta {
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
+  }
+  &__tab-view {
+    border-radius: 0.9rem 0.9rem 0 0;
+    background-color: var(--anime-layout-parts);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  &__tab-selector {
+    display: flex;
+    gap: 1.5rem;
+    a {
+      font-size: 1.5rem;
+      font-weight: 500;
+      height: 4.5rem;
+      display: flex;
+      align-items: center;
+      border-bottom: 0.1rem solid transparent;
+
+      &.vueflix-active-link {
+        color: hsl(var(--theme-500));
+        border-bottom-color: hsl(var(--theme-500));
+      }
+    }
   }
   .optional-show {
     opacity: 0;
@@ -284,11 +280,7 @@ export default {
       transform: translateY(0);
     }
   }
-  &__parts {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 8.5rem;
-  }
+
   &__top-btn {
     position: fixed;
     display: flex;
@@ -298,7 +290,7 @@ export default {
     bottom: 2rem;
     left: 50%;
     z-index: 100;
-    background-color: var(--theme-500);
+    background-color: hsl(var(--theme-500));
     border-radius: 9999px;
     box-shadow: var(--box-shadow);
     color: #fff;
@@ -356,6 +348,9 @@ export default {
         display: block;
       }
     }
+    &__tab-selector {
+      padding: 0;
+    }
     &__parts {
       width: calc(67% - 3rem);
       margin-bottom: 2.5rem;
@@ -364,7 +359,6 @@ export default {
       left: auto;
       right: calc((100% - 118rem) / 2);
       transform: translateY(10rem);
-      background-color: var(--theme-500);
       &--scrolled {
         transform: none;
       }

@@ -1,124 +1,81 @@
 <template>
   <router-view v-slot="{ Component }">
-    <vueflix-header
-      v-if="headerVisible"
-      :is-mobile-size="isMobileSize"
-      :is-touch-device="isTouchDevice"
-    />
-    <bottom-tab-menu v-if="$route.meta.bottomTabMenu && isMobileSize" />
-    <component :is="Component" :key="$route.path"></component>
+    <h1 class="blind">뷰플릭스</h1>
+    <vueflix-header v-if="route.meta.appBar" :is-touch-device="isTouchDevice" />
+    <bottom-tab-menu v-if="route.meta.bottomTabMenu && isTouchDevice" />
+    <transition :name="route.meta.transition || 'fade'">
+      <component :is="Component"></component>
+    </transition>
     <toast-renderer />
   </router-view>
 </template>
 
-<script>
+<script setup>
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import VueflixHeader from "./components/VueflixHeader.vue";
 import BottomTabMenu from "./components/BottomTabMenu.vue";
-import { mapState } from "vuex";
-import { doc, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
+import { useStore } from "vuex";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import ToastRenderer from "./components/ToastRenderer.vue";
-export default {
-  name: "App",
-  components: {
-    VueflixHeader,
-    BottomTabMenu,
-    ToastRenderer,
-  },
-  mounted() {
-    this.init();
-    window.addEventListener("resize", this.setViewPort);
-  },
-  unmounted() {
-    window.removeEventListener("resize", this.setViewPort);
-  },
-  data() {
-    const screenSizeQuery = window.matchMedia("screen and (max-width: 820px)");
-    const touchDeviceQuery = window.matchMedia(
-      "(hover: none) and (pointer: coarse)"
-    );
-    return {
-      isPlayer: false,
-      screenSizeQuery,
-      touchDeviceQuery,
-      isMobileSize: screenSizeQuery.matches,
-      isTouchDevice: touchDeviceQuery.matches,
-    };
-  },
-  methods: {
-    setUser() {
-      const auth = getAuth();
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          const userRef = doc(this.db, "user", user.uid);
-          const userSnap = await getDoc(userRef);
-          this.$store.commit("auth/setUser", userSnap.data());
-        } else {
-          this.$store.commit("auth/setUser", undefined);
-        }
-      });
-    },
-    init() {
-      this.setUser();
-      this.changeTitle();
-      this.setDeviceInfo();
-      this.setTheme();
-      this.setViewPort();
-    },
-    changeTitle() {
-      document.title = this.$route.meta.title || import.meta.env.VITE_KR_NAME;
-    },
-    setTheme() {
-      const currentTheme = localStorage.getItem("theme");
-      if (currentTheme) {
-        this.$store.commit("theme/setTheme", currentTheme);
-      } else {
-        const deviceTheme = window.matchMedia("(prefers-color-scheme:dark)")
-          .matches
-          ? "dark"
-          : "light";
-        this.$store.commit("theme/setTheme", deviceTheme);
-      }
-      const $app = document.getElementById("app");
-      $app.dataset.theme = this.theme;
-    },
-    setViewPort() {
-      document.documentElement.style.setProperty(
-        "--vw",
-        window.innerWidth / 100
-      );
-      document.documentElement.style.setProperty(
-        "--vh",
-        window.innerHeight / 100
-      );
-    },
-    setDeviceInfo() {
-      this.screenSizeQuery.addEventListener("change", (e) => {
-        this.isMobileSize = e.matches;
-      });
-      this.touchDeviceQuery.addEventListener("change", (e) => {
-        this.isTouchDevice = e.matches;
-      });
-    },
-  },
-  watch: {
-    $route() {
-      this.init();
-    },
-    theme() {
-      const $app = document.getElementById("app");
-      $app.dataset.theme = this.theme;
-    },
-  },
-  computed: {
-    ...mapState({
-      user: (state) => state.auth.user,
-      theme: (state) => state.theme.theme,
-    }),
-    headerVisible() {
-      return this.$route.meta.appBar;
-    },
-    db: () => getFirestore(),
-  },
-};
+import { useRoute } from "vue-router";
+import { computed, ref, onMounted } from "vue";
+
+const route = useRoute();
+const store = useStore();
+
+function setUser() {
+  const auth = getAuth();
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const userRef = doc(getFirestore(), "user", user.uid);
+      const userSnap = await getDoc(userRef);
+      store.commit("auth/setUser", userSnap.data());
+    } else {
+      store.commit("auth/setUser", undefined);
+    }
+  });
+}
+
+function changeTitle() {
+  document.title = route.meta.title || import.meta.env.VITE_KR_NAME;
+}
+
+const theme = computed(() => store.state.theme);
+
+function setTheme() {
+  const currentTheme = localStorage.getItem("theme");
+  if (currentTheme) {
+    store.commit("theme/setTheme", currentTheme);
+  } else {
+    const deviceTheme = window.matchMedia("(prefers-color-scheme:dark)").matches
+      ? "dark"
+      : "light";
+    store.commit("theme/setTheme", deviceTheme);
+  }
+  const $app = document.getElementById("app");
+  $app.dataset.theme = theme.value.theme;
+}
+
+const touchDeviceQuery = window.matchMedia(
+  "(hover: none) and (pointer: coarse)"
+);
+const isTouchDevice = ref(touchDeviceQuery.matches);
+function setDeviceInfo() {
+  touchDeviceQuery.addEventListener("change", (e) => {
+    isTouchDevice.value = e.matches;
+  });
+}
+
+function setViewPort() {
+  document.documentElement.style.setProperty("--vw", window.innerWidth / 100);
+  document.documentElement.style.setProperty("--vh", window.innerHeight / 100);
+}
+
+onMounted(() => {
+  setUser();
+  changeTitle();
+  setDeviceInfo();
+  setTheme();
+  setViewPort();
+});
 </script>

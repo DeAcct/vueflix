@@ -202,7 +202,7 @@ export default {
         left: 0;
       }
       &:hover {
-        color: var(--theme-500);
+        color: hsl(var(--theme-500));
         .icon {
           width: 3.6rem;
           height: 3.6rem;

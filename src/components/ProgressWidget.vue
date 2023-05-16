@@ -43,12 +43,12 @@ export default {
   }
   &__track {
     fill: none;
-    stroke: var(--bg-200);
+    stroke: hsl(var(--bg-200));
     stroke-width: 2px;
   }
   &__body {
     fill: none;
-    stroke: var(--theme-500);
+    stroke: hsl(var(--theme-500));
     stroke-width: 2px;
     stroke-linecap: round;
     stroke-dasharray: calc(v-bind(trackLength) * 1px);

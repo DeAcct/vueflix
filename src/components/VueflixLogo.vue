@@ -25,8 +25,9 @@
   <span class="blind">뷰플릭스</span>
 </template>
 
-<script>
-export default {
-  name: "VueflixLogo",
-};
-</script>
+<style lang="scss" scoped>
+svg {
+  color: inherit;
+  fill: currentColor;
+}
+</style>

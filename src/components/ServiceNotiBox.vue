@@ -24,15 +24,15 @@ export default {
 
 <style lang="scss" scoped>
 .service-noti-box {
-  background-color: var(--bg-100);
+  background-color: hsl(var(--bg-100));
   padding: 1.5rem 2rem;
   border-radius: 0.6rem;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0.2rem 0.4rem var(--bg-200);
+  box-shadow: 0 0.2rem 0.4rem hsl(var(--bg-200));
   h2 {
     font-size: 1.5rem;
-    color: var(--theme-500);
+    color: hsl(var(--theme-500));
     margin-bottom: 1rem;
   }
   .service-noti-items {

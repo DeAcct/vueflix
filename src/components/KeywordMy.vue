@@ -128,7 +128,7 @@ export default {
   flex-direction: column;
   align-items: center;
 
-  background-color: var(--bg-200);
+  background-color: hsl(var(--bg-200));
   border-radius: 0.6rem;
   .row-top {
     width: 100%;
@@ -156,7 +156,7 @@ export default {
       display: flex;
       align-items: center;
       padding: 1rem 1.5rem;
-      border: 1px solid var(--bg-300);
+      border: 1px solid hsl(var(--bg-300));
       border-radius: 0.3rem;
       .icon {
         width: 1.8rem;
@@ -168,7 +168,7 @@ export default {
           height: 100%;
         }
         &--selected {
-          color: var(--theme-500);
+          color: hsl(var(--theme-500));
         }
       }
       .text {

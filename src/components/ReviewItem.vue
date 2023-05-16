@@ -80,11 +80,11 @@ export default {
   padding: 1rem 2rem;
   &--me {
     border-radius: 0.6rem;
-    background-color: var(--bg-200);
+    background-color: hsl(var(--bg-200));
   }
   &--other {
     &:not(:last-child) {
-      border-bottom: 1px solid var(--bg-200);
+      border-bottom: 1px solid hsl(var(--bg-200));
     }
   }
 
@@ -115,7 +115,7 @@ export default {
     align-items: center;
 
     button {
-      color: var(--text-700);
+      color: hsl(var(--text-700));
       font-size: 1.1rem;
       font-weight: 500;
       &:not(:last-child) {

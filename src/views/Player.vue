@@ -1,3 +1,8 @@
 <template>
-  <h1>플레이어</h1>
+  <div class="player"></div>
 </template>
+
+<style lang="scss">
+.player {
+}
+</style>

@@ -53,10 +53,10 @@ export default {
     margin-right: 1rem;
     border: 1.8px solid transparent;
     &--male {
-      border-color: var(--gender-male);
+      border-color: hsl(var(--gender-male));
     }
     &--female {
-      border-color: var(--gender-female);
+      border-color: hsl(var(--gender-female));
     }
   }
   h2 {
@@ -69,7 +69,7 @@ export default {
 
   .btn {
     border-radius: 9999px;
-    background-color: var(--theme-500);
+    background-color: hsl(var(--theme-500));
     color: #fff;
   }
 }

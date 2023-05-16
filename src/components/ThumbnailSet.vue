@@ -10,7 +10,7 @@
       <template v-else>
         <router-link
           class="thumbnail-set__text"
-          :to="`/anime/${data.aniTitle}`"
+          :to="`/anime/${data.aniTitle}/episodes`"
           :style="titleWidth"
         >
           <span class="thumbnail-set__title" :style="titleBreak">
@@ -82,13 +82,13 @@ export default {
       if (!this.data) {
         return "#none";
       }
-      return this.data.continueLink || `/anime/${this.data.aniTitle}`;
+      return this.data.continueLink || `/anime/${this.data.aniTitle}/episodes`;
     },
     alt() {
       if (!this.data) {
         return "로딩중";
       }
-      return this.data.continueLink || `/anime/${this.data.aniTitle}`;
+      return `${this.data.aniTitle} 바로보기`;
     },
   },
 };
@@ -133,7 +133,7 @@ export default {
     overflow-wrap: break-word;
     --episode-title-width: 20ch;
     overflow: hidden;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     line-height: 1.5;
     font-weight: 500;
   }

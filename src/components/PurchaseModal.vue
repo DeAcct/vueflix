@@ -228,7 +228,7 @@ export default {
       justify-content: center;
       align-items: center;
       height: 8rem;
-      background-color: var(--bg-300);
+      background-color: hsl(var(--bg-300));
       border-radius: 0.6rem;
       margin-bottom: 1rem;
       padding: {
@@ -244,7 +244,7 @@ export default {
         font-size: 1.3rem;
       }
       &__select-all {
-        color: var(--theme-500);
+        color: hsl(var(--theme-500));
         font-weight: 500;
         font-size: 1.3rem;
       }
@@ -272,7 +272,7 @@ export default {
       align-items: center;
       p {
         font-size: 1.3rem;
-        color: var(--text-800);
+        color: hsl(var(--text-800));
       }
     }
   }
@@ -299,23 +299,23 @@ export default {
       border-radius: 50%;
     }
     &::before {
-      box-shadow: -0.3rem 0.3rem 0 var(--bg-200);
+      box-shadow: -0.3rem 0.3rem 0 hsl(var(--bg-200));
       left: 0;
     }
     &::after {
-      box-shadow: 0.3rem 0.3rem 0 var(--bg-200);
+      box-shadow: 0.3rem 0.3rem 0 hsl(var(--bg-200));
       right: 0;
     }
     .btn {
       flex: 1;
       height: 5rem;
       &--cancel {
-        background-color: var(--bg-500);
+        background-color: hsl(var(--bg-500));
       }
       &--purchase {
-        background-color: var(--theme-500);
+        background-color: hsl(var(--theme-500));
         &:disabled {
-          background-color: var(--theme-200);
+          background-color: hsl(var(--theme-200));
           opacity: 1;
         }
       }

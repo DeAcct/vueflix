@@ -168,28 +168,28 @@ export default {
         }
         &--cancel {
           background-color: transparent;
-          color: var(--text-700);
+          color: hsl(var(--text-700));
         }
       }
     }
     .length {
       display: block;
-      color: var(--bg-400);
+      color: hsl(var(--bg-400));
       font-size: 1.3rem;
       font-weight: 500;
       margin-bottom: 0.5rem;
     }
     .too-long-alert {
-      color: var(--theme-500);
+      color: hsl(var(--theme-500));
       font-size: 1.1rem;
       font-weight: 500;
     }
     .btn {
       border-radius: 2rem;
-      background-color: var(--theme-500);
+      background-color: hsl(var(--theme-500));
       color: #fff;
       &:disabled {
-        background-color: var(--theme-200);
+        background-color: hsl(var(--theme-200));
       }
     }
   }

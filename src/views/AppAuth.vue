@@ -120,7 +120,7 @@ export default {
 <style lang="scss" scoped>
 .wrap {
   height: 100vh;
-  background-color: var(--promotion-bg);
+  background-color: hsl(var(--promotion-bg));
   .loader {
     position: absolute;
     z-index: 100;
@@ -161,7 +161,7 @@ header {
   .logo {
     width: 15rem;
     margin-bottom: 3rem;
-    fill: var(--theme-500);
+    fill: hsl(var(--theme-500));
   }
 
   .copy-text {
@@ -192,13 +192,6 @@ header {
 }
 
 @media screen and (min-width: 1080px) {
-  @font-face {
-    font-family: "yg-jalnan";
-    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff")
-      format("woff");
-    font-weight: normal;
-    font-style: normal;
-  }
   .login {
     justify-content: center;
 
@@ -208,7 +201,6 @@ header {
     .copy-text {
       margin-bottom: 10rem;
       span {
-        font-family: "yg-jalnan";
         font-size: 5rem;
         font-weight: 900;
         background-image: linear-gradient(

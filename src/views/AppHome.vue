@@ -186,7 +186,7 @@ export default {
 .app-home {
   &__curated {
     padding: 2.8rem 0 5.6rem;
-    background-color: var(--bg-100);
+    background-color: hsl(var(--bg-100));
   }
   &__curated-item {
     &:not(:last-child) {
@@ -199,9 +199,6 @@ export default {
   }
   &__day-select {
     margin-bottom: 1.5rem;
-  }
-  &__carousel {
-    height: 21rem;
   }
   &__modal {
     transition: 150ms ease-out;
@@ -232,18 +229,12 @@ export default {
       transform: none;
       transition: 150ms ease-out;
     }
-    &__carousel {
-      height: 26rem;
-    }
   }
 }
 @media screen and (min-width: 1024px) {
   .app-home {
     &__curated-title {
       font-size: 3rem;
-    }
-    &__carousel {
-      height: 30rem;
     }
   }
 }

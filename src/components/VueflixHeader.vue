@@ -1,162 +1,94 @@
 <template>
-  <header
-    :class="[
-      'header',
-      { 'header--filled': isScroll || (!isHome && !isAuth) },
-      { 'header--centered': isHome && isMobileSize },
-    ]"
-    @scroll="handleScroll"
-  >
-    <div class="inner">
-      <div class="col-left">
-        <h1 :class="['header__logo', { blind: isMobileSize && !isHome }]">
-          <router-link to="/">
-            <vueflix-logo />
-          </router-link>
-        </h1>
-        <a class="go-back" @click="goBack" v-if="isPrevVisible">
-          <icon-base icon-name="뒤로가기"><icon-arrow-prev /></icon-base>
-        </a>
-        <h2 v-if="isMobileSize && !isHome" class="header__title">
-          {{ headString }}
-        </h2>
-        <site-menu
-          v-if="!isMobileSize"
-          :is-scroll="isScroll"
-          :is-home="isHome"
-          :is-auth="isAuth"
-        />
-      </div>
-      <div class="col-right">
+  <header :class="['header', 'inner', { 'header--fill': scrollPercent > 0 }]">
+    <h2
+      :class="[
+        'header__activity',
+        {
+          'header__activity--logo': activity === 'Logo' || !isTouchDevice,
+        },
+        ,
+      ]"
+    >
+      <template v-if="activity === 'Logo' || !isTouchDevice">
+        <router-link to="/">
+          <vueflix-logo></vueflix-logo>
+        </router-link>
+      </template>
+      <template v-else>
+        {{ activity }}
+      </template>
+    </h2>
+    <div class="header__actions">
+      <button
+        class="header__back-btn"
+        v-if="route.meta.appBar.backButton"
+        @click="back"
+      >
+        <icon-base>
+          <icon-arrow-prev />
+        </icon-base>
+      </button>
+      <div class="right">
+        <notification-action-btn
+          :is-scroll="scrollPercent > 0"
+          icon-color-default="hsl(var(--header-content))"
+          icon-color-fill="hsl(var(--header-content-fill))"
+        ></notification-action-btn>
         <search-bar
-          v-if="isSearchVisible"
-          :is-scroll="isScroll"
-          :is-home="isHome"
-          :is-auth="isAuth"
+          :is-scroll="scrollPercent > 0"
+          icon-color-default="hsl(var(--header-content))"
+          icon-color-fill="hsl(var(--header-content-fill))"
         />
-        <notification-action-btn v-if="isHome" :is-scroll="isScroll" />
       </div>
     </div>
   </header>
 </template>
 
-<script>
-import SiteMenu from "./SiteMenu.vue";
+<script setup>
+import VueflixLogo from "./VueflixLogo.vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import SearchBar from "./SearchBar.vue";
 import NotificationActionBtn from "./NotificationActionBtn.vue";
-import VueflixLogo from "./VueflixLogo.vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
-export default {
-  name: "VueflixHeader",
-  components: {
-    SiteMenu,
-    SearchBar,
-    NotificationActionBtn,
-    VueflixLogo,
-    IconBase,
-    IconArrowPrev,
-  },
-  props: {
-    isMobileSize: {
-      type: Boolean,
-    },
-    isTouchDevice: {
-      type: Boolean,
-    },
-  },
-  data() {
-    return {
-      isScroll: false,
-      isSearchVisible: false,
-      isHome: this.page === "home",
-      isAuth: this.page === "auth",
-      isPrevVisible:
-        this.page !== "home" &&
-        this.page !== "tag-search" &&
-        this.page !== "daily" &&
-        this.page !== "basket" &&
-        this.page !== "my" &&
-        this.isTouchDevice,
-      page: this.$route.name,
-      headString: undefined,
-    };
-  },
-  methods: {
-    handleScroll() {
-      setTimeout((this.isScroll = 0 < Math.round(window.scrollY)), 500);
-    },
-    goBack() {
-      this.$router.go(-1);
-    },
-    init() {
-      this.page = this.$route.name;
-      this.isHome = this.page === "home";
-      this.isAuth = this.page === "auth";
-      this.isSearchVisible =
-        this.page !== "reviews" &&
-        this.page !== "auth" &&
-        this.page !== "app-theme";
-      this.isPrevVisible =
-        this.page !== "home" &&
-        this.page !== "tag-search" &&
-        this.page !== "daily" &&
-        this.page !== "basket" &&
-        this.page !== "my" &&
-        this.isTouchDevice;
-      switch (this.page) {
-        case "tag-search":
-          this.headString = "태그검색";
-          break;
-        case "daily":
-          this.headString = "요일별 신작";
-          break;
-        case "basket":
-          this.headString = "보관함";
-          break;
-        case "my":
-          this.headString = "MY";
-          break;
-        case "membership":
-          this.headString = "멤버십";
-          break;
-        case "change-profile":
-          this.headString = "프로필 관리";
-          break;
-        case "reviews":
-          this.headString = "리뷰";
-          break;
-        case "auth":
-          this.headString = "로그인";
-          break;
-        case "app-theme":
-          this.headString = "앱 테마";
-          break;
-        case "account-setting":
-          this.headString = "계정 설정";
-          break;
-        default:
-          this.headString = "";
-      }
-    },
-  },
-  mounted() {
-    this.init();
-  },
-  created() {
-    window.addEventListener("scroll", this.handleScroll);
-    window.addEventListener("resize", this.checkResolution);
-  },
-  unmounted() {
-    window.removeEventListener("scroll", this.handleScroll);
-    window.removeEventListener("resize", this.checkResolution);
-  },
-  watch: {
-    $route() {
-      this.init();
-    },
-  },
-};
+
+defineProps({ isTouchDevice: Boolean, isMobile: Boolean });
+
+const route = useRoute();
+const activity = ref(route.meta.appBar.activityContent);
+const actions = ref(route.meta.appBar.actions);
+watch(
+  () => route.meta,
+  () => {
+    scrollPercent.value = 0;
+    activity.value = route.meta.appBar?.activityContent;
+    actions.value = route.meta.appBar?.actions;
+    handleScroll();
+  }
+);
+
+const scrollPercent = ref(0);
+function handleScroll() {
+  if (window.scrollY >= 500 || activity.value !== "Logo") {
+    scrollPercent.value = 100;
+    return;
+  }
+  scrollPercent.value = (window.scrollY / 500) * 100;
+}
+
+onMounted(() => {
+  handleScroll();
+  window.addEventListener("scroll", handleScroll);
+});
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
+});
+
+const router = useRouter();
+function back() {
+  router.back();
+}
 </script>
 
 <style lang="scss" scoped>
@@ -166,84 +98,63 @@ export default {
   top: 0;
   z-index: 100;
   user-select: none;
+  height: 6rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid hsl(var(--bg-200), calc(v-bind(scrollPercent) * 1%));
+  background-color: hsl(var(--bg-100), calc(v-bind(scrollPercent) * 1%));
 
-  &__logo {
-    display: flex;
-    align-items: center;
-    width: 6rem;
-    height: 6rem;
-    a {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      fill: #fff;
-      transition: all 250ms ease-out;
-    }
-  }
-  &__title {
-    font-size: 1.8rem;
-    font-weight: 900;
-  }
-  .inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 6rem;
-    .col-left {
-      display: flex;
-      align-items: center;
-      .go-back {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 0.5rem;
-      }
-    }
-    .col-right {
-      display: flex;
-      align-items: center;
-      .notification {
-        display: flex;
-      }
-      .profile {
-        width: 3.6rem;
-        height: 3.6rem;
-        border: 0.6rem solid transparent;
-      }
-      *:not(:last-child) {
-        margin-right: 1rem;
-      }
-    }
-  }
-
-  transition: all 250ms ease-out;
-  &--filled {
-    background-color: var(--bg-100);
-    border-bottom: 1px solid var(--bg-200);
-    .header__logo a {
-      fill: var(--text-800);
-    }
-  }
-  &--centered .col-left {
-    margin-left: 50%;
+  &__activity {
+    font-size: 1.7rem;
+    font-weight: 700;
+    opacity: calc(v-bind(scrollPercent) * 1%);
+    position: absolute;
+    left: 50%;
     transform: translateX(-50%);
+    &--logo {
+      width: 6.5rem;
+    }
   }
-}
-@media screen and (min-width: 768px) {
-  .header .inner .col-left h2 {
-    font-size: 1.8rem;
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    .right {
+      display: flex;
+      justify-content: flex-end;
+      flex-grow: 1;
+      margin-right: 0;
+    }
+  }
+  &__back-btn {
+    width: 3.6rem;
+    height: 3.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg {
+      width: 2.4rem;
+      height: 2.4rem;
+    }
   }
 }
 @media screen and (min-width: 769px) {
   .header {
-    .inner {
-      .col-left {
-        margin-left: 0;
-        transform: none;
-      }
+    justify-content: space-between;
+    color: hsl(var(--header-content));
+    transition: color 150ms ease-out;
+    &--fill {
+      color: hsl(var(--header-content-fill));
     }
-    &--filled {
-      border-bottom-color: var(--bg-200);
+    &__activity {
+      position: static;
+      transform: none;
+      opacity: 1;
+      color: inherit;
+      a {
+        color: inherit;
+      }
     }
   }
 }

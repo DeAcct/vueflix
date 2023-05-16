@@ -7,11 +7,11 @@
       :autoplay-delay="5000"
       :autoplay-disable-on-interaction="false"
       class="slide__container"
-      ref="swiper"
+      ref="$swiper"
       @autoplaytimeleft="onLeft"
     >
       <swiper-slide
-        v-for="animeID in animeIDArray"
+        v-for="animeID in randomIDs"
         :key="`slide-${animeID}`"
         class="slide-item loading-target"
       >
@@ -38,7 +38,7 @@
   </section>
 </template>
 
-<script>
+<script setup>
 import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
@@ -47,64 +47,98 @@ import SlideContent from "./SlideContent.vue";
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 
 import { register } from "swiper/element/bundle";
-register();
+import { onMounted, ref } from "vue";
 
-export default {
-  name: "BannerSlide",
-  components: {
-    SlideContent,
-    IconBase,
-    IconArrowNext,
-    IconArrowPrev,
-  },
-  data() {
-    return {
-      animeIDArray: [],
-      slideImgLoaded: false,
-      randomMaxNumber: 0,
-      progress: 0,
-    };
-  },
-  watch: {
-    randomMaxNumber: {
-      async handler() {
-        const db = getFirestore();
-        const docRef = doc(db, "statistics", "statistics");
-        const res = await getDoc(docRef);
-        this.randomMaxNumber = res?.data().numbersofAnime;
-        this.animeIDArray = this.useAnimeIDArray(5);
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    useAnimeIDArray(max) {
-      let idArray = [];
-      if (this.randomMaxNumber !== 0) {
-        while (idArray.length < max) {
-          const candidateNum = Math.floor(
-            Math.random() * this.randomMaxNumber + 1
-          );
-          const isDuplicated = idArray.includes(candidateNum);
-          if (!isDuplicated) {
-            idArray.push(candidateNum);
-          }
-        }
+const randomMaxNumber = ref(0);
+const randomIDs = ref([]);
+const $swiper = ref(null);
+onMounted(async () => {
+  register();
+  const db = getFirestore();
+  const docRef = doc(db, "statistics", "statistics");
+  const res = await getDoc(docRef);
+  randomMaxNumber.value = res.data().numbersofAnime;
+  randomIDs.value = slideRandomID(5);
+});
+
+function slideRandomID(max) {
+  let idArray = [];
+  if (randomMaxNumber.value !== 0) {
+    while (idArray.length < max) {
+      const candidateNum = Math.floor(
+        Math.random() * randomMaxNumber.value + 1
+      );
+      const isDuplicated = idArray.includes(candidateNum);
+      if (!isDuplicated) {
+        idArray.push(candidateNum);
       }
-      return idArray;
-    },
-    prevClick() {
-      this.$refs.swiper.swiper.slidePrev();
-    },
-    nextClick() {
-      this.$refs.swiper.swiper.slideNext();
-    },
-    onLeft({ detail }) {
-      const [, , progress] = detail;
-      this.progress = progress;
-    },
-  },
-};
+    }
+  }
+  return idArray;
+}
+
+function prevClick() {
+  $swiper.value.swiper.slidePrev();
+}
+function nextClick() {
+  $swiper.value.swiper.slideNext();
+}
+const autoPlayProgress = ref(0);
+function onLeft({ detail }) {
+  const [, , progress] = detail;
+  autoPlayProgress.value = progress;
+}
+
+// export default {
+//   name: "BannerSlide",
+//   components: {
+//     SlideContent,
+//     IconBase,
+//     IconArrowNext,
+//     IconArrowPrev,
+//   },
+//   data() {
+//     return {
+//       animeIDArray: [],
+//       slideImgLoaded: false,
+//       randomMaxNumber: 0,
+//       progress: 0,
+//     };
+//   },
+//   watch: {
+//     randomMaxNumber: {
+//       async handler() {
+//         const db = getFirestore();
+//         const docRef = doc(db, "statistics", "statistics");
+//         const res = await getDoc(docRef);
+//         this.randomMaxNumber = res?.data().numbersofAnime;
+//         this.animeIDArray = this.useAnimeIDArray(5);
+//       },
+//       immediate: true,
+//     },
+//   },
+//   mounted() {
+//     register();
+//   },
+//   methods: {
+//     useAnimeIDArray(max) {
+//       let idArray = [];
+//       if (this.randomMaxNumber !== 0) {
+//         while (idArray.length < max) {
+//           const candidateNum = Math.floor(
+//             Math.random() * this.randomMaxNumber + 1
+//           );
+//           const isDuplicated = idArray.includes(candidateNum);
+//           if (!isDuplicated) {
+//             idArray.push(candidateNum);
+//           }
+//         }
+//       }
+//       return idArray;
+//     },
+//
+//   },
+// };
 </script>
 
 <style lang="scss" scoped>
@@ -119,9 +153,9 @@ export default {
     left: 0;
     width: 100%;
     transform-origin: left;
-    transform: scaleX(calc(1 - v-bind(progress)));
+    transform: scaleX(calc(1 - v-bind(autoPlayProgress)));
     height: 0.2rem;
-    background-color: var(--bg-900);
+    background-color: hsl(var(--bg-900));
     z-index: 20;
   }
   &__button {
@@ -161,7 +195,7 @@ export default {
     }
     &__button:hover &__icon {
       transform: scale(1.2);
-      color: var(--theme-500);
+      color: hsl(var(--theme-500));
     }
   }
 }

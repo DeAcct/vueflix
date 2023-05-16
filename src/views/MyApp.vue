@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <main class="my" v-if="isMyRoot">
+    <main class="my">
       <div class="tab-one">
         <login-widget :btn-func="onLoginButtonClick">
           <template v-slot:profile-img>
@@ -78,7 +78,6 @@
         </router-link>
       </div>
     </main>
-    <router-view />
   </div>
 </template>
 
@@ -114,7 +113,6 @@ export default {
   },
   data() {
     return {
-      isMyRoot: this.$route.name === "my",
       myCardLoggedin: [
         [
           {

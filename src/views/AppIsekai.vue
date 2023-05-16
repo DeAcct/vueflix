@@ -69,7 +69,7 @@ export default {
     display: flex;
     .btn {
       &--go {
-        background-color: var(--theme-500);
+        background-color: hsl(var(--theme-500));
         color: #fff;
       }
       &--home {

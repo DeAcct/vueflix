@@ -95,10 +95,10 @@ export default {
       gap: 0.5em;
       .btn {
         &--later {
-          background-color: var(--bg-300);
+          background-color: hsl(var(--bg-300));
         }
         &--install {
-          background-color: var(--theme-500);
+          background-color: hsl(var(--theme-500));
           color: #fff;
         }
       }

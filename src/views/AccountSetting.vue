@@ -1,14 +1,5 @@
 <template>
   <form class="account-setting" @submit.prevent="syncToFirebase">
-    <div class="app-bar inner">
-      <router-link to="/my">
-        <i class="icon">
-          <icon-base>
-            <icon-arrow-prev />
-          </icon-base>
-        </i>
-      </router-link>
-    </div>
     <div class="profile-change">
       <div class="profile-box">
         <profile-img
@@ -254,7 +245,7 @@ export default {
     .nickname-change {
       background-color: transparent;
       padding: 0.5rem;
-      border-bottom: 1px solid var(--bg-400);
+      border-bottom: 1px solid hsl(var(--bg-400));
       text-align: center;
       font-weight: 900;
       font-size: 1.7rem;
@@ -324,7 +315,7 @@ export default {
       justify-content: space-between;
       width: 100%;
       height: 4.8rem;
-      background-color: var(--bg-300);
+      background-color: hsl(var(--bg-300));
       border-radius: 0.3rem;
       font-size: 1.3rem;
       padding: 0 1rem;
@@ -340,11 +331,11 @@ export default {
   }
 
   .btn {
-    background-color: var(--theme-500);
+    background-color: hsl(var(--theme-500));
     border-radius: 9999px;
     color: #fff;
     &:disabled {
-      background-color: var(--theme-300);
+      background-color: hsl(var(--theme-300));
     }
     &--saving {
       background-color: transparent;

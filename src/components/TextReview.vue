@@ -223,7 +223,7 @@ export default {
     margin-top: 1.5rem;
   }
   .others-list {
-    background-color: var(--bg-200);
+    background-color: hsl(var(--bg-200));
     border-radius: 0.6rem;
     &--exists {
       margin-top: 1rem;

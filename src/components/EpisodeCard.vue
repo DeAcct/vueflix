@@ -187,7 +187,7 @@ export default {
   &__purchased {
     font-size: 1.2rem;
     font-weight: 500;
-    color: var(--theme-500);
+    color: hsl(var(--theme-500));
   }
 }
 
@@ -207,7 +207,7 @@ export default {
     }
     &__purchased {
       font-size: 1.4rem;
-      color: var(--theme-500);
+      color: hsl(var(--theme-500));
     }
   }
 }

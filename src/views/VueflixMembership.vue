@@ -67,12 +67,12 @@ main {
       font-size: 2rem;
     }
     &.membership .membership-card {
-      background-color: var(--text-500);
-      border: 2px solid var(--text-600);
+      background-color: hsl(var(--text-500));
+      border: 2px solid hsl(var(--text-600));
     }
     &.point .membership-card {
-      background-color: var(--point-500);
-      border: 2px solid var(--point-700);
+      background-color: hsl(var(--point-500));
+      border: 2px solid hsl(var(--point-700));
     }
     &.caution .caution-items {
       padding-left: 2rem;

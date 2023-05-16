@@ -88,9 +88,9 @@ export default {
   }
   .rating-reset-btn {
     padding-bottom: 0.3rem;
-    color: var(--text-900);
+    color: hsl(var(--text-900));
     font-size: 1.2rem;
-    border-bottom: var(--text-900) solid 1px;
+    border-bottom: hsl(var(--text-900)) solid 1px;
     &:disabled {
       visibility: hidden;
     }

@@ -205,7 +205,7 @@ main {
       font-size: 1.5rem;
       font-weight: 700;
       strong {
-        color: var(--theme-500);
+        color: hsl(var(--theme-500));
       }
     }
     .sort-order {
@@ -222,7 +222,7 @@ main {
           font-weight: inherit;
         }
         &:focus {
-          border: 1px solid var(--theme-500);
+          border: 1px solid hsl(var(--theme-500));
         }
       }
     }

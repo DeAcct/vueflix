@@ -345,7 +345,7 @@ export default {
       }
     }
     &__body {
-      background-color: var(--theme-500);
+      background-color: hsl(var(--theme-500));
       height: 100%;
       border-radius: 9999px;
       transition: width 100ms linear;

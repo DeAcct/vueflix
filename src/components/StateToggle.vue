@@ -61,7 +61,7 @@ export default {
     box-shadow: 0 0.2rem 0.4rem var(--toggle-shadow);
   }
   .base-input:checked ~ &__track {
-    background-color: var(--theme-500);
+    background-color: hsl(var(--theme-500));
   }
   .base-input:checked ~ &__track &__body {
     transform: translateX(1.6rem);

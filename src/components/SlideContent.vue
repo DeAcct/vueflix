@@ -18,6 +18,7 @@
           :alt="`${slideData.name} 배너`"
           class="slide-content__bg"
           @load="bgComplete"
+          loading="lazy"
         />
       </picture>
     </div>
@@ -31,6 +32,7 @@
             { 'slide-content__ani-logo--loaded': bgLoaded },
           ]"
           @load="logoComplete"
+          loading="lazy"
         />
       </h3>
       <strong class="slide-content__copy">{{ slideData.copy }}</strong>
@@ -98,6 +100,7 @@ export default {
     position: relative;
     max-height: 70vh;
     width: 100vw;
+    padding-bottom: 133.333%;
     opacity: 0;
     &::before {
       position: absolute;

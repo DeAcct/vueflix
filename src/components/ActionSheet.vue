@@ -86,11 +86,11 @@ export default {
     width: 100%;
     position: absolute;
     bottom: -17.5rem;
-    background-color: var(--bg-300);
+    background-color: hsl(var(--bg-300));
     border-radius: 0.6rem 0.6rem 0 0;
   }
   &__actions {
-    border-bottom: 1px solid var(--bg-400);
+    border-bottom: 1px solid hsl(var(--bg-400));
   }
   &__item {
     button {

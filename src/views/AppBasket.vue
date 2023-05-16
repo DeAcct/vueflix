@@ -1,21 +1,28 @@
 <template>
   <main class="basket">
-    <div class="basket__button-group">
-      <button
-        @click="changeSelected"
-        class="basket__button"
-        v-for="tabItem in tabItems"
-        :key="tabItem.type"
-        :data-key="tabItem.type"
-      >
-        <span
-          :class="[
-            'basket__active-holder',
-            { 'basket__active-holder--active': selectedTab === tabItem.type },
-          ]"
+    <div class="basket__button-group inner">
+      <div class="basket__tabs">
+        <button
+          @click="changeSelected"
+          class="basket__button"
+          v-for="tabItem in tabItems"
+          :key="tabItem.type"
+          :data-key="tabItem.type"
         >
-          {{ tabItem.text }}
-        </span>
+          <span
+            :class="[
+              'basket__active-holder',
+              { 'basket__active-holder--active': selectedTab === tabItem.type },
+            ]"
+          >
+            {{ tabItem.text }}
+          </span>
+        </button>
+      </div>
+      <button class="basket__remove">
+        <icon-base>
+          <icon-remove></icon-remove>
+        </icon-base>
       </button>
     </div>
     <ul class="basket__list">
@@ -37,10 +44,12 @@
 
 import { mapState } from "vuex";
 import ThumbnailSet from "../components/ThumbnailSet.vue";
+import IconBase from "../components/IconBase.vue";
+import IconRemove from "../components/icons/IconRemove.vue";
 
 export default {
   name: "AppBasket",
-  components: { ThumbnailSet },
+  components: { ThumbnailSet, IconBase, IconRemove },
   data() {
     return {
       tabItems: [
@@ -73,15 +82,21 @@ export default {
   padding: 6rem 0;
   &__button-group {
     display: flex;
+    justify-content: space-between;
     position: sticky;
     z-index: 10;
     top: 6rem;
     width: 100%;
-    border-bottom: 1px solid var(--bg-200);
-    background-color: var(--bg-100);
+    border-bottom: 1px solid hsl(var(--bg-200));
+    background-color: hsl(var(--bg-100));
+  }
+  &__tabs {
+    display: flex;
+    flex-grow: 1;
+    max-width: 70vw;
+    justify-content: space-between;
   }
   &__button {
-    flex: 1 0;
     height: 4.8rem;
     display: flex;
     justify-content: center;
@@ -90,7 +105,7 @@ export default {
     display: flex;
     align-items: center;
     font-weight: 500;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     height: 100%;
     position: relative;
     &::after {
@@ -103,9 +118,9 @@ export default {
       border-radius: 9999px 9999px 0 0;
     }
     &--active {
-      color: var(--theme-500);
+      color: hsl(var(--theme-500));
       &::after {
-        background-color: var(--theme-500);
+        background-color: hsl(var(--theme-500));
       }
     }
   }

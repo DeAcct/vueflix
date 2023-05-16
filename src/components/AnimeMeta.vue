@@ -1,7 +1,12 @@
 <template>
   <section class="anime-meta">
     <h2 class="blind">{{ animeInfo.aniTitle }} 관련 정보</h2>
-    <p class="anime-meta__summary">
+    <p
+      :class="[
+        'anime-meta__summary',
+        { 'anime-meta__summary--loaded': isLoaded },
+      ]"
+    >
       {{ animeInfo.summary }}
     </p>
     <vueflix-carousel type="break" class="anime-meta__tags">
@@ -29,23 +34,6 @@
         </router-link>
       </li>
     </vueflix-carousel>
-    <div class="anime-meta__outer-box">
-      <router-link to="#none" class="anime-meta__info-link">
-        <icon-base class="anime-meta__info-link-icon">
-          <icon-short-content />
-        </icon-base>
-        짤 공작소
-      </router-link>
-      <router-link
-        :to="`${$route.params.title}/reviews`"
-        class="anime-meta__info-link"
-      >
-        <icon-base class="anime-meta__info-link-icon">
-          <icon-review />
-        </icon-base>
-        리뷰
-      </router-link>
-    </div>
   </section>
 </template>
 
@@ -123,12 +111,17 @@ export default {
 <style lang="scss" scoped>
 .anime-meta {
   &__summary {
-    padding: 0 2rem 1.5rem;
+    padding: 0 2rem;
+    margin-bottom: 2rem;
     font-size: 1.3rem;
     font-weight: 500;
+    color: var(--anime-layout-text);
+    height: 1.3rem;
+    &--loaded {
+      height: auto;
+    }
   }
   &__tags {
-    margin-bottom: 1.5rem;
     --carousel-padding: 2rem;
   }
   &__item {
@@ -141,7 +134,7 @@ export default {
     height: 3.5rem;
     white-space: nowrap;
     transition: background-color 150ms ease-out;
-    background-color: var(--bg-200);
+    background-color: hsl(var(--bg-200));
     border-radius: 9999px;
     &--dummy {
       width: 10rem;
@@ -150,42 +143,17 @@ export default {
       }
     }
   }
-  &__outer-box {
-    display: flex;
-    margin: 0 2rem;
-    gap: 1rem;
-  }
-  &__info-link {
-    display: flex;
-    flex: 1 0;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 1rem 1.5rem;
-    border-radius: 0.6rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-    border: 1px solid var(--bg-200);
-  }
-  &__info-link-icon {
-    width: 2rem;
-    height: 2rem;
-  }
 }
 @media screen and (min-width: 1024px) {
   .anime-meta {
     width: 50rem;
     padding: 2rem 0;
     border-radius: 0.6rem;
-    border: 1px solid var(--bg-200);
+    border: 1px solid hsl(var(--bg-200));
     &__tags {
-      margin-bottom: 1.5rem;
       height: auto;
       --carousel-padding: 2rem;
       --carousel-gap: 1rem;
-    }
-    &__info-link {
-      background-color: var(--bg-200);
     }
   }
 }

@@ -7,25 +7,34 @@ const routes = [
     component: () => import("@/views/AppHome.vue"),
     meta: {
       title: "뷰플릭스 - 합법적 애니 스트리밍",
-      appBar: true,
+      appBar: {
+        activityContent: "Logo",
+      },
       bottomTabMenu: true,
     },
   },
   {
     path: "/anime/:title",
     name: "anime",
-    component: () => import("@/views/AnimeView.vue"),
+    component: () => import("@/layout/AnimeLayout.vue"),
     meta: {
-      appBar: false,
       bottomTabMenu: false,
     },
     children: [
+      {
+        path: "episodes",
+        name: "episodes",
+        component: () => import("@/views/AnimeEpisodes.vue"),
+        meta: {
+          bottomTabMenu: false,
+        },
+        alias: ["/:title", ""],
+      },
       {
         path: "reviews",
         name: "reviews",
         component: () => import("@/views/AnimeReviews.vue"),
         meta: {
-          appBar: true,
           bottomTabMenu: false,
         },
       },
@@ -36,27 +45,18 @@ const routes = [
     name: "player",
     component: () => import("@/views/Player.vue"),
     meta: {
-      appBar: false,
       bottomTabMenu: false,
     },
   },
-  // {
-  //   path: "/tag-search",
-  //   name: "tag-search",
-  //   component: () => import("@/views/TagSearch.vue"),
-  //   meta: {
-  //     title: "필터로 취향저격 애니찾기",
-  //     appBar: true,
-  //     bottomTabMenu: true,
-  //   },
-  // },
   {
     path: "/basket",
     name: "basket",
     component: () => import("@/views/AppBasket.vue"),
     meta: {
       title: "보관함",
-      appBar: true,
+      appBar: {
+        activityContent: "보관함",
+      },
       bottomTabMenu: true,
     },
   },
@@ -66,41 +66,50 @@ const routes = [
     component: () => import("@/views/MyApp.vue"),
     meta: {
       title: "내 뷰플릭스",
-      appBar: true,
+      appBar: {
+        activityContent: "MY",
+      },
       bottomTabMenu: true,
     },
-    children: [
-      {
-        path: "membership",
-        name: "membership",
-        component: () => import("@/views/VueflixMembership.vue"),
-        meta: {
-          title: "멤버십 및 포인트",
-          appBar: true,
-          bottomTabMenu: false,
+  },
+  {
+    path: "/my/membership",
+    name: "membership",
+    component: () => import("@/views/VueflixMembership.vue"),
+    meta: {
+      title: "멤버십 및 포인트",
+      appBar: {
+        activityContent: "멤버십 및 포인트",
+        backButton: {
+          type: "replace",
         },
       },
-      {
-        path: "account-setting",
-        name: "account-setting",
-        component: () => import("@/views/AccountSetting.vue"),
-        meta: {
-          title: "계정 설정",
-          appBar: false,
-          bottomTabMenu: false,
-        },
+      bottomTabMenu: false,
+    },
+  },
+  {
+    path: "/my/account-setting",
+    name: "account-setting",
+    component: () => import("@/views/AccountSetting.vue"),
+    meta: {
+      title: "계정 설정",
+      appBar: {
+        activityContent: "계정 설정",
       },
-      {
-        path: "app-theme",
-        name: "app-theme",
-        component: () => import("@/views/AppTheme.vue"),
-        meta: {
-          title: "앱 테마 설정",
-          appBar: true,
-          bottomTabMenu: false,
-        },
+      bottomTabMenu: false,
+    },
+  },
+  {
+    path: "/my/app-theme",
+    name: "app-theme",
+    component: () => import("@/views/AppTheme.vue"),
+    meta: {
+      title: "앱 테마",
+      appBar: {
+        activityContent: "앱 테마",
       },
-    ],
+      bottomTabMenu: false,
+    },
   },
   {
     path: "/auth",
@@ -108,7 +117,9 @@ const routes = [
     component: () => import("@/views/AppAuth.vue"),
     meta: {
       title: "뷰플릭스에 어서오세요!",
-      appBar: false,
+      appBar: {
+        activityContent: "Logo",
+      },
       bottomTabMenu: false,
     },
   },
@@ -118,7 +129,6 @@ const routes = [
     component: () => import("@/views/NotiAlert.vue"),
     meta: {
       title: "알림",
-      appBar: false,
       bottomTabMenu: false,
     },
   },
@@ -127,7 +137,9 @@ const routes = [
     name: "isekai-404",
     component: () => import("@/views/AppIsekai.vue"),
     meta: {
-      appBar: true,
+      appBar: {
+        activityContent: "Logo",
+      },
       bottomTabMenu: false,
     },
   },

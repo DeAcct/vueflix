@@ -350,7 +350,7 @@ export default {
   justify-content: flex-end;
   background: linear-gradient(
       transparent,
-      var(--anime-bg) v-bind(gradientPercent)
+      var(--anime-layout-bg) v-bind(gradientPercent)
     ),
     v-bind(bgURL);
   background-position: center;
@@ -366,7 +366,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     transition: 150ms ease-out;
-    background: linear-gradient(var(--anime-bg), transparent);
+    background: linear-gradient(var(--anime-layout-bg), transparent);
     .col-left {
       display: flex;
       align-items: center;
@@ -383,7 +383,7 @@ export default {
   .back,
   &__overflow-btn,
   &__share-btn {
-    color: var(--text-800);
+    color: var(--anime-layout-text);
     width: 2.4rem;
     height: 2.4rem;
   }
@@ -391,7 +391,7 @@ export default {
     margin-left: 0.5rem;
     font-size: 1.7rem;
     height: 2.4rem;
-    color: var(--text-800);
+    color: var(--anime-layout-text);
     opacity: 0;
     transform: translateX(2rem);
     transition: transform 150ms ease-out, opacity 150ms ease-out;
@@ -408,18 +408,27 @@ export default {
   }
   &__anime-info {
     display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 15rem;
 
-    .col-right {
+    > .col-right {
       width: 100%;
-      height: 15rem;
+      height: 12rem;
       justify-content: space-between;
       align-items: center;
       color: transparent;
       border-radius: 0.3rem;
+      background-image: linear-gradient(
+        135deg,
+        rgb(255 255 255 / 0.3),
+        rgb(255 255 255 / 0.2)
+      );
+
       &--loaded {
         width: 100%;
         height: auto;
-        color: var(--text-800);
+        color: var(--anime-layout-text);
         background: transparent;
         animation: none;
       }
@@ -446,7 +455,7 @@ export default {
     width: 20rem;
     height: calc(20rem / 5 * 7);
     margin-right: 2rem;
-    box-shadow: var(--box-shadow);
+    box-shadow: hsl(var(--box-shadow));
     border-radius: 0.3rem;
     img {
       width: 100%;
@@ -504,7 +513,8 @@ export default {
         align-items: center;
         svg {
           fill: transparent;
-          stroke: var(--text-800);
+          stroke: var(--anime-layout-text);
+          color: var(--anime-layout-text);
           stroke-width: 2px;
           stroke-linecap: round;
         }
@@ -512,6 +522,7 @@ export default {
       .text {
         font-size: 1.1rem;
         font-weight: 500;
+        color: var(--anime-layout-text);
       }
     }
 
@@ -525,8 +536,8 @@ export default {
         align-items: center;
         width: 4.8rem;
         height: 4.8rem;
-        background-color: var(--text-800);
-        color: var(--anime-bg);
+        background-color: var(--anime-layout-text);
+        color: var(--anime-layout-bg);
         border-radius: 50%;
         margin-right: 1rem;
       }
@@ -538,6 +549,7 @@ export default {
       .text {
         font-size: 1.4rem;
         font-weight: 700;
+        color: var(--anime-layout-text);
       }
     }
 
@@ -626,7 +638,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: var(--anime-item-head__overflow-btn-pc);
+        background-color: hsl(var(--anime-item-head__overflow-btn-pc));
         border-radius: 50%;
       }
       .action-sheet {

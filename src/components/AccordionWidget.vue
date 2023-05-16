@@ -65,7 +65,8 @@ export default {
     width: 100%;
     margin: 0 auto;
     justify-content: center;
-    background-color: var(--bg-200);
+    background-color: hsl(var(--bg-300));
+    backdrop-filter: blur(10px);
     border-radius: 0.6rem;
     width: calc(100% - var(--inner-padding) * 2);
   }
