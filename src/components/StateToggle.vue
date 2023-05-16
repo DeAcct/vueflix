@@ -48,7 +48,7 @@ export default {
     width: 3.2rem;
     height: 1.6rem;
     border-radius: 0.9rem;
-    background-color: var(--toggle-false);
+    background-color: hsl(var(--toggle-false));
     transition: background-color 150ms ease-in-out;
   }
   &__body {

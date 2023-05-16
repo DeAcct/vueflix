@@ -66,7 +66,7 @@ export default {
 
 <style lang="scss" scoped>
 .darkmode {
-  padding: 7rem 0 2rem;
+  padding: 6rem 0 2rem;
   &__heading {
     display: none;
     text-align: center;
@@ -77,31 +77,25 @@ export default {
   &__toggle {
     display: flex;
     max-width: 1080px;
-    margin: 0 auto 1rem;
     justify-content: space-between;
     align-items: center;
     padding: 2rem 3rem;
-    border-radius: 0.6rem;
-    background-color: var(--text-200);
-    box-shadow: var(--box-shadow);
     font-size: 1.5rem;
     font-weight: 700;
     transition: 150ms ease-out;
     user-select: none;
     inherits: none;
     &--enabled {
-      background-color: var(--theme-300);
+      background-color: hsl(var(--theme-300));
     }
   }
 
   .info-area {
-    box-shadow: var(--box-shadow);
     max-width: 1080px;
     margin: 0 auto;
   }
   .infographic {
     width: 100%;
-    border-radius: 0.6rem 0.6rem 0 0;
     &__bg {
       fill: hsl(28, 97%, 58%);
       animation: infographic__bg 3s ease-in-out alternate infinite;
@@ -130,8 +124,7 @@ export default {
     display: block;
     width: 100%;
     padding: 2rem 3rem;
-    background-color: var(--top-item);
-    border-radius: 0 0 0.6rem 0.6rem;
+    background-color: hsl(var(--bg-200));
     font-weight: 700;
     font-size: 1.4rem;
     line-height: 1;
