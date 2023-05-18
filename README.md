@@ -9,20 +9,6 @@
 
 적절히 로고를 합성했습니다.
 
-넷플릭스와 라프텔의 좋은점만 한 번 합쳐서 만들어보려 합니다.
+넷플릭스와 라프텔을 합친 짬뽕 스트리밍 서비스
 
-```
-View Struct
-
-App
-ㄴ  Home
-    ㄴ  NotiAlert
-ㄴ  TagSearch
-ㄴ  Daily
-ㄴ  Basket (보관함 - 즐겨찾기, 최근 본 목록 등)
-ㄴ  Membership
-    ㄴ  Purchase
-ㄴ  상세페이지 뷰(URL형태: vueflix.hyse.kr/[작품 장르]/[작품별 상세페이지])
-ㄴ  404
-ㄴ  마이페이지(애니를 얼마나 봤는지 - 업적시스템 제공)
-```
+현재 composition api로 전환하고 있습니다.
