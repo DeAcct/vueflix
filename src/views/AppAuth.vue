@@ -1,12 +1,6 @@
 <template>
   <div class="wrap">
     <loading-spinner v-if="isLoginWaiting" :is-loading="isLoginWaiting" />
-    <header v-if="isMobile" class="inner">
-      <button class="go-back" @click="goBack" role="link" id="뒤로가기">
-        <icon-base iconName="뒤로가기"><icon-arrow-prev /></icon-base>
-      </button>
-      <h1 class="blind">뷰플릭스</h1>
-    </header>
     <main class="login inner">
       <div class="row-top">
         <div class="logo">
@@ -34,87 +28,57 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
-import IconBase from "../components/IconBase.vue";
-import IconArrowPrev from "../components/icons/IconArrowPrev.vue";
 import VueflixLogo from "../components/VueflixLogo.vue";
 import VueflixBtn from "../components/VueflixBtn.vue";
 import IconGoogle from "../components/icons/IconGoogle.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
-import { mapState } from "vuex";
-export default {
-  name: "AppAuth",
-  components: {
-    IconBase,
-    IconArrowPrev,
-    VueflixBtn,
-    VueflixLogo,
-    IconGoogle,
-    LoadingSpinner,
-  },
-  data() {
-    return {
-      isMobile: window.innerWidth <= 1024,
-      bgURL: undefined,
-      isLoginWaiting: false,
-    };
-  },
-  mounted() {
-    if (this.user) {
-      this.goBack();
-    } else {
-      window.addEventListener("resize", this.checkDevice);
-    }
-  },
-  unmounted() {
-    window.removeEventListener("resize", this.checkDevice);
-  },
-  methods: {
-    checkDevice() {
-      this.isMobile = window.innerWidth <= 1024;
-    },
-    goBack() {
-      this.$router.go(-1);
-    },
-    async googleContinue() {
-      this.isLoginWaiting = true;
-      const auth = getAuth();
-      const db = getFirestore();
-      const provider = new GoogleAuthProvider();
-      try {
-        await signInWithPopup(auth, provider);
+import { useStore } from "vuex";
+import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
-        const docSnap = await getDoc(doc(db, "user", auth.currentUser.uid));
-        if (!docSnap.exists()) {
-          await setDoc(doc(db, "user", auth.currentUser.uid), {
-            uid: auth.currentUser.uid,
-            nickname: auth.currentUser.displayName,
-            profileImgSrc: auth.currentUser.photoURL,
-            email: auth.currentUser.email,
-            recentWatched: [],
-            wannaSee: [],
-            reviews: [],
-            keywordReview: [],
-            maratonWatch: [],
-            purchased: [],
-          });
-        }
-        this.$store.commit("auth/setUser", docSnap.data());
-        this.$router.back();
-      } catch {
-        this.isLoginWaiting = false;
-      }
-    },
-  },
-  computed: {
-    ...mapState({
-      user: (state) => state.auth.user,
-    }),
-  },
-};
+const store = useStore();
+const router = useRouter();
+const user = computed(() => store.state.auth.user);
+onMounted(() => {
+  if (user.value) {
+    router.back();
+  }
+});
+
+const isLoginWaiting = ref(false);
+async function googleContinue() {
+  isLoginWaiting.value = true;
+  const auth = getAuth();
+  const db = getFirestore();
+  const provider = new GoogleAuthProvider();
+  try {
+    await signInWithPopup(auth, provider);
+
+    const docSnap = await getDoc(doc(db, "user", auth.currentUser.uid));
+    if (!docSnap.exists()) {
+      await setDoc(doc(db, "user", auth.currentUser.uid), {
+        uid: auth.currentUser.uid,
+        nickname: auth.currentUser.displayName,
+        profileImgSrc: auth.currentUser.photoURL,
+        email: auth.currentUser.email,
+        recentWatched: [],
+        wannaSee: [],
+        reviews: [],
+        keywordReview: [],
+        maratonWatch: [],
+        purchased: [],
+      });
+    }
+    store.commit("auth/setUser", docSnap.data());
+    router.back();
+  } catch {
+    isLoginWaiting.value = false;
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -135,13 +99,8 @@ export default {
     color: #fff;
   }
 }
-header {
-  display: flex;
-  align-items: center;
-  height: 6rem;
-}
 .login {
-  height: calc(100% - 6rem);
+  height: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -156,6 +115,7 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 6rem;
   }
 
   .logo {

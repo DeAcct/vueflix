@@ -53,6 +53,7 @@ const mutations = {
     }
   },
   deleteWannaSee(state, payload) {
+    console.log(state);
     state.user.wannaSee = state.user.wannaSee.filter(
       (anime) => anime.aniTitle !== payload
     );

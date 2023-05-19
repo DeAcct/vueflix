@@ -1,16 +1,18 @@
 <template>
   <li class="episode-card">
     <component
-      :is="link ? 'router-link' : 'div'"
-      :to="link"
+      :is="user ? 'router-link' : 'div'"
+      :to="user ? link : undefined"
       class="episode-card__thumbnail"
+      @click="loginRequire"
     >
       <optimized-image :src="thumbnailURL"></optimized-image>
     </component>
     <component
-      :is="link ? 'router-link' : 'div'"
-      :to="link"
+      :is="user ? 'router-link' : 'div'"
+      :to="user ? link : undefined"
       class="episode-card__text-wrap"
+      @click="loginRequire"
     >
       <p class="episode-card__title">
         <em class="episode-card__index"
@@ -31,7 +33,7 @@
   </li>
 </template>
 
-<script>
+<script setup>
 /*
  * [무슨 일이 일어나고 있나?]
  *
@@ -42,99 +44,94 @@
    아예 anime 들어오기 전으로 빠져나갈 수 있는 것.
  */
 
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { mapState } from "vuex";
+import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
+import { onMounted, ref, computed } from "vue";
+import { useStore } from "vuex";
+import { useRoute } from "vue-router";
 import OptimizedImage from "./OptimizedImage.vue";
 import ProgressWidget from "./ProgressWidget.vue";
-export default {
-  name: "EpisodeCard",
-  props: {
-    part: {
-      type: String,
-    },
-    isLoggedin: {
-      type: Boolean,
-    },
-    price: {
-      type: Number,
-    },
-    data: {
-      type: Object,
-    },
-    link: {
-      type: String,
-    },
-  },
-  components: { OptimizedImage, ProgressWidget },
-  data() {
-    return {
-      thumbnailURL: "",
-      checked: false,
-    };
-  },
-  mounted() {
-    this.useURL();
-  },
-  methods: {
-    async useURL() {
-      const storage = getStorage();
-      const thumbnailRef = ref(
-        storage,
-        `${this.$route.params.title}/${this.data.thumbnail}`
-      );
-      const URL = await getDownloadURL(thumbnailRef);
-      this.thumbnailURL = URL;
-    },
-    loginRequire() {
-      if (!this.auth) {
-        this.$emit("login-require");
-      }
-    },
-  },
-  computed: {
-    isPurchased() {
-      if (this.auth) {
-        const target = this.auth.purchased.find(
-          (anime) => anime.aniTitle === this.$route.params.title
-        );
-        const result =
-          target?.episodes.findIndex(
-            (episode) => episode.index === this.data.index
-          ) !== -1;
-        return result;
-      }
-      return false;
-    },
-    ...mapState({
-      auth: (state) => state.auth.user,
-    }),
-    progress() {
-      const anime = this.auth?.maratonWatch.find(
-        (anime) => anime.aniTitle === this.$route.params.title
-      );
-      const episodeTarget = anime?.items.find(
-        (episode) =>
-          episode.index === this.data.index &&
-          episode.part === Number(this.part.slice(0, -1))
-      );
-      return episodeTarget ? episodeTarget.episodePercent : 0;
-    },
-  },
-  watch: {
-    checked() {
-      if (this.checked) {
-        this.$emit("added", {
-          title: this.title,
-          part: this.part,
-          index: this.index,
-          thumbnail: this.thumbnail,
-        });
-      } else {
-        this.$emit("deleted", { title: this.title, date: this.date });
-      }
-    },
-  },
-};
+
+const props = defineProps({
+  part: String,
+  isLoggedin: Boolean,
+  price: Number,
+  data: Object,
+  link: String,
+});
+
+onMounted(async () => {
+  await getPosterURL();
+});
+const route = useRoute();
+const thumbnailURL = ref("");
+async function getPosterURL() {
+  const storage = getStorage();
+  const thumbnailRef = fireRef(
+    storage,
+    `${route.params.title}/${props.data.thumbnail}`
+  );
+  const URL = await getDownloadURL(thumbnailRef);
+  thumbnailURL.value = URL;
+}
+
+const store = useStore();
+const user = computed(() => store.state.auth.user);
+const emit = defineEmits(["login-require"]);
+function loginRequire() {
+  if (!user.value) {
+    emit("login-require");
+  }
+}
+// export default {
+//   data() {
+//     return {
+//       checked: false,
+//     };
+//   },
+//   computed: {
+//     isPurchased() {
+//       if (this.auth) {
+//         const target = this.auth.purchased.find(
+//           (anime) => anime.aniTitle === this.$route.params.title
+//         );
+//         const result =
+//           target?.episodes.findIndex(
+//             (episode) => episode.index === this.data.index
+//           ) !== -1;
+//         return result;
+//       }
+//       return false;
+//     },
+//     ...mapState({
+//       auth: (state) => state.auth.user,
+//     }),
+//     progress() {
+//       const anime = this.auth?.maratonWatch.find(
+//         (anime) => anime.aniTitle === this.$route.params.title
+//       );
+//       const episodeTarget = anime?.items.find(
+//         (episode) =>
+//           episode.index === this.data.index &&
+//           episode.part === Number(this.part.slice(0, -1))
+//       );
+//       return episodeTarget ? episodeTarget.episodePercent : 0;
+//     },
+//   },
+//   watch: {
+//     checked() {
+//       if (this.checked) {
+//         this.$emit("added", {
+//           title: this.title,
+//           part: this.part,
+//           index: this.index,
+//           thumbnail: this.thumbnail,
+//         });
+//       } else {
+//         this.$emit("deleted", { title: this.title, date: this.date });
+//       }
+//     },
+//   },
+// };
 </script>
 
 <style lang="scss" scoped>

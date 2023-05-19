@@ -1,8 +1,11 @@
 <template>
   <router-view v-slot="{ Component }">
     <h1 class="blind">뷰플릭스</h1>
-    <vueflix-header v-if="route.meta.appBar" :is-touch-device="isTouchDevice" />
-    <bottom-tab-menu v-if="route.meta.bottomTabMenu && isTouchDevice" />
+    <vueflix-header
+      v-if="route.meta.appBar"
+      :is-touch-device="device.isTouch"
+    />
+    <bottom-tab-menu v-if="route.meta.bottomTabMenu && device.isTouch" />
     <transition :name="route.meta.transition || 'fade'">
       <component :is="Component"></component>
     </transition>
@@ -18,7 +21,7 @@ import { useStore } from "vuex";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import ToastRenderer from "./components/ToastRenderer.vue";
 import { useRoute } from "vue-router";
-import { computed, ref, onMounted, watch } from "vue";
+import { onMounted, provide, reactive } from "vue";
 
 const route = useRoute();
 const store = useStore();
@@ -40,8 +43,6 @@ function changeTitle() {
   document.title = route.meta.title || import.meta.env.VITE_KR_NAME;
 }
 
-const theme = computed(() => store.state.theme);
-
 function setTheme() {
   const currentTheme = localStorage.getItem("theme");
   if (currentTheme) {
@@ -54,13 +55,20 @@ function setTheme() {
   }
 }
 
-const touchDeviceQuery = window.matchMedia(
+const pointerDeviceQuery = window.matchMedia(
   "(hover: hover) and (pointer: fine)"
 );
-const isTouchDevice = ref(!touchDeviceQuery.matches);
+const mobileDeviceQuery = window.matchMedia("screen and (max-width: 768px)");
+const device = reactive({
+  isTouch: !pointerDeviceQuery.matches,
+  isMobile: mobileDeviceQuery.matches,
+});
 function setDeviceInfo() {
-  touchDeviceQuery.addEventListener("change", (e) => {
-    isTouchDevice.value = !e.matches;
+  pointerDeviceQuery.addEventListener("change", (e) => {
+    device.isTouch = !e.matches;
+  });
+  mobileDeviceQuery.addEventListener("change", (e) => {
+    device.isMobile = e.matches;
   });
 }
 
@@ -68,6 +76,8 @@ function setViewPort() {
   document.documentElement.style.setProperty("--vw", window.innerWidth / 100);
   document.documentElement.style.setProperty("--vh", window.innerHeight / 100);
 }
+
+provide("device-info", device);
 
 onMounted(() => {
   setUser();

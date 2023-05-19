@@ -1,6 +1,6 @@
 <template>
   <component :is="component" class="anime-item-head">
-    <h1 class="blind" v-if="isMobileSize">뷰플릭스</h1>
+    <h1 class="blind" v-if="deviceInfo.isTouch">뷰플릭스</h1>
     <div class="anime-item-head__navigation inner">
       <div class="col-left">
         <a class="back" @click="goBack">
@@ -26,7 +26,7 @@
         <button
           class="anime-item-head__overflow-btn"
           @click="openOverflowMenu"
-          v-if="user && isMobileSize"
+          v-if="deviceInfo.isTouch"
         >
           <icon-base>
             <icon-overflow />
@@ -41,7 +41,7 @@
           'loading-target',
           { 'anime-item-head__poster--loaded': animeInfo.poster },
         ]"
-        v-if="!isMobileSize"
+        v-if="!deviceInfo.isMobile"
       >
         <img :src="animeInfo.poster" :alt="`${animeInfo.name} 포스터`" />
       </div>
@@ -119,7 +119,7 @@
           </div>
         </div>
       </div>
-      <div class="anime-item-head__overflow-btn" v-if="user && !isMobileSize">
+      <div class="anime-item-head__overflow-btn" v-if="!deviceInfo.isTouch">
         <button class="icon" @click="actionSheetToggle">
           <icon-base>
             <icon-overflow />
@@ -135,15 +135,15 @@
   </component>
 </template>
 
-<script>
-import { mapState } from "vuex";
+<script setup>
+import { ref, inject, computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter, useRoute } from "vue-router";
+import { getFirestore, setDoc, doc } from "firebase/firestore";
 
-import VueflixBtn from "./VueflixBtn.vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
-import IconWannaSee from "./icons/IconWannaSee.vue";
 import IconPlay from "./icons/IconPlay.vue";
-import { getFirestore, setDoc, doc, getDoc } from "firebase/firestore";
 import IconWannaSeeAdd from "./icons/IconWannaSeeAdd.vue";
 import IconWannaSeeAdded from "./icons/IconWannaSeeAdded.vue";
 import IconPurchase from "./icons/IconPurchase.vue";
@@ -151,196 +151,149 @@ import IconShare from "./icons/IconShare.vue";
 import IconOverflow from "./icons/IconOverflow.vue";
 import ActionSheet from "./ActionSheet.vue";
 
-export default {
-  name: "AnimeItemHead",
-  components: {
-    VueflixBtn,
-    IconBase,
-    IconArrowPrev,
-    IconWannaSee,
-    IconPlay,
-    IconWannaSeeAdd,
-    IconWannaSeeAdded,
-    IconPurchase,
-    IconShare,
-    IconOverflow,
-    ActionSheet,
-  },
-  props: {
-    isScroll: {
-      type: Boolean,
-    },
+const props = defineProps({
+  isScroll: Boolean,
+});
 
-    animeInfo: {
-      type: Object,
-    },
+const emit = defineEmits([
+  "require-login",
+  "overflow-menu-open",
+  "purchase",
+  "remove-watch-history",
+  "handle-interest",
+]);
+const deviceInfo = inject("device-info");
 
-    summary: {
-      type: String,
-    },
-  },
-  async mounted() {
-    this.screenSizeQuery.addEventListener("change", (e) => {
-      this.isMobileSize = e.matches;
+const router = useRouter();
+function goBack() {
+  router.back();
+}
+
+const route = useRoute();
+const store = useStore();
+
+const wannaSeeBool = computed(
+  () =>
+    !!user.value?.wannaSee.find((item) => item.aniTitle === route.params.title)
+);
+async function wannaSeeToggle() {
+  if (!user.value) {
+    emit("require-login", "로그인해야 '보고싶다'를 체크할 수 있어요");
+    return;
+  }
+  const aniTitle = route.params.title;
+  if (wannaSeeBool) {
+    store.commit("auth/deleteWannaSee", aniTitle);
+  } else {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const date = now.getDate();
+    const hour = now.getHours();
+    const min = now.getMinutes();
+    const sec = now.getSeconds();
+    store.commit("auth/updateWannaSee", {
+      aniTitle: aniTitle,
+      time: {
+        year: year,
+        month: month,
+        date: date,
+        hour: hour,
+        min: min,
+        sec: sec,
+      },
     });
-    this.touchDeviceQuery.addEventListener("change", (e) => {
-      this.isTouchDevice = e.matches;
-    });
-    window.addEventListener("resize", this.checkResolution);
-  },
-  unmounted() {
-    this.screenSizeQuery.removeEventListener("change", (e) => {
-      this.isMobileSize = e.matches;
-    });
-    this.touchDeviceQuery.removeEventListener("change", (e) => {
-      this.isTouchDevice = e.matches;
-    });
-  },
-  data() {
-    const screenSizeQuery = window.matchMedia("screen and (max-width: 820px)");
-    const touchDeviceQuery = window.matchMedia(
-      "(hover: none) and (pointer: coarse)"
+  }
+  const db = getFirestore();
+  await setDoc(doc(db, "user", user.value.uid), {
+    ...user.value,
+  });
+}
+
+const user = computed(() => store.state.auth.user);
+
+async function openSystemShare() {
+  const shareData = {
+    title: `뷰플릭스에서 ${route.params.title} 다시보기`,
+    url: window.location.href,
+  };
+  await navigator.share(shareData);
+}
+
+function openOverflowMenu() {
+  emit("overflow-menu-open");
+}
+
+const isPurchaseActive = ref(false);
+function activeTrigger() {
+  isPurchaseActive.value = !isPurchaseActive.value;
+}
+
+const isActionSheetOpened = ref(false);
+function actionSheetToggle() {
+  isActionSheetOpened.value = !isActionSheetOpened.value;
+}
+function actionSheetClose() {
+  isActionSheetOpened.value = false;
+}
+
+function purchase() {
+  if (!user.value) {
+    emit("purchase");
+  } else {
+    emit("require-login", "로그인하면 애니메이션을 구매 및 소장할 수 있어요");
+  }
+}
+
+function removeWatchHistory() {
+  emit("remove-watch-history");
+}
+function handleInterest() {
+  emit("handle-interest");
+}
+
+const animeInfo = inject("anime-info");
+const bgURL = computed(() => `url(${animeInfo.value.poster})`);
+const gradientPercent = computed(() => (!deviceInfo.isMobile ? "90%" : "80%"));
+
+const continueLink = computed(() => {
+  if (user.value) {
+    const last = user.value.recentWatched.find(
+      (anime) => anime.aniTitle === route.params.title
     );
-    return {
-      screenSizeQuery,
-      touchDeviceQuery,
-      isMobileSize: screenSizeQuery.matches,
-      isTouchDevice: touchDeviceQuery.matches,
-      isPurchaseActive: false,
-      isActionSheetOpened: false,
-      actions: [
-        {
-          text: "시청기록 초기화",
-          method: this.removeWatchHistory,
-        },
-        {
-          text: "관심없음",
-          method: this.handleInterest,
-        },
-      ],
-    };
+    if (last) {
+      return last.continueLink;
+    }
+  }
+  return `/player/${route.params.title}/1기/1화`;
+});
+
+const actions = [
+  {
+    text: "시청기록 초기화",
+    method: removeWatchHistory,
   },
-  methods: {
-    goBack() {
-      return this.$router.go(-1);
-    },
-    async wannaSeeToggle() {
-      if (this.user) {
-        console.log("d", this.wannaSeeBool);
-        const aniTitle = this.$route.params.title;
-        if (this.wannaSeeBool) {
-          this.$store.commit("auth/deleteWannaSee", aniTitle);
-        } else {
-          const now = new Date();
-          const year = now.getFullYear();
-          const month = now.getMonth() + 1;
-          const date = now.getDate();
-          const hour = now.getHours();
-          const min = now.getMinutes();
-          const sec = now.getSeconds();
-          this.$store.commit("auth/updateWannaSee", {
-            aniTitle: aniTitle,
-            time: {
-              year: year,
-              month: month,
-              date: date,
-              hour: hour,
-              min: min,
-              sec: sec,
-            },
-          });
-        }
-        const db = getFirestore();
-        await setDoc(doc(db, "user", this.user.uid), {
-          ...this.user,
-        });
-      } else {
-        this.$emit("require-login", "로그인해야 '보고싶다'를 체크할 수 있어요");
-      }
-    },
-    async openSystemShare() {
-      const shareData = {
-        title: `뷰플릭스에서 ${this.$route.params.title} 다시보기`,
-        text: this.summary,
-        url: window.location.href,
-      };
-      await navigator.share(shareData);
-    },
-    openOverflowMenu() {
-      this.$emit("overflow-menu-open");
-    },
-    activeTrigger() {
-      this.isPurchaseActive = !this.isPurchaseActive;
-    },
-    actionSheetToggle() {
-      this.isActionSheetOpened = !this.isActionSheetOpened;
-    },
-    actionSheetClose() {
-      this.isActionSheetOpened = false;
-    },
-    purchase() {
-      if (this.user) {
-        this.$emit("purchase");
-      } else {
-        this.$emit(
-          "require-login",
-          "로그인하면 애니메이션을 구매 및 소장할 수 있어요"
-        );
-      }
-    },
-    removeWatchHistory() {
-      this.$emit("remove-watch-history");
-    },
-    handleInterest() {
-      this.$emit("handle-interest");
-    },
+  {
+    text: "관심없음",
+    method: handleInterest,
   },
-  computed: {
-    ...mapState({
-      user: (state) => state.auth.user,
-    }),
-    wannaSeeBool() {
-      return !!this.user?.wannaSee.find(
-        (item) => item.aniTitle === this.$route.params.title
-      );
-    },
-    gradientPercent() {
-      return !this.isMobileSize ? "90%" : "80%";
-    },
-    bgURL() {
-      console.log(this.animeInfo.poster);
-      return `url(${this.animeInfo.poster})`;
-    },
-    continueLink() {
-      if (this.user) {
-        const last = this.user.recentWatched.find(
-          (anime) => anime.aniTitle === this.$route.params.title
-        );
-        if (last) {
-          return last.continueLink;
-        }
-      }
-      return `/player/${this.$route.params.title}/1기/1화`;
-    },
-    continueString() {
-      if (this.user) {
-        const last = this.user.recentWatched.find(
-          (anime) => anime.aniTitle === this.$route.params.title
-        );
-        if (last) {
-          const stringOrigin = last.continueLink.split("/");
-          const part = stringOrigin[3];
-          const index = stringOrigin[4];
-          return `${part} ${index} 이어보기`;
-        }
-      }
-      return "1화 무료보기";
-    },
-    component() {
-      return this.isMobileSize ? "header" : "div";
-    },
-  },
-};
+];
+
+const continueString = computed(() => {
+  const last = user.value?.recentWatched.find(
+    (anime) => anime.aniTitle === route.params.title
+  );
+  if (last) {
+    const stringOrigin = last.continueLink.split("/");
+    const part = stringOrigin[3];
+    const index = stringOrigin[4];
+    return `${part} ${index} 이어보기`;
+  }
+
+  return "1화 무료보기";
+});
+
+const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
 </script>
 
 <style lang="scss" scoped>
@@ -603,6 +556,8 @@ export default {
     &__anime-info {
       padding: 0;
       position: relative;
+      flex-direction: row;
+      align-items: flex-end;
       .col-right {
         flex: 1;
         width: 100%;
@@ -632,6 +587,8 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
+      width: auto;
+      height: auto;
       .icon {
         width: 4rem;
         height: 4rem;
@@ -640,9 +597,6 @@ export default {
         justify-content: center;
         background-color: hsl(var(--anime-item-head__overflow-btn-pc));
         border-radius: 50%;
-      }
-      .action-sheet {
-        justify-self: flex-end;
       }
     }
     &__title {

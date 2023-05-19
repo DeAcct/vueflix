@@ -21,7 +21,7 @@
     <div class="header__actions">
       <button
         class="header__back-btn"
-        v-if="route.meta.appBar.backButton"
+        v-if="route.meta.appBar.backButton && isTouchDevice"
         @click="back"
       >
         <icon-base>

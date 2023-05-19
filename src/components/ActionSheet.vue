@@ -4,9 +4,9 @@
       class="action-sheet__bg"
       title="닫기"
       @click="closeOverflowMenu"
-      ref="bg"
+      ref="$shade"
     />
-    <div class="action-sheet__interact" ref="actionArea">
+    <div class="action-sheet__interact" ref="$sheet">
       <ul class="action-sheet__actions">
         <li
           class="action-sheet__item"
@@ -29,48 +29,41 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
+import { computed, onMounted, ref } from "vue";
 import IconBase from "./IconBase.vue";
 import IconClose from "./icons/IconClose.vue";
-import { modalAnimations } from "../mixins/modalAnimations";
-export default {
-  components: { IconBase, IconClose },
-  props: {
-    actionOrigin: {
-      type: Array,
+import { SheetAnimation, ShadeAnimation } from "@/animation/modalAnimation.js";
+
+const $shade = ref(null);
+const $sheet = ref(null);
+const props = defineProps({
+  actionOrigin: Array,
+});
+const emit = defineEmits(["overflow-menu-close"]);
+const shade = computed(() => ShadeAnimation($shade.value));
+const sheet = computed(() => SheetAnimation($sheet.value));
+onMounted(() => {
+  shade.value.play();
+  sheet.value.play();
+});
+function closeOverflowMenu() {
+  shade.value.reverse();
+  sheet.value.reverse();
+  sheet.value.onfinish = () => {
+    emit("overflow-menu-close");
+  };
+}
+
+const actions = computed(() =>
+  props.actionOrigin.map((action) => ({
+    ...action,
+    method() {
+      action.method();
+      closeOverflowMenu();
     },
-  },
-  methods: {
-    closeOverflowMenu() {
-      this.BgAnimation.reverse();
-      this.ActionAreaAnimation.reverse();
-      this.ActionAreaAnimation.onfinish = () => {
-        this.$emit("overflow-menu-close");
-      };
-    },
-  },
-  mounted() {
-    this.BgAnimation.play();
-    this.ActionAreaAnimation.play();
-  },
-  computed: {
-    actions() {
-      const closeMethod = this.closeOverflowMenu;
-      const result = this.actionOrigin.map((action) => ({
-        ...action,
-        method() {
-          action.method();
-          closeMethod();
-        },
-      }));
-      return result;
-    },
-    ActionAreaHeight() {
-      return "17.5rem";
-    },
-  },
-  mixins: [modalAnimations],
-};
+  }))
+);
 </script>
 
 <style lang="scss" scoped>
@@ -85,7 +78,6 @@ export default {
   &__interact {
     width: 100%;
     position: absolute;
-    bottom: -17.5rem;
     background-color: hsl(var(--bg-300));
     border-radius: 0.6rem 0.6rem 0 0;
   }
@@ -132,8 +124,8 @@ export default {
 
 @media screen and (min-width: 1080px) {
   .action-sheet {
-    width: auto;
-    height: auto;
+    width: unset;
+    height: unset;
     &__bg {
       background-color: transparent;
     }
@@ -145,6 +137,9 @@ export default {
       border-radius: 0.6rem;
       box-shadow: var(--box-shadow);
       background-color: var(--top-item);
+    }
+    &__interact {
+      position: static;
     }
     &__actions {
       border-bottom: none;

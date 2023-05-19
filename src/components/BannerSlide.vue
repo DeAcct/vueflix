@@ -9,6 +9,7 @@
       class="slide__container"
       ref="$swiper"
       @autoplaytimeleft="onLeft"
+      @progress="ddd"
     >
       <swiper-slide
         v-for="animeID in randomIDs"
@@ -53,12 +54,12 @@ const randomMaxNumber = ref(0);
 const randomIDs = ref([]);
 const $swiper = ref(null);
 onMounted(async () => {
-  register();
   const db = getFirestore();
   const docRef = doc(db, "statistics", "statistics");
   const res = await getDoc(docRef);
   randomMaxNumber.value = res.data().numbersofAnime;
   randomIDs.value = slideRandomID(5);
+  register();
 });
 
 function slideRandomID(max) {
@@ -144,6 +145,7 @@ function onLeft({ detail }) {
 <style lang="scss" scoped>
 .slide {
   position: relative;
+  aspect-ratio: 3/4;
   &__container {
     aspect-ratio: 3/4;
   }
@@ -165,6 +167,7 @@ function onLeft({ detail }) {
 
 @media screen and (min-width: 1025px) {
   .slide {
+    aspect-ratio: 2560/1043;
     &__container {
       aspect-ratio: 2560/1043;
     }

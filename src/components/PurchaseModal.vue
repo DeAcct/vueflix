@@ -84,117 +84,117 @@ import { doc, setDoc, getFirestore } from "firebase/firestore";
 
 import EpisodesWidget from "./AccordionWidget.vue";
 import VueflixBtn from "./VueflixBtn.vue";
-import { modalAnimations } from "../mixins/modalAnimations";
+//import { modalAnimations } from "../mixins/modalAnimations";
 import { mapState } from "vuex";
 
-export default {
-  name: "PurchaseModal",
-  props: {
-    animeInfo: {
-      type: Object,
-    },
-  },
-  components: {
-    EpisodesWidget,
-    VueflixBtn,
-  },
-  data() {
-    return {
-      added: [],
-      downChecked: false,
-    };
-  },
-  mounted() {
-    this.ActionAreaAnimation.play();
-    this.BgAnimation.play();
-    document.documentElement.style.overflow = "hidden";
-  },
-  methods: {
-    closePurchaseModal() {
-      this.ActionAreaAnimation.reverse();
-      this.BgAnimation.reverse();
-      this.BgAnimation.onfinish = () => {
-        document.documentElement.style.overflow = "visible";
-        this.$emit("close-purchase-modal");
-      };
-    },
-    addedTrigger(e) {
-      this.added = [...this.added, e];
-    },
-    deletedTrigger(e) {
-      this.added = this.added.filter(
-        (item) => item.title !== e.title && item.date !== e.date
-      );
-    },
-    selectAll() {
-      if (!this.notPurchased.isBlank) {
-        this.downChecked = !this.downChecked;
-      }
-    },
-    async purchase() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-      const date = now.getDate();
-      const hour = now.getHours();
-      const min = now.getMinutes();
-      const sec = now.getSeconds();
-      const thumbnail = this.animeInfo.posterOrigin;
-      this.$store.commit("auth/updatePurchased", {
-        aniTitle: this.$route.params.title,
-        episodes: this.added,
-        time: {
-          year,
-          month,
-          date,
-          hour,
-          min,
-          sec,
-        },
-        thumbnail,
-      });
+// export default {
+//   name: "PurchaseModal",
+//   props: {
+//     animeInfo: {
+//       type: Object,
+//     },
+//   },
+//   components: {
+//     EpisodesWidget,
+//     VueflixBtn,
+//   },
+//   data() {
+//     return {
+//       added: [],
+//       downChecked: false,
+//     };
+//   },
+//   mounted() {
+//     this.ActionAreaAnimation.play();
+//     this.BgAnimation.play();
+//     document.documentElement.style.overflow = "hidden";
+//   },
+//   methods: {
+//     closePurchaseModal() {
+//       this.ActionAreaAnimation.reverse();
+//       this.BgAnimation.reverse();
+//       this.BgAnimation.onfinish = () => {
+//         document.documentElement.style.overflow = "visible";
+//         this.$emit("close-purchase-modal");
+//       };
+//     },
+//     addedTrigger(e) {
+//       this.added = [...this.added, e];
+//     },
+//     deletedTrigger(e) {
+//       this.added = this.added.filter(
+//         (item) => item.title !== e.title && item.date !== e.date
+//       );
+//     },
+//     selectAll() {
+//       if (!this.notPurchased.isBlank) {
+//         this.downChecked = !this.downChecked;
+//       }
+//     },
+//     async purchase() {
+//       const now = new Date();
+//       const year = now.getFullYear();
+//       const month = now.getMonth() + 1;
+//       const date = now.getDate();
+//       const hour = now.getHours();
+//       const min = now.getMinutes();
+//       const sec = now.getSeconds();
+//       const thumbnail = this.animeInfo.posterOrigin;
+//       this.$store.commit("auth/updatePurchased", {
+//         aniTitle: this.$route.params.title,
+//         episodes: this.added,
+//         time: {
+//           year,
+//           month,
+//           date,
+//           hour,
+//           min,
+//           sec,
+//         },
+//         thumbnail,
+//       });
 
-      const db = getFirestore();
-      await setDoc(doc(db, "user", this.user.uid), {
-        ...this.user,
-      });
-      this.closePurchaseModal();
-    },
-  },
-  computed: {
-    ActionAreaHeight() {
-      return "80vh";
-    },
-    notPurchased() {
-      let all = this.animeInfo.parts;
-      let isBlank = true;
-      const purchased = this.user.purchased.find(
-        (purchaseItem) => purchaseItem.aniTitle === this.$route.params.title
-      );
-      if (purchased) {
-        all = all.map((allPart) => ({
-          ...allPart,
-          episodes: allPart.episodes.filter((allEpisode) => {
-            for (const purchaseItem of purchased.episodes) {
-              if (purchaseItem.title === allEpisode.title) {
-                return false;
-              }
-            }
-            return true;
-          }),
-        }));
-      }
-      all.forEach((item) => {
-        isBlank = item.episodes.length === 0 && isBlank;
-      });
-      return { all, isBlank };
-    },
-    ...mapState({
-      user: (state) => state.auth.user,
-    }),
-  },
-  mixins: [modalAnimations],
-};
+//       const db = getFirestore();
+//       await setDoc(doc(db, "user", this.user.uid), {
+//         ...this.user,
+//       });
+//       this.closePurchaseModal();
+//     },
+//   },
+//   computed: {
+//     ActionAreaHeight() {
+//       return "80vh";
+//     },
+//     notPurchased() {
+//       let all = this.animeInfo.parts;
+//       let isBlank = true;
+//       const purchased = this.user.purchased.find(
+//         (purchaseItem) => purchaseItem.aniTitle === this.$route.params.title
+//       );
+//       if (purchased) {
+//         all = all.map((allPart) => ({
+//           ...allPart,
+//           episodes: allPart.episodes.filter((allEpisode) => {
+//             for (const purchaseItem of purchased.episodes) {
+//               if (purchaseItem.title === allEpisode.title) {
+//                 return false;
+//               }
+//             }
+//             return true;
+//           }),
+//         }));
+//       }
+//       all.forEach((item) => {
+//         isBlank = item.episodes.length === 0 && isBlank;
+//       });
+//       return { all, isBlank };
+//     },
+//     ...mapState({
+//       user: (state) => state.auth.user,
+//     }),
+//   },
+//   mixins: [modalAnimations],
+// };
 </script>
 
 <style lang="scss" scoped>

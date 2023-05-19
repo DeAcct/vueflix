@@ -2,7 +2,6 @@
   <div class="anime-view">
     <anime-item-head
       :is-scroll="isScroll"
-      :anime-info="animeInfo"
       @overflow-menu-open="actionSheetOpen"
       @require-login="openLoginModal"
       @purchase="openPurchaseModal"
@@ -20,8 +19,7 @@
         <router-view v-slot="{ Component }">
           <component
             :is="Component"
-            :anime-info="animeInfo"
-            :open-login-modal="openLoginModal"
+            @open-login-modal="openLoginModal"
           ></component>
         </router-view>
       </div>
@@ -46,17 +44,17 @@
       type="yes-no"
       :yesFunc="gotoLogin"
       :noFunc="closeLoginModal"
-      v-if="isLoginModalOpened"
-      :class="[{ show: isLoginModalOpened }, 'optional-show']"
+      v-if="loginModal.open"
+      :class="[{ show: loginModal.open }, 'optional-show']"
     >
       <template v-slot:title>로그인 필요</template>
       <template v-slot:description>
-        {{ loginModalText }}
+        {{ loginModal.text }}
       </template>
       <template v-slot:no-string>나중에</template>
       <template v-slot:yes-string>로그인</template>
     </vueflix-modal>
-    <purchase-modal
+    <!--purchase-modal
       :anime-info="animeInfo"
       v-if="isPurchaseModalOpen"
       @close-purchase-modal="closePurchaseModal"
@@ -65,7 +63,7 @@
       <template v-slot:description>
         소장하면 판권이 만료되더라도 두고두고 볼 수 있어요
       </template>
-    </purchase-modal>
+    </purchase-modal-->
     <action-sheet
       v-if="isActionSheetOpened"
       @overflow-menu-close="actionSheetClose"
@@ -73,7 +71,7 @@
     />
   </div>
 </template>
-<script>
+<script setup>
 //todo: composition api 전환, 탭(에피소드<->리뷰) ui 마무리
 import {
   getFirestore,
@@ -84,146 +82,138 @@ import {
   setDoc,
   doc,
 } from "firebase/firestore";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { mapState } from "vuex";
+import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
+import {
+  onMounted,
+  onUnmounted,
+  computed,
+  ref,
+  reactive,
+  provide,
+  readonly,
+} from "vue";
+import { useStore } from "vuex";
+import { useRouter, useRoute } from "vue-router";
 
 import AnimeItemHead from "../components/AnimeItemHead.vue";
 import AnimeMeta from "../components/AnimeMeta.vue";
 import VueflixModal from "../components/VueflixModal.vue";
-import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
 import IconBase from "../components/IconBase.vue";
-import IconReview from "../components/icons/IconReview.vue";
 import IconArrowPrev from "../components/icons/IconArrowPrev.vue";
 import ActionSheet from "../components/ActionSheet.vue";
 import PurchaseModal from "../components/PurchaseModal.vue";
 
-export default {
-  components: {
-    AnimeItemHead,
-    AnimeMeta,
-    VueflixModal,
-    ArrowBtnWidget,
-    ActionSheet,
-    PurchaseModal,
-    IconBase,
-    IconArrowPrev,
-    IconReview,
-  },
-  name: "AnimeView",
-  async mounted() {
-    await this.animeInit();
-    window.addEventListener("resize", () => {
-      this.isPC = window.innerWidth >= 1024;
-    });
-    window.addEventListener("scroll", this.handleScroll);
-  },
-  unmounted() {
-    window.removeEventListener("resize", () => {
-      this.deviceHeight = window.innerHeight;
-    });
-    window.removeEventListener("scroll", this.handleScroll);
-  },
-  data() {
-    return {
-      animeInfo: {},
-      isActionSheetOpened: false,
-      actions: [
-        {
-          text: "시청기록 초기화",
-          method: this.removeWatchHistory,
-        },
-        {
-          text: "관심없음",
-          method: this.handleInterest,
-        },
-      ],
-      isLoginModalOpened: false,
-      loginModalText: "",
-      isScroll: false,
-      isPurchaseModalOpen: false,
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+
+const user = computed(() => store.state.auth.user);
+async function getRawData() {
+  try {
+    const db = getFirestore();
+    const animeRef = collection(db, "anime");
+    const q = query(animeRef, where("name", "==", route.params.title));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.docs.length !== 0) {
+      const rawData = querySnapshot.docs[0].data();
+      return rawData;
+    }
+  } catch {
+    router.replace("/isekai-404");
+  }
+}
+const animeInfo = ref({});
+provide("anime-info", readonly(animeInfo));
+async function animeInit() {
+  try {
+    const storage = getStorage();
+    const rawData = await getRawData();
+    const posterRef = fireRef(
+      storage,
+      `${route.params.title}/${rawData.poster}`
+    );
+    const posterURL = await getDownloadURL(posterRef);
+    animeInfo.value = {
+      ...rawData,
+      poster: posterURL,
+      posterOrigin: rawData.poster,
     };
+  } catch {
+    router.replace("/isekai-404");
+  }
+}
+
+let isScroll = ref(0 < Math.round(window.scrollY));
+function handleScroll() {
+  isScroll.value = 0 < Math.round(window.scrollY);
+}
+
+onMounted(async () => {
+  await animeInit();
+  window.addEventListener("scroll", handleScroll);
+});
+onUnmounted(() => {
+  window.addEventListener("scroll", handleScroll);
+});
+
+const isActionSheetOpened = ref(false);
+function actionSheetOpen() {
+  isActionSheetOpened.value = true;
+}
+function actionSheetClose() {
+  isActionSheetOpened.value = false;
+}
+
+async function removeWatchHistory() {
+  store.commit("auth/clearMaraton", route.params.title);
+  const db = getFirestore();
+  await setDoc(doc(db, "user", user.value.uid), {
+    ...user.value,
+  });
+}
+
+function handleInterest() {
+  console.log("취향에 반영했어요");
+}
+
+const loginModal = reactive({
+  text: "",
+  open: false,
+});
+function openLoginModal(e) {
+  loginModal.text = e;
+  loginModal.open = true;
+}
+function closeLoginModal() {
+  loginModal.open = false;
+}
+
+const isPurchaseModalOpen = ref(false);
+function openPurchaseModal() {
+  isPurchaseModalOpen.value = true;
+}
+function closePurchaseModal() {
+  isPurchaseModalOpen.value = false;
+}
+
+function gotoLogin() {
+  router.push("/auth");
+}
+
+function toTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+const actions = [
+  {
+    text: "시청기록 초기화",
+    method: removeWatchHistory,
   },
-  methods: {
-    handleScroll() {
-      this.isScroll = 0 < Math.round(window.scrollY);
-    },
-    async getRawData() {
-      try {
-        const db = getFirestore();
-        const animeRef = collection(db, "anime");
-        const q = query(
-          animeRef,
-          where("name", "==", this.$route.params.title)
-        );
-        const querySnapshot = await getDocs(q);
-        if (querySnapshot.docs.length !== 0) {
-          const rawData = querySnapshot.docs[0].data();
-          return rawData;
-        }
-      } catch {
-        this.$router.replace("/isekai-404");
-      }
-    },
-    async animeInit() {
-      try {
-        const storage = getStorage();
-        const rawData = await this.getRawData();
-        const posterRef = ref(
-          storage,
-          `${this.$route.params.title}/${rawData.poster}`
-        );
-        const posterURL = await getDownloadURL(posterRef);
-        this.animeInfo = {
-          ...rawData,
-          poster: posterURL,
-          posterOrigin: rawData.poster,
-        };
-      } catch {
-        this.$router.replace("/isekai-404");
-      }
-    },
-    actionSheetOpen() {
-      this.isActionSheetOpened = true;
-    },
-    actionSheetClose() {
-      this.isActionSheetOpened = false;
-    },
-    async removeWatchHistory() {
-      this.$store.commit("auth/clearMaraton", this.$route.params.title);
-      const db = getFirestore();
-      await setDoc(doc(db, "user", this.user.uid), {
-        ...this.user,
-      });
-    },
-    handleInterest() {
-      console.log("취향에 반영했어요");
-    },
-    openLoginModal(e) {
-      this.loginModalText = e;
-      this.isLoginModalOpened = true;
-    },
-    gotoLogin() {
-      this.$router.push("/auth");
-    },
-    closeLoginModal() {
-      this.isLoginModalOpened = false;
-    },
-    openPurchaseModal() {
-      this.isPurchaseModalOpen = true;
-    },
-    closePurchaseModal() {
-      this.isPurchaseModalOpen = false;
-    },
-    toTop() {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    },
+  {
+    text: "관심없음",
+    method: handleInterest,
   },
-  computed: {
-    ...mapState({
-      user: (state) => state.auth.user,
-    }),
-  },
-};
+];
 </script>
 
 <style lang="scss" scoped>
@@ -248,10 +238,9 @@ export default {
   &__tab-view {
     border-radius: 0.9rem 0.9rem 0 0;
     background-color: var(--anime-layout-parts);
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.7rem;
   }
   &__tab-selector {
     display: flex;
@@ -259,10 +248,10 @@ export default {
     a {
       font-size: 1.5rem;
       font-weight: 500;
-      height: 4.5rem;
+      padding: 1.5rem 0;
       display: flex;
       align-items: center;
-      border-bottom: 0.1rem solid transparent;
+      border-bottom: 0.2rem solid transparent;
 
       &.vueflix-active-link {
         color: hsl(var(--theme-500));
@@ -331,6 +320,7 @@ export default {
     }
     &__meta {
       margin: 0;
+      flex-grow: 1;
     }
     &__main {
       padding: 3.5rem calc((100% - 118rem) / 2) 0;
@@ -348,12 +338,15 @@ export default {
         display: block;
       }
     }
-    &__tab-selector {
-      padding: 0;
+    &__tab-view {
+      border-radius: 0.9rem;
+      width: 67%;
     }
-    &__parts {
-      width: calc(67% - 3rem);
-      margin-bottom: 2.5rem;
+    &__tab-selector {
+      padding: 0 2rem;
+      a {
+        font-size: 1.7rem;
+      }
     }
     &__top-btn {
       left: auto;

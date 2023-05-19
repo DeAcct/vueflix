@@ -83,6 +83,7 @@ export default {
   z-index: 100;
   bottom: 0;
   width: 100%;
+  height: 6rem;
 
   background-color: var(--top-item);
   border-radius: 0.6rem 0.6rem 0 0;

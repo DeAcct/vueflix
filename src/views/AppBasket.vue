@@ -1,80 +1,109 @@
 <template>
   <main class="basket">
-    <div class="basket__button-group inner">
-      <div class="basket__tabs">
-        <button
-          @click="changeSelected"
-          class="basket__button"
-          v-for="tabItem in tabItems"
-          :key="tabItem.type"
-          :data-key="tabItem.type"
-        >
-          <span
-            :class="[
-              'basket__active-holder',
-              { 'basket__active-holder--active': selectedTab === tabItem.type },
-            ]"
+    <template v-if="user">
+      <div class="basket__button-group inner">
+        <div class="basket__tabs">
+          <button
+            @click="changeSelected"
+            class="basket__button"
+            v-for="tabItem in tabItems"
+            :key="tabItem.type"
+            :data-key="tabItem.type"
           >
-            {{ tabItem.text }}
-          </span>
+            <span
+              :class="[
+                'basket__active-holder',
+                {
+                  'basket__active-holder--active': selectedTab === tabItem.type,
+                },
+              ]"
+            >
+              {{ tabItem.text }}
+            </span>
+          </button>
+        </div>
+        <button class="basket__remove">
+          <icon-base>
+            <icon-remove></icon-remove>
+          </icon-base>
         </button>
       </div>
-      <button class="basket__remove">
-        <icon-base>
-          <icon-remove></icon-remove>
-        </icon-base>
-      </button>
-    </div>
-    <ul class="basket__list">
-      <thumbnail-set
-        :type="selectedTab === 'recentWatched' ? 'episode' : 'series'"
-        v-for="basketItem in basketList"
-        :key="`${selectedTab}-${basketItem.aniTitle}`"
-        :data="basketItem"
-        class="basket__item"
-      />
-    </ul>
+      <ul class="basket__list">
+        <thumbnail-set
+          :type="selectedTab === 'recentWatched' ? 'episode' : 'series'"
+          v-for="basketItem in basketList"
+          :key="`${selectedTab}-${basketItem.aniTitle}`"
+          :data="basketItem"
+          class="basket__item"
+        />
+      </ul>
+    </template>
+    <template v-else>
+      <div class="basket__require-login inner">
+        <strong class="basket__login-title">
+          여기서 지금까지의 덕질을 저장해 보세요!
+        </strong>
+        <router-link to="/auth" class="basket__login-button">
+          로그인/회원가입
+        </router-link>
+      </div>
+    </template>
   </main>
 </template>
 
-<script>
+<script setup>
 // v-for를 이용할 때는 key 속성을 제대로 설정하자.
 // unique한 키가 아닐 경우, 같은 아이템으로 인식하여 업데이트가 이루어지지 않는다.
 // 탭이 변경되었는데, 같은 인덱스에 같은 제목의 애니가 있을 경우 썸네일이 바뀌지 않는 오류가 있었다.
 
-import { mapState } from "vuex";
+import { useStore } from "vuex";
+import { computed, ref } from "vue";
 import ThumbnailSet from "../components/ThumbnailSet.vue";
 import IconBase from "../components/IconBase.vue";
 import IconRemove from "../components/icons/IconRemove.vue";
 
-export default {
-  name: "AppBasket",
-  components: { ThumbnailSet, IconBase, IconRemove },
-  data() {
-    return {
-      tabItems: [
-        { text: "최근 본", type: "recentWatched" },
-        { text: "보고싶다", type: "wannaSee" },
-        { text: "구매한", type: "purchased" },
-        { text: "관심없음", type: "notInterested" },
-      ],
-      selectedTab: "recentWatched",
-    };
-  },
-  methods: {
-    changeSelected(e) {
-      this.selectedTab = e.currentTarget.dataset.key;
-    },
-  },
-  computed: {
-    ...mapState({
-      user: (state) => state.auth.user,
-    }),
-    basketList() {
-      return this.user?.[this.selectedTab];
-    },
-  },
-};
+const tabItems = [
+  { text: "최근 본", type: "recentWatched" },
+  { text: "보고싶다", type: "wannaSee" },
+  { text: "구매한", type: "purchased" },
+  { text: "관심없음", type: "notInterested" },
+];
+const selectedTab = ref("recentWatched");
+function changeSelected(e) {
+  selectedTab.value = e.currentTarget.dataset.key;
+}
+const store = useStore();
+const user = computed(() => store.state.auth.user);
+const basketList = computed(() => user.value[selectedTab.value]);
+
+// export default {
+//   name: "AppBasket",
+//   components: { ThumbnailSet, IconBase, IconRemove },
+//   data() {
+//     return {
+//       tabItems: [
+//         { text: "최근 본", type: "recentWatched" },
+//         { text: "보고싶다", type: "wannaSee" },
+//         { text: "구매한", type: "purchased" },
+//         { text: "관심없음", type: "notInterested" },
+//       ],
+//       selectedTab: "recentWatched",
+//     };
+//   },
+//   methods: {
+//     changeSelected(e) {
+//       this.selectedTab = e.currentTarget.dataset.key;
+//     },
+//   },
+//   computed: {
+//     ...mapState({
+//       user: (state) => state.auth.user,
+//     }),
+//     basketList() {
+//       return this.user?.[this.selectedTab];
+//     },
+//   },
+// };
 </script>
 
 <style lang="scss" scoped>
@@ -135,6 +164,27 @@ export default {
   &__item {
     width: 100%;
     min-height: 25.5rem;
+  }
+
+  &__require-login {
+    display: flex;
+    height: calc(var(--vh) * 100px - 16rem);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  &__login-title {
+    font-size: 1.7rem;
+  }
+  &__login-button {
+    width: 100%;
+    padding: 2rem;
+    background-color: hsl(var(--bg-200));
+    font-size: 1.5rem;
+    text-align: center;
+    border-radius: 0.3rem;
   }
 }
 

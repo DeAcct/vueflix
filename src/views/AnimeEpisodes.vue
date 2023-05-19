@@ -3,7 +3,6 @@
     <accordion-widget
       v-for="(part, index) in animeInfo.parts"
       :key="index"
-      @login-require="openLoginModal"
       :open="index === 0"
     >
       <template v-slot:title>
@@ -21,6 +20,7 @@
               : `${episode.index}화`
           }
             `"
+          @login-require="openLoginModal"
         >
           <template v-slot:index>
             {{
@@ -38,17 +38,29 @@
 <script setup>
 import AccordionWidget from "../components/AccordionWidget.vue";
 import EpisodeCard from "../components/EpisodeCard.vue";
-import { onMounted } from "vue";
+import { inject, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
-defineProps({
-  animeInfo: Object,
-  openLoginModal: Function,
-});
+const animeInfo = inject("anime-info");
 
+const emit = defineEmits(["open-login-modal"]);
 const route = useRoute();
+function openLoginModal() {
+  emit("open-login-modal");
+}
 
 onMounted(() => {
   document.title = `${route.params.title} 다시보기`;
 });
 </script>
+
+<style lang="scss" scoped>
+.anime-episodes {
+  padding-bottom: 2rem;
+  .accordion-widget {
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+  }
+}
+</style>

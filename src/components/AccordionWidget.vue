@@ -1,15 +1,17 @@
 <template>
-  <section class="episodes">
-    <h3 class="episodes__part-wrap">
-      <button @click="widgetToggle" type="button" class="episodes__open-btn">
-        <span class="episodes__part-title"><slot name="title"></slot></span>
+  <section class="accordion-widget">
+    <h3 class="accordion-widget__part-wrap">
+      <button @click="toggle" type="button" class="accordion-widget__open-btn">
+        <span class="accordion-widget__part-title"
+          ><slot name="title"></slot
+        ></span>
         <i
           :class="[
-            'episodes__open-icon',
-            { 'episodes__open-icon--widget-opened': isWidgetOpen },
+            'accordion-widget__open-icon',
+            { 'accordion-widget__open-icon--widget-opened': isOpen },
           ]"
         >
-          <icon-base :icon-name="isWidgetOpen ? '닫기' : '열기'">
+          <icon-base :icon-name="isOpen ? '닫기' : '열기'">
             <icon-arrow-prev />
           </icon-base>
         </i>
@@ -17,9 +19,9 @@
     </h3>
     <ul
       :class="[
-        'episodes__body',
+        'accordion-widget__body',
         'inner',
-        { 'episodes__body--opened': isWidgetOpen },
+        { 'accordion-widget__body--opened': isOpen },
       ]"
     >
       <slot name="content"></slot>
@@ -27,42 +29,27 @@
   </section>
 </template>
 
-<script>
+<script setup>
+import { toRef } from "vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
-export default {
-  name: "EpisodesWidget",
-  components: {
-    IconBase,
-    IconArrowPrev,
-  },
-  props: {
-    open: {
-      type: Boolean,
-    },
-  },
-  data() {
-    return {
-      isWidgetOpen: this.open,
-    };
-  },
-  methods: {
-    widgetToggle() {
-      this.isWidgetOpen = !this.isWidgetOpen;
-    },
-  },
-};
+const props = defineProps({
+  open: Boolean,
+});
+const isOpen = toRef(props.open);
+function toggle() {
+  isOpen.value = !isOpen.value;
+}
 </script>
 
 <style lang="scss" scoped>
-.episodes {
+.accordion-widget {
   border-radius: 0.6rem;
   &__part-wrap {
     position: sticky;
     top: 6rem;
     z-index: 50;
     display: flex;
-    width: 100%;
     margin: 0 auto;
     justify-content: center;
     background-color: hsl(var(--bg-300));
@@ -100,7 +87,10 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding-top: 1rem;
+    padding: {
+      top: 0;
+      bottom: 0;
+    }
     .episode-card {
       transition: 150ms ease-in-out;
       opacity: 0;
@@ -117,9 +107,10 @@ export default {
 }
 
 @media screen and (min-width: 1080px) {
-  .episodes {
+  .accordion-widget {
     &__part-wrap {
       width: 100%;
+      width: calc(100% - 4rem);
     }
     &__part-title {
       font-size: 1.5rem;
@@ -134,10 +125,9 @@ export default {
     }
     &__body {
       gap: 2.5rem;
-      padding-top: 3rem;
       padding: {
-        left: 0;
-        right: 0;
+        left: 2rem;
+        right: 2rem;
       }
       &--opened {
         padding-bottom: 3rem;
