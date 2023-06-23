@@ -84,7 +84,6 @@ import { doc, setDoc, getFirestore } from "firebase/firestore";
 
 import EpisodesWidget from "./AccordionWidget.vue";
 import VueflixBtn from "./VueflixBtn.vue";
-//import { modalAnimations } from "../mixins/modalAnimations";
 import { mapState } from "vuex";
 
 // export default {

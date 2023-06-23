@@ -78,7 +78,7 @@ export default {
     bottom: 0;
     width: 100%;
     padding: 3rem 4rem;
-    background-color: var(--bg-200);
+    background-color: hsl(var(--bg-200));
     border-radius: 0.6rem 0.6rem 0 0;
     .title {
       font-size: 2.5em;
@@ -127,7 +127,6 @@ export default {
       left: 50%;
       transform: translate(-50%, -50%);
       border-radius: 0.6rem;
-      background-color: #fff;
     }
   }
 }

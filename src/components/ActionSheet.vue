@@ -126,25 +126,23 @@ const actions = computed(() =>
   .action-sheet {
     width: unset;
     height: unset;
+    position: absolute;
     &__bg {
-      background-color: transparent;
-    }
-    .interact {
-      width: 15rem;
-      display: flex;
-      position: static;
-      flex-direction: column;
-      border-radius: 0.6rem;
-      box-shadow: var(--box-shadow);
-      background-color: var(--top-item);
+      display: none;
     }
     &__interact {
       position: static;
+      margin-top: 1rem;
+      border-radius: 0.6rem;
     }
     &__actions {
+      display: flex;
+      flex-direction: column;
       border-bottom: none;
     }
     &__item button {
+      display: flex;
+      white-space: nowrap;
       padding: {
         left: 2rem;
         right: 2rem;

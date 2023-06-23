@@ -30,68 +30,54 @@
   </li>
 </template>
 
-<script>
+<script setup>
 import ProgressWidget from "./ProgressWidget.vue";
 
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import OptimizedImage from "./OptimizedImage.vue";
-export default {
-  name: "ThumbnailSet",
-  components: { ProgressWidget, OptimizedImage },
-  props: {
-    type: {
-      validator(value) {
-        return ["series", "episode", "skeleton"].includes(value);
-      },
-    },
-    data: {
-      type: Object,
+import { computed, onMounted, ref } from "vue";
+import { useAsyncState } from "@vueuse/core";
+
+const props = defineProps({
+  type: {
+    validator(value) {
+      return ["series", "episode", "skeleton"].includes(value);
     },
   },
-  data() {
-    return {
-      thumbnailSrc: this.img,
-    };
+  data: {
+    type: Object,
   },
-  async mounted() {
-    if (this.type === "skeleton") {
-      return;
-    }
-    const { aniTitle, episodeThumbnail } = this.data;
-    const storage = getStorage();
-    const thumbnailRef = ref(
-      storage,
-      `${aniTitle}/${
-        this.type === "episode"
-          ? episodeThumbnail
-          : `${aniTitle.replaceAll(/:/g, "_")}.webp`
-      }`
-    );
-    this.thumbnailSrc = await getDownloadURL(thumbnailRef);
-  },
-  computed: {
-    titleWidth() {
-      return `width: ${
-        this.type === "series" ? "100%" : "calc(100% - 3.6rem)"
-      };`;
-    },
-    titleBreak() {
-      return `-webkit-line-clamp: ${this.type === "series" ? 2 : 1};`;
-    },
-    link() {
-      if (!this.data) {
-        return "#none";
-      }
-      return this.data.continueLink || `/anime/${this.data.aniTitle}/episodes`;
-    },
-    alt() {
-      if (!this.data) {
-        return "로딩중";
-      }
-      return `${this.data.aniTitle} 바로보기`;
-    },
-  },
-};
+});
+
+const { aniTitle, episodeThumbnail } = props.data;
+const storage = getStorage();
+const thumbnailRef = fireRef(
+  storage,
+  `${aniTitle}/${
+    props.type === "episode"
+      ? episodeThumbnail
+      : `${aniTitle.replaceAll(/:/g, "_")}.webp`
+  }`
+);
+const { state: thumbnailSrc } = useAsyncState(getDownloadURL(thumbnailRef));
+
+const titleWidth = computed(
+  () => `width: ${props.type === "series" ? "100%" : "calc(100% - 3.6rem)"};`
+);
+
+const link = computed(() => {
+  if (!props.data) {
+    return "#none";
+  }
+  return props.data.continueLink || `/anime/${props.data.aniTitle}/episodes`;
+});
+
+const alt = computed(() => {
+  if (!props.data) {
+    return "로딩중";
+  }
+  return `${props.data.aniTitle} 바로보기`;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -127,8 +113,7 @@ export default {
     flex-direction: column;
   }
   &__title {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
+    display: block;
     text-overflow: ellipsis;
     overflow-wrap: break-word;
     --episode-title-width: 20ch;
@@ -136,6 +121,7 @@ export default {
     font-size: 1.4rem;
     line-height: 1.5;
     font-weight: 500;
+    white-space: nowrap;
   }
   &__part-index {
     font-size: 1.3rem;

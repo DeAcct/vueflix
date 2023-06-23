@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { numberFormatter } from "../mixins/numberFormatter";
+import { numberFormatter } from "../composables/numberFormatter";
 
 export default {
   name: "ReviewItem",

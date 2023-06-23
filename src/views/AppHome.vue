@@ -75,14 +75,16 @@
   </div>
 </template>
 
-<script>
-import BannerSlide from "../components/BannerSlide.vue";
-import DaySelector from "../components/DaySelector.vue";
-import ThumbnailSet from "../components/ThumbnailSet.vue";
-import VueflixModal from "../components/VueflixModal.vue";
-import VueflixCarousel from "../components/VueflixCarousel.vue";
+<script setup>
+import { DAYS } from "@/enums/Days";
+
+import BannerSlide from "@/components/BannerSlide.vue";
+import DaySelector from "@/components/DaySelector.vue";
+import ThumbnailSet from "@/components/ThumbnailSet.vue";
+import VueflixModal from "@/components/VueflixModal.vue";
+import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import Cookies from "js-cookie";
-import { mapState } from "vuex";
+import { useStore } from "vuex";
 import {
   getFirestore,
   getDocs,
@@ -90,96 +92,84 @@ import {
   doc,
   getDoc,
 } from "firebase/firestore";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 
-const DAYS_ENUM = [
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-];
+const selectedDay = ref();
+const selectedDailyAnime = ref([]);
+async function getSelectedDayList() {
+  const db = getFirestore();
+  const docReference = doc(db, "daily", selectedDay.value);
+  const docSnap = await getDoc(docReference);
+  selectedDailyAnime.value = docSnap.data().data;
+}
+onMounted(async () => {
+  const now = new Date();
+  selectedDay.value = DAYS.map(({ key }) => key)[now.getDay()];
+  await getSelectedDayList();
+});
+function onDayChange(e) {
+  selectedDay.value = e;
+}
+watch(selectedDay, async () => {
+  await getSelectedDayList();
+});
 
-export default {
-  name: "AppHome",
-  components: {
-    BannerSlide,
-    DaySelector,
-    VueflixModal,
-    VueflixCarousel,
-    ThumbnailSet,
-  },
-  data() {
-    const now = new Date();
-    const selectedDay = DAYS_ENUM[now.getDay()];
-    return {
-      isModalOpened: false,
-      recommendedAnime: {},
-      selectedDay,
-      selectedDailyAnime: [],
-    };
-  },
-  async mounted() {
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      if (Cookies.get("add-to-home-screen") === undefined) {
-        this.isModalOpened = e;
-      }
-    });
-    window.addEventListener("appinstalled", () => {
-      this.isModalOpened = null;
-    });
-    await this.recommendInit();
-    await this.getSelectedDayList();
-  },
-  methods: {
-    async PWAdismiss() {
-      Cookies.set("add-to-home-screen", null, { expires: 15 });
-      this.isModalOpened = null;
-    },
-    async PWAinstall() {
-      this.isModalOpened.prompt();
-    },
-    async recommendInit() {
-      const db = getFirestore();
-      const qSnapshot = await getDocs(collection(db, "recommend"));
-      const data = qSnapshot.docs
-        .map((doc) => doc.data())
-        .map((lists) => ({
-          ...lists,
-          list: lists.list.sort((a, b) => {
-            if (a.aniTitle < b.aniTitle) {
-              return -1;
-            } else if (a.aniTitle > b.aniTitle) {
-              return 1;
-            }
-            return 0;
-          }),
-        }));
-      this.recommendedAnime = data;
-    },
-    onDayChange(e) {
-      this.selectedDay = e;
-    },
-    async getSelectedDayList() {
-      const db = getFirestore();
-      const docReference = doc(db, "daily", this.selectedDay);
-      const docSnap = await getDoc(docReference);
-      this.selectedDailyAnime = docSnap.data().data;
-    },
-  },
-  watch: {
-    async selectedDay() {
-      await this.getSelectedDayList();
-    },
-  },
-  computed: {
-    ...mapState({
-      auth: (state) => state.auth.user,
-    }),
-  },
-};
+const isModalOpened = ref(false);
+onMounted(() => {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    if (Cookies.get("add-to-home-screen") === undefined) {
+      isModalOpened.value = e;
+    }
+  });
+  window.addEventListener("appinstalled", () => {
+    isModalOpened.value = null;
+  });
+});
+async function PWAdismiss() {
+  Cookies.set("add-to-home-screen", null, { expires: 15 });
+  isModalOpened = null;
+}
+async function PWAinstall() {
+  isModalOpened.prompt();
+}
+
+const recommendedAnime = ref({});
+onMounted(async () => {
+  const db = getFirestore();
+  const qSnapshot = await getDocs(collection(db, "recommend"));
+  const data = qSnapshot.docs
+    .map((doc) => doc.data())
+    .map((lists) => ({
+      ...lists,
+      list: lists.list.sort((a, b) => {
+        if (a.aniTitle < b.aniTitle) {
+          return -1;
+        } else if (a.aniTitle > b.aniTitle) {
+          return 1;
+        }
+        return 0;
+      }),
+    }));
+  recommendedAnime.value = data;
+});
+
+onUnmounted(async () => {
+  window.removeEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    if (Cookies.get("remove-to-home-screen") === undefined) {
+      isModalOpened.value = e;
+    }
+  });
+  window.removeEventListener("appinstalled", () => {
+    isModalOpened.value = null;
+  });
+});
+
+const store = useStore();
+const auth = computed(() => {
+  store.state.auth.user;
+});
 </script>
 
 <style lang="scss" scoped>

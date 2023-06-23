@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vueuse/core": "^10.2.0",
     "chart.js": "^4.3.0",
     "firebase": "^9.21.0",
     "firebase-tools": "^11.30.0",
@@ -21,7 +22,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
-    "vite": "^4.3.6"
+    "vite": "^4.3.9"
   },
   "packageManager": "yarn@1.22.19"
 }

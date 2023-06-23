@@ -1,7 +1,7 @@
 <template>
   <component :is="component" class="anime-item-head">
     <h1 class="blind" v-if="deviceInfo.isTouch">뷰플릭스</h1>
-    <div class="anime-item-head__navigation inner">
+    <div class="anime-item-head__navigation">
       <div class="col-left">
         <a class="back" @click="goBack">
           <icon-base icon-name="뒤로가기">
@@ -23,15 +23,18 @@
             <icon-share />
           </icon-base>
         </button>
-        <button
-          class="anime-item-head__overflow-btn"
-          @click="openOverflowMenu"
-          v-if="deviceInfo.isTouch"
-        >
-          <icon-base>
-            <icon-overflow />
-          </icon-base>
-        </button>
+        <div class="anime-item-head__overflow-btn">
+          <button class="icon" @click="actionSheetToggle">
+            <icon-base>
+              <icon-overflow />
+            </icon-base>
+          </button>
+          <action-sheet
+            v-if="isActionSheetOpened"
+            :action-origin="actions"
+            @overflow-menu-close="actionSheetClose"
+          />
+        </div>
       </div>
     </div>
     <div class="anime-item-head__anime-info inner">
@@ -118,18 +121,6 @@
             </button>
           </div>
         </div>
-      </div>
-      <div class="anime-item-head__overflow-btn" v-if="!deviceInfo.isTouch">
-        <button class="icon" @click="actionSheetToggle">
-          <icon-base>
-            <icon-overflow />
-          </icon-base>
-        </button>
-        <action-sheet
-          v-if="isActionSheetOpened"
-          :action-origin="actions"
-          @overflow-menu-close="actionSheetClose"
-        />
       </div>
     </div>
   </component>
@@ -220,10 +211,6 @@ async function openSystemShare() {
   await navigator.share(shareData);
 }
 
-function openOverflowMenu() {
-  emit("overflow-menu-open");
-}
-
 const isPurchaseActive = ref(false);
 function activeTrigger() {
   isPurchaseActive.value = !isPurchaseActive.value;
@@ -231,6 +218,10 @@ function activeTrigger() {
 
 const isActionSheetOpened = ref(false);
 function actionSheetToggle() {
+  if (deviceInfo.isMobile) {
+    emit("overflow-menu-open");
+    return;
+  }
   isActionSheetOpened.value = !isActionSheetOpened.value;
 }
 function actionSheetClose() {
@@ -322,15 +313,14 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     background: linear-gradient(var(--anime-layout-bg), transparent);
     .col-left {
       display: flex;
+      flex-grow: 1;
       align-items: center;
       height: 2.4rem;
     }
     .col-right {
       display: flex;
       align-items: center;
-      button:not(:first-child) {
-        margin-left: 1rem;
-      }
+      gap: 1rem;
     }
   }
   .back,
@@ -340,6 +330,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     width: 2.4rem;
     height: 2.4rem;
   }
+
   &__scroll-title {
     margin-left: 0.5rem;
     font-size: 1.7rem;
@@ -349,7 +340,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     transform: translateX(2rem);
     transition: transform 150ms ease-out, opacity 150ms ease-out;
     //말줄임표 처리
-    width: 60vw;
+    width: 60%;
     line-height: 2.4rem;
     white-space: nowrap;
     overflow: hidden;
@@ -548,9 +539,20 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
         left: calc((100% - 118rem) / 2);
         right: calc((100% - 118rem) / 2);
       }
+      .col-left {
+        flex-shrink: 1;
+        flex-grow: 0;
+      }
     }
     &__scroll-title {
+      width: 100%;
       font-size: 2rem;
+    }
+    &__overflow-btn {
+      position: relative;
+    }
+    .action-sheet {
+      right: 0;
     }
 
     &__anime-info {
@@ -578,25 +580,6 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
         &--loaded {
           width: auto;
         }
-      }
-    }
-    &__overflow-btn {
-      position: absolute;
-      top: 0;
-      right: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      width: auto;
-      height: auto;
-      .icon {
-        width: 4rem;
-        height: 4rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: hsl(var(--anime-item-head__overflow-btn-pc));
-        border-radius: 50%;
       }
     }
     &__title {

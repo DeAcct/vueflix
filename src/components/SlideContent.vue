@@ -1,12 +1,12 @@
 <template>
   <router-link
-    :to="slideData.link ? slideData.link : '#'"
+    :to="name ? `/anime/${name}/episodes` : '#'"
     class="slide-content"
   >
     <div
       :class="[
         'slide-content__bg-holder',
-        { 'slide-content__bg-holder--loaded': bgLoaded },
+        { 'slide-content__bg-holder--loaded': loaded.bg },
       ]"
     >
       <picture>
@@ -29,7 +29,7 @@
           :alt="slideData.name"
           :class="[
             'slide-content__ani-logo',
-            { 'slide-content__ani-logo--loaded': bgLoaded },
+            { 'slide-content__ani-logo--loaded': loaded.bg },
           ]"
           @load="logoComplete"
           loading="lazy"
@@ -40,57 +40,71 @@
   </router-link>
 </template>
 
-<script>
-import { useFirebase } from "../mixins/useFirebase.js";
+<script setup>
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
+import { getDownloadURL, ref as fireRef, getStorage } from "firebase/storage";
+import { onMounted, reactive, ref } from "vue";
 
-export default {
-  props: {
-    animeId: {
-      type: Number,
-    },
+const props = defineProps({
+  animeId: {
+    type: Number,
   },
-  data() {
-    return {
-      slideData: {},
-      logoLoaded: false,
-      bgLoaded: false,
-    };
-  },
-  mixins: [useFirebase],
-  async mounted() {
-    const {
-      name,
-      slideCopy: copy,
-      shortName,
-    } = await this.useQuery("anime", "idNumber", "==", this.animeId);
+});
 
-    const queryBase = `${name}/${shortName}_banner`;
-    const pcJpgBg = await this.useMultimediaURL(`${queryBase}.jpg`);
-    const pcWebpBg = await this.useMultimediaURL(`${queryBase}.webp`);
-    const mJpgBg = await this.useMultimediaURL(`${queryBase}_m.jpg`);
-    const mWebpBg = await this.useMultimediaURL(`${queryBase}_m.webp`);
-    const logo = await this.useMultimediaURL(`${name}/${shortName}.png`);
-    const link = `/anime/${name}/episodes`;
-    this.slideData = {
-      pcJpgBg,
-      pcWebpBg,
-      mJpgBg,
-      mWebpBg,
-      logo,
-      link,
-      copy,
-      name,
-    };
-  },
-  methods: {
-    logoComplete() {
-      this.logoLoaded = true;
-    },
-    bgComplete() {
-      this.bgLoaded = true;
-    },
-  },
-};
+const slideData = ref({});
+
+onMounted(async () => {
+  const q = query(
+    collection(getFirestore(), "anime"),
+    where("idNumber", "==", props.animeId)
+  );
+  const {
+    name,
+    slideCopy: copy,
+    shortName,
+  } = (await getDocs(q)).docs[0].data();
+
+  const storage = getStorage();
+  const EXTENSIONS = {
+    pcJpgBg: "_banner.jpg",
+    pcWebpBg: "_banner.webp",
+    mJpgBg: "_banner_m.jpg",
+    mWebpBg: "_banner_m.webp",
+    logo: ".png",
+  };
+  const href = `${name}/${shortName}`;
+  const tasks = await Promise.all(
+    Object.values(EXTENSIONS).map((extension) => {
+      return getDownloadURL(fireRef(storage, `${href}${extension}`));
+    })
+  );
+  const urls = tasks.reduce(
+    (acc, url, i) => ({ ...acc, [Object.keys(EXTENSIONS)[i]]: url }),
+    {}
+  );
+  slideData.value = {
+    ...urls,
+    copy,
+    name,
+  };
+});
+
+const loaded = reactive({
+  logo: false,
+  bg: false,
+});
+function logoComplete() {
+  loaded.logo = true;
+}
+function bgComplete() {
+  loaded.bg = true;
+}
 </script>
 
 <style lang="scss" scoped>

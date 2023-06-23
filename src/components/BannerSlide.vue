@@ -89,57 +89,6 @@ function onLeft({ detail }) {
   const [, , progress] = detail;
   autoPlayProgress.value = progress;
 }
-
-// export default {
-//   name: "BannerSlide",
-//   components: {
-//     SlideContent,
-//     IconBase,
-//     IconArrowNext,
-//     IconArrowPrev,
-//   },
-//   data() {
-//     return {
-//       animeIDArray: [],
-//       slideImgLoaded: false,
-//       randomMaxNumber: 0,
-//       progress: 0,
-//     };
-//   },
-//   watch: {
-//     randomMaxNumber: {
-//       async handler() {
-//         const db = getFirestore();
-//         const docRef = doc(db, "statistics", "statistics");
-//         const res = await getDoc(docRef);
-//         this.randomMaxNumber = res?.data().numbersofAnime;
-//         this.animeIDArray = this.useAnimeIDArray(5);
-//       },
-//       immediate: true,
-//     },
-//   },
-//   mounted() {
-//     register();
-//   },
-//   methods: {
-//     useAnimeIDArray(max) {
-//       let idArray = [];
-//       if (this.randomMaxNumber !== 0) {
-//         while (idArray.length < max) {
-//           const candidateNum = Math.floor(
-//             Math.random() * this.randomMaxNumber + 1
-//           );
-//           const isDuplicated = idArray.includes(candidateNum);
-//           if (!isDuplicated) {
-//             idArray.push(candidateNum);
-//           }
-//         }
-//       }
-//       return idArray;
-//     },
-//
-//   },
-// };
 </script>
 
 <style lang="scss" scoped>

@@ -1,7 +1,7 @@
 <template>
   <div class="day-selector">
     <button
-      v-for="day in days"
+      v-for="day in DAYS"
       :key="day.key"
       :class="{ active: day.key === selected }"
       @click="dayBtnClick($event, day.key)"
@@ -11,49 +11,27 @@
   </div>
 </template>
 
-<script>
-const DAYS_ENUM = [
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-];
+<script setup>
+import { DAYS } from "@/enums/Days";
 
-export default {
-  name: "DaySelector",
-  props: {
-    type: {
-      type: String,
-    },
-    selected: {
-      type: String,
-      validator(value) {
-        return DAYS_ENUM.includes(value);
-      },
-    },
+// defineProps는 setup() 밖으로 호이스팅(선언이 상단으로 끌어올려짐) 되므로 외부 상수/변수를 참조할 수 없다.
+// 다만 import 되었거나 script 블록에서 선언된 경우 참조할 수 있다.
+const props = defineProps({
+  type: {
+    type: String,
   },
-  data() {
-    return {
-      days: [
-        { text: "일", key: "sunday" },
-        { text: "월", key: "monday" },
-        { text: "화", key: "tuesday" },
-        { text: "수", key: "wednesday" },
-        { text: "목", key: "thursday" },
-        { text: "금", key: "friday" },
-        { text: "토", key: "saturday" },
-      ],
-    };
-  },
-  methods: {
-    dayBtnClick(_, key) {
-      this.$emit("day-change", key);
+  selected: {
+    type: String,
+    validator(value) {
+      return DAYS.map(({ key }) => key).includes(value);
     },
   },
-};
+});
+
+const emits = defineEmits(["day-change"]);
+function dayBtnClick(_, key) {
+  emits("day-change", key);
+}
 </script>
 
 <style lang="scss" scoped>
