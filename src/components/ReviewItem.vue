@@ -3,13 +3,13 @@
     :is="component"
     :class="[
       'review-item',
-      { 'review-item--me': isMe },
-      { 'review-item--other': !isMe },
+      { 'review-item--me': self },
+      { 'review-item--other': !self },
     ]"
     v-if="isMyReviewShown"
   >
     <div class="row-top">
-      <strong class="author" v-if="!isMe">
+      <strong class="author" v-if="!self">
         <slot name="author"></slot>
       </strong>
       <strong class="author" v-else>나</strong>
@@ -19,60 +19,47 @@
       <slot name="content"></slot>
     </p>
     <div class="interact-area">
-      <button v-if="!isMe">신고</button>
-      <button v-if="isMe" @click="editTrigger">수정</button>
-      <button v-if="isMe" @click="deleteTrigger">삭제</button>
+      <button v-if="!self">신고</button>
+      <button v-if="self" @click="editTrigger">수정</button>
+      <button v-if="self" @click="deleteTrigger">삭제</button>
     </div>
   </component>
 </template>
 
-<script>
-import { numberFormatter } from "../composables/numberFormatter";
+<script setup>
+import { computed } from "vue";
 
-export default {
-  name: "ReviewItem",
-  props: {
-    date: {
-      type: Object,
-    },
-    component: {
-      type: String,
-      default: "li",
-    },
-    myUid: {
-      type: String,
-    },
-    uid: {
-      type: String,
-    },
-    isMyReviewShown: {
-      type: Boolean,
-    },
+const props = defineProps({
+  date: {
+    type: Object,
   },
-  mixins: [numberFormatter],
-  methods: {
-    deleteTrigger() {
-      this.$emit("delete-review");
-    },
-    editTrigger() {
-      this.$emit("edit-review");
-    },
+  component: {
+    type: String,
+    default: "li",
   },
-  computed: {
-    formattedDate() {
-      const month = this.date ? this.numberFormatter(this.date.month) : "";
-      const date = this.date ? this.numberFormatter(this.date.date) : "";
-      const hour = this.date ? this.numberFormatter(this.date.hour) : "";
-      const min = this.date ? this.numberFormatter(this.date.min) : "";
-      return this.date
-        ? `${this.date.year}.${month}.${date} ${hour}:${min}`
-        : "";
-    },
-    isMe() {
-      return this.myUid === this.uid;
-    },
+  self: {
+    type: Boolean,
   },
-};
+  isMyReviewShown: {
+    type: Boolean,
+  },
+});
+
+const emit = defineEmits(["delete-review", "edit-review"]);
+
+function deleteTrigger() {
+  emit("delete-review");
+}
+function editTrigger() {
+  emit("edit-review");
+}
+
+const formattedDate = computed(() => {
+  return new Intl.DateTimeFormat("ko-KR", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(props.date.toDate());
+});
 </script>
 
 <style lang="scss" scoped>

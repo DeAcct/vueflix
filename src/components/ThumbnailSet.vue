@@ -10,19 +10,19 @@
       <template v-else>
         <router-link
           class="thumbnail-set__text"
-          :to="`/anime/${data.aniTitle}/episodes`"
+          :to="`/anime/${aniTitle}/episodes`"
           :style="titleWidth"
         >
           <span class="thumbnail-set__title" :style="titleBreak">
-            {{ data.aniTitle }}
+            {{ aniTitle }}
           </span>
           <strong class="thumbnail-set__part-index" v-if="type === 'episode'">
-            {{ data.part }}기 {{ data.index }}화
+            {{ part }}기 {{ index }}화
           </strong>
         </router-link>
         <progress-widget
           class="thumbnail-set__watched-percent"
-          :percent="data.watchedPercent"
+          :percent="watchedPercent"
           v-if="type === 'episode'"
         ></progress-widget>
       </template>
@@ -35,7 +35,7 @@ import ProgressWidget from "./ProgressWidget.vue";
 
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import OptimizedImage from "./OptimizedImage.vue";
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 import { useAsyncState } from "@vueuse/core";
 
 const props = defineProps({
@@ -44,19 +44,31 @@ const props = defineProps({
       return ["series", "episode", "skeleton"].includes(value);
     },
   },
-  data: {
-    type: Object,
+  aniTitle: {
+    type: String,
+  },
+  shortTitle: {
+    type: String,
+  },
+  part: {
+    type: String,
+  },
+  index: {
+    type: String,
+  },
+  watchedPercent: {
+    type: String,
   },
 });
 
-const { aniTitle, episodeThumbnail } = props.data;
 const storage = getStorage();
+const formattedTitle = props.aniTitle.replaceAll(/:/g, "_");
 const thumbnailRef = fireRef(
   storage,
-  `${aniTitle}/${
+  `${props.aniTitle}/${
     props.type === "episode"
-      ? episodeThumbnail
-      : `${aniTitle.replaceAll(/:/g, "_")}.webp`
+      ? `${props.shortTitle}Sr${props.part}Ep${props.index}.jpg`
+      : `${formattedTitle}.webp`
   }`
 );
 const { state: thumbnailSrc } = useAsyncState(getDownloadURL(thumbnailRef));
@@ -66,17 +78,17 @@ const titleWidth = computed(
 );
 
 const link = computed(() => {
-  if (!props.data) {
+  if (!props.aniTitle) {
     return "#none";
   }
-  return props.data.continueLink || `/anime/${props.data.aniTitle}/episodes`;
+  return props.continueLink || `/anime/${props.aniTitle}/episodes`;
 });
 
 const alt = computed(() => {
-  if (!props.data) {
+  if (!props.aniTitle) {
     return "로딩중";
   }
-  return `${props.data.aniTitle} 바로보기`;
+  return `${props.aniTitle} 바로보기`;
 });
 </script>
 

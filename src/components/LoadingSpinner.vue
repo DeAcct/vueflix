@@ -4,15 +4,12 @@
   </svg>
 </template>
 
-<script>
-export default {
-  name: "LoadingSpinner",
-  props: {
-    isLoading: {
-      type: Boolean,
-    },
+<script setup>
+const props = defineProps({
+  isLoading: {
+    type: Boolean,
   },
-};
+});
 </script>
 <style lang="scss" scoped>
 .loader {

@@ -12,8 +12,12 @@
             <thumbnail-set
               type="episode"
               v-for="anime in auth?.recentWatched"
-              :key="anime.aniTitle"
-              :data="anime"
+              :key="anime"
+              :ani-title="anime.aniTitle"
+              :part="anime.part"
+              :index="anime.index"
+              :watched-percent="anime.watchedPercent"
+              :short-title="anime.shortTitle"
             />
           </vueflix-carousel>
         </div>
@@ -31,8 +35,8 @@
             <thumbnail-set
               type="series"
               v-for="anime in selectedDailyAnime"
-              :key="anime.aniTitle"
-              :data="anime"
+              :key="anime"
+              :ani-title="anime"
             />
           </vueflix-carousel>
         </div>
@@ -50,8 +54,8 @@
             <thumbnail-set
               type="series"
               v-for="anime in recommended.list"
-              :key="anime.aniTitle"
-              :data="anime"
+              :key="anime"
+              :ani-title="anime"
             />
           </vueflix-carousel>
         </div>
@@ -128,7 +132,7 @@ onMounted(() => {
 });
 async function PWAdismiss() {
   Cookies.set("add-to-home-screen", null, { expires: 15 });
-  isModalOpened = null;
+  isModalOpened.value = null;
 }
 async function PWAinstall() {
   isModalOpened.prompt();
@@ -143,9 +147,9 @@ onMounted(async () => {
     .map((lists) => ({
       ...lists,
       list: lists.list.sort((a, b) => {
-        if (a.aniTitle < b.aniTitle) {
+        if (a < b) {
           return -1;
-        } else if (a.aniTitle > b.aniTitle) {
+        } else if (a > b) {
           return 1;
         }
         return 0;
@@ -167,21 +171,17 @@ onUnmounted(async () => {
 });
 
 const store = useStore();
-const auth = computed(() => {
-  store.state.auth.user;
-});
+const auth = computed(() => store.state.auth.user);
 </script>
 
 <style lang="scss" scoped>
 .app-home {
   &__curated {
-    padding: 2.8rem 0 5.6rem;
+    display: flex;
+    flex-direction: column;
+    padding: 3.2rem 0 calc(var(--bottom-tab-height) + 3.2rem);
     background-color: hsl(var(--bg-100));
-  }
-  &__curated-item {
-    &:not(:last-child) {
-      margin-bottom: 3rem;
-    }
+    gap: 3rem;
   }
   &__curated-title {
     font-size: 2rem;
@@ -193,7 +193,7 @@ const auth = computed(() => {
   &__modal {
     transition: 150ms ease-out;
     transform: translateY(100vh);
-    bottom: 5.6rem;
+    bottom: 6rem;
     &--show {
       transform: translateY(0);
     }

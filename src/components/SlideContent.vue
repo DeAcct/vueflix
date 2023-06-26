@@ -1,6 +1,6 @@
 <template>
   <router-link
-    :to="name ? `/anime/${name}/episodes` : '#'"
+    :to="slideData.name ? `/anime/${slideData.name}/episodes` : '#'"
     class="slide-content"
   >
     <div

@@ -33,7 +33,11 @@
           :type="selectedTab === 'recentWatched' ? 'episode' : 'series'"
           v-for="basketItem in basketList"
           :key="`${selectedTab}-${basketItem.aniTitle}`"
-          :data="basketItem"
+          :ani-title="basketItem.aniTitle"
+          :part="basketItem.part"
+          :index="basketItem.index"
+          :watched-percent="basketItem.watchedPercent"
+          :short-title="basketItem.shortTitle"
           class="basket__item"
         />
       </ul>
@@ -168,7 +172,7 @@ const basketList = computed(() => user.value[selectedTab.value]);
 
   &__require-login {
     display: flex;
-    height: calc(var(--vh) * 100px - 16rem);
+    height: calc(var(--vh) * 100px - 8rem);
     flex-direction: column;
     align-items: center;
     justify-content: center;

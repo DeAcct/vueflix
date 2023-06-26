@@ -52,7 +52,7 @@ function toggle() {
     display: flex;
     margin: 0 auto;
     justify-content: center;
-    background-color: hsl(var(--bg-300));
+    background-color: var(--anime-layout-parts);
     backdrop-filter: blur(10px);
     border-radius: 0.6rem;
     width: calc(100% - var(--inner-padding) * 2);

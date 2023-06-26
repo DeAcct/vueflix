@@ -237,7 +237,6 @@ const actions = [
   }
   &__tab-view {
     border-radius: 0.9rem 0.9rem 0 0;
-    background-color: var(--anime-layout-parts);
     display: flex;
     flex-direction: column;
     gap: 1.7rem;
@@ -341,6 +340,8 @@ const actions = [
     &__tab-view {
       border-radius: 0.9rem;
       width: 67%;
+      background-color: var(--anime-layout-episodes);
+      box-shadow: none;
     }
     &__tab-selector {
       padding: 0 2rem;

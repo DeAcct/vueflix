@@ -83,7 +83,6 @@ export default {
   z-index: 100;
   bottom: 0;
   width: 100%;
-  height: 6rem;
 
   background-color: var(--top-item);
   border-radius: 0.6rem 0.6rem 0 0;
@@ -95,22 +94,21 @@ export default {
     display: flex;
     .item {
       flex-grow: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
     a {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      flex-grow: 1;
-      height: 5.6rem;
+      height: var(--bottom-tab-height);
       font-size: 1.1rem;
       gap: 0.2rem;
       span {
         color: hsl(var(--bottom-tab));
         font-weight: 500;
+      }
+      .icon {
+        margin-top: -0.4rem;
       }
       &.vueflix-active-link .icon,
       &.vueflix-active-link span {

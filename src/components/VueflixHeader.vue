@@ -102,7 +102,7 @@ function back() {
   display: flex;
   align-items: center;
   border-bottom: 1px solid hsl(var(--bg-200), calc(v-bind(scrollPercent) * 1%));
-  background-color: hsl(var(--bg-100), calc(v-bind(scrollPercent) * 1%));
+  background-color: hsl(var(--bg-100) / calc(v-bind(scrollPercent) * 0.01));
 
   &__activity {
     font-size: 1.7rem;

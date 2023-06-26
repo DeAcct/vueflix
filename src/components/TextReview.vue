@@ -19,8 +19,7 @@
           v-for="(reviewItem, index) in reviewList"
           :key="index"
           :date="reviewItem.time"
-          :my-uid="myReview.uid"
-          :uid="reviewItem.uid"
+          :self="myReview.uid === reviewItem.uid"
           :is-my-review-shown="!editmode"
           @edit-review="editModeOn"
           @delete-review="deleteTrigger"
@@ -33,7 +32,7 @@
   </section>
 </template>
 
-<script>
+<script setup>
 import WriteReview from "./WriteReview.vue";
 import ReviewItem from "./ReviewItem.vue";
 import {
@@ -43,162 +42,124 @@ import {
   updateDoc,
   arrayUnion,
   getDoc,
+  Timestamp,
 } from "firebase/firestore";
-export default {
-  name: "TextReview",
-  components: {
-    WriteReview,
-    ReviewItem,
-  },
-  data() {
-    return {
-      reviewList: [],
-      editmode: false,
-    };
-  },
-  props: {
-    user: {
-      type: [Object, Boolean],
-    },
-  },
-  computed: {
-    db: () => getFirestore(),
-    animeRef() {
-      return doc(this.db, "anime", this.$route.params.title);
-    },
-    userRef() {
-      return this.user ? doc(this.db, "user", this.user.uid) : undefined;
-    },
-    myReview() {
-      const result = this.reviewList.find(
-        (reviewItem) => reviewItem.uid === this.user.uid
-      );
-      return result;
-    },
-    othersReview() {
-      const result = this.reviewList.filter(
-        (reviewItem) => reviewItem.uid !== this.user.uid
-      );
-      return result;
-    },
-    isWriteReviewShown() {
-      return !this.myReview || this.editmode;
-    },
-    writeReviewType() {
-      return this.editmode ? "edit-review" : "new-review";
-    },
-    currentTime() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-      const date = now.getDate();
-      const hour = now.getHours();
-      const min = now.getMinutes();
-      return {
-        year,
-        month,
-        date,
-        hour,
-        min,
-      };
-    },
-  },
-  watch: {
-    user: {
-      async handler() {
-        await this.syncTextReviews();
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    //CRUD
-    //Create
-    async addedTrigger(e) {
-      const reviewItem = {
-        author: this.user.nickname,
-        uid: this.user.uid,
-        ...e,
-        thumbsUp: 0,
-        time: this.currentTime,
-        aniTitle: this.$route.params.title,
-      };
+import { computed, ref, watch } from "vue";
+import { useStore } from "vuex";
+import { useRoute } from "vue-router";
 
-      await setDoc(
-        this.animeRef,
-        { reviews: arrayUnion(reviewItem) },
-        { merge: true }
-      );
-      await setDoc(
-        this.userRef,
-        { reviews: arrayUnion(reviewItem) },
-        { merge: true }
-      );
-      await this.syncTextReviews();
-    },
+const reviewList = ref([]);
+const editmode = ref(false);
 
-    //Read
-    async syncTextReviews() {
-      const animeSnapshot = await getDoc(this.animeRef);
-      const animeReviews = animeSnapshot.data().reviews;
-      if (this.userRef) {
-        const userSnapshot = await getDoc(this.userRef);
-        const userReviews = userSnapshot.data().reviews;
-        this.$store.commit("auth/setReviews", userReviews);
-        this.reviewList = animeReviews;
-      }
-    },
-
-    //Update
-    async editedTrigger(e) {
-      const userSnapshot = await getDoc(this.userRef);
-      const userReviews = userSnapshot.data().reviews;
-      const animeSnapshot = await getDoc(this.animeRef);
-      const animeReviews = animeSnapshot.data().reviews;
-
-      const mutator = (reviewItem) => {
-        reviewItem.content = e.content;
-        reviewItem.time = this.currentTime;
-      };
-      animeReviews.forEach((reviewItem) => {
-        if (reviewItem.uid === this.user.uid) {
-          mutator(reviewItem);
-        }
-      });
-      userReviews.forEach((reviewItem) => {
-        if (reviewItem.aniTitle === this.$route.params.title) {
-          mutator(reviewItem);
-        }
-      });
-      await updateDoc(this.animeRef, { reviews: animeReviews });
-      await updateDoc(this.userRef, { reviews: userReviews });
-      await this.syncTextReviews();
-      this.editModeOff();
-    },
-    editModeOn() {
-      this.editmode = true;
-    },
-    editModeOff() {
-      this.editmode = false;
-    },
-
-    //Delete
-    async deleteTrigger() {
-      await setDoc(
-        this.animeRef,
-        { reviews: this.othersReview },
-        { merge: true }
-      );
-      const userSnapshot = await getDoc(this.userRef);
-      const userReviews = userSnapshot.data().reviews;
-      const result = userReviews.filter(
-        (reviewItem) => reviewItem.aniTitle !== this.$route.params.title
-      );
-      await setDoc(this.userRef, { reviews: result }, { merge: true });
-      await this.syncTextReviews();
-    },
+const props = defineProps({
+  user: {
+    type: [Object, Boolean],
   },
-};
+});
+
+const myReview = computed(() =>
+  reviewList.value.find((reviewItem) => reviewItem.uid === props.user.uid)
+);
+const othersReview = computed(() =>
+  reviewList.value.filter((reviewItem) => reviewItem.uid !== props.user.uid)
+);
+const isWriteReviewShown = computed(() => !myReview.value || editmode.value);
+const writeReviewType = computed(() =>
+  editmode.value ? "edit-review" : "new-review"
+);
+
+const route = useRoute();
+const store = useStore();
+const db = getFirestore();
+const animeDoc = doc(db, "anime", route.params.title);
+
+//Read
+async function syncTextReviews() {
+  const animeSnapshot = await getDoc(animeDoc);
+  const animeReviews = animeSnapshot.data().reviews;
+  if (!animeDoc) {
+    return;
+  }
+  const userSnapshot = await getDoc(animeDoc);
+  const userReviews = userSnapshot.data().reviews;
+  store.commit("auth/setReviews", userReviews);
+  reviewList.value = animeReviews;
+}
+watch(
+  () => props.user,
+  async () => {
+    await syncTextReviews();
+  }
+);
+
+const userDoc = computed(() =>
+  props.user ? doc(db, "user", props.user.uid) : undefined
+);
+
+//Update
+async function editedTrigger(e) {
+  const userSnapshot = await getDoc(userDoc.value);
+  const userReviews = userSnapshot.data().reviews;
+  const animeSnapshot = await getDoc(animeDoc);
+  const animeReviews = animeSnapshot.data().reviews;
+
+  const mutator = (reviewItem) => {
+    reviewItem.content = e.content;
+    reviewItem.time = Timestamp.fromDate(new Date());
+  };
+  animeReviews.forEach((reviewItem) => {
+    if (reviewItem.uid === props.user.uid) {
+      mutator(reviewItem);
+    }
+  });
+  userReviews.forEach((reviewItem) => {
+    if (reviewItem.aniTitle === route.params.title) {
+      mutator(reviewItem);
+    }
+  });
+  await updateDoc(animeDoc, { reviews: animeReviews });
+  await updateDoc(userDoc.value, { reviews: userReviews });
+  await syncTextReviews();
+  editModeOff();
+}
+function editModeOn() {
+  editmode.value = true;
+}
+function editModeOff() {
+  editmode.value = false;
+}
+
+//Create
+async function addedTrigger(e) {
+
+  const reviewItem = {
+    author: props.user.nickname,
+    uid: props.user.uid,
+    ...e,
+    thumbsUp: 0,
+    time: new Date(),
+    aniTitle: route.params.title,
+  };
+
+  await setDoc(animeDoc, { reviews: arrayUnion(reviewItem) }, { merge: true });
+  await setDoc(
+    userDoc.value,
+    { reviews: arrayUnion(reviewItem) },
+    { merge: true }
+  );
+  await syncTextReviews();
+}
+
+async function deleteTrigger() {
+  await setDoc(animeDoc, { reviews: othersReview.value }, { merge: true });
+  const userSnapshot = await getDoc(userDoc.value);
+  const userReviews = userSnapshot.data().reviews;
+  const result = userReviews.filter(
+    (reviewItem) => reviewItem.aniTitle !== route.params.title
+  );
+  await setDoc(userDoc.value, { reviews: result }, { merge: true });
+  await syncTextReviews();
+}
 </script>
 
 <style lang="scss" scoped>

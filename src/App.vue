@@ -85,5 +85,8 @@ onMounted(() => {
   setDeviceInfo();
   setTheme();
   setViewPort();
+  window.addEventListener("resize", () => {
+    setViewPort();
+  });
 });
 </script>

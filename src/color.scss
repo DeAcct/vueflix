@@ -47,9 +47,11 @@
   --toggle-true: 209, 100%, 50%;
   --toggle-mixed: hsl(var(--theme-500));
 
-  --anime-layout-bg: #000;
-  --anime-layout-text: #fff;
-  --anime-layout-parts: hsl(var(--bg-100));
+  --anime-layout-bg: hsl(var(--bg-100));
+  --anime-layout-text: hsl(var(--text-900));
+  --anime-layout-episodes: hsl(var(--bg-200));
+  --anime-layout-parts: hsl(var(--bg-300));
+  --anime-layout-shade: hsl(var(--bg-300));
 
   --anime-item-head-700: 288, 79%, 7%;
   --anime-item-head-500: 288, 79%, 10%;
@@ -127,6 +129,11 @@
   --anime-useful-widget: 0, 5%, 20%;
   --anime-genre: hsla(0, 5%, 13%, 0.8);
 
+  --anime-layout-bg: #000;
+  --anime-layout-text: hsl(0, 0%, 100%);
+  --anime-layout-episodes: hsl(var(--bg-200));
+  --anime-layout-parts: hsl(var(--bg-300));
+
   --box-shadow: none;
   --overflow-gradient: linear-gradient(
     90deg,
@@ -136,6 +143,4 @@
   );
   --new-review: hsl(var(--bg-100));
   --chart-legend: hsl(var(--bg-100));
-
-  --anime-layout-parts: hsl(var(--bg-200));
 }

@@ -64,6 +64,7 @@ svg {
 }
 :root {
   --inner-padding: 2rem;
+  --bottom-tab-height: 6rem;
 }
 #app {
   min-height: calc(var(--vh) * 100 * 1px);
