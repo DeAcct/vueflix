@@ -61,21 +61,6 @@
         </div>
       </div>
     </main>
-    <vueflix-modal
-      class="app-home__modal"
-      type="yes-no"
-      :yes-func="PWAinstall"
-      :no-func="PWAdismiss"
-      :class="{ 'app-home__modal--show': isModalOpened }"
-      v-if="isModalOpened"
-    >
-      <template v-slot:title>뷰플릭스 앱 써보실래요?</template>
-      <template v-slot:description>
-        홈 화면에서 더 빠르게 만나볼 수 있어요
-      </template>
-      <template v-slot:no-string>나중에</template>
-      <template v-slot:yes-string>설치</template>
-    </vueflix-modal>
   </div>
 </template>
 
@@ -85,7 +70,6 @@ import { DAYS } from "@/enums/Days";
 import BannerSlide from "@/components/BannerSlide.vue";
 import DaySelector from "@/components/DaySelector.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
-import VueflixModal from "@/components/VueflixModal.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import Cookies from "js-cookie";
 import { useStore } from "vuex";
