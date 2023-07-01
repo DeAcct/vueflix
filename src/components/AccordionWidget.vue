@@ -96,8 +96,10 @@ function toggle() {
       opacity: 0;
     }
     &--opened {
-      padding-top: 1.5rem;
-      padding-bottom: 2rem;
+      padding: {
+        top: 1.5rem;
+        bottom: 2rem;
+      }
       height: auto;
       .episode-card {
         opacity: 1;
@@ -130,7 +132,10 @@ function toggle() {
         right: 2rem;
       }
       &--opened {
-        padding-bottom: 3rem;
+        padding: {
+          top: 2.5rem;
+          bottom: 3rem;
+        }
       }
     }
   }

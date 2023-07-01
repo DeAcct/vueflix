@@ -1,57 +1,30 @@
 <template>
-  <div class="reviews" :style="`min-height: ${deviceHeight}px;`">
-    <login-widget class="widget" v-if="!user" :btn-func="goAuth">
+  <div class="reviews">
+    <login-widget v-if="!user" :btn-func="goAuth">
       <template v-slot:text>
         <h2>로그인하고 리뷰를 남겨보세요</h2>
       </template>
       <template v-slot:login-state-text>로그인</template>
     </login-widget>
-    <keyword-reviews class="widget" :isLoggedIn="user" />
-    <text-review class="widget" :user="user" />
+    <keyword-reviews :isLoggedIn="user" />
+    <text-review :user="user" />
   </div>
 </template>
 
-<script>
-//todo: composition api 전환
-import { mapState } from "vuex";
-import KeywordReviews from "../components/KeywordReviews.vue";
-import TextReview from "../components/TextReview.vue";
-import LoginWidget from "../components/LoginWidget.vue";
+<script setup>
+import KeywordReviews from "@/components/KeywordReviews.vue";
+import TextReview from "@/components/TextReview.vue";
+import LoginWidget from "@/components/LoginWidget.vue";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
-export default {
-  name: "AnimeReviews",
-  components: {
-    KeywordReviews,
-    TextReview,
-    LoginWidget,
-  },
-  mounted() {
-    window.addEventListener("resize", () => {
-      this.deviceHeight = window.innerHeight;
-    });
-    document.title = `${this.$route.params.title} 리뷰`;
-  },
-  unmounted() {
-    window.removeEventListener("resize", () => {
-      this.deviceHeight = window.innerHeight;
-    });
-  },
-  data() {
-    return {
-      deviceHeight: window.innerHeight,
-    };
-  },
-  methods: {
-    goAuth() {
-      this.$router.push("/auth");
-    },
-  },
-  computed: {
-    ...mapState({
-      user: (state) => state.auth.user,
-    }),
-  },
-};
+const router = useRouter();
+function goAuth() {
+  router.push("/auth");
+}
+const store = useStore();
+const user = computed(() => store.state.auth.user);
 </script>
 
 <style lang="scss" scoped>
@@ -60,22 +33,6 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  .widget {
-    &:not(:last-child) {
-      margin-bottom: 2rem;
-    }
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .reviews {
-    .widget {
-      padding: {
-        top: 3rem;
-        bottom: 3rem;
-      }
-    }
-  }
+  gap: 1.5rem;
 }
 </style>

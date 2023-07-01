@@ -1,41 +1,30 @@
 <template>
   <div class="keyword-my">
-    <div class="row-top">
-      <h3 class="keyword-my__description">
-        {{ user ? `${user.nickname}님` : "당신" }}은 어떤 점이 좋으세요?
-      </h3>
-      <form class="survey">
-        <label
-          v-for="label in data"
-          :key="label.keyword"
-          class="survey__keyword"
+    <h2 class="keyword-my__title">키워드</h2>
+    <form class="survey">
+      <label v-for="label in data" :key="label.keyword" class="survey__keyword">
+        <input
+          type="checkbox"
+          :id="label.id"
+          class="blind"
+          v-model="surveyData"
+          @change="setSurveyData"
+          :value="label.id"
+          :ref="label.id"
+        />
+        <i
+          :class="['icon', { 'icon--selected': surveyData.includes(label.id) }]"
         >
-          <input
-            type="checkbox"
-            :id="label.id"
-            class="blind"
-            v-model="surveyData"
-            @change="setSurveyData"
-            :value="label.id"
-            :ref="label.id"
-          />
-          <i
-            :class="[
-              'icon',
-              { 'icon--selected': surveyData.includes(label.id) },
-            ]"
-          >
-            <icon-base>
-              <icon-selected v-if="surveyData.includes(label.id)" />
-              <icon-not-selected v-if="!surveyData.includes(label.id)" />
-            </icon-base>
-          </i>
-          <span class="text">
-            {{ label.keyword }}
-          </span>
-        </label>
-      </form>
-    </div>
+          <icon-base>
+            <icon-selected v-if="surveyData.includes(label.id)" />
+            <icon-not-selected v-else />
+          </icon-base>
+        </i>
+        <span class="text">
+          {{ label.keyword }}
+        </span>
+      </label>
+    </form>
   </div>
 </template>
 
@@ -86,7 +75,7 @@ export default {
     },
   },
   methods: {
-    async setSurveyData(e) {
+    async setSurveyData() {
       const beforeSurvey = this.beforeKeyword;
       const afterSurvey = this.surveyData;
       const changes =
@@ -124,40 +113,24 @@ export default {
 
 <style lang="scss" scoped>
 .keyword-my {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  background-color: hsl(var(--bg-200));
-  border-radius: 0.6rem;
-  .row-top {
+  &__title {
     width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-  }
-  &__description {
-    width: 100%;
-    font-size: 2rem;
-    font-weight: 900;
+    font-size: 1.7rem;
+    font-weight: 700;
     line-height: 1.5;
-    text-align: center;
     margin-bottom: 1rem;
   }
   .survey {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     width: 100%;
-    padding: 0 1.5rem;
     gap: 1rem;
     &__keyword {
       display: flex;
       align-items: center;
-      padding: 1rem 1.5rem;
-      border: 1px solid hsl(var(--bg-300));
-      border-radius: 0.3rem;
+      padding: 0.5rem 0.75rem;
+      background-color: hsl(var(--theme-500) / 0.1);
+      border-radius: 0.6rem;
       .icon {
         width: 1.8rem;
         height: 1.8rem;
@@ -173,6 +146,18 @@ export default {
       }
       .text {
         font-size: 1.3rem;
+        font-weight: 500;
+      }
+    }
+  }
+}
+@media screen and (min-width: 1024px) {
+  .keyword-my {
+    .survey {
+      &__keyword {
+        .text {
+          font-size: 1.5rem;
+        }
       }
     }
   }

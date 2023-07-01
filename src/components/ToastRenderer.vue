@@ -6,12 +6,10 @@
   </ul>
 </template>
 
-<script>
-import { mapState } from "vuex";
+<script setup>
+import { computed } from "vue";
+import { useStore } from "vuex";
 
-export default {
-  computed: {
-    ...mapState(["toasts"]),
-  },
-};
+const store = useStore();
+const toasts = computed(() => store.state.toasts);
 </script>

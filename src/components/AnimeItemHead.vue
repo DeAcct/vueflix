@@ -229,7 +229,8 @@ function actionSheetClose() {
 }
 
 function purchase() {
-  if (!user.value) {
+  console.log(user.value);
+  if (user.value) {
     emit("purchase");
   } else {
     emit("require-login", "로그인하면 애니메이션을 구매 및 소장할 수 있어요");

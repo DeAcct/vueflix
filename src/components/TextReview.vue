@@ -1,9 +1,6 @@
 <template>
   <section class="text-review inner">
-    <h2 class="text-review__title">긴 글</h2>
-    <p class="text-review__description">
-      키워드로 표현할 수 없는 무언가가 있다면!
-    </p>
+    <h2 class="text-review__title">리뷰</h2>
     <write-review
       @new-review="addedTrigger"
       @edit-review="editedTrigger"
@@ -89,7 +86,8 @@ watch(
   () => props.user,
   async () => {
     await syncTextReviews();
-  }
+  },
+  { immediate: true }
 );
 
 const userDoc = computed(() =>
@@ -131,7 +129,6 @@ function editModeOff() {
 
 //Create
 async function addedTrigger(e) {
-
   const reviewItem = {
     author: props.user.nickname,
     uid: props.user.uid,
@@ -170,7 +167,7 @@ async function deleteTrigger() {
   border-radius: 0.6rem;
   overflow: hidden;
   &__title {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     font-weight: 700;
     margin-bottom: 0.7rem;
   }
@@ -194,6 +191,7 @@ async function deleteTrigger() {
 
 @media screen and (min-width: 1024px) {
   .text-review {
+    padding: 0 2rem;
     &__title {
       font-size: 1.8rem;
       margin-bottom: 1rem;

@@ -10,18 +10,21 @@
       <component :is="Component"></component>
     </transition>
     <toast-renderer />
+    <modal-renderer />
   </router-view>
 </template>
 
 <script setup>
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import VueflixHeader from "./components/VueflixHeader.vue";
-import BottomTabMenu from "./components/BottomTabMenu.vue";
 import { useStore } from "vuex";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
-import ToastRenderer from "./components/ToastRenderer.vue";
 import { useRoute } from "vue-router";
 import { onMounted, provide, reactive } from "vue";
+
+import VueflixHeader from "@/components/VueflixHeader.vue";
+import BottomTabMenu from "@/components/BottomTabMenu.vue";
+import ToastRenderer from "@/components/ToastRenderer.vue";
+import ModalRenderer from "@/components/ModalRenderer.vue";
 
 const route = useRoute();
 const store = useStore();

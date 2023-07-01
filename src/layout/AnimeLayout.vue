@@ -14,7 +14,12 @@
       <div class="anime-view__tab-view">
         <div class="anime-view__tab-selector inner">
           <router-link to="./episodes" replace>에피소드</router-link>
-          <router-link to="./reviews" replace>리뷰</router-link>
+          <router-link to="./reviews" replace>
+            사용자 평
+            <span class="counter">
+              {{ animeInfo.reviews ? animeInfo.reviews.length : 0 }}
+            </span>
+          </router-link>
         </div>
         <router-view v-slot="{ Component }">
           <component
@@ -39,31 +44,6 @@
         <span class="anime-view__top-text">맨 위로</span>
       </button>
     </main>
-    <vueflix-modal
-      title="로그인 필요 알림"
-      type="yes-no"
-      :yesFunc="gotoLogin"
-      :noFunc="closeLoginModal"
-      v-if="loginModal.open"
-      :class="[{ show: loginModal.open }, 'optional-show']"
-    >
-      <template v-slot:title>로그인 필요</template>
-      <template v-slot:description>
-        {{ loginModal.text }}
-      </template>
-      <template v-slot:no-string>나중에</template>
-      <template v-slot:yes-string>로그인</template>
-    </vueflix-modal>
-    <!--purchase-modal
-      :anime-info="animeInfo"
-      v-if="isPurchaseModalOpen"
-      @close-purchase-modal="closePurchaseModal"
-    >
-      <template v-slot:title>구매 및 소장</template>
-      <template v-slot:description>
-        소장하면 판권이 만료되더라도 두고두고 볼 수 있어요
-      </template>
-    </purchase-modal-->
     <action-sheet
       v-if="isActionSheetOpened"
       @overflow-menu-close="actionSheetClose"
@@ -91,17 +71,16 @@ import {
   reactive,
   provide,
   readonly,
+  watch,
 } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 
 import AnimeItemHead from "../components/AnimeItemHead.vue";
 import AnimeMeta from "../components/AnimeMeta.vue";
-import VueflixModal from "../components/VueflixModal.vue";
 import IconBase from "../components/IconBase.vue";
 import IconArrowPrev from "../components/icons/IconArrowPrev.vue";
 import ActionSheet from "../components/ActionSheet.vue";
-import PurchaseModal from "../components/PurchaseModal.vue";
 
 const store = useStore();
 const router = useRouter();
@@ -214,12 +193,21 @@ const actions = [
     method: handleInterest,
   },
 ];
+
+const $app = ref(document.querySelector("#app"));
+onMounted(() => {
+  $app.value.style.backgroundColor = "var(--anime-layout-bg)";
+});
+onUnmounted(() => {
+  $app.value.style.backgroundColor = "var(--bg-100)";
+});
 </script>
 
 <style lang="scss" scoped>
 .anime-view {
   display: flex;
   flex-direction: column;
+  height: calc(var(--vh) * 1px * 100);
   &__head {
     width: 100%;
     min-height: 55vh;
@@ -231,6 +219,9 @@ const actions = [
     margin-top: -1px;
     padding-top: 2rem;
     background-color: var(--anime-layout-bg);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
   }
   &__meta {
     margin-bottom: 2rem;
@@ -240,6 +231,9 @@ const actions = [
     display: flex;
     flex-direction: column;
     gap: 1.7rem;
+    flex-grow: 1;
+    background-color: var(--anime-layout-episodes);
+    padding-bottom: 8.5rem;
   }
   &__tab-selector {
     display: flex;
@@ -249,12 +243,19 @@ const actions = [
       font-weight: 500;
       padding: 1.5rem 0;
       display: flex;
-      align-items: center;
+      align-items: last baseline;
+      gap: 0.4rem;
       border-bottom: 0.2rem solid transparent;
 
       &.vueflix-active-link {
         color: hsl(var(--theme-500));
         border-bottom-color: hsl(var(--theme-500));
+      }
+
+      .counter {
+        color: inherit;
+        font-size: 1.2rem;
+        font-weight: 500;
       }
     }
   }
@@ -338,10 +339,11 @@ const actions = [
       }
     }
     &__tab-view {
-      border-radius: 0.9rem;
       width: 67%;
+      min-height: 100%;
       background-color: var(--anime-layout-episodes);
       box-shadow: none;
+      padding-bottom: 2rem;
     }
     &__tab-selector {
       padding: 0 2rem;

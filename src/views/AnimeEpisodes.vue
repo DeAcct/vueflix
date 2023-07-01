@@ -56,7 +56,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .anime-episodes {
-  padding-bottom: 2rem;
   .accordion-widget {
     &:not(:last-child) {
       margin-bottom: 1rem;

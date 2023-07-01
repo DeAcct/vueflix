@@ -1,116 +1,120 @@
 <template>
   <section class="keyword-reviews inner">
-    <h2 class="keyword-reviews__title">키워드</h2>
-    <div class="sub-widgets">
-      <keyword-others-chart :data="labels" class="sub-widget" />
-      <keyword-my :data="labels" class="sub-widget" @data-changed="syncData" />
+    <keyword-my :data="labels" @data-changed="syncData" />
+    <div class="keyword-reviews__chart">
+      <template v-if="allKeywords > 0">
+        <linear-chart :data="labels" class="sub-widget" />
+      </template>
+      <template v-else>
+        <strong class="keyword-reviews__too-few-title">
+          다른 덕후들이 선택한 키워드가 없거나 적어요!
+        </strong>
+        <p class="keyword-reviews__too-few-paragraph">
+          곧 보여드릴 수 있을 거에요
+        </p>
+      </template>
     </div>
   </section>
 </template>
 
-<script>
-import KeywordOthersChart from "./KeywordOthersChart.vue";
+<script setup>
+import LinearChart from "./LinearChart.vue";
 import KeywordMy from "./KeywordMy.vue";
 
 import { getFirestore, getDoc, doc } from "firebase/firestore";
+import { useRoute } from "vue-router";
+import { ref, onMounted, computed } from "vue";
 
-export default {
-  name: "KeyworkReview",
-  props: {
-    isLoggedIn: {
-      type: [Boolean, Object],
-    },
+const props = defineProps({
+  isLoggedIn: {
+    type: [Boolean, Object],
   },
-  components: {
-    KeywordOthersChart,
-    KeywordMy,
-  },
-  data() {
-    return {
-      labels: [],
-    };
-  },
-  computed: {
-    db: () => getFirestore(),
-  },
-  async created() {
-    this.syncData();
-  },
-  methods: {
-    async syncData() {
-      const docRef = doc(this.db, "anime", this.$route.params.title);
-      const originData = (await getDoc(docRef)).data().keywordReview;
+});
 
-      this.labels = Object.keys(originData)
-        .map((item) => ({
-          id: item,
-          ...originData[`${item}`],
-        }))
-        .sort((a, b) => {
-          if (a.keyword > b.keyword) {
-            return 1;
-          } else if (a.keyword < b.keyword) {
-            return -1;
-          } else {
-            return 0;
-          }
-        });
-    },
-  },
-};
+const labels = ref([]);
+const route = useRoute();
+async function syncData() {
+  const docRef = doc(getFirestore(), "anime", route.params.title);
+  const originData = (await getDoc(docRef)).data().keywordReview;
+
+  labels.value = Object.keys(originData)
+    .map((item) => ({
+      id: item,
+      ...originData[`${item}`],
+    }))
+    .sort((a, b) => {
+      if (a.keyword > b.keyword) {
+        return 1;
+      } else if (a.keyword < b.keyword) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+}
+
+const allKeywords = computed(() =>
+  labels.value.reduce((acc, { value }) => (acc += value), 0)
+);
+
+onMounted(async () => {
+  await syncData();
+});
 </script>
 
 <style lang="scss" scoped>
 .keyword-reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   width: 100%;
-  max-width: 1080px;
-  border-radius: 0.6rem;
-  overflow: hidden;
 
   &__title {
-    display: inline;
     font-size: 1.5rem;
     font-weight: 700;
   }
-
-  .sub-widgets {
+  &__chart {
     display: flex;
     flex-direction: column;
-    .sub-widget {
-      padding: 1.5rem 0;
-      flex: 1;
-      transition: 150ms ease-out;
-    }
-    .suggestion-link {
-      width: 100%;
-      max-width: 500px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: hsl(var(--bg-200));
-      border-radius: 0.6rem;
-      font-size: 1.3rem;
-      font-weight: 700;
-      padding: {
-        left: var(--inner-padding);
-        right: var(--inner-padding);
-      }
-    }
+    background-color: hsl(var(--bg-200));
+    border-radius: 0.6rem;
+    padding: 1.8rem;
+    gap: 0.6rem;
+  }
+  &__too-few-title {
+    text-align: center;
+    flex-grow: 1;
+    font-size: 1.5rem;
+  }
+  &__too-few-paragraph {
+    text-align: center;
+    font-size: 1.3rem;
   }
 }
 
 @media screen and (min-width: 1024px) {
   .keyword-reviews {
-    padding: 0;
+    flex-direction: row;
+    padding: 0 2rem;
+    gap: 3rem;
+    & > * {
+      flex-grow: 1;
+      flex-shrink: 0;
+      flex-basis: 0;
+      min-width: 0;
+      height: 11rem;
+    }
     &__title {
       font-size: 1.8rem;
       margin-bottom: 1rem;
     }
-    .sub-widgets {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 5rem;
+    &__chart {
+      justify-content: center;
+      background-color: transparent;
+      padding: 0;
+    }
+    &__too-few-title {
+      flex-grow: 0;
     }
   }
 }

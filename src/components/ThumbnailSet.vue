@@ -13,7 +13,7 @@
           :to="`/anime/${aniTitle}/episodes`"
           :style="titleWidth"
         >
-          <span class="thumbnail-set__title" :style="titleBreak">
+          <span class="thumbnail-set__title">
             {{ aniTitle }}
           </span>
           <strong class="thumbnail-set__part-index" v-if="type === 'episode'">

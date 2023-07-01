@@ -54,12 +54,12 @@ function editTrigger() {
   emit("edit-review");
 }
 
-const formattedDate = computed(() => {
-  return new Intl.DateTimeFormat("ko-KR", {
+const formattedDate = computed(() =>
+  new Intl.DateTimeFormat("ko-KR", {
     dateStyle: "medium",
     timeStyle: "short",
-  }).format(props.date.toDate());
-});
+  }).format(props.date.toDate())
+);
 </script>
 
 <style lang="scss" scoped>

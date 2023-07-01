@@ -37,75 +37,17 @@
   </section>
 </template>
 
-<script>
-import ArrowBtnWidget from "./ArrowBtnWidget.vue";
-import IconBase from "./IconBase.vue";
-import IconReview from "./icons/IconReview.vue";
-import IconShortContent from "./icons/IconShortContent.vue";
+<script setup>
+import { computed } from "vue";
 import VueflixCarousel from "./VueflixCarousel.vue";
-export default {
-  props: {
-    animeInfo: {
-      type: Object,
-    },
+
+const props = defineProps({
+  animeInfo: {
+    type: Object,
   },
-  components: {
-    ArrowBtnWidget,
-    IconBase,
-    IconReview,
-    IconShortContent,
-    VueflixCarousel,
-  },
-  computed: {
-    isLoaded() {
-      return Object.keys(this.animeInfo).length !== 0;
-    },
-  },
-  // watch: {
-  //   animeInfo() {
-  //     this.pickTheme();
-  //   },
-  // },
-  // methods: {
-  //   async pickTheme() {
-  //     const image = new Image();
-  //     const src = await fetch(this.animeInfo.poster);
-  //     image.src = URL.createObjectURL(await src.blob());
+});
 
-  //     image.addEventListener("load", () => {
-  //       const canvas = document.createElement("canvas");
-  //       const DOWNSAMPLING_RATIO = 1;
-
-  //       canvas.width = Math.floor(image.width / DOWNSAMPLING_RATIO);
-  //       canvas.height = Math.floor(image.height / DOWNSAMPLING_RATIO);
-
-  //       const ctx = canvas.getContext("2d");
-  //       ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-  //       const pixelData = ctx.getImageData(
-  //         0,
-  //         0,
-  //         canvas.width,
-  //         canvas.height
-  //       ).data;
-
-  //       let r = 0;
-  //       let g = 0;
-  //       let b = 0;
-  //       for (let i = 0; i < pixelData.length; i += 4) {
-  //         r += pixelData[i];
-  //         g += pixelData[i + 1];
-  //         b += pixelData[i + 2];
-  //       }
-  //       const pixelCount = pixelData.length / 4;
-  //       r = Math.floor(r / pixelCount);
-  //       g = Math.floor(g / pixelCount);
-  //       b = Math.floor(b / pixelCount);
-  //       this.bgAvgColor = `rgb(${r}, ${g}, ${b})`;
-  //     });
-  //   },
-  // },
-};
+const isLoaded = computed(() => Object.keys(props.animeInfo).length !== 0);
 </script>
 
 <style lang="scss" scoped>
@@ -134,7 +76,7 @@ export default {
     height: 3.5rem;
     white-space: nowrap;
     transition: background-color 150ms ease-out;
-    background-color: hsl(var(--bg-200));
+    background-color: hsl(var(--text-800) / 0.2);
     border-radius: 9999px;
     &--dummy {
       width: 10rem;

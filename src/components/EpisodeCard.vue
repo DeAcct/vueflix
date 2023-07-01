@@ -82,29 +82,40 @@ function loginRequire() {
     emit("login-require");
   }
 }
+
+const isPurchased = computed(() => {
+  if (user.value) {
+    const target = user.value.purchased.find(
+      (anime) => anime.aniTitle === route.params.title
+    );
+    const result =
+      target?.episodes.findIndex(
+        (episode) => episode.index === props.data.index
+      ) !== -1;
+    return result;
+  }
+  return false;
+});
+
+const progress = computed(() => {
+  const anime = user.value.maratonWatch.find(
+    (anime) => anime.aniTitle === this.$route.params.title
+  );
+  const episodeTarget = anime?.items.find(
+    (episode) =>
+      episode.index === props.data.index &&
+      episode.part === Number(props.part.slice(0, -1))
+  );
+  return episodeTarget ? episodeTarget.episodePercent : 0;
+});
+
 // export default {
 //   data() {
 //     return {
 //       checked: false,
 //     };
 //   },
-//   computed: {
-//     isPurchased() {
-//       if (this.auth) {
-//         const target = this.auth.purchased.find(
-//           (anime) => anime.aniTitle === this.$route.params.title
-//         );
-//         const result =
-//           target?.episodes.findIndex(
-//             (episode) => episode.index === this.data.index
-//           ) !== -1;
-//         return result;
-//       }
-//       return false;
-//     },
-//     ...mapState({
-//       auth: (state) => state.auth.user,
-//     }),
+//   computed:
 //     progress() {
 //       const anime = this.auth?.maratonWatch.find(
 //         (anime) => anime.aniTitle === this.$route.params.title
