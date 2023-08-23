@@ -1,8 +1,8 @@
 <template>
   <ul class="poster-list">
-    <poster-item v-for="item in list" :key="item.title" :isAdult="item.isAdult">
+    <PosterItem v-for="item in list" :key="item.title" :isAdult="item.isAdult">
       {{ item.title }}
-    </poster-item>
+    </PosterItem>
   </ul>
 </template>
 

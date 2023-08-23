@@ -1,15 +1,15 @@
 <template>
-  <div class="action-sheet">
+  <div class="ActionSheet">
     <button
-      class="action-sheet__bg"
+      class="ActionSheet__BG"
       title="닫기"
       @click="closeOverflowMenu"
       ref="$shade"
     />
-    <div class="action-sheet__interact" ref="$sheet">
-      <ul class="action-sheet__actions">
+    <div class="ActionSheet__Interact" ref="$sheet">
+      <ul class="ActionSheet__Actions">
         <li
-          class="action-sheet__item"
+          class="ActionSheet__Item"
           v-for="action in actions"
           :key="action.text"
         >
@@ -18,11 +18,11 @@
           </button>
         </li>
       </ul>
-      <button class="action-sheet__close-btn inner" @click="closeOverflowMenu">
+      <button class="ActionSheet__CloseBtn inner" @click="closeOverflowMenu">
         <i class="icon">
-          <icon-base>
-            <icon-close />
-          </icon-base>
+          <IconBase>
+            <IconClose />
+          </IconBase>
         </i>
         <span class="text"> 닫기 </span>
       </button>
@@ -67,24 +67,24 @@ const actions = computed(() =>
 </script>
 
 <style lang="scss" scoped>
-.action-sheet {
+.ActionSheet {
   width: 100%;
   height: 100vh;
-  &__bg {
+  &__BG {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
   }
-  &__interact {
+  &__Interact {
     width: 100%;
     position: absolute;
     background-color: hsl(var(--bg-300));
     border-radius: 0.6rem 0.6rem 0 0;
   }
-  &__actions {
+  &__Actions {
     border-bottom: 1px solid hsl(var(--bg-400));
   }
-  &__item {
+  &__Item {
     button {
       width: 100%;
       text-align: left;
@@ -96,7 +96,7 @@ const actions = computed(() =>
       font-weight: 500;
     }
   }
-  &__close-btn {
+  &__CloseBtn {
     width: 100%;
     padding: {
       top: 2.5rem;
@@ -123,24 +123,24 @@ const actions = computed(() =>
 }
 
 @media screen and (min-width: 1080px) {
-  .action-sheet {
+  .ActionSheet {
     width: unset;
     height: unset;
     position: absolute;
-    &__bg {
+    &__BG {
       display: none;
     }
-    &__interact {
+    &__Interact {
       position: static;
       margin-top: 1rem;
       border-radius: 0.6rem;
     }
-    &__actions {
+    &__Actions {
       display: flex;
       flex-direction: column;
       border-bottom: none;
     }
-    &__item button {
+    &__Item button {
       display: flex;
       white-space: nowrap;
       padding: {
@@ -148,7 +148,7 @@ const actions = computed(() =>
         right: 2rem;
       }
     }
-    &__close-btn {
+    &__CloseBtn {
       display: none;
     }
   }

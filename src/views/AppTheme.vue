@@ -9,7 +9,7 @@
       ]"
     >
       {{ theme === "dark" ? "어두운 테마" : "밝은 테마" }}
-      <state-toggle
+      <StateToggle
         :input-state="theme === 'dark'"
         @state-change="themeToggle"
       />

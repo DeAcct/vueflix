@@ -1,5 +1,5 @@
 <template>
-  <router-link to="#none" class="membership-card" :style="style">
+  <RouterLink to="#none" class="membership-card" :style="style">
     <div class="row-top">
       <div class="row-top-left" v-if="type === 'membership'">
         <strong class="info">{{ cardCompany }}</strong>
@@ -10,9 +10,9 @@
       </div>
       <div class="row-top-right">
         <i class="icon">
-          <icon-base>
-            <icon-arrow-next />
-          </icon-base>
+          <IconBase>
+            <IconArrowNext />
+          </IconBase>
         </i>
       </div>
     </div>
@@ -20,7 +20,7 @@
       <strong class="info">다음 결제일</strong>
       <p class="info">{{ nextPayment }}</p>
     </div>
-  </router-link>
+  </RouterLink>
 </template>
 
 <script>

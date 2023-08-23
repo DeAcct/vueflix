@@ -14,9 +14,9 @@
           v-if="prevActive"
           @click="prev"
         >
-          <icon-base class="icon">
-            <icon-arrow-prev></icon-arrow-prev>
-          </icon-base>
+          <IconBase class="icon">
+            <IconArrowPrev></IconArrowPrev>
+          </IconBase>
           <span class="blind">이전</span>
         </button>
         <button
@@ -24,9 +24,9 @@
           v-if="nextActive"
           @click="next"
         >
-          <icon-base class="icon">
-            <icon-arrow-next></icon-arrow-next>
-          </icon-base>
+          <IconBase class="icon">
+            <IconArrowNext></IconArrowNext>
+          </IconBase>
           <span class="blind">다음</span>
         </button>
       </template>
@@ -159,7 +159,7 @@ export default {
     }
   }
 }
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .vueflix-carousel {
     position: relative;
     &__track {
@@ -188,7 +188,7 @@ export default {
       background: linear-gradient(
         calc(var(--direction) * 90deg),
         transparent,
-        var(--bg-100)
+        hsl(var(--bg-100))
       );
       display: flex;
       justify-content: center;

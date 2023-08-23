@@ -1,37 +1,27 @@
 <template>
-  <figure class="progress-widget">
-    <svg viewBox="0 0 24 24" class="progress-widget__graph">
-      <circle class="progress-widget__track" cx="12" cy="12" r="9" />
-      <circle class="progress-widget__body" cx="12" cy="12" r="9" ref="body" />
+  <figure class="progress-circle">
+    <svg viewBox="0 0 24 24" class="progress-circle__graph">
+      <circle class="progress-circle__track" cx="12" cy="12" r="9" />
+      <circle class="progress-circle__body" cx="12" cy="12" r="9" ref="$body" />
     </svg>
-    <figcaption class="progress-widget__percent">
-      {{ flooredPercent }}%
+    <figcaption class="progress-circle__percent">
+      {{ Math.floor(Number(percent.slice(0, -1))) }}%
     </figcaption>
   </figure>
 </template>
 
-<script>
-export default {
-  name: "ProgressWidget",
-  computed: {
-    trackLength() {
-      return this.$refs.body.getTotalLength();
-    },
-    flooredPercent() {
-      return Math.floor(Number(this.percent.slice(0, -1)));
-    },
-    bodyLength() {
-      return this.trackLength * 0.01 * (100 - this.flooredPercent);
-    },
-  },
-  props: {
-    percent: String,
-  },
-};
+<script setup>
+import usePercentToSVGRound from "@/composables/svg";
+
+const props = defineProps({
+  percent: String,
+});
+
+const { $body, trackLength, bodyLength } = usePercentToSVGRound(props.percent);
 </script>
 
 <style lang="scss" scoped>
-.progress-widget {
+.progress-circle {
   position: relative;
   display: flex;
   justify-content: center;
@@ -55,7 +45,7 @@ export default {
     stroke-dashoffset: calc(v-bind(bodyLength) * 1px);
     transform: rotate(-90deg) rotateX(180deg);
     transform-origin: center;
-    animation: 300ms ani;
+    animation: 300ms fill;
   }
   &__percent {
     position: var(--position, absolute);
@@ -64,7 +54,7 @@ export default {
   }
 }
 
-@keyframes ani {
+@keyframes fill {
   from {
     stroke-dashoffset: calc(v-bind(trackLength) * 1px);
   }

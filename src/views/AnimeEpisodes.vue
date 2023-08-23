@@ -1,6 +1,6 @@
 <template>
   <div class="anime-episodes">
-    <accordion-widget
+    <AccordionWidget
       v-for="(part, index) in animeInfo.parts"
       :key="index"
       :open="index === 0"
@@ -9,12 +9,12 @@
         {{ part.part }}
       </template>
       <template v-slot:content>
-        <episode-card
+        <EpisodeCard
           v-for="episode in part.episodes"
           :key="episode.title"
           :data="episode"
           :part="part.part"
-          :link="`/player/${episode.title}/${part.part}/${
+          :link="`/player/${animeInfo.name}/${part.part}/${
             typeof episode.index === 'string'
               ? episode.index
               : `${episode.index}화`
@@ -29,9 +29,9 @@
                 : `${episode.index}화`
             }}
           </template>
-        </episode-card>
+        </EpisodeCard>
       </template>
-    </accordion-widget>
+    </AccordionWidget>
   </div>
 </template>
 

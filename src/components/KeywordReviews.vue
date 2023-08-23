@@ -1,9 +1,9 @@
 <template>
   <section class="keyword-reviews inner">
-    <keyword-my :data="labels" @data-changed="syncData" />
+    <KeywordMy :data="labels" @data-changed="syncData" />
     <div class="keyword-reviews__chart">
       <template v-if="allKeywords > 0">
-        <linear-chart :data="labels" class="sub-widget" />
+        <LinearChart :data="labels" class="sub-widget" />
       </template>
       <template v-else>
         <strong class="keyword-reviews__too-few-title">
@@ -92,11 +92,11 @@ onMounted(async () => {
   }
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .keyword-reviews {
     flex-direction: row;
     padding: 0 2rem;
-    gap: 3rem;
+    gap: 1rem;
     & > * {
       flex-grow: 1;
       flex-shrink: 0;

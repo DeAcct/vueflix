@@ -45,6 +45,9 @@ const routes = [
     name: "player",
     component: () => import("@/views/Player.vue"),
     meta: {
+      appBar: {
+        backButton: true,
+      },
       bottomTabMenu: false,
     },
   },

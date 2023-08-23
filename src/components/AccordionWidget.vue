@@ -1,27 +1,27 @@
 <template>
-  <section class="accordion-widget">
-    <h3 class="accordion-widget__part-wrap">
-      <button @click="toggle" type="button" class="accordion-widget__open-btn">
-        <span class="accordion-widget__part-title"
+  <section class="AccordionWidget">
+    <h3 class="AccordionWidget__PartWrap">
+      <button @click="toggle" type="button" class="AccordionWidget__OpenBtn">
+        <span class="AccordionWidget__PartTitle"
           ><slot name="title"></slot
         ></span>
         <i
           :class="[
-            'accordion-widget__open-icon',
-            { 'accordion-widget__open-icon--widget-opened': isOpen },
+            'AccordionWidget__OpenIcon',
+            { 'AccordionWidget__OpenIcon--WidgetOpened': isOpen },
           ]"
         >
-          <icon-base :icon-name="isOpen ? '닫기' : '열기'">
-            <icon-arrow-prev />
-          </icon-base>
+          <IconBase :icon-name="isOpen ? '닫기' : '열기'">
+            <IconArrowPrev />
+          </IconBase>
         </i>
       </button>
     </h3>
     <ul
       :class="[
-        'accordion-widget__body',
+        'AccordionWidget__Body',
         'inner',
-        { 'accordion-widget__body--opened': isOpen },
+        { 'AccordionWidget__Body--Opened': isOpen },
       ]"
     >
       <slot name="content"></slot>
@@ -43,9 +43,9 @@ function toggle() {
 </script>
 
 <style lang="scss" scoped>
-.accordion-widget {
+.AccordionWidget {
   border-radius: 0.6rem;
-  &__part-wrap {
+  &__PartWrap {
     position: sticky;
     top: 6rem;
     z-index: 50;
@@ -57,18 +57,18 @@ function toggle() {
     border-radius: 0.6rem;
     width: calc(100% - var(--inner-padding) * 2);
   }
-  &__open-btn {
+  &__OpenBtn {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem var(--inner-padding);
     width: 100%;
   }
-  &__part-title {
+  &__PartTitle {
     font-size: 1.3rem;
     font-weight: 700;
   }
-  &__open-icon {
+  &__OpenIcon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -76,11 +76,11 @@ function toggle() {
     height: 1.8rem;
     transition: 150ms ease-in-out;
     transform: rotate(-90deg);
-    &--widget-opened {
+    &--WidgetOpened {
       transform: rotate(0);
     }
   }
-  &__body {
+  &__Body {
     height: 0;
     overflow: hidden;
     transition: 150ms ease-in-out;
@@ -95,7 +95,7 @@ function toggle() {
       transition: 150ms ease-in-out;
       opacity: 0;
     }
-    &--opened {
+    &--Opened {
       padding: {
         top: 1.5rem;
         bottom: 2rem;
@@ -109,29 +109,29 @@ function toggle() {
 }
 
 @media screen and (min-width: 1080px) {
-  .accordion-widget {
-    &__part-wrap {
+  .AccordionWidget {
+    &__PartWrap {
       width: 100%;
       width: calc(100% - 4rem);
     }
-    &__part-title {
+    &__PartTitle {
       font-size: 1.5rem;
     }
-    &__open-btn {
+    &__OpenBtn {
       width: 100%;
       padding: 2rem;
     }
-    &__open-icon {
+    &__OpenIcon {
       width: 2rem;
       height: 2rem;
     }
-    &__body {
+    &__Body {
       gap: 2.5rem;
       padding: {
         left: 2rem;
         right: 2rem;
       }
-      &--opened {
+      &--Opened {
         padding: {
           top: 2.5rem;
           bottom: 3rem;

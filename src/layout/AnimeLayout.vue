@@ -1,6 +1,6 @@
 <template>
   <div class="anime-view">
-    <anime-item-head
+    <AnimeItemHead
       :is-scroll="isScroll"
       @overflow-menu-open="actionSheetOpen"
       @require-login="openLoginModal"
@@ -10,23 +10,23 @@
       class="anime-view__head"
     />
     <main class="anime-view__main">
-      <anime-meta class="anime-view__meta" :anime-info="animeInfo"></anime-meta>
+      <AnimeMeta class="anime-view__meta" :anime-info="animeInfo"></AnimeMeta>
       <div class="anime-view__tab-view">
         <div class="anime-view__tab-selector inner">
-          <router-link to="./episodes" replace>에피소드</router-link>
-          <router-link to="./reviews" replace>
+          <RouterLink to="./episodes" replace>에피소드</RouterLink>
+          <RouterLink to="./reviews" replace>
             사용자 평
             <span class="counter">
               {{ animeInfo.reviews ? animeInfo.reviews.length : 0 }}
             </span>
-          </router-link>
+          </RouterLink>
         </div>
-        <router-view v-slot="{ Component }">
+        <RouterView v-slot="{ Component }">
           <component
             :is="Component"
             @open-login-modal="openLoginModal"
           ></component>
-        </router-view>
+        </RouterView>
       </div>
 
       <button
@@ -37,14 +37,14 @@
         @click="toTop"
       >
         <i class="anime-view__top-icon">
-          <icon-base>
-            <icon-arrow-prev />
-          </icon-base>
+          <IconBase>
+            <IconArrowPrev />
+          </IconBase>
         </i>
         <span class="anime-view__top-text">맨 위로</span>
       </button>
     </main>
-    <action-sheet
+    <ActionSheet
       v-if="isActionSheetOpened"
       @overflow-menu-close="actionSheetClose"
       :action-origin="actions"
@@ -199,7 +199,7 @@ onMounted(() => {
   $app.value.style.backgroundColor = "var(--anime-layout-bg)";
 });
 onUnmounted(() => {
-  $app.value.style.backgroundColor = "var(--bg-100)";
+  $app.value.style.backgroundColor = "hsl(var(--bg-100))";
 });
 </script>
 
@@ -311,7 +311,7 @@ onUnmounted(() => {
   top: 0;
   z-index: 110;
 }
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .anime-view {
     &__head {
       min-height: 50vh;

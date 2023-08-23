@@ -1,7 +1,7 @@
 <template>
   <div class="star-interaction">
     <div class="col-left">
-      <star-graph
+      <StarGraph
         @star-changed="starChanged"
         @guide-text-change="guideTextTrigger"
         :rating="rating"

@@ -65,7 +65,7 @@ function dayBtnClick(_, key) {
     gap: 1rem;
   }
 }
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .day-selector {
     margin: 0;
   }

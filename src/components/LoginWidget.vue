@@ -6,11 +6,11 @@
         <slot name="text"></slot>
       </div>
     </div>
-    <vueflix-btn class="widget" component="button" @click="btnFunc">
+    <VueflixBtn class="widget" component="button" @click="btnFunc">
       <template #text>
         <slot name="login-state-text"></slot>
       </template>
-    </vueflix-btn>
+    </VueflixBtn>
   </section>
 </template>
 

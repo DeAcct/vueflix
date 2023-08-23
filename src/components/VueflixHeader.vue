@@ -10,9 +10,9 @@
       ]"
     >
       <template v-if="activity === 'Logo' || !isTouchDevice">
-        <router-link to="/">
-          <vueflix-logo></vueflix-logo>
-        </router-link>
+        <RouterLink to="/">
+          <VueflixLogo></VueflixLogo>
+        </RouterLink>
       </template>
       <template v-else>
         {{ activity }}
@@ -24,17 +24,17 @@
         v-if="route.meta.appBar.backButton && isTouchDevice"
         @click="back"
       >
-        <icon-base>
-          <icon-arrow-prev />
-        </icon-base>
+        <IconBase>
+          <IconArrowPrev />
+        </IconBase>
       </button>
       <div class="right">
-        <notification-action-btn
+        <NotificationActionBtn
           :is-scroll="scrollPercent > 0"
           icon-color-default="hsl(var(--header-content))"
           icon-color-fill="hsl(var(--header-content-fill))"
-        ></notification-action-btn>
-        <search-bar
+        ></NotificationActionBtn>
+        <SearchBar
           :is-scroll="scrollPercent > 0"
           icon-color-default="hsl(var(--header-content))"
           icon-color-fill="hsl(var(--header-content-fill))"

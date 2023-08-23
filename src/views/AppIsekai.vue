@@ -12,12 +12,12 @@
       <span class="line-break">대신 이 캐릭터가 나오는 애니는 어떠세요?</span>
     </p>
     <div class="btn-area">
-      <vueflix-btn to="#none" component="router-link" class="btn--go">
+      <VueflixBtn to="#none" component="router-link" class="btn--go">
         <template v-slot:text>보러가기</template>
-      </vueflix-btn>
-      <vueflix-btn to="/" component="router-link" class="btn--home">
+      </VueflixBtn>
+      <VueflixBtn to="/" component="router-link" class="btn--home">
         <template v-slot:text>홈으로</template>
-      </vueflix-btn>
+      </VueflixBtn>
     </div>
   </main>
 </template>
@@ -34,7 +34,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-isekai {
-  background-color: var(--bg-100);
+  background-color: hsl(var(--bg-100));
   height: 100vh;
   display: flex;
   flex-direction: column;

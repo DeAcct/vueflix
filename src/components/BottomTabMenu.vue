@@ -3,12 +3,12 @@
     <h2 class="blind">하단메뉴</h2>
     <ul class="items">
       <li v-for="(item, index) in items" :key="index" class="item">
-        <router-link :to="item.to === 'home' ? '/' : `/${item.to}`">
+        <RouterLink :to="item.to === 'home' ? '/' : `/${item.to}`">
           <i class="icon">
             <template v-if="item.to !== 'my'">
-              <icon-base>
+              <IconBase>
                 <component :is="item.icon" :key="item.item" />
-              </icon-base>
+              </IconBase>
             </template>
             <template v-else>
               <component
@@ -25,7 +25,7 @@
           <span>
             {{ item.item }}
           </span>
-        </router-link>
+        </RouterLink>
       </li>
     </ul>
   </nav>

@@ -1,10 +1,10 @@
 <template>
   <div class="wrap">
-    <loading-spinner v-if="isLoginWaiting" :is-loading="isLoginWaiting" />
+    <LoadingSpinner v-if="isLoginWaiting" :is-loading="isLoginWaiting" />
     <main class="login inner">
       <div class="row-top">
         <div class="logo">
-          <vueflix-logo />
+          <VueflixLogo />
         </div>
         <p class="copy-text">
           <span class="line-break"> 이번 분기 화제작부터 고전 명작까지 </span>
@@ -12,7 +12,7 @@
         </p>
       </div>
       <div class="btn-area">
-        <vueflix-btn
+        <VueflixBtn
           component="button"
           :icon="true"
           type="button"
@@ -20,9 +20,9 @@
           class="btn--google"
           @click="googleContinue"
         >
-          <template v-slot:icon><icon-google /></template>
+          <template v-slot:icon><IconGoogle /></template>
           <template v-slot:text> Google 계정으로 계속하기 </template>
-        </vueflix-btn>
+        </VueflixBtn>
       </div>
     </main>
   </div>

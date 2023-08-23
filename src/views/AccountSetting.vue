@@ -2,7 +2,7 @@
   <form class="account-setting" @submit.prevent="syncToFirebase">
     <div class="profile-change">
       <div class="profile-box">
-        <profile-img
+        <ProfileImg
           :input-profile="
             profilePreview
               ? profilePreview
@@ -14,9 +14,9 @@
         />
         <label class="profile-change__input-img" data-pointer="true">
           <i class="icon">
-            <icon-base>
-              <icon-screenshot />
-            </icon-base>
+            <IconBase>
+              <IconScreenshot />
+            </IconBase>
           </i>
           <span class="blind">프로필 사진 열기</span>
           <input type="file" class="blind" @change="fileChange" />
@@ -42,9 +42,9 @@
             v-model="gender"
           />
           <i class="icon">
-            <icon-base>
-              <icon-male />
-            </icon-base>
+            <IconBase>
+              <IconMale />
+            </IconBase>
           </i>
           <span>남자</span>
         </label>
@@ -57,9 +57,9 @@
             v-model="gender"
           />
           <i class="icon">
-            <icon-base>
-              <icon-female />
-            </icon-base>
+            <IconBase>
+              <IconFemale />
+            </IconBase>
           </i>
           <span>여자</span>
         </label>
@@ -72,14 +72,14 @@
         <input type="date" v-model="birthday" id="date" />
       </label>
     </div>
-    <vueflix-btn
+    <VueflixBtn
       type="submit"
       component="button"
       :icon="false"
       :class="{ 'btn--saving': inProgress }"
     >
       <template v-slot:text>저장{{ inProgress ? "중..." : "" }}</template>
-    </vueflix-btn>
+    </VueflixBtn>
   </form>
 </template>
 

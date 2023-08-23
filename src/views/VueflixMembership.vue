@@ -3,7 +3,7 @@
     <main>
       <section class="membership inner">
         <h2>멤버십</h2>
-        <membership-card
+        <MembershipCard
           type="membership"
           card-company="우리카드"
           card-number="1234123412341234"
@@ -12,7 +12,7 @@
       </section>
       <section class="point inner">
         <h2>포인트</h2>
-        <membership-card type="point" :point="10000" />
+        <MembershipCard type="point" :point="10000" />
       </section>
       <section class="caution inner">
         <h2>이용안내</h2>
@@ -41,16 +41,6 @@
     </main>
   </div>
 </template>
-
-<script>
-import MembershipCard from "../components/MembershipCard.vue";
-export default {
-  name: "VueflixMembership",
-  components: {
-    MembershipCard,
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 main {

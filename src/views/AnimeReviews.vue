@@ -1,13 +1,13 @@
 <template>
   <div class="reviews">
-    <login-widget v-if="!user" :btn-func="goAuth">
+    <LoginWidget v-if="!user" :btn-func="goAuth">
       <template v-slot:text>
         <h2>로그인하고 리뷰를 남겨보세요</h2>
       </template>
       <template v-slot:login-state-text>로그인</template>
-    </login-widget>
-    <keyword-reviews :isLoggedIn="user" />
-    <text-review :user="user" />
+    </LoginWidget>
+    <KeywordReviews :isLoggedIn="user" />
+    <TextReview :user="user" />
   </div>
 </template>
 

@@ -2,9 +2,9 @@
   <div class="wrap">
     <main class="my">
       <div class="tab-one">
-        <login-widget :btn-func="onLoginButtonClick">
+        <LoginWidget :btn-func="onLoginButtonClick">
           <template v-slot:profile-img>
-            <profile-img
+            <ProfileImg
               :input-profile="user ? user.profileImgSrc : undefined"
               :class="[
                 { 'profile--male': user ? user.gender === 'male' : false },
@@ -21,7 +21,7 @@
           <template v-slot:login-state-text>
             {{ user ? "로그아웃" : "로그인" }}
           </template>
-        </login-widget>
+        </LoginWidget>
         <section class="my-stats" v-if="user">
           <h2>내 덕질 기록</h2>
           <ul class="stat-list">
@@ -43,7 +43,7 @@
             v-for="(myCard, index) in myCardLoggedin"
             :key="index"
           >
-            <arrow-btn-widget
+            <ArrowBtnWidget
               v-for="item in myCard"
               :key="item.text"
               :to="item.to"
@@ -53,7 +53,7 @@
                 <component :is="item.icon" />
               </template>
               <template v-slot:text>{{ item.text }}</template>
-            </arrow-btn-widget>
+            </ArrowBtnWidget>
           </div>
         </template>
         <div
@@ -61,7 +61,7 @@
           v-for="(myCard, index) in myCardGeneral"
           :key="index"
         >
-          <arrow-btn-widget
+          <ArrowBtnWidget
             v-for="item in myCard"
             :key="item.text"
             :to="item.to"
@@ -71,11 +71,11 @@
               <component :is="item.icon" />
             </template>
             <template v-slot:text>{{ item.text }}</template>
-          </arrow-btn-widget>
+          </ArrowBtnWidget>
         </div>
-        <router-link to="#none" class="leave-account-btn" v-if="user">
+        <RouterLink to="#none" class="leave-account-btn" v-if="user">
           회원 탈퇴
-        </router-link>
+        </RouterLink>
       </div>
     </main>
   </div>
@@ -255,7 +255,7 @@ export default {
   border-bottom: 1px solid var(--bg-800);
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .my {
     height: 100vh;
     margin: 0 auto;

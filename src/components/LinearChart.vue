@@ -16,7 +16,7 @@
         `"
       ></div>
     </div>
-    <chart-legend :data="data"></chart-legend>
+    <ChartLegend :data="data"></ChartLegend>
   </div>
 </template>
 
@@ -62,7 +62,7 @@ const bestKeyword = computed(
   }
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .linear-chart {
     &__analyze {
       font-size: 1.5rem;

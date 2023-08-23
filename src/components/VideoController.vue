@@ -4,9 +4,9 @@
       <div class="col-left">
         <button @click="exitPlayer" class="video-controller__btn" replace>
           <i class="icon">
-            <icon-base icon-name="뒤로가기">
-              <icon-arrow-prev />
-            </icon-base>
+            <IconBase icon-name="뒤로가기">
+              <IconArrowPrev />
+            </IconBase>
           </i>
         </button>
         <div class="episode-info">
@@ -26,16 +26,16 @@
       <div class="col-right">
         <button @click="openMiniEpisodeList" class="video-controller__btn">
           <i class="icon">
-            <icon-base icon-name="에피소드 목록">
-              <icon-episode-list />
-            </icon-base>
+            <IconBase icon-name="에피소드 목록">
+              <IconEpisodeList />
+            </IconBase>
           </i>
         </button>
         <button @click="openPlayerSetting" class="video-controller__btn">
           <i class="icon">
-            <icon-base icon-name="플레이어 설정">
-              <icon-overflow />
-            </icon-base>
+            <IconBase icon-name="플레이어 설정">
+              <IconOverflow />
+            </IconBase>
           </i>
         </button>
       </div>
@@ -80,39 +80,39 @@
         <div class="col-left">
           <button @click="togglePlayState" class="video-controller__btn">
             <i class="icon">
-              <icon-base :icon-name="isPlaying ? '일시중지' : '재생'">
-                <icon-pause v-if="isPlaying" />
-                <icon-play v-else />
-              </icon-base>
+              <IconBase :icon-name="isPlaying ? '일시중지' : '재생'">
+                <IconPause v-if="isPlaying" />
+                <IconPlay v-else />
+              </IconBase>
             </i>
           </button>
-          <router-link
+          <RouterLink
             v-if="nextLink"
             :to="nextLink"
             class="video-controller__btn"
             replace
           >
             <i class="icon">
-              <icon-base icon-name="다음 에피소드로">
-                <icon-next-episode />
-              </icon-base>
+              <IconBase icon-name="다음 에피소드로">
+                <IconNextEpisode />
+              </IconBase>
             </i>
-          </router-link>
+          </RouterLink>
           <button @click="toggleMuted" class="video-controller__btn">
             <i class="icon">
-              <icon-base :icon-name="isMuted ? '소리 끄기' : '소리 켜기'">
-                <icon-mute-off v-if="isMuted" />
-                <icon-mute-on v-else />
-              </icon-base>
+              <IconBase :icon-name="isMuted ? '소리 끄기' : '소리 켜기'">
+                <IconMuteOff v-if="isMuted" />
+                <IconMuteOn v-else />
+              </IconBase>
             </i>
           </button>
         </div>
         <div class="col-right">
           <button @click="takeScreenshot" class="video-controller__btn">
             <i class="icon">
-              <icon-base icon-name="스크린샷 찍고 저장하기">
-                <icon-screenshot />
-              </icon-base>
+              <IconBase icon-name="스크린샷 찍고 저장하기">
+                <IconScreenshot />
+              </IconBase>
             </i>
           </button>
           <button
@@ -121,17 +121,17 @@
             class="video-controller__btn"
           >
             <i class="icon">
-              <icon-base icon-name="작은 화면으로 보기(PIP)">
-                <icon-pip />
-              </icon-base>
+              <IconBase icon-name="작은 화면으로 보기(PIP)">
+                <IconPip />
+              </IconBase>
             </i>
           </button>
           <button @click="toggleFullScreen" class="video-controller__btn">
             <i class="icon">
-              <icon-base icon-name="전체화면">
-                <icon-full-screen-off v-if="isFullScreen" />
-                <icon-full-screen-on v-else />
-              </icon-base>
+              <IconBase icon-name="전체화면">
+                <IconFullScreenOff v-if="isFullScreen" />
+                <IconFullScreenOn v-else />
+              </IconBase>
             </i>
           </button>
         </div>

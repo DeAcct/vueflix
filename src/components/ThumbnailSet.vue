@@ -1,14 +1,14 @@
 <template>
   <li class="thumbnail-set">
-    <router-link :to="link" @click.prevent class="thumbnail-set__thumbnail">
-      <optimized-image :src="thumbnailSrc" :alt="alt"></optimized-image>
-    </router-link>
+    <RouterLink :to="link" @click.prevent class="thumbnail-set__thumbnail">
+      <OptimizedImage :src="thumbnailSrc" :alt="alt"></OptimizedImage>
+    </RouterLink>
     <div class="thumbnail-set__info">
       <template v-if="type === 'skeleton'">
         <div class="thumbnail-set__skeleton-info loading-target"></div>
       </template>
       <template v-else>
-        <router-link
+        <RouterLink
           class="thumbnail-set__text"
           :to="`/anime/${aniTitle}/episodes`"
           :style="titleWidth"
@@ -19,19 +19,19 @@
           <strong class="thumbnail-set__part-index" v-if="type === 'episode'">
             {{ part }}기 {{ index }}화
           </strong>
-        </router-link>
-        <progress-widget
+        </RouterLink>
+        <ProgressCircle
           class="thumbnail-set__watched-percent"
           :percent="watchedPercent"
           v-if="type === 'episode'"
-        ></progress-widget>
+        ></ProgressCircle>
       </template>
     </div>
   </li>
 </template>
 
 <script setup>
-import ProgressWidget from "./ProgressWidget.vue";
+import ProgressCircle from "./ProgressCircle.vue";
 
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import OptimizedImage from "./OptimizedImage.vue";
@@ -145,7 +145,7 @@ const alt = computed(() => {
   }
 }
 
-@media all and (min-width: 1024px) {
+@media all and (min-width: 1080px) {
   .thumbnail-set {
     width: 28vw;
     &__title {

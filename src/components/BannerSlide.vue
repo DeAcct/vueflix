@@ -16,23 +16,23 @@
         :key="`slide-${animeID}`"
         class="slide-item loading-target"
       >
-        <slide-content :anime-id="animeID"></slide-content>
+        <SlideContent :anime-id="animeID"></SlideContent>
       </swiper-slide>
     </swiper-container>
     <button class="slide__button slide__button--prev" @click="prevClick">
       <span class="blind">이전</span>
       <i class="slide__icon">
-        <icon-base>
-          <icon-arrow-prev></icon-arrow-prev>
-        </icon-base>
+        <IconBase>
+          <IconArrowPrev></IconArrowPrev>
+        </IconBase>
       </i>
     </button>
     <button class="slide__button slide__button--next" @click="nextClick">
       <span class="blind">다음</span>
       <i class="slide__icon">
-        <icon-base>
-          <icon-arrow-next></icon-arrow-next>
-        </icon-base>
+        <IconBase>
+          <IconArrowNext></IconArrowNext>
+        </IconBase>
       </i>
     </button>
     <div class="slide__progress"></div>
@@ -114,7 +114,7 @@ function onLeft({ detail }) {
   }
 }
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: 1080px) {
   .slide {
     aspect-ratio: 2560/1043;
     &__container {

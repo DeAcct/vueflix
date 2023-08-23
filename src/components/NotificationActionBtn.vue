@@ -1,14 +1,14 @@
 <template>
-  <router-link
+  <RouterLink
     to="/notialert"
     :class="['notification', { 'notification--scrolled': isScroll }]"
   >
     <i class="icon" @click="searchBarOpen">
-      <icon-base icon-name="알림">
-        <icon-notification />
-      </icon-base>
+      <IconBase icon-name="알림">
+        <IconNotification />
+      </IconBase>
     </i>
-  </router-link>
+  </RouterLink>
 </template>
 
 <script setup>

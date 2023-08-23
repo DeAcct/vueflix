@@ -1,44 +1,44 @@
 <template>
   <div class="app-home">
     <main>
-      <banner-slide />
+      <BannerSlide />
       <div class="app-home__curated">
         <div class="app-home__curated-item" v-if="auth">
           <h2 class="app-home__curated-title inner">최근 본 애니</h2>
-          <vueflix-carousel
+          <VueflixCarousel
             :length="auth?.recentWatched.length"
             class="app-home__carousel"
           >
-            <thumbnail-set
+            <ThumbnailSet
               type="episode"
               v-for="anime in auth?.recentWatched"
               :key="anime"
               :ani-title="anime.aniTitle"
-              :part="anime.part"
-              :index="anime.index"
+              :part="`${anime.part}`"
+              :index="`${anime.index}`"
               :watched-percent="anime.watchedPercent"
               :short-title="anime.shortTitle"
             />
-          </vueflix-carousel>
+          </VueflixCarousel>
         </div>
         <div class="app-home__curated-item">
           <h2 class="app-home__curated-title inner">요일별 신작</h2>
-          <day-selector
+          <DaySelector
             class="app-home__day-select inner"
             :selected="selectedDay"
             @day-change="onDayChange"
-          ></day-selector>
-          <vueflix-carousel
+          ></DaySelector>
+          <VueflixCarousel
             :length="selectedDailyAnime.length"
             class="app-home__carousel"
           >
-            <thumbnail-set
+            <ThumbnailSet
               type="series"
               v-for="anime in selectedDailyAnime"
               :key="anime"
               :ani-title="anime"
             />
-          </vueflix-carousel>
+          </VueflixCarousel>
         </div>
         <div
           class="app-home__curated-item"
@@ -47,17 +47,17 @@
           <h2 class="app-home__curated-title inner">
             {{ recommended.subject }}
           </h2>
-          <vueflix-carousel
+          <VueflixCarousel
             :length="recommended.list.length"
             class="app-home__carousel"
           >
-            <thumbnail-set
+            <ThumbnailSet
               type="series"
               v-for="anime in recommended.list"
               :key="anime"
               :ani-title="anime"
             />
-          </vueflix-carousel>
+          </VueflixCarousel>
         </div>
       </div>
     </main>
@@ -205,7 +205,7 @@ const auth = computed(() => store.state.auth.user);
     }
   }
 }
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .app-home {
     &__curated-title {
       font-size: 3rem;

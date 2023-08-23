@@ -1,7 +1,7 @@
 <template>
   <section class="text-review inner">
     <h2 class="text-review__title">리뷰</h2>
-    <write-review
+    <WriteReview
       @new-review="addedTrigger"
       @edit-review="editedTrigger"
       @edit-canceled="editModeOff"
@@ -12,7 +12,7 @@
     />
     <div :class="{ 'review-list--exists': reviewList }">
       <ul class="others-list">
-        <review-item
+        <ReviewItem
           v-for="(reviewItem, index) in reviewList"
           :key="index"
           :date="reviewItem.time"
@@ -23,7 +23,7 @@
         >
           <template #author>{{ reviewItem.author }}</template>
           <template #content>{{ reviewItem.content }}</template>
-        </review-item>
+        </ReviewItem>
       </ul>
     </div>
   </section>
@@ -189,7 +189,7 @@ async function deleteTrigger() {
   }
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .text-review {
     padding: 0 2rem;
     &__title {

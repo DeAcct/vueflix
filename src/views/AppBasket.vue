@@ -23,13 +23,13 @@
           </button>
         </div>
         <button class="basket__remove">
-          <icon-base>
-            <icon-remove></icon-remove>
-          </icon-base>
+          <IconBase>
+            <IconRemove></IconRemove>
+          </IconBase>
         </button>
       </div>
       <ul class="basket__list">
-        <thumbnail-set
+        <ThumbnailSet
           :type="selectedTab === 'recentWatched' ? 'episode' : 'series'"
           v-for="basketItem in basketList"
           :key="`${selectedTab}-${basketItem.aniTitle}`"
@@ -47,9 +47,9 @@
         <strong class="basket__login-title">
           여기서 지금까지의 덕질을 저장해 보세요!
         </strong>
-        <router-link to="/auth" class="basket__login-button">
+        <RouterLink to="/auth" class="basket__login-button">
           로그인/회원가입
-        </router-link>
+        </RouterLink>
       </div>
     </template>
   </main>
@@ -79,35 +79,6 @@ function changeSelected(e) {
 const store = useStore();
 const user = computed(() => store.state.auth.user);
 const basketList = computed(() => user.value[selectedTab.value]);
-
-// export default {
-//   name: "AppBasket",
-//   components: { ThumbnailSet, IconBase, IconRemove },
-//   data() {
-//     return {
-//       tabItems: [
-//         { text: "최근 본", type: "recentWatched" },
-//         { text: "보고싶다", type: "wannaSee" },
-//         { text: "구매한", type: "purchased" },
-//         { text: "관심없음", type: "notInterested" },
-//       ],
-//       selectedTab: "recentWatched",
-//     };
-//   },
-//   methods: {
-//     changeSelected(e) {
-//       this.selectedTab = e.currentTarget.dataset.key;
-//     },
-//   },
-//   computed: {
-//     ...mapState({
-//       user: (state) => state.auth.user,
-//     }),
-//     basketList() {
-//       return this.user?.[this.selectedTab];
-//     },
-//   },
-// };
 </script>
 
 <style lang="scss" scoped>

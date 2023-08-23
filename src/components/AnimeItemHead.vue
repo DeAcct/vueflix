@@ -173,7 +173,7 @@ async function wannaSeeToggle() {
     return;
   }
   const aniTitle = route.params.title;
-  if (wannaSeeBool) {
+  if (wannaSeeBool.value) {
     store.commit("auth/deleteWannaSee", aniTitle);
   } else {
     const now = new Date();

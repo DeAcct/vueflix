@@ -6,7 +6,7 @@
       class="episode-card__thumbnail"
       @click="loginRequire"
     >
-      <optimized-image :src="thumbnailURL"></optimized-image>
+      <OptimizedImage :src="thumbnailURL"></OptimizedImage>
     </component>
     <component
       :is="user ? 'router-link' : 'div'"
@@ -22,11 +22,11 @@
         {{ data.title }}
       </p>
       <div class="col-bottom">
-        <progress-widget
+        <ProgressCircle
           class="episode-card__watched-percent"
           :percent="progress"
           v-if="progress"
-        ></progress-widget>
+        ></ProgressCircle>
         <span class="episode-card__purchased" v-if="isPurchased">소장함</span>
       </div>
     </component>
@@ -49,7 +49,7 @@ import { onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 import OptimizedImage from "./OptimizedImage.vue";
-import ProgressWidget from "./ProgressWidget.vue";
+import ProgressCircle from "./ProgressCircle.vue";
 
 const props = defineProps({
   part: String,
@@ -98,7 +98,7 @@ const isPurchased = computed(() => {
 });
 
 const progress = computed(() => {
-  const anime = user.value.maratonWatch.find(
+  const anime = user.value?.maratonWatch.find(
     (anime) => anime.aniTitle === this.$route.params.title
   );
   const episodeTarget = anime?.items.find(
@@ -108,41 +108,6 @@ const progress = computed(() => {
   );
   return episodeTarget ? episodeTarget.episodePercent : 0;
 });
-
-// export default {
-//   data() {
-//     return {
-//       checked: false,
-//     };
-//   },
-//   computed:
-//     progress() {
-//       const anime = this.auth?.maratonWatch.find(
-//         (anime) => anime.aniTitle === this.$route.params.title
-//       );
-//       const episodeTarget = anime?.items.find(
-//         (episode) =>
-//           episode.index === this.data.index &&
-//           episode.part === Number(this.part.slice(0, -1))
-//       );
-//       return episodeTarget ? episodeTarget.episodePercent : 0;
-//     },
-//   },
-//   watch: {
-//     checked() {
-//       if (this.checked) {
-//         this.$emit("added", {
-//           title: this.title,
-//           part: this.part,
-//           index: this.index,
-//           thumbnail: this.thumbnail,
-//         });
-//       } else {
-//         this.$emit("deleted", { title: this.title, date: this.date });
-//       }
-//     },
-//   },
-// };
 </script>
 
 <style lang="scss" scoped>

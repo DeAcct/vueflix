@@ -75,7 +75,7 @@ export default {
   }
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .arrow-link-btn {
     .icon {
       width: 2rem;

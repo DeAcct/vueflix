@@ -1,5 +1,5 @@
 <template>
-  <router-link
+  <RouterLink
     :to="slideData.name ? `/anime/${slideData.name}/episodes` : '#'"
     class="slide-content"
   >
@@ -37,7 +37,7 @@
       </h3>
       <strong class="slide-content__copy">{{ slideData.copy }}</strong>
     </div>
-  </router-link>
+  </RouterLink>
 </template>
 
 <script setup>
@@ -180,7 +180,7 @@ function bgComplete() {
     }
   }
 }
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: 1080px) {
   .slide-content {
     &__ani-logo {
       max-width: 30vw;

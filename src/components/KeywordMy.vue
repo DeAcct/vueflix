@@ -15,10 +15,10 @@
         <i
           :class="['icon', { 'icon--selected': surveyData.includes(label.id) }]"
         >
-          <icon-base>
-            <icon-selected v-if="surveyData.includes(label.id)" />
-            <icon-not-selected v-else />
-          </icon-base>
+          <IconBase>
+            <IconSelected v-if="surveyData.includes(label.id)" />
+            <IconNotSelected v-else />
+          </IconBase>
         </i>
         <span class="text">
           {{ label.keyword }}
@@ -151,8 +151,13 @@ export default {
     }
   }
 }
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .keyword-my {
+    display: flex;
+    align-items: center;
+    &__title {
+      display: none;
+    }
     .survey {
       &__keyword {
         .text {

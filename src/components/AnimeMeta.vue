@@ -9,7 +9,7 @@
     >
       {{ animeInfo.summary }}
     </p>
-    <vueflix-carousel type="break" class="anime-meta__tags">
+    <VueflixCarousel type="break" class="anime-meta__tags">
       <template v-if="!isLoaded">
         <li
           class="anime-meta__item anime-meta__item--dummy loading-target"
@@ -19,21 +19,21 @@
         </li>
       </template>
       <li v-for="madeBy in animeInfo.madeBy" :key="madeBy">
-        <router-link to="#none" class="anime-meta__item">
+        <RouterLink to="#none" class="anime-meta__item">
           {{ madeBy }}
-        </router-link>
+        </RouterLink>
       </li>
       <li>
-        <router-link to="#none" class="anime-meta__item">
+        <RouterLink to="#none" class="anime-meta__item">
           {{ animeInfo.director }}
-        </router-link>
+        </RouterLink>
       </li>
       <li v-for="genre in animeInfo.genre" :key="genre">
-        <router-link to="#none" class="anime-meta__item">
+        <RouterLink to="#none" class="anime-meta__item">
           {{ genre }}
-        </router-link>
+        </RouterLink>
       </li>
-    </vueflix-carousel>
+    </VueflixCarousel>
   </section>
 </template>
 
@@ -86,12 +86,11 @@ const isLoaded = computed(() => Object.keys(props.animeInfo).length !== 0);
     }
   }
 }
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .anime-meta {
     width: 50rem;
     padding: 2rem 0;
     border-radius: 0.6rem;
-    border: 1px solid hsl(var(--bg-200));
     &__tags {
       height: auto;
       --carousel-padding: 2rem;
