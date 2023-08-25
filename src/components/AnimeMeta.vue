@@ -1,35 +1,35 @@
 <template>
-  <section class="anime-meta">
+  <section class="AnimeMeta">
     <h2 class="blind">{{ animeInfo.aniTitle }} 관련 정보</h2>
     <p
       :class="[
-        'anime-meta__summary',
-        { 'anime-meta__summary--loaded': isLoaded },
+        'AnimeMeta__Summary',
+        { 'AnimeMeta__Summary--Loaded': isLoaded },
       ]"
     >
       {{ animeInfo.summary }}
     </p>
-    <VueflixCarousel type="break" class="anime-meta__tags">
+    <VueflixCarousel type="break" class="AnimeMeta__Tags">
       <template v-if="!isLoaded">
         <li
-          class="anime-meta__item anime-meta__item--dummy loading-target"
+          class="AnimeMeta__Item AnimeMeta__Item--dummy loading-target"
           v-for="_ in 5"
         >
           <span class="blind">로딩중</span>
         </li>
       </template>
       <li v-for="madeBy in animeInfo.madeBy" :key="madeBy">
-        <RouterLink to="#none" class="anime-meta__item">
+        <RouterLink to="#none" class="AnimeMeta__Item">
           {{ madeBy }}
         </RouterLink>
       </li>
       <li>
-        <RouterLink to="#none" class="anime-meta__item">
+        <RouterLink to="#none" class="AnimeMeta__Item">
           {{ animeInfo.director }}
         </RouterLink>
       </li>
       <li v-for="genre in animeInfo.genre" :key="genre">
-        <RouterLink to="#none" class="anime-meta__item">
+        <RouterLink to="#none" class="AnimeMeta__Item">
           {{ genre }}
         </RouterLink>
       </li>
@@ -51,22 +51,22 @@ const isLoaded = computed(() => Object.keys(props.animeInfo).length !== 0);
 </script>
 
 <style lang="scss" scoped>
-.anime-meta {
-  &__summary {
+.AnimeMeta {
+  &__Summary {
     padding: 0 2rem;
     margin-bottom: 2rem;
     font-size: 1.3rem;
     font-weight: 500;
     color: var(--anime-layout-text);
     height: 1.3rem;
-    &--loaded {
+    &--Loaded {
       height: auto;
     }
   }
-  &__tags {
-    --carousel-padding: 2rem;
+  &__Tags {
+    --carousel-padding: var(--inner-padding);
   }
-  &__item {
+  &__Item {
     display: flex;
     align-items: center;
     text-align: center;
@@ -87,13 +87,15 @@ const isLoaded = computed(() => Object.keys(props.animeInfo).length !== 0);
   }
 }
 @media screen and (min-width: 1080px) {
-  .anime-meta {
+  .AnimeMeta {
+    position: sticky;
+    z-index: 100;
+    top: 6rem;
     width: 50rem;
     padding: 2rem 0;
     border-radius: 0.6rem;
-    &__tags {
+    &__Tags {
       height: auto;
-      --carousel-padding: 2rem;
       --carousel-gap: 1rem;
     }
   }

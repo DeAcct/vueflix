@@ -1,15 +1,15 @@
 <template>
-  <section class="keyword-reviews inner">
+  <section class="KeywordReviews inner">
     <KeywordMy :data="labels" @data-changed="syncData" />
-    <div class="keyword-reviews__chart">
+    <div class="KeywordReviews__Chart">
       <template v-if="allKeywords > 0">
         <LinearChart :data="labels" class="sub-widget" />
       </template>
       <template v-else>
-        <strong class="keyword-reviews__too-few-title">
+        <strong class="KeywordReviews__TooFewTitle">
           다른 덕후들이 선택한 키워드가 없거나 적어요!
         </strong>
-        <p class="keyword-reviews__too-few-paragraph">
+        <p class="KeywordReviews__TooFewParagraph">
           곧 보여드릴 수 있을 거에요
         </p>
       </template>
@@ -63,7 +63,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-.keyword-reviews {
+.KeywordReviews {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -73,7 +73,7 @@ onMounted(async () => {
     font-size: 1.5rem;
     font-weight: 700;
   }
-  &__chart {
+  &__Chart {
     display: flex;
     flex-direction: column;
     background-color: hsl(var(--bg-200));
@@ -81,19 +81,19 @@ onMounted(async () => {
     padding: 1.8rem;
     gap: 0.6rem;
   }
-  &__too-few-title {
+  &__TooFewTitle {
     text-align: center;
     flex-grow: 1;
     font-size: 1.5rem;
   }
-  &__too-few-paragraph {
+  &__TooFewParagraph {
     text-align: center;
     font-size: 1.3rem;
   }
 }
 
 @media screen and (min-width: 1080px) {
-  .keyword-reviews {
+  .KeywordReviews {
     flex-direction: row;
     padding: 0 2rem;
     gap: 1rem;
@@ -108,12 +108,12 @@ onMounted(async () => {
       font-size: 1.8rem;
       margin-bottom: 1rem;
     }
-    &__chart {
+    &__Chart {
       justify-content: center;
       background-color: transparent;
       padding: 0;
     }
-    &__too-few-title {
+    &__TooFewTitle {
       flex-grow: 0;
     }
   }

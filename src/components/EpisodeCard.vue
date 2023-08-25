@@ -1,9 +1,9 @@
 <template>
-  <li class="episode-card">
+  <li class="EpisodeCard">
     <component
       :is="user ? 'router-link' : 'div'"
       :to="user ? link : undefined"
-      class="episode-card__thumbnail"
+      class="EpisodeCard__Thumbnail"
       @click="loginRequire"
     >
       <OptimizedImage :src="thumbnailURL"></OptimizedImage>
@@ -11,23 +11,23 @@
     <component
       :is="user ? 'router-link' : 'div'"
       :to="user ? link : undefined"
-      class="episode-card__text-wrap"
+      class="EpisodeCard__TextWrap"
       @click="loginRequire"
     >
-      <p class="episode-card__title">
-        <em class="episode-card__index"
+      <p class="EpisodeCard__Title">
+        <em class="EpisodeCard__Index"
           ><slot name="index"></slot> &middot;
-          <span class="episode-card__date">{{ data.date }}</span></em
+          <span class="EpisodeCard__Date">{{ data.date }}</span></em
         >
         {{ data.title }}
       </p>
       <div class="col-bottom">
         <ProgressCircle
-          class="episode-card__watched-percent"
+          class="EpisodeCard__WatchedPercent"
           :percent="progress"
           v-if="progress"
         ></ProgressCircle>
-        <span class="episode-card__purchased" v-if="isPurchased">소장함</span>
+        <span class="EpisodeCard__Purchased" v-if="isPurchased">소장함</span>
       </div>
     </component>
   </li>
@@ -99,7 +99,7 @@ const isPurchased = computed(() => {
 
 const progress = computed(() => {
   const anime = user.value?.maratonWatch.find(
-    (anime) => anime.aniTitle === this.$route.params.title
+    (anime) => anime.aniTitle === route.params.title
   );
   const episodeTarget = anime?.items.find(
     (episode) =>
@@ -111,30 +111,30 @@ const progress = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.episode-card {
+.EpisodeCard {
   display: flex;
   gap: 1rem;
-  &__thumbnail {
+  &__Thumbnail {
     width: 12rem;
     flex-shrink: 0;
   }
-  &__text-wrap {
+  &__TextWrap {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
     width: 100%;
   }
-  &__index {
+  &__Index {
     // 화수 + 날짜 뒤에 줄바꿈이 일어나도록
     display: block;
     font-weight: 700;
     margin-bottom: 0.3rem;
   }
-  &__date {
+  &__Date {
     display: inline-block;
   }
-  &__title {
+  &__Title {
     font-size: 1.3rem;
     font-weight: 500;
     line-height: 1.5;
@@ -151,13 +151,13 @@ const progress = computed(() => {
     align-items: center;
     gap: 1rem;
   }
-  &__watched-percent {
+  &__WatchedPercent {
     --position: static;
     --gap: 0.5rem;
     --font-size: 1.2rem;
     height: 2.4rem;
   }
-  &__purchased {
+  &__Purchased {
     font-size: 1.2rem;
     font-weight: 500;
     color: hsl(var(--theme-500));
@@ -165,20 +165,20 @@ const progress = computed(() => {
 }
 
 @media screen and (min-width: 1080px) {
-  .episode-card {
+  .EpisodeCard {
     gap: 2rem;
-    &__thumbnail {
+    &__Thumbnail {
       width: 20rem;
     }
-    &__title {
+    &__Title {
       font-size: 1.7rem;
     }
-    &__index {
+    &__Index {
       font-weight: 700;
       margin-bottom: 0.5rem;
       display: block;
     }
-    &__purchased {
+    &__Purchased {
       font-size: 1.4rem;
       color: hsl(var(--theme-500));
     }

@@ -1,29 +1,26 @@
 <template>
   <div class="profile">
     <img
-      :src="inputProfile || defaultProfile"
+      :src="user?.profileImgSrc || NotFoundAqua"
       alt="프로필 사진"
       class="profile__img"
     />
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from "vue";
+import { useStore } from "vuex";
 import NotFoundAqua from "../assets/NotFoundAqua.svg";
 
-export default {
-  name: "ProfileImg",
-  props: {
-    inputProfile: {
-      type: String,
-    },
+defineProps({
+  inputProfile: {
+    type: String,
   },
-  data() {
-    return {
-      defaultProfile: NotFoundAqua,
-    };
-  },
-};
+});
+
+const store = useStore();
+const user = computed(() => store.state.auth.user);
 </script>
 
 <style lang="scss" scoped>

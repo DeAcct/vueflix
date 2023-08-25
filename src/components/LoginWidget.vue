@@ -1,5 +1,5 @@
 <template>
-  <section class="login-widget inner">
+  <section class="LoginWidget inner">
     <div class="col-left">
       <slot name="profile-img"></slot>
       <div class="text-area">
@@ -30,7 +30,7 @@ export default {
 </script>
 
 <style lang="scss">
-.login-widget {
+.LoginWidget {
   width: 100%;
   max-width: 768px;
   display: flex;

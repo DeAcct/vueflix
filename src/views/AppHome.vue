@@ -1,13 +1,13 @@
 <template>
-  <div class="app-home">
+  <div class="AppHome">
     <main>
       <BannerSlide />
-      <div class="app-home__curated">
-        <div class="app-home__curated-item" v-if="auth">
-          <h2 class="app-home__curated-title inner">최근 본 애니</h2>
+      <div class="AppHome__Curator">
+        <div class="AppHome__Item" v-if="auth?.recentWatched.length">
+          <h2 class="AppHome__Title inner">최근 본 애니</h2>
           <VueflixCarousel
             :length="auth?.recentWatched.length"
-            class="app-home__carousel"
+            class="AppHome__Carousel"
           >
             <ThumbnailSet
               type="episode"
@@ -21,16 +21,16 @@
             />
           </VueflixCarousel>
         </div>
-        <div class="app-home__curated-item">
-          <h2 class="app-home__curated-title inner">요일별 신작</h2>
+        <div class="AppHome__Item">
+          <h2 class="AppHome__Title inner">요일별 신작</h2>
           <DaySelector
-            class="app-home__day-select inner"
+            class="AppHome__DaySelect inner"
             :selected="selectedDay"
             @day-change="onDayChange"
           ></DaySelector>
           <VueflixCarousel
             :length="selectedDailyAnime.length"
-            class="app-home__carousel"
+            class="AppHome__Carousel"
           >
             <ThumbnailSet
               type="series"
@@ -40,16 +40,13 @@
             />
           </VueflixCarousel>
         </div>
-        <div
-          class="app-home__curated-item"
-          v-for="recommended in recommendedAnime"
-        >
-          <h2 class="app-home__curated-title inner">
+        <div class="AppHome__Item" v-for="recommended in recommendedAnime">
+          <h2 class="AppHome__Title inner">
             {{ recommended.subject }}
           </h2>
           <VueflixCarousel
             :length="recommended.list.length"
-            class="app-home__carousel"
+            class="AppHome__Carousel"
           >
             <ThumbnailSet
               type="series"
@@ -159,19 +156,19 @@ const auth = computed(() => store.state.auth.user);
 </script>
 
 <style lang="scss" scoped>
-.app-home {
-  &__curated {
+.AppHome {
+  &__Curator {
     display: flex;
     flex-direction: column;
     padding: 3.2rem 0 calc(var(--bottom-tab-height) + 3.2rem);
     background-color: hsl(var(--bg-100));
     gap: 3rem;
   }
-  &__curated-title {
+  &__Title {
     font-size: 2rem;
     margin-bottom: 2rem;
   }
-  &__day-select {
+  &__DaySelect {
     margin-bottom: 1.5rem;
   }
   &__modal {
@@ -184,15 +181,15 @@ const auth = computed(() => store.state.auth.user);
   }
 }
 @media screen and (min-width: 768px) {
-  .app-home {
-    &__curated {
+  .AppHome {
+    &__Curator {
       padding-top: 3.6rem;
     }
-    &__curated-title {
+    &__Title {
       font-size: 2.5rem;
       margin-bottom: 2rem;
     }
-    &__curated-item {
+    &__Item {
       &:not(:last-child) {
         margin-bottom: 4.5rem;
       }
@@ -206,8 +203,8 @@ const auth = computed(() => store.state.auth.user);
   }
 }
 @media screen and (min-width: 1080px) {
-  .app-home {
-    &__curated-title {
+  .AppHome {
+    &__Title {
       font-size: 3rem;
     }
   }

@@ -42,6 +42,10 @@
   </div>
 </template>
 
+<script setup>
+import MembershipCard from "@/components/MembershipCard.vue";
+</script>
+
 <style lang="scss" scoped>
 main {
   display: flex;

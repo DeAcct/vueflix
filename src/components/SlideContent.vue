@@ -10,9 +10,9 @@
       ]"
     >
       <picture>
-        <source media="(max-width: 1024px)" :srcset="slideData.mWebpBg" />
-        <source media="(max-width: 1024px)" :srcset="slideData.mJpegBg" />
-        <source media="(min-width: 1025px)" :srcset="slideData.pcWebpBg" />
+        <source media="(max-width: 767px)" :srcset="slideData.mWebpBg" />
+        <source media="(max-width: 767px)" :srcset="slideData.mJpegBg" />
+        <source media="(min-width: 768px)" :srcset="slideData.pcWebpBg" />
         <img
           :src="slideData.pcJpegBg"
           :alt="`${slideData.name} 배너`"
@@ -109,10 +109,11 @@ function bgComplete() {
 
 <style lang="scss" scoped>
 .slide-content {
+  max-height: 50vh;
   &__bg-holder {
     display: flex;
     position: relative;
-    max-height: 70vh;
+
     width: 100vw;
     padding-bottom: 133.333%;
     opacity: 0;
@@ -141,6 +142,7 @@ function bgComplete() {
   }
   &__bg {
     width: 100vw;
+    object-fit: cover;
   }
   &__info {
     position: absolute;
@@ -167,6 +169,13 @@ function bgComplete() {
 
 @media screen and (min-width: 768px) {
   .slide-content {
+    &__bg-holder {
+      padding: 0;
+      height: calc(100vw / 2560 * 1043);
+      &::after {
+        height: 100%;
+      }
+    }
     &__info {
       left: 5rem;
     }
@@ -185,12 +194,6 @@ function bgComplete() {
     &__ani-logo {
       max-width: 30vw;
       max-height: 18em;
-    }
-    &__bg-holder {
-      height: calc(100vw / 2560 * 1043);
-      &::before {
-        padding-bottom: 40.742%;
-      }
     }
   }
 }

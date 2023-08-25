@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-renderer">
+  <div class="ModalRenderer">
     {{ content }}
     {{ action }}
   </div>

@@ -1,41 +1,47 @@
 <template>
-  <section class="slide loading-target">
+  <section class="BannerSlide loading-target">
     <h2 class="blind">이미지 슬라이드</h2>
     <swiper-container
       effect="fade"
       :loop="true"
       :autoplay-delay="5000"
       :autoplay-disable-on-interaction="false"
-      class="slide__container"
+      class="BannerSlide__Container"
       ref="$swiper"
       @autoplaytimeleft="onLeft"
       @progress="ddd"
     >
       <swiper-slide
         v-for="animeID in randomIDs"
-        :key="`slide-${animeID}`"
-        class="slide-item loading-target"
+        :key="`BannerSlide-${animeID}`"
+        class="loading-target"
       >
         <SlideContent :anime-id="animeID"></SlideContent>
       </swiper-slide>
     </swiper-container>
-    <button class="slide__button slide__button--prev" @click="prevClick">
+    <button
+      class="BannerSlide__Button BannerSlide__Button--Prev"
+      @click="prevClick"
+    >
       <span class="blind">이전</span>
-      <i class="slide__icon">
+      <i class="BannerSlide__Icon">
         <IconBase>
           <IconArrowPrev></IconArrowPrev>
         </IconBase>
       </i>
     </button>
-    <button class="slide__button slide__button--next" @click="nextClick">
+    <button
+      class="BannerSlide__Button BannerSlide__Button--Next"
+      @click="nextClick"
+    >
       <span class="blind">다음</span>
-      <i class="slide__icon">
+      <i class="BannerSlide__Icon">
         <IconBase>
           <IconArrowNext></IconArrowNext>
         </IconBase>
       </i>
     </button>
-    <div class="slide__progress"></div>
+    <div class="BannerSlide__Progress"></div>
   </section>
 </template>
 
@@ -92,13 +98,13 @@ function onLeft({ detail }) {
 </script>
 
 <style lang="scss" scoped>
-.slide {
+.BannerSlide {
   position: relative;
   aspect-ratio: 3/4;
-  &__container {
+  &__Container {
     aspect-ratio: 3/4;
   }
-  &__progress {
+  &__Progress {
     position: absolute;
     bottom: -0.2rem;
     left: 0;
@@ -109,43 +115,43 @@ function onLeft({ detail }) {
     background-color: hsl(var(--bg-900));
     z-index: 20;
   }
-  &__button {
+  &__Button {
     display: none;
   }
 }
 
-@media screen and (min-width: 1080px) {
-  .slide {
+@media screen and (min-width: 768px) {
+  .BannerSlide {
     aspect-ratio: 2560/1043;
-    &__container {
+    &__Container {
       aspect-ratio: 2560/1043;
     }
   }
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .slide {
-    &__button {
+  .BannerSlide {
+    &__Button {
       display: block;
       position: absolute;
       z-index: 20;
       top: 50%;
       width: 3.6rem;
       height: 3.6rem;
-      &--prev {
+      &--Prev {
         left: 0;
       }
-      &--next {
+      &--Next {
         right: 0;
       }
     }
-    &__icon {
+    &__Icon {
       display: block;
       transition: transform 150ms ease-out;
       color: #fff;
       filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
     }
-    &__button:hover &__icon {
+    &__Button:hover &__Icon {
       transform: scale(1.2);
       color: hsl(var(--theme-500));
     }

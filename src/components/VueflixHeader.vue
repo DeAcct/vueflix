@@ -1,10 +1,17 @@
 <template>
-  <header :class="['header', 'inner', { 'header--fill': scrollPercent > 0 }]">
+  <header
+    :class="[
+      'VueflixHeader',
+      'inner',
+      { 'VueflixHeader--Fill': scrollPercent > 0 },
+    ]"
+  >
     <h2
       :class="[
-        'header__activity',
+        'VueflixHeader__Activity',
         {
-          'header__activity--logo': activity === 'Logo' || !isTouchDevice,
+          'VueflixHeader__Activity--Logo':
+            activity === 'Logo' || !isTouchDevice,
         },
         ,
       ]"
@@ -18,9 +25,12 @@
         {{ activity }}
       </template>
     </h2>
-    <div class="header__actions">
+    <SearchBar
+      class="VueflixHeader__SearchBar VueflixHeader__SearchBar--PCOnly"
+    />
+    <div class="VueflixHeader__Actions">
       <button
-        class="header__back-btn"
+        class="VueflixHeader__Action"
         v-if="route.meta.appBar.backButton && isTouchDevice"
         @click="back"
       >
@@ -28,30 +38,60 @@
           <IconArrowPrev />
         </IconBase>
       </button>
+
       <div class="right">
-        <NotificationActionBtn
-          :is-scroll="scrollPercent > 0"
-          icon-color-default="hsl(var(--header-content))"
-          icon-color-fill="hsl(var(--header-content-fill))"
-        ></NotificationActionBtn>
-        <SearchBar
-          :is-scroll="scrollPercent > 0"
-          icon-color-default="hsl(var(--header-content))"
-          icon-color-fill="hsl(var(--header-content-fill))"
-        />
+        <RouterLink to="/notification" class="VueflixHeader__Action">
+          <IconBase>
+            <IconNotification></IconNotification>
+          </IconBase>
+        </RouterLink>
+        <button
+          type="button"
+          class="VueflixHeader__Action VueflixHeader__Action--MobileOnly"
+          @click="toggleSearchMode"
+        >
+          <IconBase>
+            <IconSearch></IconSearch>
+          </IconBase>
+        </button>
+        <RouterLink to="/my" class="VueflixHeader__ProfileCombo">
+          <span class="VueflixHeader__UserName">{{ user?.nickname }}</span>
+          <ProfileImg class="VueflixHeader__Action"></ProfileImg>
+        </RouterLink>
       </div>
+    </div>
+    <div
+      :class="[
+        'VueflixHeader__SearchCombo',
+        'inner',
+        { 'VueflixHeader__SearchCombo--Open': searchMode },
+      ]"
+    >
+      <SearchBar
+        class="VueflixHeader__SearchBar VueflixHeader__SearchBar--MobileOnly"
+      />
+      <button @click="toggleSearchMode" class="VueflixHeader__SearchCloseBtn">
+        <IconBase>
+          <IconClose />
+        </IconBase>
+      </button>
     </div>
   </header>
 </template>
 
 <script setup>
-import VueflixLogo from "./VueflixLogo.vue";
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import SearchBar from "./SearchBar.vue";
-import NotificationActionBtn from "./NotificationActionBtn.vue";
+import { useStore } from "vuex";
+
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
+import IconClose from "./icons/IconClose.vue";
+import IconNotification from "./icons/IconNotification.vue";
+import IconSearch from "./icons/IconSearch.vue";
+import SearchBar from "./SearchBar.vue";
+import VueflixLogo from "./VueflixLogo.vue";
+import ProfileImg from "./ProfileImg.vue";
 
 defineProps({ isTouchDevice: Boolean, isMobile: Boolean });
 
@@ -71,10 +111,10 @@ watch(
 const scrollPercent = ref(0);
 function handleScroll() {
   if (window.scrollY >= 500 || activity.value !== "Logo") {
-    scrollPercent.value = 100;
+    scrollPercent.value = 1;
     return;
   }
-  scrollPercent.value = (window.scrollY / 500) * 100;
+  scrollPercent.value = window.scrollY / 500;
 }
 
 onMounted(() => {
@@ -89,10 +129,19 @@ const router = useRouter();
 function back() {
   router.back();
 }
+
+const searchMode = ref(false);
+function toggleSearchMode() {
+  searchMode.value = !searchMode.value;
+}
+
+const store = useStore();
+const user = computed(() => store.state.auth.user);
+console.log(user);
 </script>
 
 <style lang="scss" scoped>
-.header {
+.VueflixHeader {
   width: 100%;
   position: fixed;
   top: 0;
@@ -101,59 +150,144 @@ function back() {
   height: 6rem;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid hsl(var(--bg-200), calc(v-bind(scrollPercent) * 1%));
-  background-color: hsl(var(--bg-100) / calc(v-bind(scrollPercent) * 0.01));
+  border-bottom: 1px solid hsl(var(--bg-200) / v-bind(scrollPercent));
+  background-color: hsl(var(--bg-100) / calc(v-bind(scrollPercent)));
 
-  &__activity {
+  &__Activity {
     font-size: 1.7rem;
     font-weight: 700;
-    opacity: calc(v-bind(scrollPercent) * 1%);
+    opacity: v-bind(scrollPercent);
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    &--logo {
+    &--Logo {
       width: 6.5rem;
     }
   }
 
-  &__actions {
+  &__Actions {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
     .right {
       display: flex;
       justify-content: flex-end;
+      align-items: center;
       flex-grow: 1;
       margin-right: 0;
+      gap: 0.8rem;
     }
   }
-  &__back-btn {
-    width: 3.6rem;
-    height: 3.6rem;
+
+  --icon-color: hsl(var(--bg-100));
+  &__Action {
+    width: 2.4rem;
+    height: 2.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    svg {
-      width: 2.4rem;
-      height: 2.4rem;
+    color: var(--icon-color);
+  }
+
+  &__SearchCombo {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    background-color: hsl(var(--bg-100) / 0.8);
+    backdrop-filter: blur(10px);
+    transform: translateY(-6rem);
+    transition: transform 150ms ease-out;
+    &--Open {
+      transform: translateY(0);
     }
+  }
+  &__SearchBar {
+    gap: 1.2rem;
+    flex-grow: 1;
+    &--PCOnly {
+      display: none;
+    }
+  }
+  &__SearchCloseBtn {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  &__ProfileCombo {
+    display: none;
+  }
+  &--Fill {
+    --icon-color: inherit;
   }
 }
 @media screen and (min-width: 769px) {
-  .header {
+  .VueflixHeader {
     justify-content: space-between;
     color: hsl(var(--header-content));
     transition: color 150ms ease-out;
-    &--fill {
+    &--Fill {
       color: hsl(var(--header-content-fill));
     }
-    &__activity {
+    &__Activity {
       position: static;
       transform: none;
       opacity: 1;
       color: inherit;
       a {
         color: inherit;
+      }
+    }
+
+    &__ProfileCombo {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.6rem;
+      border-radius: 9999px;
+      background-color: hsl(var(--bg-200));
+    }
+
+    &__UserName {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .VueflixHeader {
+    background-color: hsl(var(--bg-100));
+    color: inherit;
+    &__Actions {
+      width: auto;
+    }
+    &__Action {
+      color: inherit;
+      &--MobileOnly {
+        display: none;
+      }
+    }
+    &__SearchCombo {
+      display: none;
+    }
+    &__SearchBar {
+      &--PCOnly {
+        display: flex;
+        gap: 1.2rem;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-grow: 0;
+        width: 50rem;
+        height: 3.6rem;
+        padding: 0 0.8rem;
+        background-color: hsl(var(--bg-200));
+        border-radius: 9999px;
       }
     }
   }

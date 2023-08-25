@@ -1,5 +1,8 @@
 <template>
-  <svg viewBox="0 0 64 64" :class="['loader', { 'loader--show': isLoading }]">
+  <svg
+    viewBox="0 0 64 64"
+    :class="['LoadingSpinner', { 'LoadingSpinner--Show': isLoading }]"
+  >
     <circle cx="32" cy="32" r="30"></circle>
   </svg>
 </template>
@@ -12,7 +15,7 @@ const props = defineProps({
 });
 </script>
 <style lang="scss" scoped>
-.loader {
+.LoadingSpinner {
   fill: transparent;
   stroke: currentColor;
   stroke-linecap: round;
@@ -24,7 +27,7 @@ const props = defineProps({
     animation: spinner-line 1500ms infinite, spinner-rotate 1500ms infinite;
     transform-origin: 3.2rem;
   }
-  &--show {
+  &--Show {
     visibility: visible;
   }
 }

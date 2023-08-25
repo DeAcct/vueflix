@@ -1,13 +1,13 @@
 <template>
-  <div class="linear-chart">
-    <p class="linear-chart__analyze">
+  <div class="LinearChart">
+    <p class="LinearChart__Analyze">
       다른 덕후들이 볼 때
       <strong>{{ bestKeyword }}</strong>
       이(가) 강한 작품이에요
     </p>
-    <div class="linear-chart__body">
+    <div class="LinearChart__Body">
       <div
-        class="linear-chart__item"
+        class="LinearChart__Item"
         v-for="({ value, keyword }, i) of data"
         :key="keyword"
         :style="`
@@ -41,15 +41,15 @@ const bestKeyword = computed(
 </script>
 
 <style lang="scss" scoped>
-.linear-chart {
+.LinearChart {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   width: 100%;
-  &__analyze {
+  &__Analyze {
     font-size: 1.3rem;
   }
-  &__body {
+  &__Body {
     display: flex;
     border-radius: 9999px;
     overflow: hidden;
@@ -57,14 +57,14 @@ const bestKeyword = computed(
     height: 2rem;
     background-color: hsl(var(--bg-200));
   }
-  &__item {
+  &__Item {
     transition: width 150ms ease-out;
   }
 }
 
 @media screen and (min-width: 1080px) {
-  .linear-chart {
-    &__analyze {
+  .LinearChart {
+    &__Analyze {
       font-size: 1.5rem;
     }
   }

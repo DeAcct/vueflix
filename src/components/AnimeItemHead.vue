@@ -70,7 +70,7 @@
             </p>
           </div>
         </div>
-        <div
+        <!-- <div
           :class="[
             'btn-area',
             {
@@ -92,7 +92,7 @@
           <div class="col-right">
             <button
               @click="wannaSeeToggle"
-              :class="['bg-less btn-area__wanna-see', { added: wannaSeeBool }]"
+              :class="['bg-less btn-area__wanna-see', { added: wannaSee }]"
             >
               <i class="icon">
                 <icon-base class="icon--added">
@@ -120,7 +120,17 @@
               <span class="text">소장하기</span>
             </button>
           </div>
-        </div>
+        </div> -->
+        <AnimeActions
+          v-bind="{
+            continueString,
+            continueLink,
+            wannaSee,
+          }"
+          @wanna-see-toggle="wannaSeeToggle"
+          @purchase="purchase"
+          v-show="!!animeInfo.type && !!animeInfo.rating && !!animeInfo.name"
+        ></AnimeActions>
       </div>
     </div>
   </component>
@@ -132,15 +142,12 @@ import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { getFirestore, setDoc, doc } from "firebase/firestore";
 
-import IconBase from "./IconBase.vue";
+import ActionSheet from "./ActionSheet.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
-import IconPlay from "./icons/IconPlay.vue";
-import IconWannaSeeAdd from "./icons/IconWannaSeeAdd.vue";
-import IconWannaSeeAdded from "./icons/IconWannaSeeAdded.vue";
-import IconPurchase from "./icons/IconPurchase.vue";
+import IconBase from "./IconBase.vue";
 import IconShare from "./icons/IconShare.vue";
 import IconOverflow from "./icons/IconOverflow.vue";
-import ActionSheet from "./ActionSheet.vue";
+import AnimeActions from "./AnimeActions.vue";
 
 const props = defineProps({
   isScroll: Boolean,
@@ -163,7 +170,7 @@ function goBack() {
 const route = useRoute();
 const store = useStore();
 
-const wannaSeeBool = computed(
+const wannaSee = computed(
   () =>
     !!user.value?.wannaSee.find((item) => item.aniTitle === route.params.title)
 );
@@ -173,26 +180,13 @@ async function wannaSeeToggle() {
     return;
   }
   const aniTitle = route.params.title;
-  if (wannaSeeBool.value) {
+  if (wannaSee.value) {
     store.commit("auth/deleteWannaSee", aniTitle);
   } else {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const date = now.getDate();
-    const hour = now.getHours();
-    const min = now.getMinutes();
-    const sec = now.getSeconds();
+    const time = new Date();
     store.commit("auth/updateWannaSee", {
-      aniTitle: aniTitle,
-      time: {
-        year: year,
-        month: month,
-        date: date,
-        hour: hour,
-        min: min,
-        sec: sec,
-      },
+      aniTitle,
+      time,
     });
   }
   const db = getFirestore();
@@ -209,11 +203,6 @@ async function openSystemShare() {
     url: window.location.href,
   };
   await navigator.share(shareData);
-}
-
-const isPurchaseActive = ref(false);
-function activeTrigger() {
-  isPurchaseActive.value = !isPurchaseActive.value;
 }
 
 const isActionSheetOpened = ref(false);
@@ -424,115 +413,9 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     line-height: 1.5;
     margin-bottom: 0.7rem;
   }
-  .btn-area {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    opacity: 0;
-    visibility: hidden;
-    transition: 150ms ease-out;
-
-    &--loaded {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    .col-right {
-      width: auto;
-      height: auto;
-      display: flex;
-    }
-    .bg-less {
-      height: 4rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      .icon {
-        position: relative;
-        width: 2.4rem;
-        height: 2.4rem;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        svg {
-          fill: transparent;
-          stroke: var(--anime-layout-text);
-          color: var(--anime-layout-text);
-          stroke-width: 2px;
-          stroke-linecap: round;
-        }
-      }
-      .text {
-        font-size: 1.1rem;
-        font-weight: 500;
-        color: var(--anime-layout-text);
-      }
-    }
-
-    &__continue {
-      display: flex;
-      align-items: center;
-      transition: 150ms ease-out;
-      .icon {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 4.8rem;
-        height: 4.8rem;
-        background-color: var(--anime-layout-text);
-        color: var(--anime-layout-bg);
-        border-radius: 50%;
-        margin-right: 1rem;
-      }
-      svg {
-        width: 2rem;
-        height: 2rem;
-      }
-
-      .text {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: var(--anime-layout-text);
-      }
-    }
-
-    &__wanna-see {
-      .icon {
-        svg {
-          position: absolute;
-        }
-        &--added {
-          transition-delay: 0ms;
-          stroke-dasharray: 25;
-          stroke-dashoffset: 25;
-        }
-        &--not-added {
-          transition-delay: 150ms;
-        }
-      }
-      &.added .icon {
-        &--added {
-          transition-delay: 150ms;
-          stroke-dashoffset: 0;
-          stroke-linejoin: round;
-        }
-        &--not-added {
-          transition-delay: 0ms;
-          transform: translateY(2.5rem) scale(0);
-          opacity: 0;
-        }
-      }
-    }
-
-    button:not(:last-child) {
-      margin-right: 1rem;
-    }
-  }
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .anime-item-head {
     padding: 0 calc((100% - 118rem) / 2);
     &__navigation {
@@ -586,17 +469,6 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     &__title {
       font-size: 3.5rem;
       margin-bottom: 1.5rem;
-    }
-    .btn-area {
-      padding: 0;
-      &__continue .text {
-        font-size: 1.5rem;
-      }
-      .col-right {
-        flex: none;
-        width: auto;
-        flex-direction: row;
-      }
     }
   }
 }

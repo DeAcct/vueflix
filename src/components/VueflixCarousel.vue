@@ -34,85 +34,73 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import IconBase from "./IconBase.vue";
-import DaySelector from "./DaySelector.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
-export default {
-  name: "VueflixCarousel",
-  components: {
-    IconBase,
-    IconArrowNext,
-    IconArrowPrev,
-    DaySelector,
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+
+const props = defineProps({
+  length: {
+    type: Number,
   },
-  props: {
-    length: {
-      type: Number,
+  type: {
+    validator(value) {
+      return ["arrow", "break"].includes(value);
     },
-    type: {
-      validator(value) {
-        return ["arrow", "break"].includes(value);
-      },
-      default() {
-        return "arrow";
-      },
+    default() {
+      return "arrow";
     },
   },
-  data: () => ({
-    resolution: window.innerWidth,
-    carouselNumber: 0,
-  }),
-  computed: {
-    carouselLimit() {
-      return this.length ? Math.floor(this.length / this.shownItems) : 0;
-    },
-    nextActive() {
-      return this.carouselNumber < this.carouselLimit;
-    },
-    prevActive() {
-      return this.carouselNumber > 0;
-    },
-    shownItems() {
-      if (this.resolution >= 1920) {
-        return 7;
-      }
-      if (this.resolution >= 1080) {
-        return 4;
-      }
-      if (this.resolution >= 768) {
-        return 3;
-      }
-      return 2;
-    },
-  },
-  methods: {
-    next() {
-      this.carouselNumber++;
-    },
-    prev() {
-      this.carouselNumber--;
-    },
-  },
-  watch: {
-    length() {
-      this.carouselNumber = 0;
-    },
-  },
-  mounted() {
-    if (this.type === "break") return;
-    window.addEventListener("resize", () => {
-      this.resolution = window.innerWidth;
-    });
-  },
-  unmounted() {
-    if (this.type === "break") return;
-    window.removeEventListener("resize", () => {
-      this.resolution = window.innerWidth;
-    });
-  },
-};
+});
+
+const resolution = ref(window.innerWidth);
+
+onMounted(() => {
+  if (props.type === "break") return;
+  window.addEventListener("resize", () => {
+    resolution.value = window.innerWidth;
+  });
+});
+onUnmounted(() => {
+  if (props.type === "break") return;
+  window.addEventListener("resize", () => {
+    resolution.value = window.innerWidth;
+  });
+});
+
+const carouselNumber = ref(0);
+watch(
+  () => props.length,
+  () => {
+    carouselNumber.value = 0;
+  }
+);
+
+function next() {
+  carouselNumber.value++;
+}
+function prev() {
+  carouselNumber.value--;
+}
+
+const shownItems = computed(() => {
+  if (resolution.value >= 1920) {
+    return 7;
+  }
+  if (resolution.value >= 1080) {
+    return 4;
+  }
+  if (resolution.value >= 768) {
+    return 3;
+  }
+  return 2;
+});
+const carouselLimit = computed(() =>
+  props.length ? Math.floor(props.length / shownItems.value) : 0
+);
+const prevActive = computed(() => carouselNumber.value > 0);
+const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
 </script>
 
 <style lang="scss" scoped>
@@ -134,7 +122,7 @@ export default {
     display: flex;
     gap: var(--carousel-gap, 1rem);
     width: fit-content;
-    padding: 0 var(--carousel-padding, 2rem);
+    padding: 0 var(--carousel-padding, var(--inner-padding));
     margin: 0;
 
     &--arrow {
@@ -155,7 +143,7 @@ export default {
       width: 100%;
     }
     &__body {
-      padding: 0 var(--carousel-padding, 5rem);
+      padding: 0 var(--carousel-padding, var(--inner-padding));
     }
   }
 }

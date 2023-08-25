@@ -1,14 +1,14 @@
 <template>
-  <ul class="chart-legend">
-    <li class="chart-legend__item" v-for="(label, i) in data" :key="label">
+  <ul class="ChartLegend">
+    <li class="ChartLegend__Item" v-for="(label, i) in data" :key="label">
       <span class="col-left">
         <i
-          class="chart-legend__icon"
+          class="ChartLegend__Icon"
           :style="`background-color:var(--chart-palette-${i + 1})`"
         />
-        <strong class="chart-legend__keyword">{{ label.keyword }}</strong>
+        <strong class="ChartLegend__Keyword">{{ label.keyword }}</strong>
       </span>
-      <p class="chart-legend__value">{{ label.value }}</p>
+      <p class="ChartLegend__Value">{{ label.value }}</p>
     </li>
   </ul>
 </template>
@@ -22,7 +22,7 @@ defineProps({
 </script>
 
 <style lang="scss" scoped>
-.chart-legend {
+.ChartLegend {
   display: flex;
   flex-wrap: wrap;
   margin: -0.3rem 0;
@@ -32,12 +32,12 @@ defineProps({
     gap: 0.6rem;
   }
 
-  &__icon {
+  &__Icon {
     display: inline-block;
     width: 0.6rem;
     height: 0.6rem;
   }
-  &__item {
+  &__Item {
     min-width: 0;
     width: 33.333%;
     display: flex;

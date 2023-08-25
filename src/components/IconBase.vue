@@ -12,27 +12,24 @@
   </svg>
 </template>
 
-<script>
-export default {
-  name: "IconBase",
-  props: {
-    iconName: {
-      type: String,
-    },
-    width: {
-      type: [Number, String],
-      default: 24,
-    },
-    height: {
-      type: [Number, String],
-      default: 24,
-    },
-    iconColor: {
-      type: String,
-      default: "currentColor",
-    },
+<script setup>
+defineProps({
+  iconName: {
+    type: String,
   },
-};
+  width: {
+    type: [Number, String],
+    default: 24,
+  },
+  height: {
+    type: [Number, String],
+    default: 24,
+  },
+  iconColor: {
+    type: String,
+    default: "currentColor",
+  },
+});
 </script>
 
 <style lang="scss" scoped>

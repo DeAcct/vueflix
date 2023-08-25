@@ -3,7 +3,7 @@
     <div class="row-top">
       <div class="row-top-left" v-if="type === 'membership'">
         <strong class="info">{{ cardCompany }}</strong>
-        <p class="info">{{ blurCardNumber }}</p>
+        <p class="info">****-****-****-{{ blurCardNumber }}</p>
       </div>
       <div class="row-top-left" v-if="type === 'point'">
         <strong class="points">{{ formatNumber }}점</strong>
@@ -23,68 +23,46 @@
   </RouterLink>
 </template>
 
-<script>
+<script setup>
+import { useEventListener } from "@vueuse/core";
 import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
-export default {
-  name: "MembershipCard",
-  props: {
-    cardCompany: {
-      type: String,
-    },
-    cardNumber: {
-      type: String,
-    },
-    nextPayment: {
-      type: String,
-    },
-    isActivated: {
-      type: Boolean,
-    },
-    type: {
-      type: String,
-    },
-    point: {
-      type: Number,
-    },
+import { computed, ref } from "vue";
+
+const props = defineProps({
+  cardCompany: {
+    type: String,
   },
-  components: {
-    IconBase,
-    IconArrowNext,
+  cardNumber: {
+    type: String,
   },
-  data() {
-    return {
-      style: {
-        transform: "none",
-      },
-    };
+  nextPayment: {
+    type: String,
   },
-  methods: {
-    cardInteraction(e) {
-      this.style = {
-        transform: `
-          perspective(3px) 
-          rotateX(${e.beta * 0.001}deg)
-          rotateY(${e.gamma * 0.001}deg)  
-        `,
-      };
-    },
+  isActivated: {
+    type: Boolean,
   },
-  computed: {
-    blurCardNumber() {
-      return `****-****-****-${this.cardNumber.slice(12, 16)}`;
-    },
-    formatNumber() {
-      return String(this.point).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    },
+  type: {
+    type: String,
   },
-  mounted() {
-    window.addEventListener("deviceorientation", this.cardInteraction);
+  point: {
+    type: Number,
   },
-  unmounted() {
-    window.removeEventListener("deviceorientation", this.cardInteraction);
-  },
-};
+});
+
+useEventListener(window, "deviceorientation", cardInteraction);
+const style = ref("none");
+function cardInteraction(e) {
+  style.value = {
+    transform: `perspective(3px)
+      rotateX(${e.beta * 0.001}deg)
+      rotateY(${e.gamma * 0.001}deg)`,
+  };
+}
+const blurCardNumber = computed(() => props.cardNumber.slice(12, 16));
+const formatNumber = computed(() =>
+  new Intl.NumberFormat().format(props.point)
+);
 </script>
 
 <style lang="scss" scoped>

@@ -128,9 +128,9 @@ const routes = [
     },
   },
   {
-    path: "/notialert",
-    name: "notialert",
-    component: () => import("@/views/NotiAlert.vue"),
+    path: "/notification",
+    name: "notification",
+    component: () => import("@/views/Notification.vue"),
     meta: {
       title: "알림",
       bottomTabMenu: false,
@@ -156,5 +156,4 @@ const routes = [
 export const router = createRouter({
   history: createWebHistory(),
   routes,
-  linkActiveClass: "vueflix-active-link",
 });

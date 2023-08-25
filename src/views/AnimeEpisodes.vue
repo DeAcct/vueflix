@@ -1,9 +1,10 @@
 <template>
-  <div class="anime-episodes">
+  <div class="AnimeEpisodes">
     <AccordionWidget
       v-for="(part, index) in animeInfo.parts"
       :key="index"
       :open="index === 0"
+      class="AnimeEpisodes__Accordion"
     >
       <template v-slot:title>
         {{ part.part }}
@@ -55,8 +56,8 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.anime-episodes {
-  .accordion-widget {
+.AnimeEpisodes {
+  &__Accordion {
     &:not(:last-child) {
       margin-bottom: 1rem;
     }

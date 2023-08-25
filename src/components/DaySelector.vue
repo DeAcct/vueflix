@@ -1,9 +1,12 @@
 <template>
-  <div class="day-selector">
+  <div class="DaySelector">
     <button
       v-for="day in DAYS"
       :key="day.key"
-      :class="{ active: day.key === selected }"
+      :class="[
+        'DaySelector__Item',
+        { 'DaySelector__Item--Active': day.key === selected },
+      ]"
       @click="dayBtnClick($event, day.key)"
     >
       {{ day.text }}
@@ -35,12 +38,12 @@ function dayBtnClick(_, key) {
 </script>
 
 <style lang="scss" scoped>
-.day-selector {
+.DaySelector {
   display: flex;
   justify-content: space-between;
   height: 4rem;
 
-  button {
+  &__Item {
     width: 4rem;
     height: 4rem;
     background-color: hsl(var(--bg-400));
@@ -51,7 +54,7 @@ function dayBtnClick(_, key) {
     line-height: 4rem;
     transition: 150ms ease-out;
 
-    &.active {
+    &--Active {
       background-color: hsl(var(--theme-500)) !important;
     }
     &:focus {
@@ -59,14 +62,14 @@ function dayBtnClick(_, key) {
     }
   }
 }
-@media screen and (min-width: 769px) {
-  .day-selector {
+@media screen and (min-width: 768px) {
+  .DaySelector {
     justify-content: flex-start;
     gap: 1rem;
   }
 }
 @media screen and (min-width: 1080px) {
-  .day-selector {
+  .DaySelector {
     margin: 0;
   }
 }

@@ -1,8 +1,12 @@
 <template>
-  <div class="keyword-my">
-    <h2 class="keyword-my__title">키워드</h2>
-    <form class="survey">
-      <label v-for="label in data" :key="label.keyword" class="survey__keyword">
+  <div class="KeywordMy">
+    <h2 class="KeywordMy__Title">키워드</h2>
+    <form class="KeywordMy__Survey">
+      <label
+        v-for="label in data"
+        :key="label.keyword"
+        class="KeywordMy__Keyword"
+      >
         <input
           type="checkbox"
           :id="label.id"
@@ -13,14 +17,17 @@
           :ref="label.id"
         />
         <i
-          :class="['icon', { 'icon--selected': surveyData.includes(label.id) }]"
+          :class="[
+            'KeywordMy__Icon',
+            { 'KeywordMy__Icon--Selected': surveyData.includes(label.id) },
+          ]"
         >
           <IconBase>
             <IconSelected v-if="surveyData.includes(label.id)" />
             <IconNotSelected v-else />
           </IconBase>
         </i>
-        <span class="text">
+        <span class="KeywordMy__Text">
           {{ label.keyword }}
         </span>
       </label>
@@ -34,7 +41,7 @@ import {
   updateDoc,
   increment,
   doc,
-  setDoc /*getDoc, doc, setDoc*/,
+  setDoc,
 } from "firebase/firestore";
 
 import IconBase from "./IconBase.vue";
@@ -112,58 +119,54 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.keyword-my {
-  &__title {
+.KeywordMy {
+  &__Title {
     width: 100%;
     font-size: 1.7rem;
     font-weight: 700;
     line-height: 1.5;
     margin-bottom: 1rem;
   }
-  .survey {
+  &__Survey {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     gap: 1rem;
-    &__keyword {
-      display: flex;
-      align-items: center;
-      padding: 0.5rem 0.75rem;
-      background-color: hsl(var(--theme-500) / 0.1);
-      border-radius: 0.6rem;
-      .icon {
-        width: 1.8rem;
-        height: 1.8rem;
-        display: flex;
-        margin-right: 0.5rem;
-        svg {
-          width: 100%;
-          height: 100%;
-        }
-        &--selected {
-          color: hsl(var(--theme-500));
-        }
-      }
-      .text {
-        font-size: 1.3rem;
-        font-weight: 500;
-      }
+  }
+  &__Keyword {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background-color: hsl(var(--theme-500) / 0.1);
+    border-radius: 0.6rem;
+  }
+  &__Icon {
+    width: 1.8rem;
+    height: 1.8rem;
+    display: flex;
+    margin-right: 0.5rem;
+    svg {
+      width: 100%;
+      height: 100%;
     }
+    &--Selected {
+      color: hsl(var(--theme-500));
+    }
+  }
+  &__Text {
+    font-size: 1.3rem;
+    font-weight: 500;
   }
 }
 @media screen and (min-width: 1080px) {
-  .keyword-my {
+  .KeywordMy {
     display: flex;
     align-items: center;
-    &__title {
+    &__Title {
       display: none;
     }
-    .survey {
-      &__keyword {
-        .text {
-          font-size: 1.5rem;
-        }
-      }
+    &__Text {
+      font-size: 1.5rem;
     }
   }
 }

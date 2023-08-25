@@ -1,5 +1,5 @@
 <template>
-  <router-link class="arrow-btn-widget">
+  <router-link class="ArrowBtnWidget">
     <div class="col-left">
       <i class="icon" v-if="icon">
         <icon-base>
@@ -20,25 +20,19 @@
   </router-link>
 </template>
 
-<script>
+<script setup>
 import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
-export default {
-  name: "ArrowBtnWidget",
-  components: {
-    IconBase,
-    IconArrowNext,
+
+defineProps({
+  icon: {
+    type: [Boolean, String],
   },
-  props: {
-    icon: {
-      type: [Boolean, String],
-    },
-  },
-};
+});
 </script>
 
 <style lang="scss" scoped>
-.arrow-btn-widget {
+.ArrowBtnWidget {
   padding: 1.8rem var(--inner-padding);
   display: flex;
   justify-content: space-between;
