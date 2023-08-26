@@ -1,10 +1,10 @@
 <template>
-  <figure class="progress-circle">
-    <svg viewBox="0 0 24 24" class="progress-circle__graph">
-      <circle class="progress-circle__track" cx="12" cy="12" r="9" />
-      <circle class="progress-circle__body" cx="12" cy="12" r="9" ref="$body" />
+  <figure class="ProgressCircle">
+    <svg viewBox="0 0 24 24" class="ProgressCircle__Graph">
+      <circle class="ProgressCircle__Track" cx="12" cy="12" r="9" />
+      <circle class="ProgressCircle__Body" cx="12" cy="12" r="9" ref="$body" />
     </svg>
-    <figcaption class="progress-circle__percent">
+    <figcaption class="ProgressCircle__Percent">
       {{ Math.floor(Number(percent.slice(0, -1))) }}%
     </figcaption>
   </figure>
@@ -21,22 +21,22 @@ const { $body, trackLength, bodyLength } = usePercentToSVGRound(props.percent);
 </script>
 
 <style lang="scss" scoped>
-.progress-circle {
+.ProgressCircle {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: var(--gap, 0);
-  &__graph {
+  &__Graph {
     width: 100%;
     height: 100%;
   }
-  &__track {
+  &__Track {
     fill: none;
     stroke: hsl(var(--bg-200));
     stroke-width: 2px;
   }
-  &__body {
+  &__Body {
     fill: none;
     stroke: hsl(var(--theme-500));
     stroke-width: 2px;
@@ -47,7 +47,7 @@ const { $body, trackLength, bodyLength } = usePercentToSVGRound(props.percent);
     transform-origin: center;
     animation: 300ms fill;
   }
-  &__percent {
+  &__Percent {
     position: var(--position, absolute);
     font-weight: 500;
     font-size: var(--font-size, 1rem);

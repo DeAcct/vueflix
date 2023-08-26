@@ -1,40 +1,41 @@
 <template>
-  <form class="write-review">
-    <div class="input-area">
-      <div class="row-bottom widget inner" v-if="showNewReview">
-        <textarea
-          :placeholder="placeholder"
-          class="new-review-area"
-          :disabled="!user"
-          @input="setReviewData"
-          ref="reviewTextArea"
-        />
-        <div class="interaction-area">
-          <div class="col-left">
-            <strong class="length">{{ reviewData.length || 0 }}/300</strong>
-            <p v-if="!reviewDataValid" class="too-long-alert">너무 길어요!</p>
-          </div>
-          <div class="col-right">
-            <vueflix-btn
-              v-if="type === 'edit-review'"
-              @click="cancelTrigger"
-              component="button"
-              class="btn--cancel"
-              type="button"
-            >
-              <template #text> 취소 </template>
-            </vueflix-btn>
-            <vueflix-btn
-              :disabled="!reviewDataSubmitAble || !user"
-              @click="reviewTrigger"
-              component="button"
-            >
-              <template #text>
-                {{ type === "new-review" ? "등록" : "수정" }}
-              </template>
-            </vueflix-btn>
-          </div>
-        </div>
+  <form class="WriteReview inner">
+    <textarea
+      :placeholder="placeholder"
+      class="WriteReview__InputArea"
+      :disabled="!user"
+      @input="setReviewData"
+      ref="reviewTextArea"
+    />
+    <div class="WriteReview__Interaction">
+      <div class="WriteReview__Status">
+        <strong class="WriteReview__Length"
+          >{{ reviewData.length || 0 }}/300</strong
+        >
+        <p v-if="!reviewDataValid" class="WriteReview__TooLongAlert">
+          너무 길어요!
+        </p>
+      </div>
+      <div class="WriteReview__BtnArea">
+        <vueflix-btn
+          v-if="type === 'edit-review'"
+          @click="cancelTrigger"
+          component="button"
+          class="WriteReview__Button WriteReview__Button--Cancel"
+          type="button"
+        >
+          <template #text> 취소 </template>
+        </vueflix-btn>
+        <vueflix-btn
+          :disabled="!reviewDataSubmitAble || !user"
+          @click="reviewTrigger"
+          class="WriteReview__Button WriteReview__Button--Submit"
+          component="button"
+        >
+          <template #text>
+            {{ type === "new-review" ? "등록" : "수정" }}
+          </template>
+        </vueflix-btn>
       </div>
     </div>
   </form>
@@ -119,85 +120,80 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.write-review {
+.WriteReview {
   width: 100%;
+  padding: {
+    top: 1.5rem;
+    bottom: 1.5rem;
+  }
   border-radius: 0.6rem;
-  .input-area {
-    .widget {
-      padding: {
-        top: 1.5rem;
-        bottom: 1.5rem;
-      }
-      border-radius: 0.6rem;
-      background-color: var(--new-review);
-      &:not(:last-child) {
-        margin-bottom: 1rem;
-      }
-    }
-    .new-review-area {
-      width: 100%;
-      height: 9rem;
-      resize: none;
-      font-family: inherit;
-      background-color: transparent;
-      line-height: 1.3;
-      font-size: 1.2rem;
+  background-color: var(--new-review);
+  &__InputArea {
+    width: 100%;
+    height: 9rem;
+    resize: none;
+    font-family: inherit;
+    background-color: transparent;
+    line-height: 1.3;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    &::placeholder {
+      color: var(--bg-400);
       font-weight: 500;
-      margin-bottom: 1rem;
-      &::placeholder {
-        color: var(--bg-400);
-        font-weight: 500;
-      }
     }
   }
-  .interaction-area {
+
+  &__Interaction {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .col-left {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      height: 2rem;
+  }
+
+  &__Status {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 2rem;
+  }
+  &__Length {
+    display: block;
+    color: hsl(var(--bg-400));
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  &__TooLongAlert {
+    color: hsl(var(--theme-500));
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  &__BtnArea {
+    display: flex;
+  }
+  &__Button {
+    border-radius: 2rem;
+    background-color: hsl(var(--theme-500));
+    color: #fff;
+    border-radius: 9999px;
+    box-shadow: none;
+    &:disabled {
+      background-color: hsl(var(--theme-200));
     }
-    .col-right {
-      display: flex;
-      .btn {
-        &:not(:last-child) {
-          margin-right: 0.5rem;
-        }
-        &--cancel {
-          background-color: transparent;
-          color: hsl(var(--text-700));
-        }
-      }
+    &--Cancel {
+      background-color: transparent;
+      color: hsl(var(--text-700));
     }
-    .length {
-      display: block;
-      color: hsl(var(--bg-400));
-      font-size: 1.3rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
-    .too-long-alert {
-      color: hsl(var(--theme-500));
-      font-size: 1.1rem;
-      font-weight: 500;
-    }
-    .btn {
-      border-radius: 2rem;
+    &--Submit {
       background-color: hsl(var(--theme-500));
-      color: #fff;
-      &:disabled {
-        background-color: hsl(var(--theme-200));
-      }
     }
   }
 }
 
 @media screen and (min-width: 1080px) {
-  .write-review .input-area {
-    .new-review-area {
+  .WriteReview {
+    &__InputArea {
       font-size: 1.5rem;
     }
   }

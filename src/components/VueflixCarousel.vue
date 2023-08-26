@@ -1,30 +1,26 @@
 <template>
-  <div class="vueflix-carousel">
-    <div
-      :class="['vueflix-carousel__track', `vueflix-carousel__track--${type}`]"
-    >
-      <ul
-        :class="['vueflix-carousel__body', `vueflix-carousel__body--${type}`]"
-      >
+  <div class="VueflixCarousel">
+    <div :class="['VueflixCarousel__Track', `VueflixCarousel__Track--${type}`]">
+      <ul :class="['VueflixCarousel__Body', `VueflixCarousel__Body--${type}`]">
         <slot></slot>
       </ul>
       <template v-if="type === 'arrow'">
         <button
-          class="vueflix-carousel__button vueflix-carousel__button--prev"
+          class="VueflixCarousel__Button VueflixCarousel__Button--prev"
           v-if="prevActive"
           @click="prev"
         >
-          <IconBase class="icon">
+          <IconBase class="VueflixCarousel__Icon">
             <IconArrowPrev></IconArrowPrev>
           </IconBase>
           <span class="blind">이전</span>
         </button>
         <button
-          class="vueflix-carousel__button vueflix-carousel__button--next"
+          class="VueflixCarousel__Button VueflixCarousel__Button--next"
           v-if="nextActive"
           @click="next"
         >
-          <IconBase class="icon">
+          <IconBase class="VueflixCarousel__Icon">
             <IconArrowNext></IconArrowNext>
           </IconBase>
           <span class="blind">다음</span>
@@ -104,10 +100,10 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
 </script>
 
 <style lang="scss" scoped>
-.vueflix-carousel {
+.VueflixCarousel {
   width: 100%;
   height: 100%;
-  &__track {
+  &__Track {
     width: 100%;
     height: 100%;
     position: relative;
@@ -118,7 +114,7 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
       display: none;
     }
   }
-  &__body {
+  &__Body {
     display: flex;
     gap: var(--carousel-gap, 1rem);
     width: fit-content;
@@ -132,43 +128,43 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
       );
     }
   }
-  &__button {
+  &__Button {
     display: none;
   }
 }
 
 @media screen and (min-width: 768px) {
-  .vueflix-carousel {
-    &__track {
+  .VueflixCarousel {
+    &__Track {
       width: 100%;
     }
-    &__body {
+    &__Body {
       padding: 0 var(--carousel-padding, var(--inner-padding));
     }
   }
 }
 @media screen and (min-width: 1080px) {
-  .vueflix-carousel {
+  .VueflixCarousel {
     position: relative;
-    &__track {
+    &__Track {
       width: 100%;
     }
   }
 }
 @media (hover: hover) and (pointer: fine) {
-  .vueflix-carousel {
-    &__track {
+  .VueflixCarousel {
+    &__Track {
       &--break {
         overflow: visible;
       }
     }
-    &__body {
+    &__Body {
       &--break {
         flex-wrap: wrap;
       }
     }
 
-    &__button {
+    &__Button {
       position: absolute;
       top: 0;
       width: 12rem;
@@ -181,6 +177,8 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
       display: flex;
       justify-content: center;
       align-items: center;
+      --carousel-arrow-size: 2.4rem;
+
       &--next {
         --direction: 1;
         right: 0;
@@ -191,11 +189,13 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
       }
       &:hover {
         color: hsl(var(--theme-500));
-        .icon {
-          width: 3.6rem;
-          height: 3.6rem;
-        }
+        --carousel-arrow-size: 3.6rem;
       }
+    }
+
+    &__Icon {
+      width: var(--carousel-arrow-size);
+      height: var(--carousel-arrow-size);
     }
   }
 }

@@ -1,28 +1,28 @@
 <template>
-  <li class="thumbnail-set">
-    <RouterLink :to="link" @click.prevent class="thumbnail-set__thumbnail">
+  <li class="ThumbnailSet">
+    <RouterLink :to="link" @click.prevent class="ThumbnailSet__Image">
       <OptimizedImage :src="thumbnailSrc" :alt="alt"></OptimizedImage>
     </RouterLink>
-    <div class="thumbnail-set__info">
+    <div class="ThumbnailSet__Info">
       <template v-if="type === 'skeleton'">
-        <div class="thumbnail-set__skeleton-info loading-target"></div>
+        <div class="ThumbnailSet__SkeletonInfo loading-target"></div>
       </template>
       <template v-else>
         <RouterLink
-          class="thumbnail-set__text"
+          class="ThumbnailSet__Text"
           :to="`/anime/${aniTitle}/episodes`"
           :style="titleWidth"
         >
-          <span class="thumbnail-set__title">
+          <span class="ThumbnailSet__Title">
             {{ aniTitle }}
           </span>
-          <strong class="thumbnail-set__part-index" v-if="type === 'episode'">
+          <strong class="ThumbnailSet__PartIndex" v-if="type === 'episode'">
             {{ part }}기 {{ index }}화
           </strong>
         </RouterLink>
         <ProgressCircle
-          class="thumbnail-set__watched-percent"
-          :percent="watchedPercent"
+          class="ThumbnailSet__WatchPercent"
+          :percent="watchPercent"
           v-if="type === 'episode'"
         ></ProgressCircle>
       </template>
@@ -56,7 +56,7 @@ const props = defineProps({
   index: {
     type: String,
   },
-  watchedPercent: {
+  watchPercent: {
     type: String,
   },
 });
@@ -93,38 +93,38 @@ const alt = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.thumbnail-set {
+.ThumbnailSet {
   display: flex;
   flex-direction: column;
   width: 55vw;
   position: relative;
-  &__thumbnail {
+  &__Image {
     --radius: 0.3rem;
     --aspect-ratio: calc(9 / 16 * 100%);
     margin-bottom: var(--thumbnail-bottom, 1rem);
   }
-  &__watched-percent {
+  &__WatchPercent {
     position: absolute;
     right: 0;
     width: 3.6rem;
     height: 3.6rem;
     flex-shrink: 0;
   }
-  &__skeleton-info {
+  &__SkeletonInfo {
     width: 100%;
     height: 3rem;
     border-radius: 0.3rem;
   }
-  &__info {
+  &__Info {
     display: flex;
     justify-content: space-between;
   }
-  &__text {
+  &__Text {
     display: flex;
     gap: 0.5rem;
     flex-direction: column;
   }
-  &__title {
+  &__Title {
     display: block;
     text-overflow: ellipsis;
     overflow-wrap: break-word;
@@ -135,39 +135,39 @@ const alt = computed(() => {
     font-weight: 500;
     white-space: nowrap;
   }
-  &__part-index {
+  &__PartIndex {
     font-size: 1.3rem;
   }
 }
 @media all and (min-width: 768px) {
-  .thumbnail-set {
+  .ThumbnailSet {
     width: 32vw;
   }
 }
 
 @media all and (min-width: 1080px) {
-  .thumbnail-set {
+  .ThumbnailSet {
     width: 28vw;
-    &__title {
+    &__Title {
       font-size: 1.7rem;
       --episode-title-width: 30ch;
     }
-    &__part-index {
+    &__PartIndex {
       font-size: 1.5rem;
     }
   }
 }
 
 @media all and (min-width: 1920px) {
-  .thumbnail-set {
+  .ThumbnailSet {
     width: 15vw;
     &__ratio-holder {
       margin-bottom: 1.7rem;
     }
-    &__text {
+    &__Text {
       gap: 1rem;
     }
-    &__title {
+    &__Title {
       --episode-title-width: 20ch;
       font-size: 2rem;
     }

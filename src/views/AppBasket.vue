@@ -1,20 +1,20 @@
 <template>
-  <main class="basket">
+  <main class="Basket">
     <template v-if="user">
-      <div class="basket__button-group inner">
-        <div class="basket__tabs">
+      <div class="Basket__ButtonGroup inner">
+        <div class="Basket__tabs">
           <button
             @click="changeSelected"
-            class="basket__button"
+            class="Basket__button"
             v-for="tabItem in tabItems"
             :key="tabItem.type"
             :data-key="tabItem.type"
           >
             <span
               :class="[
-                'basket__active-holder',
+                'Basket__ActiveHolder',
                 {
-                  'basket__active-holder--active': selectedTab === tabItem.type,
+                  'Basket__ActiveHolder--active': selectedTab === tabItem.type,
                 },
               ]"
             >
@@ -28,7 +28,7 @@
           </IconBase>
         </button>
       </div>
-      <ul class="basket__list">
+      <ul class="Basket__list">
         <ThumbnailSet
           :type="selectedTab === 'recentWatched' ? 'episode' : 'series'"
           v-for="basketItem in basketList"
@@ -38,16 +38,16 @@
           :index="basketItem.index"
           :watched-percent="basketItem.watchedPercent"
           :short-title="basketItem.shortTitle"
-          class="basket__item"
+          class="Basket__item"
         />
       </ul>
     </template>
     <template v-else>
-      <div class="basket__require-login inner">
-        <strong class="basket__login-title">
+      <div class="Basket__RequireLogin inner">
+        <strong class="Basket__LoginTitle">
           여기서 지금까지의 덕질을 저장해 보세요!
         </strong>
-        <RouterLink to="/auth" class="basket__login-button">
+        <RouterLink to="/auth" class="Basket__LoginButton">
           로그인/회원가입
         </RouterLink>
       </div>
@@ -82,9 +82,9 @@ const basketList = computed(() => user.value[selectedTab.value]);
 </script>
 
 <style lang="scss" scoped>
-.basket {
+.Basket {
   padding: 6rem 0;
-  &__button-group {
+  &__ButtonGroup {
     display: flex;
     justify-content: space-between;
     position: sticky;
@@ -105,7 +105,7 @@ const basketList = computed(() => user.value[selectedTab.value]);
     display: flex;
     justify-content: center;
   }
-  &__active-holder {
+  &__ActiveHolder {
     display: flex;
     align-items: center;
     font-weight: 500;
@@ -141,7 +141,7 @@ const basketList = computed(() => user.value[selectedTab.value]);
     min-height: 25.5rem;
   }
 
-  &__require-login {
+  &__RequireLogin {
     display: flex;
     height: calc(var(--vh) * 100px - 8rem);
     flex-direction: column;
@@ -150,10 +150,10 @@ const basketList = computed(() => user.value[selectedTab.value]);
     gap: 2rem;
   }
 
-  &__login-title {
+  &__LoginTitle {
     font-size: 1.7rem;
   }
-  &__login-button {
+  &__LoginButton {
     width: 100%;
     padding: 2rem;
     background-color: hsl(var(--bg-200));
@@ -174,7 +174,7 @@ const basketList = computed(() => user.value[selectedTab.value]);
 }
 
 @media screen and (min-width: 769px) {
-  .basket {
+  .Basket {
     &__list {
       grid: auto-flow / 1fr 1fr;
     }
@@ -182,16 +182,16 @@ const basketList = computed(() => user.value[selectedTab.value]);
 }
 
 @media screen and (min-width: 1240px) {
-  .basket {
+  .Basket {
     width: 1240px;
     margin: 0 auto;
-    &__button-group {
+    &__ButtonGroup {
       border: none;
     }
     &__button {
       height: 5.6rem;
     }
-    &__active-holder {
+    &__ActiveHolder {
       font-size: 1.7rem;
     }
     &__list {

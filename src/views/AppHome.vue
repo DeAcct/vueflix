@@ -70,19 +70,13 @@ import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import Cookies from "js-cookie";
 import { useStore } from "vuex";
-import {
-  getFirestore,
-  getDocs,
-  collection,
-  doc,
-  getDoc,
-} from "firebase/firestore";
+import { getDocs, collection, doc, getDoc } from "firebase/firestore";
+import { db } from "../utility/firebase";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 
 const selectedDay = ref();
 const selectedDailyAnime = ref([]);
 async function getSelectedDayList() {
-  const db = getFirestore();
   const docReference = doc(db, "daily", selectedDay.value);
   const docSnap = await getDoc(docReference);
   selectedDailyAnime.value = docSnap.data().data;
@@ -121,7 +115,6 @@ async function PWAinstall() {
 
 const recommendedAnime = ref({});
 onMounted(async () => {
-  const db = getFirestore();
   const qSnapshot = await getDocs(collection(db, "recommend"));
   const data = qSnapshot.docs
     .map((doc) => doc.data())
@@ -160,7 +153,8 @@ const auth = computed(() => store.state.auth.user);
   &__Curator {
     display: flex;
     flex-direction: column;
-    padding: 3.2rem 0 calc(var(--bottom-tab-height) + 3.2rem);
+    padding: 3.2rem 0
+      calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin) + 3.2rem);
     background-color: hsl(var(--bg-100));
     gap: 3rem;
   }

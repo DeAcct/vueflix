@@ -14,19 +14,14 @@
   </section>
 </template>
 
-<script>
+<script setup>
 import VueflixBtn from "../components/VueflixBtn.vue";
-export default {
-  name: "LoginWidget",
-  components: {
-    VueflixBtn,
+
+defineProps({
+  btnFunc: {
+    type: Function,
   },
-  props: {
-    btnFunc: {
-      type: Function,
-    },
-  },
-};
+});
 </script>
 
 <style lang="scss">
@@ -47,7 +42,7 @@ export default {
     display: flex;
     align-items: center;
   }
-  .profile {
+  .ProfileImg {
     width: 4.8rem;
     height: 4.8rem;
     margin-right: 1rem;

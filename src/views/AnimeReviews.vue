@@ -1,5 +1,5 @@
 <template>
-  <div class="reviews">
+  <div class="AnimeReviews">
     <LoginWidget v-if="!user" :btn-func="goAuth">
       <template v-slot:text>
         <h2>로그인하고 리뷰를 남겨보세요</h2>
@@ -28,7 +28,7 @@ const user = computed(() => store.state.auth.user);
 </script>
 
 <style lang="scss" scoped>
-.reviews {
+.AnimeReviews {
   padding: 0 0 2rem;
   display: flex;
   flex-direction: column;

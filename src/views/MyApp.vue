@@ -1,42 +1,57 @@
 <template>
-  <div class="wrap">
-    <main class="my">
-      <div class="tab-one">
-        <LoginWidget :btn-func="onLoginButtonClick">
-          <template v-slot:profile-img>
-            <ProfileImg
-              :input-profile="user ? user.profileImgSrc : undefined"
-              :class="[
-                { 'profile--male': user ? user.gender === 'male' : false },
-                { 'profile--female': user ? user.gender === 'female' : false },
-              ]"
-            />
-          </template>
-          <template v-slot:text>
-            <h2>
-              {{ user ? user.nickname : "로그인 전이에요" }}
-            </h2>
-            <p v-if="user">{{ user.email }}</p>
-          </template>
-          <template v-slot:login-state-text>
-            {{ user ? "로그아웃" : "로그인" }}
-          </template>
-        </LoginWidget>
-        <section class="my-stats" v-if="user">
-          <h2>내 덕질 기록</h2>
-          <ul class="stat-list">
-            <li class="stat-item">
-              <h3>보고싶다</h3>
-              <p>{{ user.wannaSee.length }}개</p>
-            </li>
-            <li class="stat-item">
-              <h3>리뷰</h3>
-              <p>{{ user.reviews.length }}개</p>
-            </li>
-          </ul>
-        </section>
-      </div>
-      <div class="my-cards-wrap">
+  <main class="MyApp">
+    <div class="MyApp__Visual">
+      <LoginWidget :btn-func="onLoginButtonClick" class="MyApp__LoginWidget">
+        <template v-slot:profile-img>
+          <ProfileImg
+            :input-profile="user ? user.profileImgSrc : undefined"
+            :class="[
+              'MyApp__Profile',
+              user ? `MyApp__Profile--${user.gender}` : '',
+            ]"
+          />
+        </template>
+        <template v-slot:text>
+          <h2>
+            {{ user ? user.nickname : "로그인 전이에요" }}
+          </h2>
+          <p v-if="user">{{ user.email }}</p>
+        </template>
+        <template v-slot:login-state-text>
+          {{ user ? "로그아웃" : "로그인" }}
+        </template>
+      </LoginWidget>
+      <section class="MyApp__Stats" v-if="user">
+        <h2>내 덕질 기록</h2>
+        <ul class="MyApp__StatList">
+          <li class="MyApp__StatItem">
+            <h3 class="MyApp__StatName">보고싶다</h3>
+            <p class="MyApp__StatValue">{{ user.wannaSee.length }}개</p>
+          </li>
+          <li class="MyApp__StatItem">
+            <h3 class="MyApp__StatName">리뷰</h3>
+            <p class="MyApp__StatValue">{{ user.reviews }}개</p>
+          </li>
+        </ul>
+      </section>
+    </div>
+    <div class="MyApp__SettingMenu">
+      <ul v-for="unit in viewModel">
+        <template v-for="{ icon, text, to, requireLogin } in unit" key="text">
+          <li v-if="requireLogin">
+            <ArrowBtnWidget :to="to">
+              <IconBase>
+                <template v-slot:icon>
+                  <component :is="icon" />
+                </template>
+              </IconBase>
+              <template v-slot:text>{{ text }}</template>
+            </ArrowBtnWidget>
+          </li>
+        </template>
+      </ul>
+    </div>
+    <!--div class="my-cards-wrap">
         <template v-if="user">
           <div
             class="my-cards"
@@ -49,10 +64,7 @@
               :to="item.to"
               :icon="item.icon"
             >
-              <template v-slot:icon>
-                <component :is="item.icon" />
-              </template>
-              <template v-slot:text>{{ item.text }}</template>
+              
             </ArrowBtnWidget>
           </div>
         </template>
@@ -75,162 +87,140 @@
         </div>
         <RouterLink to="#none" class="leave-account-btn" v-if="user">
           회원 탈퇴
-        </RouterLink>
-      </div>
-    </main>
-  </div>
+        </RouterLink >
+      </div -->
+  </main>
 </template>
 
-<script>
-import { mapState } from "vuex";
-import { getAuth, signOut } from "firebase/auth";
+<script setup>
+import { useStore } from "vuex";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
 
+import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
+import LoginWidget from "../components/LoginWidget.vue";
 import ProfileImg from "../components/ProfileImg.vue";
 import VueflixBtn from "../components/VueflixBtn.vue";
-import ArrowBtnWidget from "../components/ArrowBtnWidget.vue";
-import IconMembership from "../components/icons/IconMembership.vue";
+import IconBase from "../components/IconBase.vue";
 import IconAccount from "../components/icons/IconAccount.vue";
 import IconNotification from "../components/icons/IconNotification.vue";
-import LoginWidget from "../components/LoginWidget.vue";
-import IconBase from "../components/IconBase.vue";
+import IconMembership from "../components/icons/IconMembership.vue";
 
-export default {
-  name: "MyApp",
-  components: {
-    ProfileImg,
-    VueflixBtn,
-    ArrowBtnWidget,
-    IconMembership,
-    IconNotification,
-    IconAccount,
-    LoginWidget,
-    IconBase,
-  },
-  computed: {
-    ...mapState({
-      user: (state) => state.auth.user,
-    }),
-  },
-  data() {
-    return {
-      myCardLoggedin: [
-        [
-          {
-            text: "멤버십 및 포인트",
-            icon: "IconMembership",
-            to: "/my/membership",
-          },
-        ],
-        [
-          {
-            text: "계정 설정",
-            icon: "IconAccount",
-            to: "/my/account-setting",
-          },
-          {
-            text: "알림 설정",
-            icon: "IconNotification",
-            to: "#none",
-          },
-        ],
-        [
-          {
-            text: "쿠폰 등록",
-            to: "#none",
-          },
-          {
-            text: "이용 내역",
-            to: "#none",
-          },
-        ],
-      ],
-      myCardGeneral: [
-        [
-          {
-            text: "앱 테마",
-            to: "/my/app-theme",
-          },
-          {
-            text: "고객센터",
-            to: "#none",
-          },
-          {
-            text: "버전 정보",
-            to: "#none",
-          },
-        ],
-      ],
-      imgData: undefined,
-    };
-  },
-  methods: {
-    async onLoginButtonClick() {
-      if (!this.user) {
-        this.login();
-        return;
-      }
-      this.logout();
+const viewModel = [
+  [
+    {
+      icon: IconMembership,
+      text: "멤버십 및 포인트",
+      to: "/my/membership",
+      requireLogin: true,
     },
-    login() {
-      this.$router.push("auth");
+    {
+      text: "쿠폰 등록",
+      to: "#none",
+      requireLogin: true,
     },
-    async logout() {
-      const auth = getAuth();
-      await signOut(auth);
-      this.$store.commit("auth/setUser", null);
-      sessionStorage.setItem("user", JSON.stringify(this.user));
+  ],
+  [
+    {
+      icon: IconAccount,
+      text: "계정 설정",
+      to: "/my/account-setting",
+      requireLogin: true,
     },
-  },
-};
+    {
+      text: "이용 내역",
+      to: "#none",
+      requireLogin: true,
+    },
+    {
+      icon: IconNotification,
+      text: "알림 설정",
+      to: "#none",
+      requireLogin: true,
+    },
+  ],
+  [
+    {
+      text: "앱 테마",
+      to: "/my/app-theme",
+      requireLogin: false,
+    },
+    {
+      text: "고객센터",
+      to: "#none",
+      requireLogin: false,
+    },
+    {
+      text: "버전 정보",
+      to: "#none",
+      requireLogin: false,
+    },
+  ],
+];
+
+const store = useStore();
+const router = useRouter();
+const user = computed(() => store.state.auth.user);
+async function onLoginButtonClick() {
+  if (!user) {
+    login();
+    return;
+  }
+  logout();
+}
+function login() {
+  router.push("auth");
+}
+async function logout() {
+  const auth = getAuth();
+  await signOut(auth);
+  store.commit("auth/setUser", null);
+}
 </script>
 
 <style lang="scss" scoped>
-.wrap {
-  background-color: var(--bg-200);
-  min-height: 100vh;
-}
-.my {
+.MyApp {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 7rem 0 9rem;
-}
-.login-widget {
-  margin: 0 auto 1rem;
-}
-.tab-one {
-  width: 100%;
-  max-width: 768px;
-}
-.my-stats {
-  width: 100%;
-  padding: 1.8rem var(--inner-padding);
-  background-color: var(--top-item);
-  border-radius: 0.6rem;
-  margin: 0 auto 1rem;
-  box-shadow: var(--box-shadow);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  .stat-list {
+  padding: 6rem 0 9rem;
+  &__Visual {
+    width: 100%;
+    max-width: 768px;
+    background-color: hsl(var(--bg-200));
+  }
+  &__LoginWidget {
+    border-radius: 0;
+    box-shadow: none;
+  }
+  &__Stats {
+    width: 100%;
+    padding: 1.8rem var(--inner-padding);
+
     display: flex;
-    .stat-item {
-      text-align: center;
-      h3 {
-        font-size: 1.3rem;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-      }
-      p {
-        font-size: 1.5rem;
-        font-weight: 700;
-      }
-      &:not(:last-child) {
-        margin-right: 2rem;
-      }
-    }
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0.6rem;
+  }
+  &__StatList {
+    display: flex;
+    gap: 1.6rem;
+  }
+  &__StatItem {
+    display: flex;
+    gap: 0.4rem;
+    text-align: center;
+  }
+  &__StatName {
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+  &__StatValue {
+    font-size: 1.5rem;
+    font-weight: 700;
   }
 }
+
 .my-cards-wrap {
   display: flex;
   flex-direction: column;
@@ -284,7 +274,7 @@ export default {
       font-size: 1.2rem;
     }
   }
-  .my-stats {
+  .MyApp__Stats {
     box-shadow: none;
     border-radius: 0;
   }

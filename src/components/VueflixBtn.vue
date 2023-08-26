@@ -11,24 +11,19 @@
   </component>
 </template>
 
-<script>
+<script setup>
 import IconBase from "./IconBase.vue";
-export default {
-  name: "VueflixFuncBtn",
-  props: {
-    type: {
-      type: String,
-    },
-    component: {
-      type: String,
-    },
-    icon: {
-      type: Boolean,
-      default: false,
-    },
+
+defineProps({
+  type: {
+    type: String,
   },
-  components: {
-    IconBase,
+  component: {
+    type: String,
   },
-};
+  icon: {
+    type: Boolean,
+    default: false,
+  },
+});
 </script>

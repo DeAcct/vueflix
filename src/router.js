@@ -133,6 +133,10 @@ const routes = [
     component: () => import("@/views/Notification.vue"),
     meta: {
       title: "알림",
+      appBar: {
+        activityContent: "알림",
+        backButton: true,
+      },
       bottomTabMenu: false,
     },
   },

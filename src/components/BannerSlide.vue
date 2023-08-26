@@ -51,7 +51,8 @@ import IconArrowNext from "./icons/IconArrowNext.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import SlideContent from "./SlideContent.vue";
 
-import { getFirestore, getDoc, doc } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../utility/firebase";
 
 import { register } from "swiper/element/bundle";
 import { onMounted, ref } from "vue";
@@ -60,7 +61,6 @@ const randomMaxNumber = ref(0);
 const randomIDs = ref([]);
 const $swiper = ref(null);
 onMounted(async () => {
-  const db = getFirestore();
   const docRef = doc(db, "statistics", "statistics");
   const res = await getDoc(docRef);
   randomMaxNumber.value = res.data().numbersofAnime;

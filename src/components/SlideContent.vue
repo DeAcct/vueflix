@@ -1,12 +1,12 @@
 <template>
   <RouterLink
     :to="slideData.name ? `/anime/${slideData.name}/episodes` : '#'"
-    class="slide-content"
+    class="SlideContent"
   >
     <div
       :class="[
-        'slide-content__bg-holder',
-        { 'slide-content__bg-holder--loaded': loaded.bg },
+        'SlideContent__BackgroundHolder',
+        { 'SlideContent__BackgroundHolder--Loaded': loaded.bg },
       ]"
     >
       <picture>
@@ -16,38 +16,33 @@
         <img
           :src="slideData.pcJpegBg"
           :alt="`${slideData.name} 배너`"
-          class="slide-content__bg"
+          class="SlideContent__BackgroundImage"
           @load="bgComplete"
           loading="lazy"
         />
       </picture>
     </div>
-    <div class="slide-content__info">
+    <div class="SlideContent__Presentation">
       <h3>
         <img
           :src="slideData.logo"
           :alt="slideData.name"
           :class="[
-            'slide-content__ani-logo',
-            { 'slide-content__ani-logo--loaded': loaded.bg },
+            'SlideContent__AniLogo',
+            { 'SlideContent__AniLogo--Loaded': loaded.bg },
           ]"
           @load="logoComplete"
           loading="lazy"
         />
       </h3>
-      <strong class="slide-content__copy">{{ slideData.copy }}</strong>
+      <strong class="SlideContent__Copy">{{ slideData.copy }}</strong>
     </div>
   </RouterLink>
 </template>
 
 <script setup>
-import {
-  collection,
-  getDocs,
-  getFirestore,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../utility/firebase";
 import { getDownloadURL, ref as fireRef, getStorage } from "firebase/storage";
 import { onMounted, reactive, ref } from "vue";
 
@@ -61,7 +56,7 @@ const slideData = ref({});
 
 onMounted(async () => {
   const q = query(
-    collection(getFirestore(), "anime"),
+    collection(db, "anime"),
     where("idNumber", "==", props.animeId)
   );
   const {
@@ -108,9 +103,9 @@ function bgComplete() {
 </script>
 
 <style lang="scss" scoped>
-.slide-content {
+.SlideContent {
   max-height: 50vh;
-  &__bg-holder {
+  &__BackgroundHolder {
     display: flex;
     position: relative;
 
@@ -133,33 +128,33 @@ function bgComplete() {
       opacity: 0;
     }
 
-    &--loaded {
+    &--Loaded {
       opacity: 1;
       &::before {
         opacity: 1;
       }
     }
   }
-  &__bg {
+  &__BackgroundImage {
     width: 100vw;
     object-fit: cover;
   }
-  &__info {
+  &__Presentation {
     position: absolute;
     left: 2rem;
     bottom: 10%;
   }
-  &__ani-logo {
+  &__AniLogo {
     max-width: 70vw;
     max-height: 15em;
     margin-bottom: 2rem;
     opacity: 0;
     transition: 150ms ease-out;
-    &--loaded {
+    &--Loaded {
       opacity: 1;
     }
   }
-  &__copy {
+  &__Copy {
     display: block;
     font-size: 1.5em;
     color: #fff;
@@ -168,30 +163,30 @@ function bgComplete() {
 }
 
 @media screen and (min-width: 768px) {
-  .slide-content {
-    &__bg-holder {
+  .SlideContent {
+    &__BackgroundHolder {
       padding: 0;
       height: calc(100vw / 2560 * 1043);
       &::after {
         height: 100%;
       }
     }
-    &__info {
+    &__Presentation {
       left: 5rem;
     }
-    &__ani-logo {
+    &__AniLogo {
       max-width: 40vw;
       max-height: 10em;
       margin-bottom: 3rem;
     }
-    &__copy {
+    &__Copy {
       font-size: 2em;
     }
   }
 }
 @media screen and (min-width: 1080px) {
-  .slide-content {
-    &__ani-logo {
+  .SlideContent {
+    &__AniLogo {
       max-width: 30vw;
       max-height: 18em;
     }

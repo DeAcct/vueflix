@@ -1,11 +1,9 @@
 <template>
-  <div class="profile">
-    <img
-      :src="user?.profileImgSrc || NotFoundAqua"
-      alt="프로필 사진"
-      class="profile__img"
-    />
-  </div>
+  <img
+    :src="user?.profileImgSrc || NotFoundAqua"
+    alt="프로필 사진"
+    class="ProfileImg"
+  />
 </template>
 
 <script setup>
@@ -24,16 +22,8 @@ const user = computed(() => store.state.auth.user);
 </script>
 
 <style lang="scss" scoped>
-.profile {
-  position: relative;
+.ProfileImg {
   border-radius: 50%;
-  width: 100%;
-  height: 100%;
-  &__img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-  }
+  object-fit: cover;
 }
 </style>

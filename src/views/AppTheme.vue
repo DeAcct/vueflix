@@ -1,11 +1,11 @@
 <template>
-  <div class="darkmode">
-    <h2 class="darkmode__heading">앱 테마</h2>
+  <div class="AppTheme">
+    <h2 class="AppTheme__Heading">앱 테마</h2>
     <label
       :class="[
-        'darkmode__toggle',
+        'AppTheme__Toggle',
         'inner',
-        { 'darkmode__toggle--enabled': theme === 'dark' },
+        { 'AppTheme__Toggle--Enabled': theme === 'dark' },
       ]"
     >
       {{ theme === "dark" ? "어두운 테마" : "밝은 테마" }}
@@ -14,67 +14,57 @@
         @state-change="themeToggle"
       />
     </label>
-    <div class="info-area">
-      <svg class="infographic" viewBox="0 0 1366 768">
-        <rect class="infographic__bg" width="1366" height="768" />
-        <circle class="infographic__sun-bg" cx="692.4" cy="393.4" r="238.6" />
-        <circle class="infographic__sun-mask" cx="454.3" cy="393.4" r="0.5" />
-        <circle class="infographic__sun-line" cx="673.6" cy="374.6" r="238.6" />
+    <div class="AppTheme__Presentation">
+      <svg class="AppTheme__Infograpic" viewBox="0 0 1366 768">
+        <rect class="AppTheme__Background" width="1366" height="768" />
+        <circle class="AppTheme__SunBack" cx="692.4" cy="393.4" r="238.6" />
+        <circle class="AppTheme__Mask" cx="454.3" cy="393.4" r="0.5" />
+        <circle class="AppTheme__SunLine" cx="673.6" cy="374.6" r="238.6" />
       </svg>
-      <strong class="darkmode__description">
+      <strong class="AppTheme__Description">
         어두운 테마를 적용하여 밤에도 편하게 보세요!
       </strong>
     </div>
-    <div class="note-that">
-      <strong class="note-that__head"
+    <section class="AppTheme__NoteThat">
+      <strong class="AppTheme__NoteStrong"
         >아래의 경우 사용 중인 기기의 다크 모드 설정을 따라요.</strong
       >
-      <ul class="reason-list">
-        <li class="reason-list__item">이 기능을 한 번도 사용한 적 없는 경우</li>
-        <li class="reason-list__item">인터넷 사용기록을 삭제할 경우</li>
+      <ul class="AppTheme__NoteList">
+        <li class="AppTheme__NoteItem">
+          이 기능을 한 번도 사용한 적 없는 경우
+        </li>
+        <li class="AppTheme__NoteItem">인터넷 사용기록을 삭제할 경우</li>
       </ul>
-    </div>
+    </section>
   </div>
 </template>
 
-<script>
-import { mapState } from "vuex";
+<script setup>
+import { useStore } from "vuex";
 import StateToggle from "../components/StateToggle.vue";
-export default {
-  name: "AppTheme",
-  data() {
-    return {
-      timeInterval: undefined,
-      time: undefined,
-    };
-  },
-  methods: {
-    themeToggle(e) {
-      const currentTheme = e ? "dark" : "light";
-      this.$store.commit("theme/setTheme", currentTheme);
-      localStorage.setItem("theme", currentTheme);
-    },
-  },
-  components: { StateToggle },
-  computed: {
-    ...mapState({
-      theme: (state) => state.theme.theme,
-    }),
-  },
-};
+import { computed } from "vue";
+
+const store = useStore();
+const theme = computed(() => store.state.theme.theme);
+function themeToggle(e) {
+  console.log(e);
+  const currentTheme = e.value ? "dark" : "light";
+  store.commit("theme/setTheme", currentTheme);
+  localStorage.setItem("theme", currentTheme);
+}
 </script>
 
 <style lang="scss" scoped>
-.darkmode {
+.AppTheme {
   padding: 6rem 0 2rem;
-  &__heading {
+  &__Heading {
     display: none;
     text-align: center;
     margin: 3rem 0 2rem;
     font-size: 2.5rem;
   }
 
-  &__toggle {
+  &__Toggle {
     display: flex;
     max-width: 1080px;
     justify-content: space-between;
@@ -85,42 +75,34 @@ export default {
     transition: 150ms ease-out;
     user-select: none;
     inherits: none;
-    &--enabled {
+    &--Enabled {
       background-color: hsl(var(--theme-300));
     }
   }
 
-  .info-area {
+  &__Presentation {
     max-width: 1080px;
     margin: 0 auto;
   }
-  .infographic {
+  &__Infograpic {
     width: 100%;
-    &__bg {
-      fill: hsl(28, 97%, 58%);
-      animation: infographic__bg 3s ease-in-out alternate infinite;
-    }
-    &__sun-bg {
-      fill: hsl(38, 100%, 62%);
-      animation: infographic__sun-bg 3s ease-in-out alternate infinite;
-    }
-    &__sun-line {
-      fill: transparent;
-      stroke: hsl(284, 21%, 10%);
-      stroke-width: 5px;
-      animation: infographic__sun-line 3s ease-in-out alternate infinite;
-    }
-    &__sun-mask {
-      fill: #fc8f2d;
-      transform-origin: 453.8px 393.4px;
-      offset-path: path(
-        "M888.2,256.6c0,0,68.8,187.4-46.1,292.9c-69.3,63.6-163.4,31.9-213.5-22.6c-18.5-19.4-30.9-64.2-4.2-89.6"
-      );
-      offset-distance: 0%;
-      animation: infographic__sun-mask 3s ease-in-out alternate infinite;
-    }
   }
-  &__description {
+  &__Background {
+    fill: hsl(28, 97%, 58%);
+    animation: AppTheme__Infograpic__Background 3s ease-in-out alternate
+      infinite;
+  }
+  &__SunBack {
+    fill: hsl(38, 100%, 62%);
+    animation: AppTheme__Infograpic__SunBack 3s ease-in-out alternate infinite;
+  }
+  &__SunLine {
+    fill: transparent;
+    stroke: hsl(284, 21%, 10%);
+    stroke-width: 5px;
+    animation: AppTheme__Infograpic__SunLine 3s ease-in-out alternate infinite;
+  }
+  &__Description {
     display: block;
     width: 100%;
     padding: 2rem 3rem;
@@ -129,47 +111,54 @@ export default {
     font-size: 1.4rem;
     line-height: 1;
   }
-  .note-that {
+  &__Mask {
+    fill: #fc8f2d;
+    transform-origin: 453.8px 393.4px;
+    offset-path: path(
+      "M888.2,256.6c0,0,68.8,187.4-46.1,292.9c-69.3,63.6-163.4,31.9-213.5-22.6c-18.5-19.4-30.9-64.2-4.2-89.6"
+    );
+    offset-distance: 0%;
+    animation: AppTheme__Infograpic__Mask 3s ease-in-out alternate infinite;
+  }
+  &__NoteThat {
     width: 100%;
     padding: 2rem 3rem;
-    &__head {
-      display: block;
-      font-size: 1.2rem;
-      margin-bottom: 0.75rem;
-      color: var(--bg-800);
-    }
-    .reason-list {
-      &__item {
-        line-height: 1.5rem;
-        font-size: 1.1rem;
-        color: var(--bg-800);
-        &::before {
-          content: "- ";
-        }
-      }
+  }
+  &__NoteStrong {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    color: var(--bg-800);
+  }
+  &__NoteItem {
+    line-height: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--bg-800);
+    &::before {
+      content: "- ";
     }
   }
 }
 
-@keyframes infographic__bg {
+@keyframes AppTheme__Infograpic__Background {
   70%,
   100% {
     fill: hsl(282, 21%, 15%);
   }
 }
-@keyframes infographic__sun-bg {
+@keyframes AppTheme__Infograpic__SunBack {
   70%,
   100% {
     fill: hsl(282, 21%, 30%);
   }
 }
-@keyframes infographic__sun-line {
+@keyframes AppTheme__Infograpic__SunLine {
   70%,
   100% {
     opacity: 0;
   }
 }
-@keyframes infographic__sun-mask {
+@keyframes AppTheme__Infograpic__Mask {
   70%,
   100% {
     fill: hsl(282, 21%, 15%);
@@ -179,11 +168,11 @@ export default {
 }
 
 @media screen and (min-width: 1080px) {
-  .darkmode {
-    &__heading {
+  .AppTheme {
+    &__Heading {
       display: block;
     }
-    &__description {
+    &__Description {
       font-size: 1.5rem;
     }
   }

@@ -1,17 +1,8 @@
 <template>
-  <form class="account-setting" @submit.prevent="syncToFirebase">
+  <form class="AccountSetting" @submit.prevent="syncToFirebase">
     <div class="profile-change">
       <div class="profile-box">
-        <ProfileImg
-          :input-profile="
-            profilePreview
-              ? profilePreview
-              : user
-              ? user.profileImgSrc
-              : undefined
-          "
-          class="profile-change__view"
-        />
+        <ProfileImg class="profile-change__view" />
         <label class="profile-change__input-img" data-pointer="true">
           <i class="icon">
             <IconBase>
@@ -84,7 +75,8 @@
 </template>
 
 <script>
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../utility/firebase";
 import { getStorage, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { mapState } from "vuex";
@@ -140,7 +132,6 @@ export default {
       if (!this.inProgress) {
         this.inProgress = true;
 
-        const db = getFirestore();
         const storage = getStorage();
         const storageRef = ref(storage, `user/${this.user.uid}/profile.png`);
         await uploadBytes(storageRef, this.profileImg);
@@ -193,7 +184,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.account-setting {
+.AccountSetting {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -344,7 +335,7 @@ export default {
 }
 
 @media screen and (min-width: 1080px) {
-  .account-setting {
+  .AccountSetting {
     .app-bar {
       display: none;
     }

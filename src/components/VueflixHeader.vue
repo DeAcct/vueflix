@@ -54,9 +54,14 @@
             <IconSearch></IconSearch>
           </IconBase>
         </button>
-        <RouterLink to="/my" class="VueflixHeader__ProfileCombo">
-          <span class="VueflixHeader__UserName">{{ user?.nickname }}</span>
-          <ProfileImg class="VueflixHeader__Action"></ProfileImg>
+        <RouterLink
+          :to="user ? '/my' : '/auth'"
+          class="VueflixHeader__ProfileCombo"
+        >
+          <span class="VueflixHeader__UserName">{{
+            user ? user.nickname : "로그인"
+          }}</span>
+          <ProfileImg class="VueflixHeader__Profile" />
         </RouterLink>
       </div>
     </div>
@@ -71,6 +76,7 @@
         class="VueflixHeader__SearchBar VueflixHeader__SearchBar--MobileOnly"
       />
       <button @click="toggleSearchMode" class="VueflixHeader__SearchCloseBtn">
+        <span class="blind">닫기</span>
         <IconBase>
           <IconClose />
         </IconBase>
@@ -137,7 +143,6 @@ function toggleSearchMode() {
 
 const store = useStore();
 const user = computed(() => store.state.auth.user);
-console.log(user);
 </script>
 
 <style lang="scss" scoped>
@@ -146,7 +151,6 @@ console.log(user);
   position: fixed;
   top: 0;
   z-index: 100;
-  user-select: none;
   height: 6rem;
   display: flex;
   align-items: center;
@@ -188,15 +192,16 @@ console.log(user);
     align-items: center;
     justify-content: center;
     color: var(--icon-color);
+    border-radius: 9999px;
   }
 
   &__SearchCombo {
-    position: absolute;
     display: flex;
     align-items: center;
     gap: 1.6rem;
     width: 100%;
     height: 100%;
+    position: absolute;
     left: 0;
     background-color: hsl(var(--bg-100) / 0.8);
     backdrop-filter: blur(10px);
@@ -208,7 +213,11 @@ console.log(user);
   }
   &__SearchBar {
     gap: 1.2rem;
-    flex-grow: 1;
+    width: calc(100% - 4rem);
+    --searchbar-icon-color: hsl(var(--bg-700));
+    --searchbar-text-color: inherit;
+    --searchbar-placeholder-color: hsl(var(--bg-600));
+    //flex-grow: 1;
     &--PCOnly {
       display: none;
     }
@@ -234,27 +243,18 @@ console.log(user);
       color: hsl(var(--header-content-fill));
     }
     &__Activity {
-      position: static;
-      transform: none;
       opacity: 1;
       color: inherit;
       a {
         color: inherit;
+        transition: 100ms ease-out;
       }
-    }
-
-    &__ProfileCombo {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      padding: 0.6rem;
-      border-radius: 9999px;
-      background-color: hsl(var(--bg-200));
-    }
-
-    &__UserName {
-      font-size: 1.5rem;
-      font-weight: 500;
+      &:hover {
+        color: hsl(var(--text-600));
+      }
+      &:focus-within {
+        color: hsl(var(--theme-500));
+      }
     }
   }
 }
@@ -265,9 +265,23 @@ console.log(user);
     color: inherit;
     &__Actions {
       width: auto;
+      .right {
+        gap: 4px;
+      }
+    }
+    &__Activity {
+      position: static;
+      transform: none;
     }
     &__Action {
       color: inherit;
+      width: 3.6rem;
+      height: 3.6rem;
+      border: 2px solid transparent;
+      transition: border-color 150ms ease-out;
+      &:focus-visible {
+        border-color: hsl(var(--theme-500));
+      }
       &--MobileOnly {
         display: none;
       }
@@ -275,10 +289,32 @@ console.log(user);
     &__SearchCombo {
       display: none;
     }
+    &__Profile {
+      width: 2.4rem;
+      height: 2.4rem;
+    }
+    &__ProfileCombo {
+      display: flex;
+      align-items: center;
+      padding: 0.4rem;
+      border-radius: 9999px;
+      background-color: hsl(var(--bg-200));
+      border: 2px solid hsl(var(--bg-200));
+      transition: border-color 150ms ease-out;
+      &:focus-visible {
+        border-color: hsl(var(--theme-500));
+      }
+    }
+    &__UserName {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-right: 0.8rem;
+      margin-top: 0.2rem;
+    }
     &__SearchBar {
       &--PCOnly {
         display: flex;
-        gap: 1.2rem;
+        gap: 0.8rem;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
@@ -288,6 +324,11 @@ console.log(user);
         padding: 0 0.8rem;
         background-color: hsl(var(--bg-200));
         border-radius: 9999px;
+        border: 2px solid transparent;
+        transition: border-color 150ms ease-out;
+        &:focus-within {
+          border-color: hsl(var(--theme-500));
+        }
       }
     }
   }

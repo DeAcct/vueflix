@@ -1,7 +1,9 @@
 <template>
-  <section class="text-review inner">
-    <h2 class="text-review__title">리뷰</h2>
+  <section class="TextReview inner">
+    <h2 class="TextReview__Title">리뷰</h2>
     <WriteReview
+      v-if="isWriteReviewShown"
+      class="TextReview__Write"
       @new-review="addedTrigger"
       @edit-review="editedTrigger"
       @edit-canceled="editModeOff"
@@ -10,8 +12,8 @@
       :type="writeReviewType"
       :my-review="myReview"
     />
-    <div :class="{ 'review-list--exists': reviewList }">
-      <ul class="others-list">
+    <template v-if="reviewList.length > 0">
+      <ul class="TextReview__List">
         <ReviewItem
           v-for="(reviewItem, index) in reviewList"
           :key="index"
@@ -25,7 +27,7 @@
           <template #content>{{ reviewItem.content }}</template>
         </ReviewItem>
       </ul>
-    </div>
+    </template>
   </section>
 </template>
 
@@ -33,14 +35,15 @@
 import WriteReview from "./WriteReview.vue";
 import ReviewItem from "./ReviewItem.vue";
 import {
-  getFirestore,
   doc,
   setDoc,
   updateDoc,
   arrayUnion,
   getDoc,
   Timestamp,
+  increment,
 } from "firebase/firestore";
+import { db } from "../utility/firebase";
 import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
@@ -67,7 +70,6 @@ const writeReviewType = computed(() =>
 
 const route = useRoute();
 const store = useStore();
-const db = getFirestore();
 const animeDoc = doc(db, "anime", route.params.title);
 
 //Read
@@ -110,11 +112,6 @@ async function editedTrigger(e) {
       mutator(reviewItem);
     }
   });
-  userReviews.forEach((reviewItem) => {
-    if (reviewItem.aniTitle === route.params.title) {
-      mutator(reviewItem);
-    }
-  });
   await updateDoc(animeDoc, { reviews: animeReviews });
   await updateDoc(userDoc.value, { reviews: userReviews });
   await syncTextReviews();
@@ -127,6 +124,7 @@ function editModeOff() {
   editmode.value = false;
 }
 
+//const reviewDoc = doc(db, "review")
 //Create
 async function addedTrigger(e) {
   const reviewItem = {
@@ -139,34 +137,25 @@ async function addedTrigger(e) {
   };
 
   await setDoc(animeDoc, { reviews: arrayUnion(reviewItem) }, { merge: true });
-  await setDoc(
-    userDoc.value,
-    { reviews: arrayUnion(reviewItem) },
-    { merge: true }
-  );
+  await setDoc(userDoc.value, { reviews: increment(1) }, { merge: true });
   await syncTextReviews();
 }
 
 async function deleteTrigger() {
   await setDoc(animeDoc, { reviews: othersReview.value }, { merge: true });
-  const userSnapshot = await getDoc(userDoc.value);
-  const userReviews = userSnapshot.data().reviews;
-  const result = userReviews.filter(
-    (reviewItem) => reviewItem.aniTitle !== route.params.title
-  );
-  await setDoc(userDoc.value, { reviews: result }, { merge: true });
+  await setDoc(userDoc.value, { reviews: increment(-1) }, { merge: true });
   await syncTextReviews();
 }
 </script>
 
 <style lang="scss" scoped>
-.text-review {
+.TextReview {
   width: 100%;
   max-width: 1080px;
   position: relative;
   border-radius: 0.6rem;
   overflow: hidden;
-  &__title {
+  &__Title {
     font-size: 1.7rem;
     font-weight: 700;
     margin-bottom: 0.7rem;
@@ -174,25 +163,20 @@ async function deleteTrigger() {
   &__description {
     font-size: 1.3rem;
   }
-  .write-review {
-    margin-top: 1.5rem;
-  }
-  .review-list--exists {
-    margin-top: 1.5rem;
-  }
-  .others-list {
+  &__List {
     background-color: hsl(var(--bg-200));
     border-radius: 0.6rem;
-    &--exists {
-      margin-top: 1rem;
-    }
+    margin-top: 1rem;
+  }
+  &__Write {
+    margin-top: 1.5rem;
   }
 }
 
 @media screen and (min-width: 1080px) {
-  .text-review {
+  .TextReview {
     padding: 0 2rem;
-    &__title {
+    &__Title {
       font-size: 1.8rem;
       margin-bottom: 1rem;
     }

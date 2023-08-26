@@ -1,36 +1,41 @@
 <template>
-  <div class="wrap">
-    <LoadingSpinner v-if="isLoginWaiting" :is-loading="isLoginWaiting" />
-    <main class="login inner">
-      <div class="row-top">
-        <div class="logo">
-          <VueflixLogo />
-        </div>
-        <p class="copy-text">
-          <span class="line-break"> 이번 분기 화제작부터 고전 명작까지 </span>
-          <span class="line-break"> 한 곳에서 즐겨보세요! </span>
-        </p>
+  <main class="AppAuth">
+    <LoadingSpinner
+      v-if="isLoginWaiting"
+      :is-loading="isLoginWaiting"
+      class="AppAuth__LoadingSpinner"
+    />
+    <div class="AppAuth__Visual">
+      <div class="AppAuth__Logo">
+        <VueflixLogo />
       </div>
-      <div class="btn-area">
-        <VueflixBtn
-          component="button"
-          :icon="true"
-          type="button"
-          to="/auth/by-email"
-          class="btn--google"
-          @click="googleContinue"
+      <p class="AppAuth__CopyText">
+        <span class="AppAuth__CopyLine"
+          >이번 분기 화제작부터 고전 명작까지</span
         >
-          <template v-slot:icon><IconGoogle /></template>
-          <template v-slot:text> Google 계정으로 계속하기 </template>
-        </VueflixBtn>
-      </div>
-    </main>
-  </div>
+        <span class="AppAuth__CopyLine">한 곳에서 즐겨보세요!</span>
+      </p>
+    </div>
+    <div class="AppAuth__CTAs">
+      <VueflixBtn
+        component="button"
+        :icon="true"
+        type="button"
+        to="/auth/by-email"
+        class="AppAuth__CTAItem AppAuth__CTAItem--Google"
+        @click="googleContinue"
+      >
+        <template v-slot:icon><IconGoogle /></template>
+        <template v-slot:text>Google 계정으로 계속하기</template>
+      </VueflixBtn>
+    </div>
+  </main>
 </template>
 
 <script setup>
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { db } from "../utility/firebase";
 
 import VueflixLogo from "../components/VueflixLogo.vue";
 import VueflixBtn from "../components/VueflixBtn.vue";
@@ -53,7 +58,6 @@ const isLoginWaiting = ref(false);
 async function googleContinue() {
   isLoginWaiting.value = true;
   const auth = getAuth();
-  const db = getFirestore();
   const provider = new GoogleAuthProvider();
   try {
     await signInWithPopup(auth, provider);
@@ -82,26 +86,10 @@ async function googleContinue() {
 </script>
 
 <style lang="scss" scoped>
-.wrap {
+.AppAuth {
+  position: relative;
   height: 100vh;
   background-color: hsl(var(--promotion-bg));
-  .loader {
-    position: absolute;
-    z-index: 100;
-    width: 6.4rem;
-    height: 6.4rem;
-    top: 50%;
-    left: 50%;
-    transform: translate(-3.2rem, -3.2rem);
-    color: #fff;
-  }
-  .go-back {
-    color: #fff;
-  }
-}
-.login {
-  height: 100%;
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -110,71 +98,77 @@ async function googleContinue() {
     top: 10rem;
     bottom: 8rem;
   }
-
-  .row-top {
+  &__LoadingSpinner {
+    position: absolute;
+    z-index: 100;
+    width: 2.4rem;
+    height: 2.4rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-3.2rem, -3.2rem);
+  }
+  &__Visual {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 6rem;
   }
-
-  .logo {
+  &__Logo {
     width: 15rem;
     margin-bottom: 3rem;
     fill: hsl(var(--theme-500));
   }
-
-  .copy-text {
-    span {
-      font-weight: 700;
-      line-height: 1.3;
-      font-size: 1.7rem;
-      color: #fff;
-    }
+  &__CopyText {
     text-align: center;
     margin-bottom: 2rem;
   }
-
-  .btn-area {
+  &__CopyLine {
+    display: block;
+    font-weight: 700;
+    line-height: 1.3;
+    font-size: 1.7rem;
+    color: #fff;
+  }
+  &__CTAs {
     width: 100%;
     max-width: 37.5rem;
     box-shadow: none;
-    .btn {
-      display: flex;
-      width: 100%;
-      background-color: #fff;
-      height: 4rem;
-      justify-content: space-between;
-      box-shadow: none;
-      color: var(--google-login-text);
-    }
+  }
+  &__CTAItem {
+    display: flex;
+    width: 100%;
+    background-color: #fff;
+    height: 4rem;
+    justify-content: space-between;
+    box-shadow: none;
+    color: var(--google-login-text);
   }
 }
 
 @media screen and (min-width: 1080px) {
-  .login {
+  .AppAuth {
     justify-content: center;
 
-    .logo {
+    &__Logo {
       display: none;
     }
-    .copy-text {
+    &__CopyText {
       margin-bottom: 10rem;
-      span {
-        font-size: 5rem;
-        font-weight: 900;
-        background-image: linear-gradient(
-          90deg,
-          hsl(340, 100%, 54%),
-          hsl(73, 100%, 53%)
-        );
-        background-position-x: left;
-        background-size: 200%;
-        background-clip: text;
-        -webkit-background-clip: text;
-        animation: text-animation 3000ms ease-in-out infinite alternate;
-        color: transparent;
-      }
+    }
+    &__CopyLine {
+      font-size: 5rem;
+      font-weight: 900;
+      background-image: linear-gradient(
+        90deg,
+        hsl(340, 100%, 54%),
+        hsl(73, 100%, 53%)
+      );
+      background-position-x: left;
+      background-size: 200%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      animation: text-animation 3000ms ease-in-out infinite alternate;
+      color: transparent;
     }
   }
 }

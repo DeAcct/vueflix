@@ -1,7 +1,7 @@
 <template>
   <div class="AnimeLayout">
     <AnimeItemHead
-      :is-scroll="isScroll"
+      :is-scroll="scrollBehavior !== 'top'"
       @overflow-menu-open="actionSheetOpen"
       @require-login="openLoginModal"
       @remove-watch-history="removeWatchHistory"
@@ -40,18 +40,15 @@
       </div>
     </main>
     <ToTop
-      :class="['AnimeLayout__ToTop', { 'AnimeLayout__ToTop--Show': isScroll }]"
-    />
-    <ActionSheet
-      v-if="isActionSheetOpened"
-      @overflow-menu-close="actionSheetClose"
-      :action-origin="actions"
+      :class="[
+        'AnimeLayout__ToTop',
+        { 'AnimeLayout__ToTop--Show': scrollBehavior !== 'top' },
+      ]"
     />
   </div>
 </template>
 <script setup>
 import {
-  getFirestore,
   collection,
   query,
   where,
@@ -59,6 +56,7 @@ import {
   setDoc,
   doc,
 } from "firebase/firestore";
+import { db } from "../utility/firebase";
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import {
   onMounted,
@@ -71,11 +69,11 @@ import {
 } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
+import { useScroll } from "@/composables/scroll";
 
-import ActionSheet from "../components/ActionSheet.vue";
-import AnimeItemHead from "../components/AnimeItemHead.vue";
-import AnimeMeta from "../components/AnimeMeta.vue";
-import ToTop from "../components/ToTop.vue";
+import AnimeItemHead from "@/components/AnimeItemHead.vue";
+import AnimeMeta from "@/components/AnimeMeta.vue";
+import ToTop from "@/components/ToTop.vue";
 
 const store = useStore();
 const router = useRouter();
@@ -84,7 +82,6 @@ const route = useRoute();
 const user = computed(() => store.state.auth.user);
 async function getRawData() {
   try {
-    const db = getFirestore();
     const animeRef = collection(db, "anime");
     const q = query(animeRef, where("name", "==", route.params.title));
     const querySnapshot = await getDocs(q);
@@ -98,7 +95,10 @@ async function getRawData() {
 }
 const animeInfo = ref({});
 provide("anime-info", readonly(animeInfo));
-async function animeInit() {
+
+const { scrollBehavior } = useScroll();
+
+onMounted(async () => {
   try {
     const storage = getStorage();
     const rawData = await getRawData();
@@ -115,32 +115,10 @@ async function animeInit() {
   } catch {
     router.replace("/isekai-404");
   }
-}
-
-let isScroll = ref(0 < Math.round(window.scrollY));
-function handleScroll() {
-  isScroll.value = 0 < Math.round(window.scrollY);
-}
-
-onMounted(async () => {
-  await animeInit();
-  window.addEventListener("scroll", handleScroll);
 });
-onUnmounted(() => {
-  window.addEventListener("scroll", handleScroll);
-});
-
-const isActionSheetOpened = ref(false);
-function actionSheetOpen() {
-  isActionSheetOpened.value = true;
-}
-function actionSheetClose() {
-  isActionSheetOpened.value = false;
-}
 
 async function removeWatchHistory() {
   store.commit("auth/clearMaraton", route.params.title);
-  const db = getFirestore();
   await setDoc(doc(db, "user", user.value.uid), {
     ...user.value,
   });
@@ -158,17 +136,6 @@ function openLoginModal(e) {
   loginModal.text = e;
   loginModal.open = true;
 }
-
-const actions = [
-  {
-    text: "시청기록 초기화",
-    method: removeWatchHistory,
-  },
-  {
-    text: "관심없음",
-    method: handleInterest,
-  },
-];
 
 const $app = ref(document.querySelector("#app"));
 onMounted(() => {
@@ -246,8 +213,16 @@ onUnmounted(() => {
     }
   }
   &__ToTop {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    z-index: 100;
+    background-color: hsl(var(--theme-500));
     transform: translate(-50%, 10rem);
     transition: 150ms ease-out;
+    box-shadow: var(--box-shadow);
+    width: 4.8rem;
+    height: 4.8rem;
 
     &--Show {
       transform: translate(-50%, 0);

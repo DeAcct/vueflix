@@ -21,7 +21,8 @@
 import LinearChart from "./LinearChart.vue";
 import KeywordMy from "./KeywordMy.vue";
 
-import { getFirestore, getDoc, doc } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../utility/firebase";
 import { useRoute } from "vue-router";
 import { ref, onMounted, computed } from "vue";
 
@@ -34,7 +35,7 @@ const props = defineProps({
 const labels = ref([]);
 const route = useRoute();
 async function syncData() {
-  const docRef = doc(getFirestore(), "anime", route.params.title);
+  const docRef = doc(db, "anime", route.params.title);
   const originData = (await getDoc(docRef)).data().keywordReview;
 
   labels.value = Object.keys(originData)

@@ -1,7 +1,7 @@
 <template>
-  <component :is="component" class="anime-item-head">
+  <component :is="component" class="AnimeItemHead">
     <h1 class="blind" v-if="deviceInfo.isTouch">뷰플릭스</h1>
-    <div class="anime-item-head__navigation">
+    <div class="AnimeItemHead__Navigation">
       <div class="col-left">
         <a class="back" @click="goBack">
           <icon-base icon-name="뒤로가기">
@@ -10,20 +10,20 @@
         </a>
         <strong
           :class="[
-            'anime-item-head__scroll-title',
-            { 'anime-item-head__scroll-title--scrolled': isScroll },
+            'AnimeItemHead__ScrollTitle',
+            { 'AnimeItemHead__ScrollTitle--Scrolled': isScroll },
           ]"
         >
           {{ animeInfo.name }}
         </strong>
       </div>
       <div class="col-right">
-        <button class="anime-item-head__share-btn" @click="openSystemShare">
+        <button class="AnimeItemHead__ShareBtn" @click="openSystemShare">
           <icon-base icon-name="공유">
             <icon-share />
           </icon-base>
         </button>
-        <div class="anime-item-head__overflow-btn">
+        <div class="AnimeItemHead__OverflowBtn">
           <button class="icon" @click="actionSheetToggle">
             <icon-base>
               <icon-overflow />
@@ -37,12 +37,12 @@
         </div>
       </div>
     </div>
-    <div class="anime-item-head__anime-info inner">
+    <div class="AnimeItemHead__AnimeInfo inner">
       <div
         :class="[
-          'anime-item-head__poster',
+          'AnimeItemHead__Poster',
           'loading-target',
-          { 'anime-item-head__poster--loaded': animeInfo.poster },
+          { 'AnimeItemHead__Poster--Loaded': animeInfo.poster },
         ]"
         v-if="!deviceInfo.isMobile"
       >
@@ -53,74 +53,21 @@
           'col-right',
           'loading-target',
           {
-            'col-right--loaded':
+            'col-right--Loaded':
               animeInfo.type && animeInfo.rating && animeInfo.name,
           },
         ]"
       >
         <div class="row-top">
-          <h2 class="anime-item-head__title">{{ animeInfo.name }}</h2>
-          <div class="row-bottom">
-            <p class="sub-info">
-              {{ animeInfo.type }}
-              &middot;
-              {{ animeInfo.rating }}
-              &middot;
-              {{ animeInfo.isEnd ? "완결" : "방영중" }}
-            </p>
-          </div>
+          <h2 class="AnimeItemHead__Title">{{ animeInfo.name }}</h2>
+          <p class="AnimeItemHead__SubInfo">
+            {{ animeInfo.type }}
+            &middot;
+            {{ animeInfo.rating }}
+            &middot;
+            {{ animeInfo.isEnd ? "완결" : "방영중" }}
+          </p>
         </div>
-        <!-- <div
-          :class="[
-            'btn-area',
-            {
-              'btn-area--loaded':
-                animeInfo.type && animeInfo.rating && animeInfo.name,
-            },
-          ]"
-        >
-          <div class="col-left">
-            <router-link class="btn-area__continue" :to="continueLink" replace>
-              <i class="icon">
-                <icon-base>
-                  <icon-play />
-                </icon-base>
-              </i>
-              <span class="text">{{ continueString }}</span>
-            </router-link>
-          </div>
-          <div class="col-right">
-            <button
-              @click="wannaSeeToggle"
-              :class="['bg-less btn-area__wanna-see', { added: wannaSee }]"
-            >
-              <i class="icon">
-                <icon-base class="icon--added">
-                  <icon-wanna-see-added />
-                </icon-base>
-                <icon-base class="icon--not-added">
-                  <icon-wanna-see-add />
-                </icon-base>
-              </i>
-              <span class="text">보고싶다</span>
-            </button>
-            <button
-              class="bg-less btn-area__purchase"
-              @mousedown="activeTrigger"
-              @mouseup="activeTrigger"
-              @touchstart.passive="activeTrigger"
-              @touchend="activeTrigger"
-              @click="purchase"
-            >
-              <i class="icon">
-                <icon-base>
-                  <icon-purchase :is-active="isPurchaseActive" />
-                </icon-base>
-              </i>
-              <span class="text">소장하기</span>
-            </button>
-          </div>
-        </div> -->
         <AnimeActions
           v-bind="{
             continueString,
@@ -140,7 +87,8 @@
 import { ref, inject, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
-import { getFirestore, setDoc, doc } from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore";
+import { db } from "../utility/firebase";
 
 import ActionSheet from "./ActionSheet.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
@@ -189,7 +137,6 @@ async function wannaSeeToggle() {
       time,
     });
   }
-  const db = getFirestore();
   await setDoc(doc(db, "user", user.value.uid), {
     ...user.value,
   });
@@ -278,7 +225,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
 </script>
 
 <style lang="scss" scoped>
-.anime-item-head {
+.AnimeItemHead {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -289,7 +236,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     v-bind(bgURL);
   background-position: center;
   background-size: cover;
-  &__navigation {
+  &__Navigation {
     position: fixed;
     z-index: 20;
     left: 0;
@@ -314,14 +261,14 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     }
   }
   .back,
-  &__overflow-btn,
-  &__share-btn {
+  &__OverflowBtn,
+  &__ShareBtn {
     color: var(--anime-layout-text);
     width: 2.4rem;
     height: 2.4rem;
   }
 
-  &__scroll-title {
+  &__ScrollTitle {
     margin-left: 0.5rem;
     font-size: 1.7rem;
     height: 2.4rem;
@@ -335,12 +282,12 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    &--scrolled {
+    &--Scrolled {
       opacity: 1;
       transform: translateX(0);
     }
   }
-  &__anime-info {
+  &__AnimeInfo {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -359,7 +306,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
         rgb(255 255 255 / 0.2)
       );
 
-      &--loaded {
+      &--Loaded {
         width: 100%;
         height: auto;
         color: var(--anime-layout-text);
@@ -376,16 +323,10 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
         display: flex;
         color: inherit;
       }
-
-      .sub-info {
-        display: flex;
-        align-items: center;
-        color: inherit;
-        font-size: 1.2rem;
-      }
     }
   }
-  &__poster {
+
+  &__Poster {
     width: 20rem;
     height: calc(20rem / 5 * 7);
     margin-right: 2rem;
@@ -400,25 +341,47 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
       border-radius: 0.3rem;
       transition: opacity 150ms ease-out;
     }
-    &--loaded {
+    &--Loaded {
       animation: none;
       img {
         opacity: 1;
       }
     }
   }
-  &__title {
+  &__Title {
     color: inherit;
+    font-weight: 700;
     font-size: 2rem;
     line-height: 1.5;
     margin-bottom: 0.7rem;
   }
+  &__SubInfo {
+    display: flex;
+    align-items: center;
+    color: inherit;
+    font-size: 1.2rem;
+    font-weight: 400;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .AnimeItemHead {
+    &__AnimeInfo {
+      height: auto;
+      flex-direction: row;
+      justify-content: unset;
+      align-items: flex-end;
+    }
+    &__Poster {
+      flex-shrink: 0;
+    }
+  }
 }
 
 @media screen and (min-width: 1080px) {
-  .anime-item-head {
+  .AnimeItemHead {
     padding: 0 calc((100% - 118rem) / 2);
-    &__navigation {
+    &__Navigation {
       padding: {
         left: calc((100% - 118rem) / 2);
         right: calc((100% - 118rem) / 2);
@@ -428,18 +391,18 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
         flex-grow: 0;
       }
     }
-    &__scroll-title {
+    &__ScrollTitle {
       width: 100%;
       font-size: 2rem;
     }
-    &__overflow-btn {
+    &__OverflowBtn {
       position: relative;
     }
     .action-sheet {
       right: 0;
     }
 
-    &__anime-info {
+    &__AnimeInfo {
       padding: 0;
       position: relative;
       flex-direction: row;
@@ -457,16 +420,16 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
             font-size: 1.5rem;
           }
 
-          .sub-info {
+          .AnimeItemHead__SubInfo {
             font-size: 1.5rem;
           }
         }
-        &--loaded {
+        &--Loaded {
           width: auto;
         }
       }
     }
-    &__title {
+    &__Title {
       font-size: 3.5rem;
       margin-bottom: 1.5rem;
     }

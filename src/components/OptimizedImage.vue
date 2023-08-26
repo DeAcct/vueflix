@@ -1,11 +1,11 @@
 <template>
-  <span class="optimized-image loading-target">
+  <span class="OptimizedImage loading-target">
     <img
       :src="src"
       :alt="alt"
       :class="[
-        'optimized-image__body',
-        { 'optimized-image__body--loaded': isLoaded },
+        'OptimizedImage__Body',
+        { 'OptimizedImage__Body--Loaded': isLoaded },
       ]"
       @load="loadTrigger"
       loading="lazy"
@@ -13,37 +13,32 @@
   </span>
 </template>
 
-<script>
-export default {
-  props: {
-    src: {
-      type: String,
-    },
-    alt: {
-      type: String,
-    },
+<script setup>
+import { ref } from "vue";
+
+defineProps({
+  src: {
+    type: String,
   },
-  data() {
-    return {
-      isLoaded: false,
-    };
+  alt: {
+    type: String,
   },
-  methods: {
-    loadTrigger() {
-      this.isLoaded = true;
-    },
-  },
-};
+});
+
+const isLoaded = ref(false);
+function loadTrigger() {
+  isLoaded.value = true;
+}
 </script>
 
 <style lang="scss" scoped>
-.optimized-image {
+.OptimizedImage {
   position: relative;
   display: block;
   width: 100%;
   border-radius: var(--radius, 0.3rem);
   padding-bottom: var(--aspect-ratio, 56.25%);
-  &__body {
+  &__Body {
     position: absolute;
     top: 0;
     width: 100%;
@@ -53,7 +48,7 @@ export default {
     visibility: hidden;
     border-radius: var(--radius, 0.3rem);
     transition: 150ms ease-out;
-    &--loaded {
+    &--Loaded {
       opacity: 1;
       visibility: visible;
     }

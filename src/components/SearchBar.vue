@@ -22,13 +22,16 @@ import IconSearch from "./icons/IconSearch.vue";
 .SearchBar {
   display: flex;
   align-items: center;
+  height: 100%;
+
   &__Icon {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 2.4rem;
     height: 2.4rem;
-    color: hsl(var(--bg-700));
+    //color: hsl(var(--bg-700));
+    color: var(--searchbar-icon-color);
   }
   &__Input {
     flex-grow: 1;
@@ -36,10 +39,12 @@ import IconSearch from "./icons/IconSearch.vue";
     background-color: transparent;
     font-weight: 500;
     font-size: 1.4rem;
-    color: hsl(var(--text-900));
+    color: var(--searchbar-text-color);
     &::placeholder {
-      color: hsl(var(--bg-600));
+      color: var(--searchbar-placeholder-color);
     }
+  }
+  &:focus-within {
   }
 }
 </style>

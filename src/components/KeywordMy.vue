@@ -36,13 +36,8 @@
 </template>
 
 <script>
-import {
-  getFirestore,
-  updateDoc,
-  increment,
-  doc,
-  setDoc,
-} from "firebase/firestore";
+import { updateDoc, increment, doc, setDoc } from "firebase/firestore";
+import { db } from "../utility/firebase";
 
 import IconBase from "./IconBase.vue";
 import IconSelected from "./icons/IconSelected.vue";
@@ -68,7 +63,6 @@ export default {
     };
   },
   computed: {
-    db: () => getFirestore(),
     ...mapState({
       user: (state) => state.auth.user,
     }),
@@ -101,12 +95,9 @@ export default {
       animeUpdateObj[`keywordReview.${changes.item}.value`] = increment(
         changes.method
       );
-      await updateDoc(
-        doc(this.db, "anime", this.currentAniTitle),
-        animeUpdateObj
-      );
+      await updateDoc(doc(db, "anime", this.currentAniTitle), animeUpdateObj);
 
-      await setDoc(doc(this.db, "user", this.user.uid), this.user);
+      await setDoc(doc(db, "user", this.user.uid), this.user);
       this.$emit("data-changed");
     },
   },

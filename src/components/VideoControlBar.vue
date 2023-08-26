@@ -1,11 +1,11 @@
 <template>
-  <div class="video-control-bar">
+  <div class="VideoControlBar">
     <ProgressBar
-      class="video-control-bar__progress"
+      class="VideoControlBar__Progress"
       :percent="progress"
     ></ProgressBar>
     <div class="row-bottom">
-      <button class="video-control-bar__play-toggle">
+      <button class="VideoControlBar__PlayToggle">
         <IconBase></IconBase>
       </button>
     </div>

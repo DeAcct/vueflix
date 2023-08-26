@@ -12,8 +12,9 @@
     <VueflixCarousel type="break" class="AnimeMeta__Tags">
       <template v-if="!isLoaded">
         <li
-          class="AnimeMeta__Item AnimeMeta__Item--dummy loading-target"
-          v-for="_ in 5"
+          class="AnimeMeta__Item AnimeMeta__Item--Dummy loading-target"
+          v-for="v in randomSkellWeight"
+          :style="`--weight:${v * 5}`"
         >
           <span class="blind">로딩중</span>
         </li>
@@ -47,6 +48,10 @@ const props = defineProps({
   },
 });
 
+const randomSkellWeight = Array.from(
+  [null, null, null, null, null],
+  () => Math.random() * (0.75 - 0.1) + 0.1
+);
 const isLoaded = computed(() => Object.keys(props.animeInfo).length !== 0);
 </script>
 
@@ -63,9 +68,6 @@ const isLoaded = computed(() => Object.keys(props.animeInfo).length !== 0);
       height: auto;
     }
   }
-  &__Tags {
-    --carousel-padding: var(--inner-padding);
-  }
   &__Item {
     display: flex;
     align-items: center;
@@ -78,11 +80,9 @@ const isLoaded = computed(() => Object.keys(props.animeInfo).length !== 0);
     transition: background-color 150ms ease-out;
     background-color: hsl(var(--text-800) / 0.2);
     border-radius: 9999px;
-    &--dummy {
-      width: 10rem;
-      &:nth-child(2n) {
-        width: 5rem;
-      }
+    &--Dummy {
+      width: calc(5rem * var(--weight));
+      min-width: 3.5rem;
     }
   }
 }
@@ -96,6 +96,7 @@ const isLoaded = computed(() => Object.keys(props.animeInfo).length !== 0);
     border-radius: 0.6rem;
     &__Tags {
       height: auto;
+      --carousel-padding: 2rem;
       --carousel-gap: 1rem;
     }
   }

@@ -17,7 +17,8 @@
 <script setup>
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useStore } from "vuex";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "./utility/firebase";
 import { useRoute } from "vue-router";
 import { onMounted, provide, reactive } from "vue";
 
@@ -33,7 +34,7 @@ function setUser() {
   const auth = getAuth();
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      const userRef = doc(getFirestore(), "user", user.uid);
+      const userRef = doc(db, "user", user.uid);
       const userSnap = await getDoc(userRef);
       store.commit("auth/setUser", userSnap.data());
     } else {

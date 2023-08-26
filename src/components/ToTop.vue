@@ -5,7 +5,6 @@
         <IconArrowPrev />
       </IconBase>
     </i>
-    <span class="ToTop__Text">맨 위로</span>
   </button>
 </template>
 
@@ -20,26 +19,15 @@ function toTop() {
 
 <style lang="scss" scoped>
 .ToTop {
-  position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem 1.5rem;
-  bottom: 2rem;
-  left: 50%;
-  z-index: 100;
-  background-color: hsl(var(--theme-500));
   border-radius: 9999px;
-  box-shadow: var(--box-shadow);
   color: #fff;
   &__Icon {
+    display: flex;
     color: #fff;
     transform: rotate(90deg);
-    margin-right: 1rem;
-  }
-  &__Text {
-    color: #fff;
-    font-weight: 700;
   }
 }
 </style>

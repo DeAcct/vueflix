@@ -1,6 +1,6 @@
 <template>
-  <div class="progress-bar">
-    <div class="progress-bar__body"></div>
+  <div class="ProgressBar">
+    <div class="ProgressBar__Body"></div>
   </div>
 </template>
 

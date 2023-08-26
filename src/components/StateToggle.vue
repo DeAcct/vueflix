@@ -1,47 +1,41 @@
 <template>
-  <span class="state-toggle">
+  <span class="StateToggle">
     <input
       type="checkbox"
       :checked="inputState"
       v-model="outputState"
       @change="emitState"
       :id="toggleId"
-      class="blind base-input"
+      class="blind StateToggle__Skell"
     />
-    <span class="state-toggle__track">
-      <span class="state-toggle__body"></span>
+    <span class="StateToggle__Track">
+      <span class="StateToggle__Body"></span>
       <span class="blind">{{ inputState ? "켜짐" : "꺼짐" }}</span>
     </span>
   </span>
 </template>
 
-<script>
-export default {
-  name: "StateToggle",
-  props: {
-    inputState: {
-      type: Boolean,
-    },
-    toggleId: {
-      type: String,
-    },
+<script setup>
+import { toRef } from "vue";
+
+const emits = defineEmits(["state-change"]);
+const props = defineProps({
+  inputState: {
+    type: Boolean,
   },
-  data() {
-    return {
-      outputState: this.inputState,
-    };
+  toggleId: {
+    type: String,
   },
-  methods: {
-    emitState() {
-      this.$emit("state-change", this.outputState);
-    },
-  },
-};
+});
+const outputState = toRef(props.inputState);
+function emitState() {
+  emits("state-change", outputState);
+}
 </script>
 <style lang="scss" scoped>
-.state-toggle {
+.StateToggle {
   display: flex;
-  &__track {
+  &__Track {
     position: relative;
     display: flex;
     align-items: center;
@@ -51,7 +45,7 @@ export default {
     background-color: hsl(var(--toggle-false));
     transition: background-color 150ms ease-in-out;
   }
-  &__body {
+  &__Body {
     position: absolute;
     width: 1.8rem;
     height: 1.8rem;
@@ -60,10 +54,10 @@ export default {
     transition: transform 150ms ease-in-out;
     box-shadow: 0 0.2rem 0.4rem var(--toggle-shadow);
   }
-  .base-input:checked ~ &__track {
+  &__Skell:checked ~ &__Track {
     background-color: hsl(var(--theme-500));
   }
-  .base-input:checked ~ &__track &__body {
+  &__Skell:checked ~ &__Track &__Body {
     transform: translateX(1.6rem);
   }
 }
