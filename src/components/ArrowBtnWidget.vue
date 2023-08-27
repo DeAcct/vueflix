@@ -1,7 +1,7 @@
 <template>
   <router-link class="ArrowBtnWidget">
     <div class="col-left">
-      <i class="icon" v-if="icon">
+      <i class="icon">
         <icon-base>
           <slot name="icon"></slot>
         </icon-base>
@@ -23,12 +23,6 @@
 <script setup>
 import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
-
-defineProps({
-  icon: {
-    type: [Boolean, String],
-  },
-});
 </script>
 
 <style lang="scss" scoped>

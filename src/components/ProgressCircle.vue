@@ -14,7 +14,15 @@
 import usePercentToSVGRound from "@/composables/svg";
 
 const props = defineProps({
-  percent: String,
+  percent: {
+    type: String,
+  },
+  direction: {
+    type: String,
+    validator(value) {
+      return ["left-fill", "right-fill"].includes(value);
+    },
+  },
 });
 
 const { $body, trackLength, bodyLength } = usePercentToSVGRound(props.percent);

@@ -9,14 +9,12 @@
   />
 </template>
 
-<script>
-export default {
-  props: {
-    isActive: {
-      type: Boolean,
-    },
+<script setup>
+defineProps({
+  isActive: {
+    type: Boolean,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
