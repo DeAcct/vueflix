@@ -110,7 +110,7 @@ import IconCoupon from "@/components/icons/IconCoupon.vue";
 import IconCustomerService from "@/components/icons/IconCustomerService.vue";
 import IconMembership from "@/components/icons/IconMembership.vue";
 import IconPurchaseHistory from "@/components/icons/IconPurchaseHistory.vue";
-import IconSetting from "@/components/icons/IconSEtting.vue";
+import IconSetting from "@/components/icons/IconSetting.vue";
 
 const viewModel = [
   [
