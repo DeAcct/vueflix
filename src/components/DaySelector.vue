@@ -13,6 +13,7 @@
           emits('day-change', key);
         }
       "
+      @focus="indicatorMove(index)"
       ref="$DayItems"
     >
       {{ text }}
@@ -67,6 +68,10 @@ const {
     line-height: 4rem;
     border-radius: 9999px;
     transition: color 150ms ease-out;
+    border: 2px solid transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     &--Active {
       color: hsl(var(--theme-500));
     }

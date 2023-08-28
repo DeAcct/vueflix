@@ -247,9 +247,6 @@ const user = computed(() => store.state.auth.user);
       &:hover {
         color: hsl(var(--text-600));
       }
-      &:focus-within {
-        color: hsl(var(--theme-500));
-      }
     }
   }
 }
@@ -268,6 +265,9 @@ const user = computed(() => store.state.auth.user);
     &__Activity {
       position: static;
       transform: none;
+      a:focus-visible {
+        color: hsl(var(--theme-500));
+      }
     }
     &__Action {
       color: inherit;
@@ -275,9 +275,7 @@ const user = computed(() => store.state.auth.user);
       height: 3.6rem;
       border: 2px solid transparent;
       transition: border-color 150ms ease-out;
-      &:focus-visible {
-        border-color: hsl(var(--theme-500));
-      }
+
       &--MobileOnly {
         display: none;
       }

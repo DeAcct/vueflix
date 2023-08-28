@@ -27,6 +27,7 @@
                   indicatorMove(index);
                 }
               "
+              @focus="indicatorMove(index)"
               ref="$Tab"
               :class="[
                 { 'AnimeLayout__Tab--Active': isActive },
