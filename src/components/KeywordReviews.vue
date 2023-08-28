@@ -1,25 +1,31 @@
 <template>
   <section class="KeywordReviews inner">
     <h2 class="KeywordReviews__Title">키워드</h2>
-    <KeywordMy @data-changed="syncData" v-if="user" />
-    <div class="KeywordReviews__Chart">
-      <template v-if="allKeywords > 0">
-        <LinearChart :data="keywordData" class="sub-widget">
-          <template v-slot:summary
-            >다른 덕후들이 볼 때
-            <strong>{{ max }}</strong>
-            이(가) 강한 작품이에요</template
-          >
-        </LinearChart>
-      </template>
-      <template v-else>
-        <strong class="KeywordReviews__TooFewTitle">
-          다른 덕후들이 선택한 키워드가 없거나 적어요!
-        </strong>
-        <p class="KeywordReviews__TooFewParagraph">
-          곧 보여드릴 수 있을 거에요
-        </p>
-      </template>
+    <div class="KeywordReviews__Interactive">
+      <KeywordMy
+        @data-changed="syncData"
+        v-if="user"
+        class="KeywodReviews__My"
+      />
+      <div class="KeywordReviews__Chart">
+        <template v-if="allKeywords > 0">
+          <LinearChart :data="keywordData" class="sub-widget">
+            <template v-slot:summary
+              >다른 덕후들이 볼 때
+              <strong>{{ max }}</strong>
+              이(가) 강한 작품이에요</template
+            >
+          </LinearChart>
+        </template>
+        <template v-else>
+          <strong class="KeywordReviews__TooFewTitle">
+            다른 덕후들이 선택한 키워드가 없거나 적어요!
+          </strong>
+          <p class="KeywordReviews__TooFewParagraph">
+            곧 보여드릴 수 있을 거에요
+          </p>
+        </template>
+      </div>
     </div>
   </section>
 </template>
@@ -110,19 +116,21 @@ onMounted(async () => {
 
 @media screen and (min-width: 1080px) {
   .KeywordReviews {
-    flex-direction: row;
-    padding: 0 2rem;
     gap: 1rem;
-    & > * {
-      flex-grow: 1;
-      flex-shrink: 0;
-      flex-basis: 0;
-      min-width: 0;
-      height: 11rem;
+    padding: 0 2rem;
+
+    &__Interactive {
+      display: flex;
+      background-color: hsl(var(--bg-200));
+      border-radius: var(--global-radius);
+      padding: 2.4rem 1.2rem;
+      & > * {
+        width: 50%;
+      }
     }
-    &__title {
+    &__Title {
       font-size: 1.8rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0;
     }
     &__Chart {
       justify-content: center;

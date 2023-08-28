@@ -30,7 +30,6 @@ import IconSearch from "./icons/IconSearch.vue";
     justify-content: center;
     width: 2.4rem;
     height: 2.4rem;
-    //color: hsl(var(--bg-700));
     color: var(--searchbar-icon-color);
   }
   &__Input {
@@ -43,8 +42,6 @@ import IconSearch from "./icons/IconSearch.vue";
     &::placeholder {
       color: var(--searchbar-placeholder-color);
     }
-  }
-  &:focus-within {
   }
 }
 </style>

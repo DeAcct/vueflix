@@ -20,19 +20,22 @@ const routes = [
     meta: {
       bottomTabMenu: false,
     },
+
     children: [
       {
         path: "episodes",
         name: "episodes",
+        tabName: "에피소드",
         component: () => import("@/views/AnimeEpisodes.vue"),
         meta: {
           bottomTabMenu: false,
         },
-        alias: ["/:title", ""],
+        alias: ["/anime/:title/episodes", ""],
       },
       {
         path: "reviews",
         name: "reviews",
+        tabName: "사용자 평",
         component: () => import("@/views/AnimeReviews.vue"),
         meta: {
           bottomTabMenu: false,

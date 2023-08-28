@@ -24,7 +24,7 @@
         <div class="AppHome__Item">
           <h2 class="AppHome__Title inner">요일별 신작</h2>
           <DaySelector
-            class="AppHome__DaySelect"
+            class="AppHome__DaySelector"
             :selected="selectedDay"
             @day-change="onDayChange"
           ></DaySelector>
@@ -161,10 +161,13 @@ const auth = computed(() => store.state.auth.user);
     font-size: 2rem;
     margin-bottom: 2rem;
   }
-  &__DaySelect {
+  &__DaySelector {
     width: calc(100% - var(--inner-padding) * 2);
     border-radius: 9999px;
-    margin: 0 auto 1.5rem;
+    margin: 0 auto;
+  }
+  &__Carousel {
+    margin-top: 1.6rem;
   }
 }
 @media screen and (min-width: 768px) {
@@ -187,6 +190,10 @@ const auth = computed(() => store.state.auth.user);
   .AppHome {
     &__Title {
       font-size: 3rem;
+    }
+    &__DaySelector {
+      width: 40rem;
+      margin-left: var(--inner-padding);
     }
   }
 }

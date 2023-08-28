@@ -92,7 +92,6 @@ import IconNotification from "./icons/IconNotification.vue";
 import IconSearch from "./icons/IconSearch.vue";
 import SearchBar from "./SearchBar.vue";
 import VueflixLogo from "./VueflixLogo.vue";
-import ProfileImg from "./ProfileImg.vue";
 import ProfileCombo from "./ProfileCombo.vue";
 
 defineProps({ isTouchDevice: Boolean, isMobile: Boolean });
@@ -257,6 +256,7 @@ const user = computed(() => store.state.auth.user);
 
 @media screen and (min-width: 1080px) {
   .VueflixHeader {
+    height: 7.2rem;
     background-color: hsl(var(--bg-100));
     color: inherit;
     &__Actions {
@@ -291,8 +291,9 @@ const user = computed(() => store.state.auth.user);
       gap: 0.8rem;
       background-color: hsl(var(--bg-200));
       border: 2px solid hsl(var(--bg-200));
-      --profile-size: 2.4rem;
+      --profile-size: 3.6rem;
       font-size: 1.5rem;
+      padding-left: 0.8rem;
     }
 
     &__SearchBar {
@@ -304,8 +305,8 @@ const user = computed(() => store.state.auth.user);
         transform: translateX(-50%);
         flex-grow: 0;
         width: 50rem;
-        height: 3.6rem;
-        padding: 0 0.8rem;
+        height: 4.6rem;
+        padding: 0 1.2rem;
         background-color: hsl(var(--bg-200));
         border-radius: 9999px;
         border: 2px solid transparent;

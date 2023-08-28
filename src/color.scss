@@ -141,7 +141,7 @@
   --anime-layout-bg: #000;
   --anime-layout-text: hsl(0, 0%, 100%);
   --anime-layout-episodes: hsl(var(--bg-200));
-  --anime-layout-parts: var(--bg-300);
+  --anime-layout-parts: hsl(var(--text-800) / 0.1);
 
   --box-shadow: none;
   --overflow-gradient: linear-gradient(

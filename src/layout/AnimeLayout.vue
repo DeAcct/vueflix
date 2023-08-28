@@ -10,25 +10,33 @@
     <main class="AnimeLayout__Main">
       <AnimeMeta class="AnimeLayout__Meta" :anime-info="animeInfo"></AnimeMeta>
       <div class="AnimeLayout__TabView">
-        <div class="AnimeLayout__TabSelector inner">
+        <div class="AnimeLayout__TabSelector inner" ref="$TabSelector">
           <RouterLink
-            to="./episodes"
+            :to="`./${name}`"
             replace
-            class="AnimeLayout__Tab"
-            exact-active-class="AnimeLayout__Tab--Active"
-            >에피소드</RouterLink
+            v-for="({ name, tabName }, index) in children"
+            v-slot="{ isActive, href, navigate }"
+            custom
+            ><a
+              v-bind="$attrs"
+              :href="href"
+              @click="
+                (e) => {
+                  e.preventDefault();
+                  navigate();
+                  indicatorMove(index);
+                }
+              "
+              ref="$Tab"
+              :class="[
+                { 'AnimeLayout__Tab--Active': isActive },
+                'AnimeLayout__Tab',
+              ]"
+            >
+              {{ tabName }}
+            </a></RouterLink
           >
-          <RouterLink
-            to="./reviews"
-            replace
-            class="AnimeLayout__Tab"
-            exact-active-class="AnimeLayout__Tab--Active"
-          >
-            사용자 평
-            <span class="AnimeLayout__Counter">
-              {{ animeInfo.reviews ? animeInfo.reviews.length : 0 }}
-            </span>
-          </RouterLink>
+          <div class="AnimeLayout__TabIndicator"></div>
         </div>
         <RouterView v-slot="{ Component }">
           <component
@@ -73,6 +81,7 @@ import { useScroll } from "@/composables/scroll";
 import AnimeItemHead from "@/components/AnimeItemHead.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
 import ToTop from "@/components/ToTop.vue";
+import { useIndicatorAnimation } from "../composables/indicator";
 
 const store = useStore();
 const router = useRouter();
@@ -143,6 +152,15 @@ onMounted(() => {
 onUnmounted(() => {
   $app.value.style.backgroundColor = "hsl(var(--bg-100))";
 });
+
+const { children } = route.matched[0];
+const initIndex = children.findIndex((child) => child.name === route.name);
+const {
+  selector: $TabSelector,
+  items: $Tab,
+  to: indicatorTo,
+  move: indicatorMove,
+} = useIndicatorAnimation(initIndex);
 </script>
 
 <style lang="scss" scoped>
@@ -180,11 +198,12 @@ onUnmounted(() => {
   &__TabSelector {
     display: flex;
     gap: 1.5rem;
+    position: relative;
   }
   &__Tab {
     font-size: 1.5rem;
     font-weight: 500;
-    padding: 1.5rem 0;
+    padding: 2rem 0;
     display: flex;
     align-items: last baseline;
     gap: 0.4rem;
@@ -192,8 +211,16 @@ onUnmounted(() => {
 
     &--Active {
       color: hsl(var(--theme-500));
-      border-bottom-color: hsl(var(--theme-500));
     }
+  }
+  &__TabIndicator {
+    width: calc(v-bind("indicatorTo.width") * 1px);
+    height: 0.2rem;
+    background-color: hsl(var(--theme-500));
+    position: absolute;
+    bottom: 0;
+    transform: translateX(calc(v-bind("indicatorTo.x") * 1px));
+    transition: 150ms ease-out;
   }
   &__Counter {
     color: inherit;

@@ -122,11 +122,8 @@ export default {
 <style lang="scss" scoped>
 .WriteReview {
   width: 100%;
-  padding: {
-    top: 1.5rem;
-    bottom: 1.5rem;
-  }
-  border-radius: 0.6rem;
+  padding: 2.4rem;
+  border-radius: var(--global-radius);
   background-color: var(--new-review);
   &__InputArea {
     width: 100%;
