@@ -57,6 +57,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .AnimeEpisodes {
+  margin-top: 1.6rem;
   &__Accordion {
     &:not(:last-child) {
       margin-bottom: 1rem;

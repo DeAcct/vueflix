@@ -70,7 +70,7 @@ const formattedDate = computed(() => {
 .ReviewItem {
   padding: 1rem 2rem;
   &--Me {
-    border-radius: 0.6rem;
+    border-radius: var(--global-radius);
     background-color: hsl(var(--bg-200));
   }
   &--Other {

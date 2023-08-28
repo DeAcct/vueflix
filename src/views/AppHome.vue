@@ -24,7 +24,7 @@
         <div class="AppHome__Item">
           <h2 class="AppHome__Title inner">요일별 신작</h2>
           <DaySelector
-            class="AppHome__DaySelect inner"
+            class="AppHome__DaySelect"
             :selected="selectedDay"
             @day-change="onDayChange"
           ></DaySelector>
@@ -74,7 +74,8 @@ import { getDocs, collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../utility/firebase";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 
-const selectedDay = ref();
+const now = new Date();
+const selectedDay = ref(DAYS.map(({ key }) => key)[now.getDay()]);
 const selectedDailyAnime = ref([]);
 async function getSelectedDayList() {
   const docReference = doc(db, "daily", selectedDay.value);
@@ -82,8 +83,6 @@ async function getSelectedDayList() {
   selectedDailyAnime.value = docSnap.data().data;
 }
 onMounted(async () => {
-  const now = new Date();
-  selectedDay.value = DAYS.map(({ key }) => key)[now.getDay()];
   await getSelectedDayList();
 });
 function onDayChange(e) {
@@ -163,15 +162,9 @@ const auth = computed(() => store.state.auth.user);
     margin-bottom: 2rem;
   }
   &__DaySelect {
-    margin-bottom: 1.5rem;
-  }
-  &__modal {
-    transition: 150ms ease-out;
-    transform: translateY(100vh);
-    bottom: 6rem;
-    &--show {
-      transform: translateY(0);
-    }
+    width: calc(100% - var(--inner-padding) * 2);
+    border-radius: 9999px;
+    margin: 0 auto 1.5rem;
   }
 }
 @media screen and (min-width: 768px) {
@@ -187,12 +180,6 @@ const auth = computed(() => store.state.auth.user);
       &:not(:last-child) {
         margin-bottom: 4.5rem;
       }
-    }
-    &__modal {
-      top: 0;
-      bottom: auto;
-      transform: none;
-      transition: 150ms ease-out;
     }
   }
 }

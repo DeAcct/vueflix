@@ -40,10 +40,10 @@
   --level-color-traveler: 219 100% 56% / 0.2;
   --level-color-braver: 192 100% 50% / 0.2;
   --level-color-idol: 125 100% 20% / 0.5;
-  --level-color-tsubasa: 19 100% 50% / 0.3;
-  --level-color-mishiro: 337 100% 50% / 0.5;
-  --level-color-namuco: 9 100% 45% / 0.3;
-  --level-color-hoshino-ai: 278 100% 50% / 0.5;
+  --level-color-impact: 19 100% 50% / 0.3;
+  --level-color-influencer: 337 100% 50% / 0.5;
+  --level-color-aniphile: 9 100% 45% / 0.3;
+  --level-color-expert: 278 100% 50% / 0.5;
 }
 
 #app {
@@ -82,7 +82,6 @@
 
   --new-review: hsl(var(--bg-200));
   --chart-legend: hsl(var(--bg-200));
-  --anime-useful-widget: 0, 5%, 85%;
   --modal-shadow: rgba(0, 0, 0, 0.15);
   --overflow-gradient: linear-gradient(
     90deg,
@@ -103,6 +102,8 @@
   --google-login-text: hsl(210, 20%, 20%);
   --gender-male: 214, 91%, 55%;
   --gender-female: 342, 91%, 55%;
+
+  --general-bg: hsl(var(--bg-200));
 }
 
 #app[data-theme="dark"] {
@@ -132,10 +133,9 @@
   --anime-item-head-300: 288 79% 7%;
   --overflow-btn-pc: hsla(0 5% 10% / 0.7);
 
-  --top-item: hsl(0, 5%, 7%);
+  --top-item: hsl(var(--bg-200));
   --episodes: hsl(var(--bg-300));
   --episodes-part-info: 0, 0%, 0%, 0.8;
-  --anime-useful-widget: 0, 5%, 20%;
   --anime-genre: hsla(0, 5%, 13%, 0.8);
 
   --anime-layout-bg: #000;
@@ -152,4 +152,6 @@
   );
   --new-review: hsl(var(--bg-100));
   --chart-legend: hsl(var(--bg-100));
+
+  --general-bg: hsl(var(--bg-100));
 }

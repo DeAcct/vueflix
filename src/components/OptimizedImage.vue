@@ -36,7 +36,7 @@ function loadTrigger() {
   position: relative;
   display: block;
   width: 100%;
-  border-radius: var(--radius, 0.3rem);
+  border-radius: var(--radius, var(--global-radius));
   padding-bottom: var(--aspect-ratio, 56.25%);
   &__Body {
     position: absolute;
@@ -46,7 +46,7 @@ function loadTrigger() {
     object-fit: cover;
     opacity: 0;
     visibility: hidden;
-    border-radius: var(--radius, 0.3rem);
+    border-radius: var(--radius, var(--global-radius));
     transition: 150ms ease-out;
     &--Loaded {
       opacity: 1;

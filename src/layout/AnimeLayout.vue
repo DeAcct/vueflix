@@ -2,7 +2,6 @@
   <div class="AnimeLayout">
     <AnimeItemHead
       :is-scroll="scrollBehavior !== 'top'"
-      @overflow-menu-open="actionSheetOpen"
       @require-login="openLoginModal"
       @remove-watch-history="removeWatchHistory"
       @handle-interest="handleInterest"
@@ -170,10 +169,10 @@ onUnmounted(() => {
     margin-bottom: 2rem;
   }
   &__TabView {
-    border-radius: 0.9rem 0.9rem 0 0;
+    border-radius: calc(var(--global-radius) * 6) calc(var(--global-radius) * 6)
+      0 0;
     display: flex;
     flex-direction: column;
-    gap: 1.7rem;
     flex-grow: 1;
     background-color: var(--anime-layout-episodes);
     padding-bottom: 8.5rem;

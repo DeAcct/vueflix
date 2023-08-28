@@ -1,148 +1,138 @@
 <template>
   <div class="KeywordMy">
-    <h2 class="KeywordMy__Title">키워드</h2>
     <form class="KeywordMy__Survey">
       <label
-        v-for="label in data"
-        :key="label.keyword"
+        v-for="{ keyword, id } in reviewItems"
+        :key="keyword"
         class="KeywordMy__Keyword"
       >
         <input
           type="checkbox"
-          :id="label.id"
-          class="blind"
+          class="blind KeywordMy__SkellInput"
           v-model="surveyData"
           @change="setSurveyData"
-          :value="label.id"
-          :ref="label.id"
+          :value="id"
         />
-        <i
-          :class="[
-            'KeywordMy__Icon',
-            { 'KeywordMy__Icon--Selected': surveyData.includes(label.id) },
-          ]"
-        >
-          <IconBase>
-            <IconSelected v-if="surveyData.includes(label.id)" />
-            <IconNotSelected v-else />
+        <i class="KeywordMy__Icon">
+          <IconBase v-if="surveyData.includes(id)">
+            <IconSelected />
+          </IconBase>
+          <IconBase v-else>
+            <IconNotSelected />
           </IconBase>
         </i>
         <span class="KeywordMy__Text">
-          {{ label.keyword }}
+          {{ keyword }}
         </span>
       </label>
     </form>
   </div>
 </template>
 
-<script>
-import { updateDoc, increment, doc, setDoc } from "firebase/firestore";
+<script setup>
+import { toRef, ref, computed, onMounted } from "vue";
+import { useStore } from "vuex";
+
+import { updateDoc, increment, doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../utility/firebase";
 
 import IconBase from "./IconBase.vue";
 import IconSelected from "./icons/IconSelected.vue";
 import IconNotSelected from "./icons/IconNotSelected.vue";
-import { mapState } from "vuex";
+import { useRoute } from "vue-router";
 
-export default {
-  components: {
-    IconBase,
-    IconSelected,
-    IconNotSelected,
+const reviewItems = [
+  {
+    keyword: "그림체",
+    id: "drawing",
   },
-  props: {
-    data: {
-      type: Array,
-    },
+  {
+    keyword: "배경음악",
+    id: "bgm",
   },
-  data() {
-    const currentAniTitle = this.$route.params.title;
-    return {
-      surveyData: [],
-      currentAniTitle,
-    };
+  {
+    keyword: "성우 연기",
+    id: "voice",
   },
-  computed: {
-    ...mapState({
-      user: (state) => state.auth.user,
-    }),
-    beforeKeyword() {
-      const myCheckedKeyword = this.user
-        ? this.user.keywordReview.find(
-            (anime) => anime.aniTitle === this.currentAniTitle
-          )
-        : [];
-      return myCheckedKeyword ? myCheckedKeyword.likeIt : [];
-    },
+  {
+    keyword: "스토리",
+    id: "story",
   },
-  methods: {
-    async setSurveyData() {
-      const beforeSurvey = this.beforeKeyword;
-      const afterSurvey = this.surveyData;
-      const changes =
-        beforeSurvey.length < afterSurvey.length
-          ? afterSurvey
-              .filter((afterItem) => !beforeSurvey.includes(afterItem))
-              .map((item) => ({ item, method: 1 }))[0]
-          : beforeSurvey
-              .filter((beforeItem) => !afterSurvey.includes(beforeItem))
-              .map((item) => ({ item, method: -1 }))[0];
-      this.$store.commit("auth/newKeywordReview", {
-        aniTitle: this.currentAniTitle,
-        likeIt: afterSurvey,
-      });
-      const animeUpdateObj = {};
-      animeUpdateObj[`keywordReview.${changes.item}.value`] = increment(
-        changes.method
-      );
-      await updateDoc(doc(db, "anime", this.currentAniTitle), animeUpdateObj);
+  {
+    keyword: "연출",
+    id: "directing",
+  },
 
-      await setDoc(doc(db, "user", this.user.uid), this.user);
-      this.$emit("data-changed");
-    },
+  {
+    keyword: "캐릭터",
+    id: "character",
   },
-  watch: {
-    user() {
-      this.surveyData = this.beforeKeyword;
-    },
-  },
-};
+];
+
+const store = useStore();
+const user = computed(() => store.state.auth.user);
+const surveyData = ref([]);
+
+const route = useRoute();
+onMounted(async () => {
+  const docRef = doc(db, "user", user.value.uid);
+  const myData = (await getDoc(docRef))
+    .data()
+    .keywordReview.find(({ aniTitle }) => route.params.title === aniTitle);
+
+  if (!myData) {
+    return;
+  }
+  surveyData.value = myData.likeIt;
+});
+
+const emits = defineEmits(["data-changed"]);
+async function setSurveyData(e) {
+  const method = e.currentTarget.checked ? 1 : -1;
+  const animeUpdateObj = {};
+  animeUpdateObj[`keywordReview.${e.currentTarget.value}.value`] =
+    increment(method);
+  await updateDoc(doc(db, "anime", route.params.title), animeUpdateObj);
+
+  store.commit("auth/updateKeywordReview", {
+    aniTitle: route.params.title,
+    likeIt: surveyData,
+  });
+
+  await updateDoc(doc(db, "user", user.value.uid), {
+    keywordReview: user.value.keywordReview,
+  });
+  emits("data-changed");
+}
 </script>
 
 <style lang="scss" scoped>
 .KeywordMy {
-  &__Title {
-    width: 100%;
-    font-size: 1.7rem;
-    font-weight: 700;
-    line-height: 1.5;
-    margin-bottom: 1rem;
-  }
   &__Survey {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    gap: 1rem;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
   }
   &__Keyword {
     display: flex;
     align-items: center;
-    padding: 0.5rem 0.75rem;
+    padding: 0.8rem;
     background-color: hsl(var(--theme-500) / 0.1);
-    border-radius: 0.6rem;
+    border-radius: var(--global-radius);
+    gap: 0.4rem;
   }
+
   &__Icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 1.8rem;
     height: 1.8rem;
-    display: flex;
-    margin-right: 0.5rem;
-    svg {
-      width: 100%;
-      height: 100%;
-    }
-    &--Selected {
-      color: hsl(var(--theme-500));
-    }
+  }
+  &__SkellInput:checked + &__Icon {
+    color: hsl(var(--theme-500));
   }
   &__Text {
     font-size: 1.3rem;

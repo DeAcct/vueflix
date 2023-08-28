@@ -1,5 +1,5 @@
 <template>
-  <section class="LoginWidget inner">
+  <section class="LoginWidget">
     <div class="col-left">
       <slot name="profile-img"></slot>
       <div class="text-area">
@@ -31,12 +31,9 @@ defineProps({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--box-shadow);
-  background-color: var(--top-item);
-  border-radius: 0.6rem;
   padding: {
-    top: 1.8rem;
-    bottom: 1.8rem;
+    top: 2rem;
+    bottom: 2rem;
   }
   .col-left {
     display: flex;

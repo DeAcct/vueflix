@@ -139,9 +139,9 @@ const mutations = {
       (anime) => payload !== anime.aniTitle
     );
   },
-  newKeywordReview(state, payload) {
+  updateKeywordReview(state, payload) {
     const exists = state.user.keywordReview.findIndex(
-      (krItem) => krItem.aniTitle === payload.aniTitle
+      (animeItem) => animeItem.aniTitle === payload.aniTitle
     );
     if (exists !== -1) {
       state.user.keywordReview[exists].likeIt = payload.likeIt;

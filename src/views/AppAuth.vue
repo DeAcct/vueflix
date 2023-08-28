@@ -71,10 +71,13 @@ async function googleContinue() {
         email: auth.currentUser.email,
         recentWatched: [],
         wannaSee: [],
-        reviews: [],
+        reviews: 0,
         keywordReview: [],
         maratonWatch: [],
         purchased: [],
+        membership: {
+          initDate: new Date(),
+        },
       });
     }
     store.commit("auth/setUser", docSnap.data());

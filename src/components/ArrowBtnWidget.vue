@@ -1,60 +1,52 @@
 <template>
-  <router-link class="ArrowBtnWidget">
-    <div class="col-left">
-      <i class="icon">
+  <component :is="component" class="ArrowBtnWidget">
+    <span class="ArrowBtnWidget__Col">
+      <i class="ArrowBtnWidget__Icon">
         <icon-base>
           <slot name="icon"></slot>
         </icon-base>
       </i>
-      <span>
-        <slot name="text"></slot>
-      </span>
-    </div>
-    <div class="col-right">
-      <i class="icon">
-        <icon-base>
-          <icon-arrow-next />
-        </icon-base>
-      </i>
-    </div>
-  </router-link>
+      <slot name="text"></slot>
+    </span>
+    <i class="ArrowBtnWidget__Icon" v-if="component === 'RouterLink'">
+      <icon-base>
+        <icon-arrow-next />
+      </icon-base>
+    </i>
+  </component>
 </template>
 
 <script setup>
 import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
+
+defineProps({
+  component: {
+    type: String,
+    default: "button",
+    validator(value) {
+      return ["button", "RouterLink"].includes(value);
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>
 .ArrowBtnWidget {
-  padding: 1.8rem var(--inner-padding);
   display: flex;
   justify-content: space-between;
-  background-color: var(--top-item);
-  .icon {
+
+  &__Col {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: inherit;
+  }
+  &__Icon {
     display: flex;
     align-items: center;
     width: 1.8rem;
     height: 1.8rem;
-  }
-  .col-left {
-    display: flex;
-    align-items: center;
-    .icon {
-      margin-right: 0.8rem;
-      svg {
-        width: 100%;
-        height: 100%;
-      }
-    }
-    span {
-      font-size: 1.3rem;
-      font-weight: 500;
-    }
-  }
-  .col-right {
-    display: flex;
-    align-items: center;
   }
 }
 @media screen and (min-width: 768px) {

@@ -99,7 +99,7 @@ const alt = computed(() => {
   width: 55vw;
   position: relative;
   &__Image {
-    --radius: 0.3rem;
+    --radius: var(--global-radius);
     --aspect-ratio: calc(9 / 16 * 100%);
     margin-bottom: var(--thumbnail-bottom, 1rem);
   }
@@ -113,7 +113,7 @@ const alt = computed(() => {
   &__SkeletonInfo {
     width: 100%;
     height: 3rem;
-    border-radius: 0.3rem;
+    border-radius: var(--global-radius);
   }
   &__Info {
     display: flex;

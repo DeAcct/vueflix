@@ -27,14 +27,12 @@
         <span class="blind">{{ name }}</span>
       </RouterLink>
     </div>
-    <RouterLink
+    <ProfileCombo
       to="/my"
       class="BottomTabMenu__Profile"
       exact-active-class="BottomTabMenu__Profile--Active"
-    >
-      <ProfileImg class="BottomTabMenu__ProfileImg" />
-    </RouterLink>
-    <ToTop class="BottomTabMenu__ToTop" />
+    />
+    <ToTop class="BottomTabMenu__ToTop" v-if="scrollBehavior !== 'top'" />
   </nav>
 </template>
 
@@ -46,6 +44,7 @@ import ProfileImg from "./ProfileImg.vue";
 import ToTop from "./ToTop.vue";
 
 import { useScroll } from "@/composables/scroll";
+import ProfileCombo from "./ProfileCombo.vue";
 
 const items = [
   {
@@ -95,7 +94,6 @@ const { scrollBehavior } = useScroll();
     width: 4.8rem;
     height: var(--bottom-tab-height);
     font-size: 1.1rem;
-    gap: 0.2rem;
     color: transparent;
     --indicator-size: 0;
     --bottom-tab-active-color: hsl(var(--text-800));
@@ -108,11 +106,17 @@ const { scrollBehavior } = useScroll();
     color: var(--bottom-tab-active-color);
   }
   &__Profile {
-    width: 4.6rem;
-    height: 4.6rem;
-    border: 1px solid transparent;
-    border-radius: 50%;
-    flex-shrink: 0;
+    --profile-size: 3.8rem;
+    flex-direction: row-reverse;
+    gap: 0.8rem;
+    background-color: hsl(var(--bg-100) / 0.8);
+    backdrop-filter: blur(10px);
+    height: 4.8rem;
+    border: 2px solid transparent;
+    border-radius: 9999px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding-right: 1.2rem;
     &--Active {
       --bottom-tab-active-color: hsl(var(--theme-500));
       border-color: var(--bottom-tab-active-color);

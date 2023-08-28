@@ -4,19 +4,21 @@
       <div class="MyApp__Identify">
         <div class="MyApp__IdentifyText">
           <h2 class="MyApp__Nickname">
-            {{ user ? user.nickname : "로그인 전이에요" }}
+            {{ user ? user.nickname : "게스트" }}
           </h2>
-          <p class="MyApp__Email" v-if="user">{{ user.email }}</p>
-          <ul class="MyApp__Stat" v-if="user">
-            <li class="MyApp__StatItem">
-              <h3 class="MyApp__StatName">보고싶다</h3>
-              <p class="MyApp__StatValue">{{ user.wannaSee.length }}개</p>
-            </li>
-            <li class="MyApp__StatItem">
-              <h3 class="MyApp__StatName">리뷰</h3>
-              <p class="MyApp__StatValue">{{ user.reviews }}개</p>
-            </li>
-          </ul>
+          <template v-if="user">
+            <p class="MyApp__Email">{{ user.email }}</p>
+            <ul class="MyApp__Stat">
+              <li class="MyApp__StatItem">
+                <h3 class="MyApp__StatName">보고싶다</h3>
+                <p class="MyApp__StatValue">{{ user.wannaSee.length }}개</p>
+              </li>
+              <li class="MyApp__StatItem">
+                <h3 class="MyApp__StatName">리뷰</h3>
+                <p class="MyApp__StatValue">{{ user.reviews }}개</p>
+              </li>
+            </ul>
+          </template>
         </div>
         <ProfileImg
           :input-profile="user ? user.profileImgSrc : undefined"
@@ -26,71 +28,47 @@
           ]"
         />
       </div>
-      <section
-        class="MyApp__Membership"
-        :style="`background-color:hsl(var(--level-color-${level.codeName}))`"
-      >
-        <div class="col">
-          <div class="MyApp__LevelIcon"></div>
-          <span class="MyApp__LevelNumber">Lv.{{ level.number }}</span>
-          <strong class="MyApp__LevelName">{{ level.text }}</strong>
-        </div>
-      </section>
+      <LevelRenderer to="/my/level" class="MyApp__Level" v-if="user" />
     </div>
     <div class="MyApp__Menu">
-      <ul v-for="unit in viewModel" class="MyApp__MenuGroup">
-        <template v-for="{ icon, text, to, requireLogin } in unit" key="text">
-          <li v-if="!requireLogin || user" class="MyApp__MenuItem">
-            <ArrowBtnWidget :to="to">
-              <template v-slot:icon>
-                <IconBase>
-                  <component :is="icon" />
-                </IconBase>
-              </template>
-              <template v-slot:text>{{ text }}</template>
-            </ArrowBtnWidget>
-          </li>
-        </template>
-      </ul>
-    </div>
-    <!--div class="my-cards-wrap">
-        <template v-if="user">
-          <div
-            class="my-cards"
-            v-for="(myCard, index) in myCardLoggedin"
-            :key="index"
-          >
-            <ArrowBtnWidget
-              v-for="item in myCard"
-              :key="item.text"
-              :to="item.to"
-              :icon="item.icon"
-            >
-              
-            </ArrowBtnWidget>
-          </div>
-        </template>
+      <template v-for="unit in viewModel">
         <div
-          class="my-cards"
-          v-for="(myCard, index) in myCardGeneral"
-          :key="index"
+          class="MyApp__MenuGroup"
+          v-if="
+            unit.reduce((acc, now) => acc && (!now.requireLogin || user), true)
+          "
         >
-          <ArrowBtnWidget
-            v-for="item in myCard"
-            :key="item.text"
-            :to="item.to"
-            :icon="item.icon"
-          >
+          <template v-for="{ icon, text, to, requireLogin } in unit" key="text">
+            <div v-if="!requireLogin || user" class="MyApp__MenuItem">
+              <ArrowBtnWidget
+                class="MyApp__MenuBtn"
+                :component="to ? 'RouterLink' : 'button'"
+                :to="to || null"
+              >
+                <template v-slot:icon>
+                  <IconBase>
+                    <component :is="icon" />
+                  </IconBase>
+                </template>
+                <template v-slot:text>{{ text }}</template>
+              </ArrowBtnWidget>
+            </div>
+          </template>
+        </div>
+      </template>
+      <div class="MyApp__MenuGroup">
+        <div class="MyApp__MenuItem">
+          <ArrowBtnWidget class="MyApp__MenuBtn" @click="onLoginButtonClick">
             <template v-slot:icon>
-              <component :is="item.icon" />
+              <IconBase>
+                <IconAccount />
+              </IconBase>
             </template>
-            <template v-slot:text>{{ item.text }}</template>
+            <template v-slot:text>{{ user ? "로그아웃" : "로그인" }}</template>
           </ArrowBtnWidget>
         </div>
-        <RouterLink to="#none" class="leave-account-btn" v-if="user">
-          회원 탈퇴
-        </RouterLink >
-      </div -->
+      </div>
+    </div>
   </main>
 </template>
 
@@ -102,6 +80,7 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 
 import ArrowBtnWidget from "@/components/ArrowBtnWidget.vue";
+import LevelRenderer from "@/components/LevelRenderer.vue";
 import ProfileImg from "@/components/ProfileImg.vue";
 
 import IconBase from "@/components/IconBase.vue";
@@ -147,21 +126,13 @@ const viewModel = [
       requireLogin: false,
     },
   ],
-  [
-    {
-      icon: IconAccount,
-      text: "로그아웃",
-      to: "/my/account-setting",
-      requireLogin: true,
-    },
-  ],
 ];
 
 const store = useStore();
 const router = useRouter();
 const user = computed(() => store.state.auth.user);
 async function onLoginButtonClick() {
-  if (!user) {
+  if (!user.value) {
     login();
     return;
   }
@@ -175,69 +146,6 @@ async function logout() {
   await signOut(auth);
   store.commit("auth/setUser", null);
 }
-
-const level = computed(() => {
-  if (!user.value) {
-    return 0;
-  }
-
-  const currentMonth = new Date();
-  const initMonth = user.value.membership.initDate.toDate();
-
-  const ONE_DAY_TO_MILLISECOND = 24 * 60 * 60 * 1000;
-
-  // ::기획자의 영역::
-  // 레벨의 기준
-
-  // 일수를 기준으로.
-  // 오차를 최소화하기 위함
-  // 1개월은 며칠일까? 28일? 29일? 30일? 31일?
-  // 개월수를 기준으로 잡을 경우 오차가 발생할 수밖에 없다.
-
-  // 결제 실패가 3회 이상 반복되거나 멤버십을 직접 종료할 경우 0lv로 초기화
-
-  // 밀리세컨드 단위로 가입일부터의 일수를 계산
-  // (현재 - 가입한 시점) / (24 * 60 * 60 * 1000)
-  // 소수점은 모두 버림
-
-  // 0lv(베이비): 0일(가입 당일)
-  // 1lv(모험가): 1 ~ 29일
-  // 2lv(용사): 30 ~ 99일
-  // 3lv(아이돌): 100 ~ 282일
-  // 4lv(츠바사): 283 ~ 345일
-  // 5lv(미시로): 346 ~ 764일
-  // 6lv(나무코): 765 ~ 999일
-  // 7lv(호시노 아이): 1000일 이상
-
-  // TMI
-  //
-  // - <<아이돌마스터>> 시리즈에 등장하는 소속사 이름
-  // 283(츠바사)은 샤이니컬러즈, 346(미시로)은 신데렐라 걸즈, 765(나무코)는 밀리언라이브/본가
-  //
-  // - <<최애의 아이>>의 주인공
-  // 호시노 아이
-
-  const LEVEL_MAP = [
-    [0, "베이비", "baby"],
-    [29, "모험가", "traveler"],
-    [99, "용사", "braver"],
-    [282, "아이돌", "idol"],
-    [345, "츠바사", "tsubasa"],
-    [764, "미시로", "mishiro"],
-    [999, "나무코", "namuco"],
-    [Infinity, "호시노 아이", "hoshino-ai"],
-  ];
-
-  const subscriptionDays = Math.floor(
-    (currentMonth - initMonth) / ONE_DAY_TO_MILLISECOND
-  );
-
-  for (const [index, [maxDays, levelName, codeName]] of LEVEL_MAP.entries()) {
-    if (subscriptionDays <= maxDays) {
-      return { number: index, text: levelName, codeName };
-    }
-  }
-});
 </script>
 
 <style lang="scss" scoped>
@@ -246,19 +154,18 @@ const level = computed(() => {
   flex-direction: column;
   align-items: center;
   min-height: calc(var(--vh) * 100 * 1px);
-  background-color: hsl(var(--bg-200));
-  padding: 6rem 0 9rem;
+  background-color: var(--general-bg);
+  padding: 6.8rem 0 9rem;
   gap: 0.8rem;
 
   &__Visual {
-    width: min(100%, 768px);
-    background-color: hsl(var(--bg-100));
-    padding: 0 var(--inner-padding) var(--inner-padding);
-    height: 18rem;
+    width: min(calc(100% - 1.6rem), 768px);
+    background-color: var(--top-item);
+    padding: var(--inner-padding);
+    gap: 1.6rem;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    gap: 1rem;
+    border-radius: calc(var(--global-radius) * 6);
   }
   &__Identify {
     display: flex;
@@ -268,9 +175,9 @@ const level = computed(() => {
   &__Nickname {
     font-size: 1.7rem;
     font-weight: 900;
-    margin-bottom: 0.4rem;
   }
   &__Email {
+    margin-top: 0.4rem;
     font-size: 1.3rem;
     font-weight: 400;
     margin-bottom: 2.4rem;
@@ -296,36 +203,28 @@ const level = computed(() => {
     font-size: 1.5rem;
     font-weight: 700;
   }
-  &__Membership {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    border-radius: 0.3rem;
-    .col {
-      display: flex;
-      gap: 0.4rem;
-      align-items: center;
-    }
-  }
-  &__LevelIcon {
-    width: 3.2rem;
-    height: 3.2rem;
-  }
-  &__LevelNumber {
-    font-size: 1.3rem;
-    font-weight: 400;
-  }
-  &__LevelName {
-    font-size: 1.3rem;
-    font-weight: 700;
+  &__Level {
+    border-radius: calc(var(--global-radius) * 6 - var(--inner-padding));
   }
 
   &__Menu {
-    width: min(100%, 768px);
+    width: min(calc(100% - 1.6rem), 768px);
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
+  }
+  &__MenuGroup {
+    background-color: var(--top-item);
+    border-radius: calc(var(--global-radius) * 6);
+    overflow: hidden;
+  }
+  &__MenuItem {
+    // inherit to text
+    font-size: 1.3rem;
+  }
+  &__MenuBtn {
+    width: 100%;
+    padding: 1.8rem var(--inner-padding);
   }
 }
 

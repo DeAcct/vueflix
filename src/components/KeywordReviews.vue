@@ -1,9 +1,16 @@
 <template>
   <section class="KeywordReviews inner">
-    <KeywordMy :data="labels" @data-changed="syncData" />
+    <h2 class="KeywordReviews__Title">키워드</h2>
+    <KeywordMy @data-changed="syncData" v-if="user" />
     <div class="KeywordReviews__Chart">
       <template v-if="allKeywords > 0">
-        <LinearChart :data="labels" class="sub-widget" />
+        <LinearChart :data="keywordData" class="sub-widget">
+          <template v-slot:summary
+            >다른 덕후들이 볼 때
+            <strong>{{ max }}</strong>
+            이(가) 강한 작품이에요</template
+          >
+        </LinearChart>
       </template>
       <template v-else>
         <strong class="KeywordReviews__TooFewTitle">
@@ -25,38 +32,43 @@ import { getDoc, doc } from "firebase/firestore";
 import { db } from "../utility/firebase";
 import { useRoute } from "vue-router";
 import { ref, onMounted, computed } from "vue";
+import { useStore } from "vuex";
 
-const props = defineProps({
-  isLoggedIn: {
-    type: [Boolean, Object],
-  },
-});
-
-const labels = ref([]);
+const keywordData = ref([]);
 const route = useRoute();
 async function syncData() {
   const docRef = doc(db, "anime", route.params.title);
   const originData = (await getDoc(docRef)).data().keywordReview;
-
-  labels.value = Object.keys(originData)
+  keywordData.value = Object.keys(originData)
     .map((item) => ({
       id: item,
       ...originData[`${item}`],
     }))
-    .sort((a, b) => {
-      if (a.keyword > b.keyword) {
+    .sort(({ keyword: aKeyword }, { keyword: bKeyword }) => {
+      if (aKeyword > bKeyword) {
         return 1;
-      } else if (a.keyword < b.keyword) {
-        return -1;
-      } else {
-        return 0;
       }
+      if (aKeyword < bKeyword) {
+        return -1;
+      }
+      return 0;
     });
 }
 
-const allKeywords = computed(() =>
-  labels.value.reduce((acc, { value }) => (acc += value), 0)
+const max = computed(
+  () =>
+    keywordData.value.reduce(
+      (acc, now) => (acc.value > now.value ? acc : now),
+      {}
+    ).keyword
 );
+
+const allKeywords = computed(() =>
+  keywordData.value.reduce((acc, { value }) => (acc += value), 0)
+);
+
+const store = useStore();
+const user = computed(() => store.state.auth.user);
 
 onMounted(async () => {
   await syncData();
@@ -67,18 +79,21 @@ onMounted(async () => {
 .KeywordReviews {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   width: 100%;
+  margin-top: 1.6rem;
 
-  &__title {
-    font-size: 1.5rem;
+  &__Title {
+    width: 100%;
+    font-size: 1.7rem;
     font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 1.2rem;
   }
   &__Chart {
     display: flex;
     flex-direction: column;
-    background-color: hsl(var(--bg-200));
-    border-radius: 0.6rem;
+    background-color: var(--new-review);
+    border-radius: var(--global-radius);
     padding: 1.8rem;
     gap: 0.6rem;
   }

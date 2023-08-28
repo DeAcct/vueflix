@@ -54,15 +54,10 @@
             <IconSearch></IconSearch>
           </IconBase>
         </button>
-        <RouterLink
+        <ProfileCombo
           :to="user ? '/my' : '/auth'"
           class="VueflixHeader__ProfileCombo"
-        >
-          <span class="VueflixHeader__UserName">{{
-            user ? user.nickname : "로그인"
-          }}</span>
-          <ProfileImg class="VueflixHeader__Profile" />
-        </RouterLink>
+        />
       </div>
     </div>
     <div
@@ -98,6 +93,7 @@ import IconSearch from "./icons/IconSearch.vue";
 import SearchBar from "./SearchBar.vue";
 import VueflixLogo from "./VueflixLogo.vue";
 import ProfileImg from "./ProfileImg.vue";
+import ProfileCombo from "./ProfileCombo.vue";
 
 defineProps({ isTouchDevice: Boolean, isMobile: Boolean });
 
@@ -289,28 +285,16 @@ const user = computed(() => store.state.auth.user);
     &__SearchCombo {
       display: none;
     }
-    &__Profile {
-      width: 2.4rem;
-      height: 2.4rem;
-    }
+
     &__ProfileCombo {
       display: flex;
-      align-items: center;
-      padding: 0.4rem;
-      border-radius: 9999px;
+      gap: 0.8rem;
       background-color: hsl(var(--bg-200));
       border: 2px solid hsl(var(--bg-200));
-      transition: border-color 150ms ease-out;
-      &:focus-visible {
-        border-color: hsl(var(--theme-500));
-      }
-    }
-    &__UserName {
+      --profile-size: 2.4rem;
       font-size: 1.5rem;
-      font-weight: 500;
-      margin-right: 0.8rem;
-      margin-top: 0.2rem;
     }
+
     &__SearchBar {
       &--PCOnly {
         display: flex;

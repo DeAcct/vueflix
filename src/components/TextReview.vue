@@ -79,7 +79,7 @@ async function syncTextReviews() {
   if (!animeDoc) {
     return;
   }
-  const userSnapshot = await getDoc(animeDoc);
+  const userSnapshot = await getDoc(userDoc.value);
   const userReviews = userSnapshot.data().reviews;
   store.commit("auth/setReviews", userReviews);
   reviewList.value = animeReviews;
@@ -88,8 +88,7 @@ watch(
   () => props.user,
   async () => {
     await syncTextReviews();
-  },
-  { immediate: true }
+  }
 );
 
 const userDoc = computed(() =>
@@ -153,19 +152,19 @@ async function deleteTrigger() {
   width: 100%;
   max-width: 1080px;
   position: relative;
-  border-radius: 0.6rem;
+  border-radius: var(--global-radius);
   overflow: hidden;
   &__Title {
     font-size: 1.7rem;
     font-weight: 700;
-    margin-bottom: 0.7rem;
+    margin-bottom: 1.2rem;
   }
   &__description {
     font-size: 1.3rem;
   }
   &__List {
     background-color: hsl(var(--bg-200));
-    border-radius: 0.6rem;
+    border-radius: var(--global-radius);
     margin-top: 1rem;
   }
   &__Write {

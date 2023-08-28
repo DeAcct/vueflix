@@ -9,7 +9,7 @@
       ]"
     >
       {{ theme === "dark" ? "어두운 테마" : "밝은 테마" }}
-      <StateToggle
+      <InputBoolean
         :input-state="theme === 'dark'"
         @state-change="themeToggle"
       />
@@ -41,7 +41,7 @@
 
 <script setup>
 import { useStore } from "vuex";
-import StateToggle from "../components/StateToggle.vue";
+import InputBoolean from "../components/InputBoolean.vue";
 import { computed } from "vue";
 
 const store = useStore();

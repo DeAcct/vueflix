@@ -37,7 +37,7 @@ function cardInteraction(e) {
   width: 100%;
   height: calc((100vw - 4rem) / 1.58);
   padding: 2rem 3.5rem;
-  border-radius: 0.3rem;
+  border-radius: calc(var(--global-radius) * 4);
   transform: perspective(3px) rotateX(v-bind("tilt.beta"))
     rotateY(v-bind("tilt.gamma"));
   transition: transform 150ms ease-out;

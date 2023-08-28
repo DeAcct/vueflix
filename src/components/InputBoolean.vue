@@ -1,21 +1,28 @@
 <template>
-  <span class="StateToggle">
+  <span class="InputBoolean">
     <input
       type="checkbox"
       :checked="inputState"
       v-model="outputState"
       @change="emitState"
-      :id="toggleId"
-      class="blind StateToggle__Skell"
+      class="blind InputBoolean__Skell"
     />
-    <span class="StateToggle__Track">
-      <span class="StateToggle__Body"></span>
+    <i class="InputBoolean__Track" v-if="type === 'toggle'">
+      <span class="InputBoolean__Body"></span>
       <span class="blind">{{ inputState ? "켜짐" : "꺼짐" }}</span>
-    </span>
+    </i>
+    <i class="InputBoolean__Checkbox" v-else>
+      <IconBase>
+        <IconSelected v-if="outputState" />
+        <IconNotSelected v-else />
+      </IconBase>
+    </i>
   </span>
 </template>
 
 <script setup>
+import IconNotSelected from "./icons/IconNotSelected.vue";
+import IconSelected from "./icons/IconSelected.vue";
 import { toRef } from "vue";
 
 const emits = defineEmits(["state-change"]);
@@ -23,8 +30,12 @@ const props = defineProps({
   inputState: {
     type: Boolean,
   },
-  toggleId: {
+  type: {
     type: String,
+    default: "toggle",
+    validator(value) {
+      ["checkbox", "toggle"].includes(value);
+    },
   },
 });
 const outputState = toRef(props.inputState);
@@ -33,7 +44,7 @@ function emitState() {
 }
 </script>
 <style lang="scss" scoped>
-.StateToggle {
+.InputBoolean {
   display: flex;
   &__Track {
     position: relative;
@@ -41,7 +52,7 @@ function emitState() {
     align-items: center;
     width: 3.2rem;
     height: 1.6rem;
-    border-radius: 0.9rem;
+    border-radius: 9999px;
     background-color: hsl(var(--toggle-false));
     transition: background-color 150ms ease-in-out;
   }

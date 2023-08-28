@@ -44,7 +44,7 @@ function toggle() {
 
 <style lang="scss" scoped>
 .AccordionWidget {
-  border-radius: 0.6rem;
+  border-radius: var(--global-radius);
   &__PartWrap {
     position: sticky;
     top: 6rem;
@@ -54,7 +54,7 @@ function toggle() {
     justify-content: center;
     background-color: var(--anime-layout-parts);
     backdrop-filter: blur(10px);
-    border-radius: 0.6rem;
+    border-radius: var(--global-radius);
     width: calc(100% - var(--inner-padding) * 2);
   }
   &__OpenBtn {

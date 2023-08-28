@@ -65,10 +65,13 @@ svg {
   background-color: hsl(var(--theme-500));
   color: #fff;
 }
-:root {
+:root,
+::after,
+::before {
   --inner-padding: 2rem;
   --bottom-tab-height: 4.8rem;
   --bottom-tab-safe-margin: 1.2rem;
+  --global-radius: 0.4rem;
 }
 #app {
   min-height: calc(var(--vh) * 100 * 1px);

@@ -299,7 +299,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
       justify-content: space-between;
       align-items: center;
       color: transparent;
-      border-radius: 0.3rem;
+      border-radius: var(--global-radius);
       background-image: linear-gradient(
         135deg,
         rgb(255 255 255 / 0.3),
@@ -331,14 +331,14 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     height: calc(20rem / 5 * 7);
     margin-right: 2rem;
     box-shadow: hsl(var(--box-shadow));
-    border-radius: 0.3rem;
+    border-radius: var(--global-radius);
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       font-size: 0.1rem;
       opacity: 0;
-      border-radius: 0.3rem;
+      border-radius: var(--global-radius);
       transition: opacity 150ms ease-out;
     }
     &--Loaded {
