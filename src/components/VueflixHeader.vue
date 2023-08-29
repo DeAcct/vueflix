@@ -6,7 +6,7 @@
       { 'VueflixHeader--Fill': scrollPercent > 0 },
     ]"
   >
-    <h2
+    <h1
       :class="[
         'VueflixHeader__Activity',
         {
@@ -18,13 +18,13 @@
     >
       <template v-if="activity === 'Logo' || !isTouchDevice">
         <RouterLink to="/">
-          <VueflixLogo></VueflixLogo>
+          <VueflixLogo>뷰플릭스</VueflixLogo>
         </RouterLink>
       </template>
       <template v-else>
         {{ activity }}
       </template>
-    </h2>
+    </h1>
     <SearchBar
       class="VueflixHeader__SearchBar VueflixHeader__SearchBar--PCOnly"
     />

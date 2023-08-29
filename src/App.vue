@@ -1,6 +1,5 @@
 <template>
   <router-view v-slot="{ Component }">
-    <h1 class="blind">뷰플릭스</h1>
     <vueflix-header
       v-if="route.meta.appBar"
       :is-touch-device="device.isTouch"

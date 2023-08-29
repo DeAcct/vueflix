@@ -1,6 +1,6 @@
 <template>
   <component :is="component" class="AnimeItemHead">
-    <h1 class="blind" v-if="deviceInfo.isTouch">뷰플릭스</h1>
+    <h1 class="blind">뷰플릭스</h1>
     <div class="AnimeItemHead__Navigation">
       <div class="col-left">
         <a class="back" @click="goBack">

@@ -8,5 +8,4 @@
 const props = defineProps({
   percent: String,
 });
-console.log(props.target);
 </script>
