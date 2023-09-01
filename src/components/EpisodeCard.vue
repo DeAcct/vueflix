@@ -168,7 +168,7 @@ const progress = computed(() => {
   .EpisodeCard {
     gap: 2rem;
     &__Thumbnail {
-      width: 20rem;
+      width: var(--episode-card-thumbnail-width, 20rem);
     }
     &__Title {
       font-size: 1.7rem;

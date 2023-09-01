@@ -40,8 +40,6 @@ export function useIndicatorAnimation(index) {
     to.x = toX - bodyX - paddingLeft;
     to.y = toY - bodyY - paddingTop;
 
-    console.log(to.x);
-
     to.width = toWidth;
     to.height = toHeight;
   }

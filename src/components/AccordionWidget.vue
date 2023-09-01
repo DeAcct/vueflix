@@ -1,26 +1,21 @@
 <template>
   <section class="AccordionWidget">
-    <h3 class="AccordionWidget__PartWrap">
-      <button @click="toggle" type="button" class="AccordionWidget__OpenBtn">
-        <span class="AccordionWidget__PartTitle"
-          ><slot name="title"></slot
-        ></span>
-        <i
-          :class="[
-            'AccordionWidget__OpenIcon',
-            { 'AccordionWidget__OpenIcon--WidgetOpened': isOpen },
-          ]"
-        >
-          <IconBase :icon-name="isOpen ? '닫기' : '열기'">
-            <IconArrowPrev />
-          </IconBase>
-        </i>
-      </button>
-    </h3>
+    <button class="AccordionWidget__PartTitle" @click="toggle">
+      <slot name="title"></slot>
+      <i
+        :class="[
+          'AccordionWidget__OpenIcon',
+          { 'AccordionWidget__OpenIcon--WidgetOpened': isOpen },
+        ]"
+      >
+        <IconBase :icon-name="isOpen ? '닫기' : '열기'">
+          <IconArrowPrev />
+        </IconBase>
+      </i>
+    </button>
     <ul
       :class="[
         'AccordionWidget__Body',
-        'inner',
         { 'AccordionWidget__Body--Opened': isOpen },
       ]"
     >
@@ -45,24 +40,19 @@ function toggle() {
 <style lang="scss" scoped>
 .AccordionWidget {
   border-radius: var(--global-radius);
-  &__PartWrap {
+  margin: 0 auto;
+  &__PartTitle {
     position: sticky;
-    top: 6rem;
+    top: var(--accordion-sticky-top, 6rem);
     z-index: 50;
     display: flex;
-    margin: 0 auto;
-    justify-content: center;
     background-color: var(--anime-layout-parts);
     backdrop-filter: blur(10px);
     border-radius: var(--global-radius);
-    width: calc(100% - var(--inner-padding) * 2);
-  }
-  &__OpenBtn {
-    display: flex;
+    padding: 1.5rem 2rem;
+    width: 100%;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem var(--inner-padding);
-    width: 100%;
   }
   &__PartTitle {
     font-size: 1.3rem;
@@ -86,7 +76,7 @@ function toggle() {
     transition: 150ms ease-in-out;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--episode-gap, 1rem);
     padding: {
       top: 0;
       bottom: 0;
@@ -110,11 +100,8 @@ function toggle() {
 
 @media screen and (min-width: 1080px) {
   .AccordionWidget {
-    &__PartWrap {
-      width: 100%;
-      width: calc(100% - 4rem);
-    }
     &__PartTitle {
+      width: 100%;
       font-size: 1.5rem;
     }
     &__OpenBtn {
@@ -126,11 +113,7 @@ function toggle() {
       height: 2rem;
     }
     &__Body {
-      gap: 2.5rem;
-      padding: {
-        left: 2rem;
-        right: 2rem;
-      }
+      gap: var(--episode-gap, 2.5rem);
       &--Opened {
         padding: {
           top: 2.5rem;

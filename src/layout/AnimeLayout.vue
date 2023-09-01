@@ -177,12 +177,14 @@ const {
   &__Main {
     // anime-item-head는 포스터이미지 + 그라디언트로 이루어져 있다.
     // 그라디언트가 끝까지 차지 않고 약간의 여백이 있는 이슈를 개선하기 위해 nagative margin을 적용했다.
-    margin-top: -1px;
     padding-top: 2rem;
     background-color: var(--anime-layout-bg);
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 118rem;
+    margin: -1px auto 0;
   }
   &__Meta {
     margin-bottom: 2rem;
@@ -279,7 +281,6 @@ const {
       flex-grow: 1;
     }
     &__Main {
-      padding: 3.5rem calc((100% - 118rem) / 2) 0;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;

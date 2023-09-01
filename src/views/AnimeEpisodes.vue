@@ -1,35 +1,24 @@
 <template>
   <div class="AnimeEpisodes">
     <AccordionWidget
-      v-for="(part, index) in animeInfo.parts"
+      v-for="({ part, episodes }, index) in animeInfo.parts"
       :key="index"
       :open="index === 0"
       class="AnimeEpisodes__Accordion"
     >
       <template v-slot:title>
-        {{ part.part }}
+        {{ part }}
       </template>
       <template v-slot:content>
         <EpisodeCard
-          v-for="episode in part.episodes"
+          v-for="episode in episodes"
           :key="episode.title"
           :data="episode"
-          :part="part.part"
-          :link="`/player/${animeInfo.name}/${part.part}/${
-            typeof episode.index === 'string'
-              ? episode.index
-              : `${episode.index}화`
-          }
-            `"
+          :part="part"
+          :link="`/player/${animeInfo.name}/${part}/${episode.index}`"
           @login-require="openLoginModal"
         >
-          <template v-slot:index>
-            {{
-              typeof episode.index === "string"
-                ? episode.index
-                : `${episode.index}화`
-            }}
-          </template>
+          <template v-slot:index> {{ episode.index }} </template>
         </EpisodeCard>
       </template>
     </AccordionWidget>
@@ -59,6 +48,7 @@ onMounted(() => {
 .AnimeEpisodes {
   margin-top: 1.6rem;
   &__Accordion {
+    width: calc(100% - 4rem);
     &:not(:last-child) {
       margin-bottom: 1rem;
     }
