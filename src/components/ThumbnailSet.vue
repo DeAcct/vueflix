@@ -1,7 +1,7 @@
 <template>
-  <li class="ThumbnailSet">
+  <li :class="['ThumbnailSet', `ThumbnailSet--${direction}`]">
     <RouterLink :to="link" @click.prevent class="ThumbnailSet__Image">
-      <OptimizedImage :src="thumbnailSrc" :alt="alt"></OptimizedImage>
+      <OptimizedImage :src="thumbnailURL" :alt="alt"></OptimizedImage>
     </RouterLink>
     <div class="ThumbnailSet__Info">
       <template v-if="type === 'skeleton'">
@@ -13,12 +13,15 @@
           :to="`/anime/${aniTitle}/episodes`"
           :style="titleWidth"
         >
-          <span class="ThumbnailSet__Title">
+          <span class="ThumbnailSet__Title" v-if="type !== 'episode'">
             {{ aniTitle }}
           </span>
-          <strong class="ThumbnailSet__PartIndex" v-if="type === 'episode'">
-            {{ part }}기 {{ index }}화
-          </strong>
+          <template v-if="type === 'episode'">
+            <strong class="ThumbnailSet__PartIndex">
+              {{ data.part }} {{ data.index }}
+            </strong>
+            <span class="ThumbnailSet__Title">{{ data.title }}</span>
+          </template>
         </RouterLink>
         <ProgressCircle
           class="ThumbnailSet__WatchPercent"
@@ -32,11 +35,9 @@
 
 <script setup>
 import ProgressCircle from "./ProgressCircle.vue";
-
-import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import OptimizedImage from "./OptimizedImage.vue";
 import { computed } from "vue";
-import { useAsyncState } from "@vueuse/core";
+import { useFirebaseStorage } from "@/composables/firebase";
 
 const props = defineProps({
   type: {
@@ -47,31 +48,32 @@ const props = defineProps({
   aniTitle: {
     type: String,
   },
-  shortTitle: {
-    type: String,
-  },
-  part: {
-    type: String,
-  },
-  index: {
-    type: String,
+  data: {
+    type: Object,
   },
   watchPercent: {
     type: String,
   },
+  direction: {
+    type: String,
+    default: "column",
+    validator(value) {
+      return ["column", "row"].includes(value);
+    },
+  },
 });
 
-const storage = getStorage();
+//const fileName = `${props.aniTitle}/${props.data.thumbnail}`;
 const formattedTitle = props.aniTitle.replaceAll(/:/g, "_");
-const thumbnailRef = fireRef(
-  storage,
-  `${props.aniTitle}/${
-    props.type === "episode"
-      ? `${props.shortTitle}Sr${props.part}Ep${props.index}.jpg`
-      : `${formattedTitle}.webp`
-  }`
+const fileName = computed(
+  () =>
+    `${props.aniTitle}/${
+      props.type === "episode"
+        ? `${props.data.thumbnail}`
+        : `${formattedTitle}.webp`
+    }`
 );
-const { state: thumbnailSrc } = useAsyncState(getDownloadURL(thumbnailRef));
+const { fileSrc: thumbnailURL } = useFirebaseStorage(fileName.value);
 
 const titleWidth = computed(
   () => `width: ${props.type === "series" ? "100%" : "calc(100% - 3.6rem)"};`
@@ -95,13 +97,16 @@ const alt = computed(() => {
 <style lang="scss" scoped>
 .ThumbnailSet {
   display: flex;
-  flex-direction: column;
-  width: 55vw;
+  flex-direction: v-bind("props.direction");
+  flex-shrink: 0;
   position: relative;
+  gap: 0.4rem;
+  &--column {
+    width: var(--thumbnail-width, 55vw);
+  }
   &__Image {
     --radius: var(--global-radius);
     --aspect-ratio: calc(9 / 16 * 100%);
-    margin-bottom: var(--thumbnail-bottom, 1rem);
   }
   &__WatchPercent {
     position: absolute;
@@ -118,6 +123,8 @@ const alt = computed(() => {
   &__Info {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
   }
   &__Text {
     display: flex;
@@ -134,22 +141,50 @@ const alt = computed(() => {
     line-height: 1.5;
     font-weight: 500;
     white-space: nowrap;
+    word-break: break-all;
   }
   &__PartIndex {
     font-size: 1.3rem;
   }
+
+  &--row {
+    width: 100%;
+  }
+  &--row &__Image {
+    width: var(--thumbnail-width, 55vw);
+  }
+  &--row &__Info {
+    flex-direction: column;
+    align-items: unset;
+  }
+  &--row &__WatchPercent {
+    position: static;
+    width: 2.4rem;
+    height: 2.4rem;
+  }
 }
 @media all and (min-width: 768px) {
   .ThumbnailSet {
-    width: 32vw;
+    gap: 0.8rem;
+    &--column {
+      width: var(--thumbnail-width, 32vw);
+    }
+    &--row &__Image {
+      width: var(--thumbnail-width, 32vw);
+    }
   }
 }
 
 @media all and (min-width: 1080px) {
   .ThumbnailSet {
-    width: 28vw;
+    &--column {
+      width: var(--thumbnail-width, 28vw);
+    }
+    &--row &__Image {
+      width: var(--thumbnail-width, 28vw);
+    }
     &__Title {
-      font-size: 1.7rem;
+      font-size: 1.5rem;
       --episode-title-width: 30ch;
     }
     &__PartIndex {
@@ -160,7 +195,12 @@ const alt = computed(() => {
 
 @media all and (min-width: 1920px) {
   .ThumbnailSet {
-    width: 15vw;
+    &--column {
+      width: var(--thumbnail-width, 15vw);
+    }
+    &--row &__Image {
+      width: var(--thumbnail-width, 15vw);
+    }
     &__ratio-holder {
       margin-bottom: 1.7rem;
     }

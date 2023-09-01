@@ -68,10 +68,12 @@ const device = reactive({
 });
 function setDeviceInfo() {
   pointerDeviceQuery.addEventListener("change", (e) => {
+    console.log("tChange", device);
     device.isTouch = !e.matches;
   });
   mobileDeviceQuery.addEventListener("change", (e) => {
     device.isMobile = e.matches;
+    console.log("mChange", device);
   });
 }
 

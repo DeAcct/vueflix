@@ -1,5 +1,5 @@
 <template>
-  <li class="EpisodeCard">
+  <div class="EpisodeCard">
     <component
       :is="user ? 'router-link' : 'div'"
       :to="user ? link : undefined"
@@ -30,7 +30,7 @@
         <span class="EpisodeCard__Purchased" v-if="isPurchased">소장함</span>
       </div>
     </component>
-  </li>
+  </div>
 </template>
 
 <script setup>
@@ -44,35 +44,31 @@
    아예 anime 들어오기 전으로 빠져나갈 수 있는 것.
  */
 
-import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
-import { onMounted, ref, computed } from "vue";
+import { computed } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 import OptimizedImage from "./OptimizedImage.vue";
 import ProgressCircle from "./ProgressCircle.vue";
+import { useFirebaseStorage } from "@/composables/firebase";
 
 const props = defineProps({
-  part: String,
-  isLoggedin: Boolean,
-  price: Number,
-  data: Object,
-  link: String,
+  part: { type: String },
+  isLoggedin: { type: Boolean },
+  price: { type: Number },
+  data: { type: Object },
+  link: { type: String },
+  type: {
+    type: String,
+    validator(value) {
+      return ["li", "div"].includes(value);
+    },
+  },
 });
 
-onMounted(async () => {
-  await getPosterURL();
-});
 const route = useRoute();
-const thumbnailURL = ref("");
-async function getPosterURL() {
-  const storage = getStorage();
-  const thumbnailRef = fireRef(
-    storage,
-    `${route.params.title}/${props.data.thumbnail}`
-  );
-  const URL = await getDownloadURL(thumbnailRef);
-  thumbnailURL.value = URL;
-}
+
+const fileName = `${route.params.title}/${props.data.thumbnail}`;
+const { fileSrc: thumbnailURL } = useFirebaseStorage(fileName);
 
 const store = useStore();
 const user = computed(() => store.state.auth.user);

@@ -8,14 +8,17 @@
           <VueflixCarousel
             :length="auth?.recentWatched.length"
             class="AppHome__Carousel"
+            type="arrow"
           >
             <ThumbnailSet
               type="episode"
               v-for="anime in auth?.recentWatched"
               :key="anime"
               :ani-title="anime.aniTitle"
-              :part="`${anime.part}`"
-              :index="`${anime.index}`"
+              :data="{
+                part,
+                index,
+              }"
               :watched-percent="anime.watchedPercent"
               :short-title="anime.shortTitle"
             />
@@ -31,6 +34,7 @@
           <VueflixCarousel
             :length="selectedDailyAnime.length"
             class="AppHome__Carousel"
+            type="arrow"
           >
             <ThumbnailSet
               type="series"
@@ -47,6 +51,7 @@
           <VueflixCarousel
             :length="recommended.list.length"
             class="AppHome__Carousel"
+            type="arrow"
           >
             <ThumbnailSet
               type="series"

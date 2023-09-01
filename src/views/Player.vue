@@ -29,15 +29,26 @@
             {{ part }}
           </template>
           <template v-slot:content>
-            <EpisodeCard
-              v-for="episode in episodes"
-              :key="episode.title"
-              :data="episode"
-              :part="part"
-              :link="`/player/${animeInfo.name}/${part}/${episode.index}`"
+            <VueflixCarousel
+              type="nobutton"
+              :length="episodes.length"
+              :direction="deviceInfo.isMobile ? 'row' : 'column'"
             >
-              <template v-slot:index> {{ episode.index }} </template>
-            </EpisodeCard>
+              <ThumbnailSet
+                v-for="{ title, index, thumbnail } in episodes"
+                :direction="deviceInfo.isMobile ? 'column' : 'row'"
+                :key="`${title}-${part}-${index}`"
+                :ani-title="animeInfo.name"
+                :data="{
+                  thumbnail,
+                  part,
+                  index,
+                  title,
+                }"
+                type="episode"
+                watch-percent="0%"
+              ></ThumbnailSet>
+            </VueflixCarousel>
           </template>
         </AccordionWidget>
       </div>
@@ -48,14 +59,15 @@
 // 그리드 어리어를 활용한 2차원 레이아웃
 
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
-import EpisodeCard from "@/components/EpisodeCard.vue";
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import { useAsyncState } from "@vueuse/core";
 import { useRoute } from "vue-router";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../utility/firebase";
-import { reactive, onMounted, ref, computed } from "vue";
+import { reactive, onMounted, ref, computed, inject } from "vue";
 import AccordionWidget from "../components/AccordionWidget.vue";
+import ThumbnailSet from "../components/ThumbnailSet.vue";
+import VueflixCarousel from "../components/VueflixCarousel.vue";
 
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
@@ -65,6 +77,8 @@ const storage = getStorage();
 const { state: videoSrc } = useAsyncState(
   getDownloadURL(fireRef(storage, "testAnime.mp4"))
 );
+
+const deviceInfo = inject("device-info");
 
 const route = useRoute();
 const animeInfo = ref({});
@@ -114,37 +128,38 @@ const episodeCounter = computed(() => {
     padding: 2rem var(--inner-padding);
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.8rem;
   }
   &__AniTitle {
     font-size: 1.3rem;
     font-weight: 500;
   }
+  &__EpisodeTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
   &__EpisodesCounter {
     font-size: 1.5rem;
-  }
-  &__EpisodeTitle {
-    font-size: 1.7rem;
-    font-weight: 700;
   }
   &__Parts {
     padding: var(--inner-padding);
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1.6rem;
     border: 1px solid hsl(var(--bg-200));
     border-radius: calc(var(--global-radius) * 4);
   }
   &__PartsAccordion {
     --accordion-sticky-top: 0;
+    --carousel-padding: 0;
+    --thumbnail-width: 35vw;
     width: 100%;
   }
   &__Episodes {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    height: 40rem;
-    overflow-y: scroll;
+    --accordion-direction: row;
   }
 }
 
@@ -171,7 +186,7 @@ const episodeCounter = computed(() => {
     &__PartsAccordion {
       width: 100%;
       --episode-gap: 1.6rem;
-      --episode-card-thumbnail-width: 12rem;
+      --thumbnail-width: 14rem;
       gap: 1.2rem;
     }
     &__EpisodesCounter {
@@ -179,6 +194,9 @@ const episodeCounter = computed(() => {
     }
     &__Episodes {
       gap: 1.2rem;
+      height: 40rem;
+      overflow-y: scroll;
+      --accordion-direction: column;
     }
   }
 }

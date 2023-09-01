@@ -42,10 +42,17 @@ const props = defineProps({
   },
   type: {
     validator(value) {
-      return ["arrow", "break"].includes(value);
+      return ["arrow", "break", "nobutton"].includes(value);
     },
     default() {
-      return "arrow";
+      return "nobutton";
+    },
+  },
+  direction: {
+    type: String,
+    default: "row",
+    validator(value) {
+      return ["column", "row"].includes(value);
     },
   },
 });
@@ -116,8 +123,9 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
   }
   &__Body {
     display: flex;
+    flex-direction: v-bind("direction");
     gap: var(--carousel-gap, 1rem);
-    width: fit-content;
+    width: auto;
     padding: 0 var(--carousel-padding, var(--inner-padding));
     margin: 0;
 
@@ -196,6 +204,10 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
     &__Icon {
       width: var(--carousel-arrow-size);
       height: var(--carousel-arrow-size);
+    }
+
+    &--nobutton &__Button {
+      display: none;
     }
   }
 }

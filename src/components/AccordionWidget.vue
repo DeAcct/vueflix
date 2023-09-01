@@ -13,14 +13,14 @@
         </IconBase>
       </i>
     </button>
-    <ul
+    <div
       :class="[
         'AccordionWidget__Body',
         { 'AccordionWidget__Body--Opened': isOpen },
       ]"
     >
       <slot name="content"></slot>
-    </ul>
+    </div>
   </section>
 </template>
 
@@ -75,7 +75,7 @@ function toggle() {
     overflow: hidden;
     transition: 150ms ease-in-out;
     display: flex;
-    flex-direction: column;
+    flex-direction: var(--accordion-direction, column);
     gap: var(--episode-gap, 1rem);
     padding: {
       top: 0;
@@ -87,7 +87,7 @@ function toggle() {
     }
     &--Opened {
       padding: {
-        top: 1.5rem;
+        top: 1.2rem;
         bottom: 2rem;
       }
       height: auto;
@@ -116,8 +116,8 @@ function toggle() {
       gap: var(--episode-gap, 2.5rem);
       &--Opened {
         padding: {
-          top: 2.5rem;
-          bottom: 3rem;
+          top: 2.8rem;
+          bottom: 3.2rem;
         }
       }
     }
