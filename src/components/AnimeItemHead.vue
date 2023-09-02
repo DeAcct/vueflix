@@ -2,42 +2,44 @@
   <component :is="component" class="AnimeItemHead">
     <h1 class="blind">뷰플릭스</h1>
     <div class="AnimeItemHead__Navigation">
-      <div class="col-left">
-        <a class="back" @click="goBack">
-          <icon-base icon-name="뒤로가기">
-            <icon-arrow-prev />
-          </icon-base>
-        </a>
-        <strong
-          :class="[
-            'AnimeItemHead__ScrollTitle',
-            { 'AnimeItemHead__ScrollTitle--Scrolled': isScroll },
-          ]"
-        >
-          {{ animeInfo.name }}
-        </strong>
-      </div>
-      <div class="col-right">
-        <button class="AnimeItemHead__ShareBtn" @click="openSystemShare">
-          <icon-base icon-name="공유">
-            <icon-share />
-          </icon-base>
-        </button>
-        <div class="AnimeItemHead__OverflowBtn">
-          <button class="icon" @click="actionSheetToggle">
-            <icon-base>
-              <icon-overflow />
+      <div class="wrap">
+        <div class="col-left">
+          <a class="back" @click="goBack">
+            <icon-base icon-name="뒤로가기">
+              <icon-arrow-prev />
+            </icon-base>
+          </a>
+          <strong
+            :class="[
+              'AnimeItemHead__ScrollTitle',
+              { 'AnimeItemHead__ScrollTitle--Scrolled': isScroll },
+            ]"
+          >
+            {{ animeInfo.name }}
+          </strong>
+        </div>
+        <div class="col-right">
+          <button class="AnimeItemHead__ShareBtn" @click="openSystemShare">
+            <icon-base icon-name="공유">
+              <icon-share />
             </icon-base>
           </button>
-          <action-sheet
-            v-if="isActionSheetOpened"
-            :action-origin="actions"
-            @overflow-menu-close="actionSheetClose"
-          />
+          <div class="AnimeItemHead__OverflowBtn">
+            <button class="icon" @click="actionSheetToggle">
+              <icon-base>
+                <icon-overflow />
+              </icon-base>
+            </button>
+            <action-sheet
+              v-if="isActionSheetOpened"
+              :action-origin="actions"
+              @overflow-menu-close="actionSheetClose"
+            />
+          </div>
         </div>
       </div>
     </div>
-    <div class="AnimeItemHead__AnimeInfo inner">
+    <div class="AnimeItemHead__AnimeInfo">
       <div
         :class="[
           'AnimeItemHead__Poster',
@@ -242,12 +244,16 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     left: 0;
     top: 0;
     width: 100%;
-    padding: 2rem var(--inner-padding) 6rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 2rem 0 6rem;
     transition: 150ms ease-out;
     background: linear-gradient(var(--anime-layout-bg), transparent);
+    .wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 auto;
+      width: min(calc(100% - 4rem), 118rem);
+    }
     .col-left {
       display: flex;
       flex-grow: 1;
@@ -292,6 +298,9 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     flex-direction: column;
     justify-content: flex-end;
     height: 15rem;
+    width: min(calc(100% - 4rem), 118rem);
+    margin: 0 auto 2rem;
+    gap: 2rem;
 
     > .col-right {
       width: 100%;
@@ -329,7 +338,6 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
   &__Poster {
     width: 20rem;
     height: calc(20rem / 5 * 7);
-    margin-right: 2rem;
     box-shadow: hsl(var(--box-shadow));
     border-radius: var(--global-radius);
     img {
@@ -382,10 +390,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
   .AnimeItemHead {
     padding: 0 calc((100% - 118rem) / 2);
     &__Navigation {
-      padding: {
-        left: calc((100% - 118rem) / 2);
-        right: calc((100% - 118rem) / 2);
-      }
+      width: 100%;
       .col-left {
         flex-shrink: 1;
         flex-grow: 0;
@@ -403,10 +408,11 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     }
 
     &__AnimeInfo {
-      padding: 0;
       position: relative;
       flex-direction: row;
       align-items: flex-end;
+      margin-bottom: 0;
+
       .col-right {
         flex: 1;
         width: 100%;
@@ -432,6 +438,14 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     &__Title {
       font-size: 3.5rem;
       margin-bottom: 1.5rem;
+    }
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .AnimeItemHead {
+    &__AnimeInfo {
+      width: 100%;
     }
   }
 }

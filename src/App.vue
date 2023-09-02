@@ -4,7 +4,7 @@
       v-if="route.meta.appBar"
       :is-touch-device="device.isTouch"
     />
-    <bottom-tab-menu v-if="route.meta.bottomTabMenu && device.isTouch" />
+    <bottom-tab-menu v-if="route.meta.bottomTabMenu && device.isMobile" />
     <transition :name="route.meta.transition || 'fade'">
       <component :is="Component"></component>
     </transition>
@@ -61,7 +61,7 @@ function setTheme() {
 const pointerDeviceQuery = window.matchMedia(
   "(hover: hover) and (pointer: fine)"
 );
-const mobileDeviceQuery = window.matchMedia("screen and (max-width: 768px)");
+const mobileDeviceQuery = window.matchMedia("screen and (max-width: 1080px)");
 const device = reactive({
   isTouch: !pointerDeviceQuery.matches,
   isMobile: mobileDeviceQuery.matches,

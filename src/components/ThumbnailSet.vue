@@ -100,11 +100,12 @@ const alt = computed(() => {
   flex-direction: v-bind("props.direction");
   flex-shrink: 0;
   position: relative;
-  gap: 0.4rem;
+  gap: 0.8rem;
   &--column {
     width: var(--thumbnail-width, 55vw);
   }
   &__Image {
+    flex-shrink: 0;
     --radius: var(--global-radius);
     --aspect-ratio: calc(9 / 16 * 100%);
   }
@@ -141,7 +142,6 @@ const alt = computed(() => {
     line-height: 1.5;
     font-weight: 500;
     white-space: nowrap;
-    word-break: break-all;
   }
   &__PartIndex {
     font-size: 1.3rem;
@@ -159,18 +159,32 @@ const alt = computed(() => {
   }
   &--row &__WatchPercent {
     position: static;
-    width: 2.4rem;
-    height: 2.4rem;
+    //시각보정
+    margin-left: -0.4rem;
   }
 }
 @media all and (min-width: 768px) {
   .ThumbnailSet {
-    gap: 0.8rem;
+    gap: 1.2rem;
     &--column {
       width: var(--thumbnail-width, 32vw);
     }
+    &--column &__Info {
+      flex-grow: 0;
+    }
+
     &--row &__Image {
       width: var(--thumbnail-width, 32vw);
+    }
+    &--row &__PartIndex {
+      font-size: 1.7rem;
+    }
+    &--row &__Title {
+      font-size: 2rem;
+      --episode-title-width: 30ch;
+    }
+    &__row &__Info {
+      flex-grow: 0;
     }
   }
 }
@@ -183,12 +197,13 @@ const alt = computed(() => {
     &--row &__Image {
       width: var(--thumbnail-width, 28vw);
     }
-    &__Title {
+
+    &--row &__PartIndex {
+      font-size: 1.4rem;
+    }
+    &--row &__Title {
       font-size: 1.5rem;
       --episode-title-width: 30ch;
-    }
-    &__PartIndex {
-      font-size: 1.5rem;
     }
   }
 }

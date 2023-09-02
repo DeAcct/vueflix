@@ -7,45 +7,43 @@
       @handle-interest="handleInterest"
       class="AnimeLayout__Head"
     />
-    <main class="AnimeLayout__Main">
-      <AnimeMeta class="AnimeLayout__Meta" :anime-info="animeInfo"></AnimeMeta>
-      <div class="AnimeLayout__TabView">
-        <div class="AnimeLayout__TabSelector inner" ref="$TabSelector">
-          <RouterLink
-            :to="`./${name}`"
-            replace
-            v-for="({ name, tabName }, index) in children"
-            v-slot="{ isActive, href, navigate }"
-            custom
-            ><a
-              v-bind="$attrs"
-              :href="href"
-              @click="
-                (e) => {
-                  e.preventDefault();
-                  navigate();
-                  indicatorMove(index);
-                }
-              "
-              @focus="indicatorMove(index)"
-              ref="$Tab"
-              :class="[
-                { 'AnimeLayout__Tab--Active': isActive },
-                'AnimeLayout__Tab',
-              ]"
-            >
-              {{ tabName }}
-            </a></RouterLink
+    <AnimeMeta class="AnimeLayout__Meta" :anime-info="animeInfo"></AnimeMeta>
+    <main class="AnimeLayout__TabView">
+      <div class="AnimeLayout__TabSelector inner" ref="$TabSelector">
+        <RouterLink
+          :to="`./${name}`"
+          replace
+          v-for="({ name, tabName }, index) in children"
+          v-slot="{ isActive, href, navigate }"
+          custom
+          ><a
+            v-bind="$attrs"
+            :href="href"
+            @click="
+              (e) => {
+                e.preventDefault();
+                navigate();
+                indicatorMove(index);
+              }
+            "
+            @focus="indicatorMove(index)"
+            ref="$Tab"
+            :class="[
+              { 'AnimeLayout__Tab--Active': isActive },
+              'AnimeLayout__Tab',
+            ]"
           >
-          <div class="AnimeLayout__TabIndicator"></div>
-        </div>
-        <RouterView v-slot="{ Component }">
-          <component
-            :is="Component"
-            @open-login-modal="openLoginModal"
-          ></component>
-        </RouterView>
+            {{ tabName }}
+          </a></RouterLink
+        >
+        <div class="AnimeLayout__TabIndicator"></div>
       </div>
+      <RouterView v-slot="{ Component }">
+        <component
+          :is="Component"
+          @open-login-modal="openLoginModal"
+        ></component>
+      </RouterView>
     </main>
     <ToTop
       :class="[
@@ -168,23 +166,11 @@ const {
 .AnimeLayout {
   display: flex;
   flex-direction: column;
-  height: calc(var(--vh) * 1px * 100);
+  min-height: calc(var(--vh) * 1px * 100);
   &__Head {
     width: 100%;
     min-height: 55vh;
-    padding-bottom: 1px;
-  }
-  &__Main {
-    // anime-item-head는 포스터이미지 + 그라디언트로 이루어져 있다.
-    // 그라디언트가 끝까지 차지 않고 약간의 여백이 있는 이슈를 개선하기 위해 nagative margin을 적용했다.
-    padding-top: 2rem;
-    background-color: var(--anime-layout-bg);
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 118rem;
-    margin: -1px auto 0;
+    z-index: 1;
   }
   &__Meta {
     margin-bottom: 2rem;
@@ -271,21 +257,25 @@ const {
 }
 @media screen and (min-width: 1080px) {
   .AnimeLayout {
+    display: grid;
+    // 좌 - 우 공간너비 지정
+    grid-template-columns: calc((100% - 118rem - 4rem) / 2) auto 40rem calc(
+        (100% - 118rem - 4rem) / 2
+      );
+    // 상 - 하 공간높이 지정
+    grid-template-rows: repeat(2, auto);
+    grid-auto-rows: minmax(0px, auto);
+    row-gap: 3.2rem;
+    column-gap: 2rem;
     &__Head {
       min-height: 50vh;
       border-radius: 0;
       padding-top: 8rem;
+      grid-area: 1 / 1 / 2 / 5;
     }
     &__Meta {
-      margin: 0;
-      flex-grow: 1;
-    }
-    &__Main {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-direction: row-reverse;
-      gap: 1.5rem;
+      grid-area: 2 / 3 / 3 / 4;
+      width: 100%;
     }
     .optional-show {
       display: none;
@@ -296,11 +286,10 @@ const {
       }
     }
     &__TabView {
-      width: 67%;
-      min-height: 100%;
+      height: 100%;
       background-color: var(--anime-layout-episodes);
       box-shadow: none;
-      padding-bottom: 2rem;
+      grid-area: 2 / 2 / 3 / 3;
     }
     &__TabSelector {
       padding: 0 2rem;

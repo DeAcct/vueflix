@@ -27,7 +27,6 @@ defineProps({
 <style lang="scss">
 .LoginWidget {
   width: 100%;
-  max-width: 768px;
   display: flex;
   justify-content: space-between;
   align-items: center;

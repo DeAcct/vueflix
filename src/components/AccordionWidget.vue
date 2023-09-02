@@ -87,8 +87,7 @@ function toggle() {
     }
     &--Opened {
       padding: {
-        top: 1.2rem;
-        bottom: 2rem;
+        top: var(--open-top-padding, 1.2rem);
       }
       height: auto;
       .episode-card {
@@ -116,8 +115,7 @@ function toggle() {
       gap: var(--episode-gap, 2.5rem);
       &--Opened {
         padding: {
-          top: 2.8rem;
-          bottom: 3.2rem;
+          top: var(--open-top-padding, 2.8rem);
         }
       }
     }

@@ -116,6 +116,7 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
     position: relative;
     scrollbar-width: none;
     overflow-x: scroll;
+    border-radius: var(--carousel-clip-radius);
     overflow-y: hidden;
     &::-webkit-scrollbar {
       display: none;
@@ -128,6 +129,7 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
     width: auto;
     padding: 0 var(--carousel-padding, var(--inner-padding));
     margin: 0;
+    overflow: var(--carousel-overflow);
 
     &--arrow {
       transition: 300ms ease-out;
@@ -137,6 +139,9 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
     }
   }
   &__Button {
+    display: none;
+  }
+  &__Track--nobutton &__Button {
     display: none;
   }
 }
@@ -204,10 +209,6 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
     &__Icon {
       width: var(--carousel-arrow-size);
       height: var(--carousel-arrow-size);
-    }
-
-    &--nobutton &__Button {
-      display: none;
     }
   }
 }

@@ -47,11 +47,20 @@ onMounted(() => {
 <style lang="scss" scoped>
 .AnimeEpisodes {
   margin-top: 1.6rem;
+  flex-grow: 1;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
   &__Accordion {
     width: calc(100% - 4rem);
-    &:not(:last-child) {
-      margin-bottom: 1rem;
-    }
+    --episode-gap: 2rem;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .AnimeEpisodes {
+    margin-top: 2rem;
+    gap: 1.2rem;
   }
 }
 </style>

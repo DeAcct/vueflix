@@ -37,6 +37,7 @@ const user = computed(() => store.state.auth.user);
   flex-direction: column;
   align-items: center;
   gap: 1.6rem;
+  overflow: hidden;
 
   &__LoginRequired {
     background-color: hsl(var(--text-100));

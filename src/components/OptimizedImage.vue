@@ -1,6 +1,7 @@
 <template>
   <span class="OptimizedImage loading-target">
-    <img
+    <component
+      :is="type"
       :src="src"
       :alt="alt"
       :class="[
@@ -21,6 +22,16 @@ defineProps({
     type: String,
   },
   alt: {
+    type: String,
+  },
+  type: {
+    type: String,
+    default: "img",
+    validator(value) {
+      return ["img", "video", "iframe"].includes(value);
+    },
+  },
+  poster: {
     type: String,
   },
 });
