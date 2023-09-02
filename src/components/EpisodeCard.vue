@@ -6,7 +6,7 @@
       class="EpisodeCard__Thumbnail"
       @click="loginRequire"
     >
-      <OptimizedImage :src="thumbnailURL"></OptimizedImage>
+      <OptimizedMedia :src="thumbnailURL"></OptimizedMedia>
     </component>
     <component
       :is="user ? 'router-link' : 'div'"
@@ -47,7 +47,7 @@
 import { computed } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
-import OptimizedImage from "./OptimizedImage.vue";
+import OptimizedMedia from "./OptimizedMedia.vue";
 import ProgressCircle from "./ProgressCircle.vue";
 import { useFirebaseStorage } from "@/composables/firebase";
 

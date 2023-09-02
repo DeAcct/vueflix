@@ -2,31 +2,38 @@
   <div class="Player">
     <!--AmbientPlayer :src="videoSrc" class="Player__Body"></AmbientPlayer-->
     <div class="Player__Video">
-      <OptimizedImage
+      <OptimizedMedia
         type="img"
         src="https://http.cat/404"
         alt="임시 고양이 이미지"
-      ></OptimizedImage>
+      ></OptimizedMedia>
     </div>
-    <div
-      :class="[
-        'Player__TitleRenderer',
-        { 'Player__TitleRenderer--Loaded': nowEpisode },
-      ]"
-    >
-      <h2 class="Player__AniTitle loading-target">
+    <section class="Player__TitleRenderer">
+      <h2
+        :class="[
+          'Player__AniTitle',
+          'loading-target',
+          { 'Player__AniTitle--Loaded': nowEpisode },
+        ]"
+      >
         <RouterLink :to="`/anime/${route.params.title}/episodes`">
           {{ route.params.title }}
         </RouterLink>
       </h2>
-      <h3 class="Player__EpisodeTitle loading-target">
+      <h3
+        :class="[
+          'Player__EpisodeTitle',
+          'loading-target',
+          { 'Player__EpisodeTitle--Loaded': nowEpisode },
+        ]"
+      >
         {{ route.params.part }} {{ route.params.index }} {{ nowEpisode?.title }}
       </h3>
-    </div>
-    <div class="Player__Parts">
-      <strong class="Player__EpisodesCounter"
-        >총 {{ episodeCounter }}개의 에피소드</strong
-      >
+    </section>
+    <section class="Player__Parts">
+      <h3 class="Player__EpisodesCounter">
+        총 {{ episodeCounter }}개의 에피소드
+      </h3>
       <div class="Player__ScrollContainer">
         <div class="Player__Episodes">
           <AccordionWidget
@@ -63,7 +70,8 @@
           </AccordionWidget>
         </div>
       </div>
-    </div>
+    </section>
+    <TextReview class="Player__Comments" :user="user" type="comment" />
   </div>
 </template>
 <script setup>
@@ -71,15 +79,19 @@
 
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
-import { useAsyncState } from "@vueuse/core";
-import { useRoute } from "vue-router";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../utility/firebase";
+
 import { reactive, onMounted, ref, computed, inject } from "vue";
+import { useRoute } from "vue-router";
+import { useStore } from "vuex";
+import { useAsyncState } from "@vueuse/core";
+
 import AccordionWidget from "../components/AccordionWidget.vue";
 import ThumbnailSet from "../components/ThumbnailSet.vue";
 import VueflixCarousel from "../components/VueflixCarousel.vue";
-import OptimizedImage from "@/components/OptimizedImage.vue";
+import OptimizedMedia from "@/components/OptimizedMedia.vue";
+import TextReview from "@/components/TextReview.vue";
 
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
@@ -121,13 +133,16 @@ const episodeCounter = computed(() => {
     0
   );
 });
+
+const store = useStore();
+const user = computed(() => store.state.auth.user);
 </script>
 
 <style lang="scss" scoped>
 .Player {
   padding-top: 6rem;
   width: 100%;
-  max-width: 128rem;
+  max-width: 132rem;
   margin: 0 auto;
   &__Ambient {
   }
@@ -144,19 +159,33 @@ const episodeCounter = computed(() => {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
-
-    &--Loaded {
-    }
   }
   &__AniTitle {
+    width: var(--ani-title-width);
     font-size: 1.3rem;
     font-weight: 500;
     line-height: 1.5;
+    color: transparent;
+    transition: color 150ms ease-out;
+    &--Loaded {
+      color: inherit;
+      background: transparent;
+    }
+    a {
+      color: inherit;
+    }
   }
   &__EpisodeTitle {
+    width: var(--episode-title-width);
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.5;
+    color: transparent;
+    transition: color 150ms ease-out;
+    &--Loaded {
+      color: inherit;
+      background: transparent;
+    }
   }
   &__EpisodesCounter {
     font-size: 1.5rem;
@@ -171,6 +200,7 @@ const episodeCounter = computed(() => {
     gap: 1.6rem;
     border: 1px solid hsl(var(--bg-200));
     border-radius: calc(var(--global-radius) * 4);
+    margin-bottom: 2rem;
   }
   &__PartsAccordion {
     --carousel-padding: 0;
@@ -202,7 +232,7 @@ const episodeCounter = computed(() => {
 @media screen and (min-width: 1080px) {
   .Player {
     display: grid;
-    padding-top: 9.2rem;
+    padding: 9.2rem 2rem;
     // 좌 - 우 공간너비 지정
     grid-template-columns: auto 44rem;
     // 상 - 하 공간높이 지정
@@ -220,9 +250,7 @@ const episodeCounter = computed(() => {
     &__AniTitle {
       font-size: 1.5rem;
     }
-    &__EpisodeTitle {
-      font-size: 2rem;
-    }
+
     &__Parts {
       grid-area: 1 / 2 / 2 / 3;
       gap: 2rem;
@@ -230,6 +258,10 @@ const episodeCounter = computed(() => {
       overflow: hidden;
       display: flex;
       --carousel-overflow: scroll;
+      margin-bottom: 0;
+    }
+    &__EpisodeTitle {
+      font-size: 2rem;
     }
     &__PartsAccordion {
       width: 100%;
@@ -259,6 +291,10 @@ const episodeCounter = computed(() => {
       gap: 1.2rem;
       position: absolute;
       --accordion-direction: column;
+    }
+
+    &__Comments {
+      grid-area: 3 / 1 / 4 / 2;
     }
   }
 }

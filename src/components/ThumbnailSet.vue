@@ -1,7 +1,7 @@
 <template>
   <li :class="['ThumbnailSet', `ThumbnailSet--${direction}`]">
     <RouterLink :to="link" @click.prevent class="ThumbnailSet__Image">
-      <OptimizedImage :src="thumbnailURL" :alt="alt"></OptimizedImage>
+      <OptimizedMedia :src="thumbnailURL" :alt="alt"></OptimizedMedia>
     </RouterLink>
     <div class="ThumbnailSet__Info">
       <template v-if="type === 'skeleton'">
@@ -35,7 +35,7 @@
 
 <script setup>
 import ProgressCircle from "./ProgressCircle.vue";
-import OptimizedImage from "./OptimizedImage.vue";
+import OptimizedMedia from "./OptimizedMedia.vue";
 import { computed } from "vue";
 import { useFirebaseStorage } from "@/composables/firebase";
 

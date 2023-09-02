@@ -15,16 +15,16 @@
     <template v-if="reviewList.length > 0">
       <ul class="TextReview__List">
         <ReviewItem
-          v-for="(reviewItem, index) in reviewList"
-          :key="index"
-          :date="reviewItem.time"
-          :self="myReview.uid === reviewItem.uid"
+          v-for="{ time, _id, uid, author, content } in reviewList"
+          :key="_id"
+          :date="time"
+          :self="myReview.uid === uid"
           :is-my-review-shown="!editmode"
           @edit-review="editModeOn"
           @delete-review="deleteTrigger"
         >
-          <template #author>{{ reviewItem.author }}</template>
-          <template #content>{{ reviewItem.content }}</template>
+          <template #author>{{ author }}</template>
+          <template #content>{{ content }}</template>
         </ReviewItem>
       </ul>
     </template>
@@ -42,6 +42,10 @@ import {
   getDoc,
   Timestamp,
   increment,
+  collection,
+  where,
+  getDocs,
+  query,
 } from "firebase/firestore";
 import { db } from "../utility/firebase";
 import { computed, ref, watch } from "vue";
@@ -54,6 +58,13 @@ const editmode = ref(false);
 const props = defineProps({
   user: {
     type: [Object, Boolean],
+  },
+  type: {
+    type: String,
+    required: true,
+    validator(value) {
+      return ["comment", "review"].includes(value);
+    },
   },
 });
 
@@ -72,58 +83,10 @@ const route = useRoute();
 const store = useStore();
 const animeDoc = doc(db, "anime", route.params.title);
 
-//Read
-async function syncTextReviews() {
-  const animeSnapshot = await getDoc(animeDoc);
-  const animeReviews = animeSnapshot.data().reviews;
-  if (!animeDoc) {
-    return;
-  }
-  const userSnapshot = await getDoc(userDoc.value);
-  const userReviews = userSnapshot.data().reviews;
-  store.commit("auth/setReviews", userReviews);
-  reviewList.value = animeReviews;
-}
-watch(
-  () => props.user,
-  async () => {
-    await syncTextReviews();
-  }
-);
-
 const userDoc = computed(() =>
   props.user ? doc(db, "user", props.user.uid) : undefined
 );
 
-//Update
-async function editedTrigger(e) {
-  const userSnapshot = await getDoc(userDoc.value);
-  const userReviews = userSnapshot.data().reviews;
-  const animeSnapshot = await getDoc(animeDoc);
-  const animeReviews = animeSnapshot.data().reviews;
-
-  const mutator = (reviewItem) => {
-    reviewItem.content = e.content;
-    reviewItem.time = Timestamp.fromDate(new Date());
-  };
-  animeReviews.forEach((reviewItem) => {
-    if (reviewItem.uid === props.user.uid) {
-      mutator(reviewItem);
-    }
-  });
-  await updateDoc(animeDoc, { reviews: animeReviews });
-  await updateDoc(userDoc.value, { reviews: userReviews });
-  await syncTextReviews();
-  editModeOff();
-}
-function editModeOn() {
-  editmode.value = true;
-}
-function editModeOff() {
-  editmode.value = false;
-}
-
-//const reviewDoc = doc(db, "review")
 //Create
 async function addedTrigger(e) {
   const reviewItem = {
@@ -133,17 +96,90 @@ async function addedTrigger(e) {
     thumbsUp: 0,
     time: new Date(),
     aniTitle: route.params.title,
+    type: props.type,
   };
 
-  await setDoc(animeDoc, { reviews: arrayUnion(reviewItem) }, { merge: true });
-  await setDoc(userDoc.value, { reviews: increment(1) }, { merge: true });
-  await syncTextReviews();
+  const reviewDoc = doc(collection(db, "reviews"));
+
+  //await setDoc(animeDoc, { reviews: arrayUnion(reviewItem) }, { merge: true });
+  await setDoc(reviewDoc, { ...reviewItem, _id: reviewDoc.id });
+  await setDoc(
+    userDoc.value,
+    { reviews: arrayUnion(reviewDoc.id) },
+    { merge: true }
+  );
+
+  console.log(reviewDoc);
+  //await syncTextReviews();
 }
 
+//Read
+async function syncTextReviews() {
+  // const animeSnapshot = await getDoc(animeDoc);
+  // const animeReviews = animeSnapshot.data().reviews;
+  // if (!animeDoc) {
+  //   return;
+  // }
+  // const userSnapshot = await getDoc(userDoc.value);
+  // const userReviews = userSnapshot.data().reviews;
+  // store.commit("auth/setReviews", userReviews);
+  // reviewList.value = animeReviews;
+
+  // 리뷰의 형태는 두 가지
+  // ["리뷰", "코멘트"]
+  // 리뷰는 애니메이션에 작성하는 항목
+  // 코멘트는 각 에피소드마다 작성하는 항목
+
+  const q = query(
+    collection(db, "reviews"),
+    where("aniTitle", "==", route.params.title),
+    where("type", "==", props.type)
+  );
+  const animeReviews = (await getDocs(q)).docs.map((doc) => doc.data());
+  reviewList.value = animeReviews;
+}
+watch(
+  () => props.user,
+  async () => {
+    await syncTextReviews();
+  }
+);
+
+//Update
+async function editedTrigger(e) {
+  console.log("수정");
+  // const userSnapshot = await getDoc(userDoc.value);
+  // const userReviews = userSnapshot.data().reviews;
+  // const animeSnapshot = await getDoc(animeDoc);
+  // const animeReviews = animeSnapshot.data().reviews;
+
+  // const mutator = (reviewItem) => {
+  //   reviewItem.content = e.content;
+  //   reviewItem.time = Timestamp.fromDate(new Date());
+  // };
+  // animeReviews.forEach((reviewItem) => {
+  //   if (reviewItem.uid === props.user.uid) {
+  //     mutator(reviewItem);
+  //   }
+  // });
+  // await updateDoc(animeDoc, { reviews: animeReviews });
+  // await updateDoc(userDoc.value, { reviews: userReviews });
+  // await syncTextReviews();
+  // editModeOff();
+}
+function editModeOn() {
+  editmode.value = true;
+}
+function editModeOff() {
+  editmode.value = false;
+}
+
+//Delete
 async function deleteTrigger() {
-  await setDoc(animeDoc, { reviews: othersReview.value }, { merge: true });
-  await setDoc(userDoc.value, { reviews: increment(-1) }, { merge: true });
-  await syncTextReviews();
+  console.log("삭제");
+  // await setDoc(animeDoc, { reviews: othersReview.value }, { merge: true });
+  // await setDoc(userDoc.value, { reviews: increment(-1) }, { merge: true });
+  // await syncTextReviews();
 }
 </script>
 

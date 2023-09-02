@@ -54,10 +54,7 @@
             <IconSearch></IconSearch>
           </IconBase>
         </button>
-        <ProfileCombo
-          :to="user ? '/my' : '/auth'"
-          class="VueflixHeader__ProfileCombo"
-        />
+        <ProfileCombo to="/my" class="VueflixHeader__ProfileCombo" />
       </div>
     </div>
     <div

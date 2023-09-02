@@ -170,7 +170,19 @@ const {
   &__Head {
     width: 100%;
     min-height: 55vh;
-    z-index: 1;
+    position: relative;
+    &::after {
+      // negative margin 기법보다 더 직관적으로...
+      // 높이가 정말 작은 가상 요소로 덮어 그라디언트가 어색한 부분을 가리는 방법을 사용했다.
+      position: absolute;
+      content: "";
+      width: 100%;
+      height: 1px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--anime-layout-bg);
+      z-index: 1;
+    }
   }
   &__Meta {
     margin-bottom: 2rem;
@@ -217,16 +229,6 @@ const {
     font-weight: 500;
   }
 
-  .optional-show {
-    opacity: 0;
-    bottom: 0;
-    transform: translateY(100vh);
-    transition: all 150ms ease-out;
-    &.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
   &__ToTop {
     position: fixed;
     bottom: 2rem;
@@ -259,8 +261,8 @@ const {
   .AnimeLayout {
     display: grid;
     // 좌 - 우 공간너비 지정
-    grid-template-columns: calc((100% - 118rem - 4rem) / 2) auto 40rem calc(
-        (100% - 118rem - 4rem) / 2
+    grid-template-columns: calc((100% - 128rem - 4rem) / 2) auto 50rem calc(
+        (100% - 128rem - 4rem) / 2
       );
     // 상 - 하 공간높이 지정
     grid-template-rows: repeat(2, auto);

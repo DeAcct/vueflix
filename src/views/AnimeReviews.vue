@@ -11,7 +11,7 @@
       <template v-slot:login-state-text>로그인</template>
     </LoginWidget>
     <KeywordReviews class="AnimeReviews__Method" />
-    <TextReview class="AnimeReviews__Method" :user="user" />
+    <TextReview class="AnimeReviews__Method" type="review" :user="user" />
   </div>
 </template>
 

@@ -15,7 +15,7 @@
               </li>
               <li class="MyApp__StatItem">
                 <h3 class="MyApp__StatName">리뷰</h3>
-                <p class="MyApp__StatValue">{{ user.reviews }}개</p>
+                <p class="MyApp__StatValue">{{ user.reviews.length }}개</p>
               </li>
             </ul>
           </template>
@@ -155,11 +155,11 @@ async function logout() {
   align-items: center;
   min-height: calc(var(--vh) * 100 * 1px);
   background-color: var(--general-bg);
-  padding: 6.8rem 0 9rem;
+  padding: 8rem 0 9rem;
   gap: 0.8rem;
 
   &__Visual {
-    width: min(calc(100% - 1.6rem), 768px);
+    width: min(calc(100% - 4rem), 768px);
     background-color: var(--top-item);
     padding: var(--inner-padding);
     gap: 1.6rem;
@@ -208,7 +208,7 @@ async function logout() {
   }
 
   &__Menu {
-    width: min(calc(100% - 1.6rem), 768px);
+    width: min(calc(100% - 4rem), 768px);
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
@@ -229,13 +229,19 @@ async function logout() {
 }
 
 @media screen and (min-width: 1080px) {
-  .my {
+  .MyApp {
     height: 100vh;
     margin: 0 auto;
     flex-direction: row;
-    justify-content: space-between;
     align-items: flex-start;
-    padding: 6rem 0 0 0;
+    padding: 9.6rem calc((100% - 128rem) / 2) 0;
+    gap: 2rem;
+    &__Visual {
+      flex-grow: 1;
+    }
+    &__Menu {
+      flex-grow: 1;
+    }
   }
   .tab-one {
     display: flex;

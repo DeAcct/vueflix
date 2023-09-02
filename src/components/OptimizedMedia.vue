@@ -1,12 +1,12 @@
 <template>
-  <span class="OptimizedImage loading-target">
+  <span class="OptimizedMedia loading-target">
     <component
       :is="type"
       :src="src"
       :alt="alt"
       :class="[
-        'OptimizedImage__Body',
-        { 'OptimizedImage__Body--Loaded': isLoaded },
+        'OptimizedMedia__Body',
+        { 'OptimizedMedia__Body--Loaded': isLoaded },
       ]"
       @load="loadTrigger"
       loading="lazy"
@@ -43,7 +43,7 @@ function loadTrigger() {
 </script>
 
 <style lang="scss" scoped>
-.OptimizedImage {
+.OptimizedMedia {
   position: relative;
   display: block;
   width: 100%;

@@ -112,14 +112,17 @@ const emit = defineEmits([
 ]);
 const deviceInfo = inject("device-info");
 
+const route = useRoute();
 const router = useRouter();
 function goBack() {
+  if (window.history.state.back === null) {
+    router.push({ path: "/" });
+    return;
+  }
   router.back();
 }
 
-const route = useRoute();
 const store = useStore();
-
 const wannaSee = computed(
   () =>
     !!user.value?.wannaSee.find((item) => item.aniTitle === route.params.title)
@@ -252,7 +255,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
       justify-content: space-between;
       align-items: center;
       margin: 0 auto;
-      width: min(calc(100% - 4rem), 118rem);
+      width: min(calc(100% - 4rem), 128rem);
     }
     .col-left {
       display: flex;
@@ -298,7 +301,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
     flex-direction: column;
     justify-content: flex-end;
     height: 15rem;
-    width: min(calc(100% - 4rem), 118rem);
+    width: min(calc(100% - 4rem), 128rem);
     margin: 0 auto 2rem;
     gap: 2rem;
 
@@ -388,7 +391,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
 
 @media screen and (min-width: 1080px) {
   .AnimeItemHead {
-    padding: 0 calc((100% - 118rem) / 2);
+    padding: 0 calc((100% - 128rem) / 2) 1px; // 그라이언트 가림용 가상요소 대비를 위한 1px의 패딩
     &__Navigation {
       width: 100%;
       .col-left {
@@ -442,7 +445,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
   }
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 1300px) {
   .AnimeItemHead {
     &__AnimeInfo {
       width: 100%;
