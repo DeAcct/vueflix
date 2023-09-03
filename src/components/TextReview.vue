@@ -1,64 +1,50 @@
 <template>
   <section class="TextReview inner">
-    <h2 class="TextReview__Title">리뷰</h2>
+    <h2 class="TextReview__Title"><slot name="title"></slot></h2>
     <WriteReview
-      v-if="isWriteReviewShown"
       class="TextReview__Write"
       @new-review="addedTrigger"
       @edit-review="editedTrigger"
       @edit-canceled="editModeOff"
       :user="user"
-      :show-new-review="isWriteReviewShown"
-      :type="writeReviewType"
-      :my-review="myReview"
+      :type="type"
+      v-if="type === 'comment' || mode === 'edit'"
     />
-    <template v-if="reviewList.length > 0">
-      <ul class="TextReview__List">
-        <ReviewItem
-          v-for="{ time, _id, uid, author, content } in reviewList"
-          :key="_id"
-          :date="time"
-          :self="myReview.uid === uid"
-          :is-my-review-shown="!editmode"
-          @edit-review="editModeOn"
-          @delete-review="deleteTrigger"
-        >
-          <template #author>{{ author }}</template>
-          <template #content>{{ content }}</template>
-        </ReviewItem>
-      </ul>
-    </template>
+    <ul class="TextReview__List">
+      <ReactionItem
+        v-for="{ time, _id, uid, author, content } in reactions"
+        :key="_id"
+        :date="time"
+        :self="uid === user?.uid"
+        :reaction-id="_id"
+        :type="type"
+        :parent="parent"
+        @request-edit="editModeOn(_id)"
+        @request-delete="deleteTrigger(_id)"
+      >
+        <template #author>{{ author }}</template>
+        <template #content>{{ content }}</template>
+      </ReactionItem>
+    </ul>
   </section>
 </template>
 
 <script setup>
-import WriteReview from "./WriteReview.vue";
-import ReviewItem from "./ReviewItem.vue";
-import {
-  doc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  getDoc,
-  Timestamp,
-  increment,
-  collection,
-  where,
-  getDocs,
-  query,
-} from "firebase/firestore";
-import { db } from "../utility/firebase";
-import { computed, ref, watch } from "vue";
+// 리액션의 형태는 두 가지
+// ["리뷰", "코멘트"]
+// 리뷰는 애니메이션에 작성하는 항목
+// 코멘트는 각 에피소드마다 작성하는 항목
+
+import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 
-const reviewList = ref([]);
-const editmode = ref(false);
+import { useReaction } from "@/api/reaction";
+
+import WriteReview from "./WriteReview.vue";
+import ReactionItem from "./ReactionItem.vue";
 
 const props = defineProps({
-  user: {
-    type: [Object, Boolean],
-  },
   type: {
     type: String,
     required: true,
@@ -68,118 +54,48 @@ const props = defineProps({
   },
 });
 
-const myReview = computed(() =>
-  reviewList.value.find((reviewItem) => reviewItem.uid === props.user.uid)
-);
-const othersReview = computed(() =>
-  reviewList.value.filter((reviewItem) => reviewItem.uid !== props.user.uid)
-);
-const isWriteReviewShown = computed(() => !myReview.value || editmode.value);
-const writeReviewType = computed(() =>
-  editmode.value ? "edit-review" : "new-review"
-);
-
 const route = useRoute();
+
 const store = useStore();
-const animeDoc = doc(db, "anime", route.params.title);
+const user = computed(() => store.state.auth.user);
 
-const userDoc = computed(() =>
-  props.user ? doc(db, "user", props.user.uid) : undefined
+const parent = computed(() =>
+  props.type === "review"
+    ? route.params.title
+    : `${route.params.title} ${route.params.part} ${route.params.index}`
 );
 
-//Create
+const mode = ref("write");
+
+const { reactions, Create, Read, Update, Delete } = useReaction({
+  type: props.type,
+  parent: parent.value,
+});
+
 async function addedTrigger(e) {
-  const reviewItem = {
-    author: props.user.nickname,
-    uid: props.user.uid,
-    ...e,
-    thumbsUp: 0,
-    time: new Date(),
-    aniTitle: route.params.title,
-    type: props.type,
-  };
-
-  const reviewDoc = doc(collection(db, "reviews"));
-
-  //await setDoc(animeDoc, { reviews: arrayUnion(reviewItem) }, { merge: true });
-  await setDoc(reviewDoc, { ...reviewItem, _id: reviewDoc.id });
-  await setDoc(
-    userDoc.value,
-    { reviews: arrayUnion(reviewDoc.id) },
-    { merge: true }
-  );
-
-  console.log(reviewDoc);
-  //await syncTextReviews();
+  await Create({ ...e });
 }
 
-//Read
-async function syncTextReviews() {
-  // const animeSnapshot = await getDoc(animeDoc);
-  // const animeReviews = animeSnapshot.data().reviews;
-  // if (!animeDoc) {
-  //   return;
-  // }
-  // const userSnapshot = await getDoc(userDoc.value);
-  // const userReviews = userSnapshot.data().reviews;
-  // store.commit("auth/setReviews", userReviews);
-  // reviewList.value = animeReviews;
+onMounted(async () => {
+  await Read();
+});
 
-  // 리뷰의 형태는 두 가지
-  // ["리뷰", "코멘트"]
-  // 리뷰는 애니메이션에 작성하는 항목
-  // 코멘트는 각 에피소드마다 작성하는 항목
-
-  const q = query(
-    collection(db, "reviews"),
-    where("aniTitle", "==", route.params.title),
-    where("type", "==", props.type)
-  );
-  const animeReviews = (await getDocs(q)).docs.map((doc) => doc.data());
-  reviewList.value = animeReviews;
-}
-watch(
-  () => props.user,
-  async () => {
-    await syncTextReviews();
-  }
-);
-
-//Update
-async function editedTrigger(e) {
-  console.log("수정");
-  // const userSnapshot = await getDoc(userDoc.value);
-  // const userReviews = userSnapshot.data().reviews;
-  // const animeSnapshot = await getDoc(animeDoc);
-  // const animeReviews = animeSnapshot.data().reviews;
-
-  // const mutator = (reviewItem) => {
-  //   reviewItem.content = e.content;
-  //   reviewItem.time = Timestamp.fromDate(new Date());
-  // };
-  // animeReviews.forEach((reviewItem) => {
-  //   if (reviewItem.uid === props.user.uid) {
-  //     mutator(reviewItem);
-  //   }
-  // });
-  // await updateDoc(animeDoc, { reviews: animeReviews });
-  // await updateDoc(userDoc.value, { reviews: userReviews });
-  // await syncTextReviews();
-  // editModeOff();
-}
-function editModeOn() {
-  editmode.value = true;
+const editTarget = ref("");
+function editModeOn(id) {
+  mode.value = "edit";
+  editTarget.value = id;
 }
 function editModeOff() {
-  editmode.value = false;
+  mode.value = "write";
+  editTarget.value = "";
+}
+async function editedTrigger(e) {
+  await Update({ ...e, id: editTarget.value });
+  editModeOff();
 }
 
-//Delete
-async function deleteTrigger() {
-  console.log("삭제");
-  // await setDoc(animeDoc, { reviews: othersReview.value }, { merge: true });
-  // await setDoc(userDoc.value, { reviews: increment(-1) }, { merge: true });
-  // await syncTextReviews();
+async function deleteTrigger(id) {
+  await Delete({ id });
 }
 </script>
 

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^10.2.0",
+    "dayjs": "^1.11.9",
     "firebase": "^10.3.0",
     "firebase-tools": "^12.5.2",
     "js-cookie": "^3.0.1",

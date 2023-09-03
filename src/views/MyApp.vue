@@ -15,7 +15,7 @@
               </li>
               <li class="MyApp__StatItem">
                 <h3 class="MyApp__StatName">리뷰</h3>
-                <p class="MyApp__StatValue">{{ user.reviews.length }}개</p>
+                <p class="MyApp__StatValue">{{ user.reaction.length }}개</p>
               </li>
             </ul>
           </template>

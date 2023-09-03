@@ -1,9 +1,7 @@
 <template>
   <component class="btn" :type="type" :is="component">
     <i class="icon" v-if="icon">
-      <icon-base>
-        <slot name="icon"></slot>
-      </icon-base>
+      <slot name="icon"></slot>
     </i>
     <span class="text">
       <slot name="text"></slot>
@@ -12,8 +10,6 @@
 </template>
 
 <script setup>
-import IconBase from "./IconBase.vue";
-
 defineProps({
   type: {
     type: String,

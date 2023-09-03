@@ -71,7 +71,9 @@
         </div>
       </div>
     </section>
-    <TextReview class="Player__Comments" :user="user" type="comment" />
+    <TextReview class="Player__Comments" type="comment">
+      <template #title>댓글</template>
+    </TextReview>
   </div>
 </template>
 <script setup>
@@ -141,6 +143,7 @@ const user = computed(() => store.state.auth.user);
 <style lang="scss" scoped>
 .Player {
   padding-top: 6rem;
+  padding-bottom: 2rem;
   width: 100%;
   max-width: 132rem;
   margin: 0 auto;
