@@ -108,7 +108,11 @@ watch(
 
 const scrollPercent = ref(0);
 function handleScroll() {
-  if (window.scrollY >= 500 || activity.value !== "Logo") {
+  if (
+    window.scrollY >= 500 ||
+    activity.value !== "Logo" ||
+    route.name === "player"
+  ) {
     scrollPercent.value = 1;
     return;
   }
@@ -254,7 +258,7 @@ const user = computed(() => store.state.auth.user);
     background-color: hsl(var(--bg-100));
     color: inherit;
     &__Actions {
-      width: auto;
+      width: 100%;
       .right {
         gap: 4px;
       }

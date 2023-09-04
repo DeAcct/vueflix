@@ -12,12 +12,31 @@ import {
   arrayRemove,
 } from "firebase/firestore";
 import { db } from "../utility/firebase";
+import { useRoute } from "vue-router";
 
-export function useReaction({ type, parent }) {
+/**
+ * 리액션(리뷰, 댓글)과 관련된 api입니다.
+ * @param {{
+ *  type:"comment" | "review" ,
+ * }} option 변경할 리액션의 id를 정합니다.
+ */
+export function useReaction({ type }) {
   const reactions = ref([]);
   const store = useStore();
+  const route = useRoute();
   const user = computed(() => store.state.auth.user);
+  const parent = computed(() =>
+    type === "review"
+      ? route.params.title
+      : `${route.params.title} ${route.params.part} ${route.params.index}`
+  );
 
+  /**
+   * 리액션(리뷰, 댓글)을 새로 생성합니다.
+   * @param {{
+   *  content: string
+   * }} option 리액션의 내용을 받습니다.
+   */
   async function Create({ content }) {
     if (!user.value) {
       return;
@@ -26,11 +45,12 @@ export function useReaction({ type, parent }) {
       author: user.value.nickname,
       uid: user.value.uid,
       content,
-      thumbsUp: 0,
+      updown: 0,
       time: new Date(),
-      parent,
+      parent: parent.value,
       type,
       isEdited: false,
+      thumbs: 0,
     };
 
     // 문서의 이름을 난수로 생성
@@ -41,21 +61,28 @@ export function useReaction({ type, parent }) {
       { reaction: arrayUnion(newDoc.id) },
       { merge: true }
     );
-
-    //자동 새로고침
-    await Read();
   }
 
+  /**
+   * 리액션(리뷰, 댓글) 목록을 새로 고칩니다.
+   */
   async function Read() {
     const q = query(
       collection(db, "reaction"),
-      where("parent", "==", parent),
+      where("parent", "==", parent.value),
       where("type", "==", type)
     );
     const animeReviews = (await getDocs(q)).docs.map((doc) => doc.data());
     reactions.value = animeReviews;
   }
 
+  /**
+   * 리액션(리뷰, 댓글)을 업데이트합니다.
+   * @param {{
+   *  id: string,
+   *  content: string
+   * }} option 업데이트할 리액션의 id와 새 내용을 받습니다.
+   */
   async function Update({ id, content }) {
     if (!user.value) {
       return;
@@ -65,11 +92,15 @@ export function useReaction({ type, parent }) {
       { content, isEdited: true },
       { merge: true }
     );
-
-    //자동 새로고침
-    await Read();
   }
 
+  /**
+   * 리액션(리뷰, 댓글)을 삭제합니다.
+   * @param {{
+   *  id: string,
+   *  content: string
+   * }} option 삭제할 리액션의 id를 받습니다.
+   */
   async function Delete({ id }) {
     if (!user.value) {
       return;
@@ -80,10 +111,7 @@ export function useReaction({ type, parent }) {
       { reaction: arrayRemove(id) },
       { merge: true }
     );
-
-    //자동 새로고침
-    await Read();
   }
 
-  return { reactions, Create, Read, Update, Delete };
+  return { reactions, parent, Create, Read, Update, Delete };
 }

@@ -11,16 +11,28 @@
             type="arrow"
           >
             <ThumbnailSet
+              v-for="{
+                name,
+                part,
+                index,
+                watchedPercent,
+                shortName,
+              } in auth?.recentWatched"
               type="episode"
-              v-for="anime in auth?.recentWatched"
-              :key="anime"
-              :ani-title="anime.aniTitle"
+              :link="`/player/${name}/${part}/${index}`"
+              :sub-link="`/anime/${name}/episodes`"
+              :ani-title="name"
               :data="{
                 part,
                 index,
               }"
-              :watched-percent="anime.watchedPercent"
-              :short-title="anime.shortTitle"
+              :watch-percent="watchedPercent"
+              :short-title="shortName"
+              :key="name"
+              :replace="{
+                main: false,
+                sub: false,
+              }"
             />
           </VueflixCarousel>
         </div>
@@ -37,10 +49,15 @@
             type="arrow"
           >
             <ThumbnailSet
-              type="series"
               v-for="anime in selectedDailyAnime"
-              :key="anime"
+              type="series"
+              :link="`/anime/${anime}/episodes`"
               :ani-title="anime"
+              :key="anime"
+              :replace="{
+                main: false,
+                sub: false,
+              }"
             />
           </VueflixCarousel>
         </div>
@@ -54,10 +71,15 @@
             type="arrow"
           >
             <ThumbnailSet
-              type="series"
               v-for="anime in recommended.list"
-              :key="anime"
+              type="series"
+              :link="`/anime/${anime}/episodes`"
               :ani-title="anime"
+              :key="anime"
+              :replace="{
+                main: false,
+                sub: false,
+              }"
             />
           </VueflixCarousel>
         </div>

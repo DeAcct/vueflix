@@ -9,26 +9,34 @@
       ></OptimizedMedia>
     </div>
     <section class="Player__TitleRenderer">
-      <h2
-        :class="[
-          'Player__AniTitle',
-          'loading-target',
-          { 'Player__AniTitle--Loaded': nowEpisode },
-        ]"
-      >
-        <RouterLink :to="`/anime/${route.params.title}/episodes`">
-          {{ route.params.title }}
-        </RouterLink>
-      </h2>
-      <h3
-        :class="[
-          'Player__EpisodeTitle',
-          'loading-target',
-          { 'Player__EpisodeTitle--Loaded': nowEpisode },
-        ]"
-      >
-        {{ route.params.part }} {{ route.params.index }} {{ nowEpisode?.title }}
-      </h3>
+      <div class="Player__Titles">
+        <h2
+          :class="[
+            'Player__AniTitle',
+            'loading-target',
+            { 'Player__AniTitle--Loaded': nowEpisode },
+          ]"
+        >
+          <RouterLink :to="`/anime/${route.params.title}/episodes`">
+            {{ route.params.title }}
+          </RouterLink>
+        </h2>
+        <h3
+          :class="[
+            'Player__EpisodeTitle',
+            'loading-target',
+            { 'Player__EpisodeTitle--Loaded': nowEpisode },
+          ]"
+        >
+          {{ route.params.part }} {{ route.params.index }}
+          {{ nowEpisode?.title }}
+        </h3>
+      </div>
+      <button class="AnimeItemHead__ShareBtn" @click="openSystemShare">
+        <IconBase icon-name="공유">
+          <IconShare />
+        </IconBase>
+      </button>
     </section>
     <section class="Player__Parts">
       <h3 class="Player__EpisodesCounter">
@@ -37,9 +45,9 @@
       <div class="Player__ScrollContainer">
         <div class="Player__Episodes">
           <AccordionWidget
-            v-for="({ part, episodes }, index) in animeInfo.parts"
-            :open="index === 0"
-            :key="index"
+            v-for="({ part, episodes }, iterateParts) in animeInfo.parts"
+            :open="iterateParts === 0"
+            :key="iterateParts"
             class="Player__PartsAccordion"
           >
             <template v-slot:title>
@@ -53,6 +61,7 @@
               >
                 <ThumbnailSet
                   v-for="{ title, index, thumbnail } in episodes"
+                  :link="`/player/${animeInfo.name}/${part}/${index}`"
                   :direction="deviceInfo.isTouch ? 'column' : 'row'"
                   :key="`${title}-${part}-${index}`"
                   :ani-title="animeInfo.name"
@@ -64,6 +73,10 @@
                   }"
                   type="episode"
                   watch-percent="0%"
+                  :replace="{
+                    main: true,
+                    sub: true,
+                  }"
                 ></ThumbnailSet>
               </VueflixCarousel>
             </template>
@@ -71,9 +84,9 @@
         </div>
       </div>
     </section>
-    <TextReview class="Player__Comments" type="comment">
+    <ReactionCombo class="Player__Comments" type="comment" title-tag="h4">
       <template #title>댓글</template>
-    </TextReview>
+    </ReactionCombo>
   </div>
 </template>
 <script setup>
@@ -84,16 +97,17 @@ import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../utility/firebase";
 
-import { reactive, onMounted, ref, computed, inject } from "vue";
+import { onMounted, ref, computed, inject } from "vue";
 import { useRoute } from "vue-router";
-import { useStore } from "vuex";
 import { useAsyncState } from "@vueuse/core";
 
 import AccordionWidget from "../components/AccordionWidget.vue";
 import ThumbnailSet from "../components/ThumbnailSet.vue";
 import VueflixCarousel from "../components/VueflixCarousel.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
-import TextReview from "@/components/TextReview.vue";
+import ReactionCombo from "@/components/ReactionCombo.vue";
+import IconBase from "../components/IconBase.vue";
+import IconShare from "../components/icons/IconShare.vue";
 
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
@@ -136,8 +150,14 @@ const episodeCounter = computed(() => {
   );
 });
 
-const store = useStore();
-const user = computed(() => store.state.auth.user);
+async function openSystemShare() {
+  const shareData = {
+    title: `${route.params.title} ${route.params.part} ${route.params.index}`,
+    text: "애니를 당당하게 즐기세요!",
+    url: window.location.href,
+  };
+  await navigator.share(shareData);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -160,16 +180,16 @@ const user = computed(() => store.state.auth.user);
   &__TitleRenderer {
     padding: 2rem var(--inner-padding);
     display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+    justify-content: space-between;
   }
   &__AniTitle {
     width: var(--ani-title-width);
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 500;
     line-height: 1.5;
     color: transparent;
     transition: color 150ms ease-out;
+    min-width: 0;
     &--Loaded {
       color: inherit;
       background: transparent;
@@ -180,7 +200,8 @@ const user = computed(() => store.state.auth.user);
   }
   &__EpisodeTitle {
     width: var(--episode-title-width);
-    font-size: 1.5rem;
+    min-width: 0;
+    font-size: 1.6rem;
     font-weight: 700;
     line-height: 1.5;
     color: transparent;
@@ -191,7 +212,7 @@ const user = computed(() => store.state.auth.user);
     }
   }
   &__EpisodesCounter {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
   &__ScrollContainer {
     min-height: 30rem;
@@ -218,12 +239,16 @@ const user = computed(() => store.state.auth.user);
     --accordion-sticky-top: 0;
     --accordion-direction: row;
   }
+  &__Comments {
+    padding: 0;
+    font-size: 1.6rem;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
   .Player {
     &__PartsAccordion {
-      --thumbnail-width: 23vw;
+      --thumbnail-width: 15rem;
     }
     &__ScrollContainer {
       overflow: scroll;
@@ -269,7 +294,7 @@ const user = computed(() => store.state.auth.user);
     &__PartsAccordion {
       width: 100%;
       --episode-gap: 1.6rem;
-      --thumbnail-width: 14rem;
+      --thumbnail-width: 15rem;
       --open-top-padding: 1.6rem;
       --open-bottom-padding: 0.8rem;
       gap: 1.2rem;

@@ -50,6 +50,7 @@ const routes = [
     meta: {
       appBar: {
         backButton: true,
+        activityContent: "Logo",
       },
       bottomTabMenu: false,
     },

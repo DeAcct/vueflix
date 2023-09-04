@@ -1,6 +1,6 @@
 <template>
   <section class="KeywordReviews inner">
-    <h2 class="KeywordReviews__Title">키워드</h2>
+    <h3 class="KeywordReviews__Title">키워드</h3>
     <div class="KeywordReviews__Interactive">
       <KeywordMy
         @data-changed="syncData"
@@ -90,7 +90,7 @@ onMounted(async () => {
 
   &__Title {
     width: 100%;
-    font-size: 1.7rem;
+    font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.5;
     margin-bottom: 1.2rem;

@@ -1,6 +1,12 @@
 <template>
   <li :class="['ThumbnailSet', `ThumbnailSet--${direction}`]">
-    <RouterLink :to="link" @click.prevent class="ThumbnailSet__Image">
+    <RouterLink
+      :to="link"
+      @click.prevent
+      class="ThumbnailSet__Image"
+      exact-active-class="ThumbnailSet__Image--Selected"
+      :replace="replace.main"
+    >
       <OptimizedMedia :src="thumbnailURL" :alt="alt"></OptimizedMedia>
     </RouterLink>
     <div class="ThumbnailSet__Info">
@@ -10,8 +16,8 @@
       <template v-else>
         <RouterLink
           class="ThumbnailSet__Text"
-          :to="`/anime/${aniTitle}/episodes`"
-          :style="titleWidth"
+          :to="subLink || link"
+          :replace="replace.sub"
         >
           <span class="ThumbnailSet__Title" v-if="type !== 'episode'">
             {{ aniTitle }}
@@ -61,6 +67,20 @@ const props = defineProps({
       return ["column", "row"].includes(value);
     },
   },
+  link: {
+    type: String,
+  },
+  subLink: {
+    type: String,
+  },
+  replace: {
+    type: Object,
+    required: true,
+    default: {
+      main: false,
+      sub: false,
+    },
+  },
 });
 
 //const fileName = `${props.aniTitle}/${props.data.thumbnail}`;
@@ -75,16 +95,12 @@ const fileName = computed(
 );
 const { fileSrc: thumbnailURL } = useFirebaseStorage(fileName.value);
 
-const titleWidth = computed(
-  () => `width: ${props.type === "series" ? "100%" : "calc(100% - 3.6rem)"};`
-);
-
-const link = computed(() => {
-  if (!props.aniTitle) {
-    return "#none";
-  }
-  return props.continueLink || `/anime/${props.aniTitle}/episodes`;
-});
+// const link = computed(() => {
+//   if (!props.aniTitle) {
+//     return "#none";
+//   }
+//   return props.continueLink || `/anime/${props.aniTitle}/episodes`;
+// });
 
 const alt = computed(() => {
   if (!props.aniTitle) {
@@ -101,6 +117,11 @@ const alt = computed(() => {
   flex-shrink: 0;
   position: relative;
   gap: 0.8rem;
+  border-radius: var(--global-radius);
+  &:has(&__Image--Selected) {
+    background-color: hsl(var(--theme-500) / 0.1);
+  }
+
   &--column {
     width: var(--thumbnail-width, 55vw);
   }
@@ -111,10 +132,11 @@ const alt = computed(() => {
   }
   &__WatchPercent {
     position: absolute;
-    right: 0;
-    width: 3.6rem;
-    height: 3.6rem;
+    right: 0.4rem;
+    width: 3.2rem;
+    height: 3.2rem;
     flex-shrink: 0;
+    font-size: 1.1rem;
   }
   &__SkeletonInfo {
     width: 100%;
@@ -123,9 +145,10 @@ const alt = computed(() => {
   }
   &__Info {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-grow: 1;
+    min-width: 0;
+    height: auto;
+    justify-content: space-between;
   }
   &__Text {
     display: flex;
@@ -149,6 +172,7 @@ const alt = computed(() => {
 
   &--row {
     width: 100%;
+    padding: 0.8rem;
   }
   &--row &__Image {
     width: var(--thumbnail-width, 55vw);
@@ -159,8 +183,14 @@ const alt = computed(() => {
   }
   &--row &__WatchPercent {
     position: static;
-    //시각보정
     margin-left: -0.4rem;
+  }
+
+  &--column &__Info {
+    padding: 0 0.8rem 0.8rem;
+  }
+  &--column &__Text {
+    width: calc(100% - 3.6rem);
   }
 }
 @media all and (min-width: 768px) {
@@ -177,14 +207,13 @@ const alt = computed(() => {
       width: var(--thumbnail-width, 32vw);
     }
     &--row &__PartIndex {
-      font-size: 1.7rem;
+      font-size: 1.3rem;
     }
     &--row &__Title {
-      font-size: 2rem;
+      font-size: 1.5rem;
       --episode-title-width: 30ch;
     }
-    &__row &__Info {
-      flex-grow: 0;
+    &--row &__Info {
     }
   }
 }

@@ -1,0 +1,140 @@
+<template>
+  <section class="ReactionCombo">
+    <component :is="titleTag" class="ReactionCombo__Title"
+      ><slot name="title"></slot
+    ></component>
+    <div class="ReactionCombo__Body">
+      <WriteReaction
+        class="ReactionCombo__Write"
+        @mutate="onMutate"
+        :user="user"
+        :type="type"
+        :parent="parent"
+        v-if="
+          type === 'comment' ||
+          (type === 'review' &&
+            reactions.filter((review) => review.uid === user?.uid))
+        "
+      />
+      <ul class="ReactionCombo__List">
+        <ReactionItem
+          v-for="{ time, _id, uid, author, content } in reactions"
+          :key="_id"
+          :date="time"
+          :self="uid === user?.uid"
+          :reaction-id="_id"
+          :type="type"
+          :parent="parent"
+          @mutate="onMutate"
+          class="ReactionCombo__Item"
+        >
+          <template #author>{{ author }}</template>
+          <template #content>{{ content }}</template>
+        </ReactionItem>
+      </ul>
+    </div>
+  </section>
+</template>
+
+<script setup>
+// 리액션의 형태는 두 가지
+// ["리뷰", "코멘트"]
+// 리뷰는 애니메이션에 작성하는 항목
+// 코멘트는 각 에피소드마다 작성하는 항목
+
+import { computed, onMounted } from "vue";
+import { useStore } from "vuex";
+import { useRoute, useRouter } from "vue-router";
+
+import { useReaction } from "@/api/reaction";
+
+import WriteReaction from "./WriteReaction.vue";
+import ReactionItem from "./ReactionItem.vue";
+
+const props = defineProps({
+  type: {
+    type: String,
+    required: true,
+    validator(value) {
+      return ["comment", "review"].includes(value);
+    },
+  },
+  titleTag: {
+    type: String,
+    required: true,
+    validator(value) {
+      return ["h1", "h2", "h3", "h4", "h5", "h6"].includes(value);
+    },
+  },
+});
+
+const route = useRoute();
+
+const store = useStore();
+const user = computed(() => store.state.auth.user);
+
+const { reactions, parent, Read } = useReaction({
+  type: props.type,
+});
+
+onMounted(async () => {
+  await Read();
+  console.log("mounted");
+});
+const router = useRouter();
+router.afterEach(async () => {
+  await Read();
+});
+async function onMutate() {
+  await Read();
+}
+</script>
+
+<style lang="scss" scoped>
+.ReactionCombo {
+  width: 100%;
+  max-width: 1080px;
+  position: relative;
+  overflow: hidden;
+  &__Title {
+    font-size: inherit;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    padding: 0 2rem;
+  }
+  &__description {
+    font-size: 1.3rem;
+  }
+  &__Body {
+    border-radius: var(--global-radius);
+    overflow: hidden;
+    width: calc(100% - 4rem);
+    margin: 0 auto;
+  }
+  &__Write {
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+    background-color: hsl(var(--bg-200));
+    padding: 2rem;
+  }
+  &__List {
+    background-color: hsl(var(--bg-200));
+    overflow: hidden;
+  }
+  &__Item {
+    background-color: transparent;
+    &:not(:last-child) {
+      border-bottom: 1px solid hsl(var(--bg-300));
+    }
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .ReactionCombo {
+    &__Title {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+  }
+}
+</style>

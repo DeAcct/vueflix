@@ -6,7 +6,7 @@ import "dayjs/locale/ko";
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 
-export function useFromDate(origin) {
+export function useFormatDate(origin) {
   const date = computed(() => {
     return dayjs(origin).fromNow();
   });

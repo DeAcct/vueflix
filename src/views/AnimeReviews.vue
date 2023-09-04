@@ -11,13 +11,19 @@
       <template v-slot:login-state-text>로그인</template>
     </LoginWidget>
     <KeywordReviews class="AnimeReviews__Method" />
-    <TextReview class="AnimeReviews__Method" type="review" :user="user" />
+    <ReactionCombo
+      class="AnimeReviews__Method AnimeReviews__Method--Review"
+      type="review"
+      title-tag="h3"
+    >
+      <template #title>리뷰</template>
+    </ReactionCombo>
   </div>
 </template>
 
 <script setup>
 import KeywordReviews from "@/components/KeywordReviews.vue";
-import TextReview from "@/components/TextReview.vue";
+import ReactionCombo from "@/components/ReactionCombo.vue";
 import LoginWidget from "@/components/LoginWidget.vue";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
@@ -67,6 +73,10 @@ const user = computed(() => store.state.auth.user);
 
   &__LoginRequired + &__Method {
     margin-top: 0;
+  }
+
+  &__Method--Review {
+    font-size: 1.5rem;
   }
 }
 </style>

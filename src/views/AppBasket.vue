@@ -30,14 +30,29 @@
       </div>
       <ul class="Basket__list">
         <ThumbnailSet
+          v-for="{
+            aniTitle,
+            part,
+            index,
+            watchedPercent,
+            shortTitle,
+          } in basketList"
           :type="selectedTab === 'recentWatched' ? 'episode' : 'series'"
-          v-for="basketItem in basketList"
-          :key="`${selectedTab}-${basketItem.aniTitle}`"
-          :ani-title="basketItem.aniTitle"
-          :part="basketItem.part"
-          :index="basketItem.index"
-          :watched-percent="basketItem.watchedPercent"
-          :short-title="basketItem.shortTitle"
+          :key="`${selectedTab}-${aniTitle}`"
+          :ani-title="aniTitle"
+          :part="part"
+          :index="index"
+          :watched-percent="watchedPercent"
+          :short-title="shortTitle"
+          :link="
+            selectedTab === 'recentWatched'
+              ? `/player/${aniTitle}/${part}/${index}`
+              : `/anime/${aniTitle}/episodes`
+          "
+          :replace="{
+            main: selectedTab === 'recentWatched',
+            sub: false,
+          }"
           class="Basket__item"
         />
       </ul>

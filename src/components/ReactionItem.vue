@@ -1,13 +1,6 @@
 <template>
-  <component
-    :is="component"
-    :class="[
-      'ReactionItem',
-      { 'ReactionItem--Me': self },
-      { 'ReactionItem--Other': !self },
-    ]"
-  >
-    <div class="row-top">
+  <component :is="component" class="ReactionItem">
+    <div class="ReactionItem__MetaData">
       <strong class="ReactionItem__Author">
         <template v-if="self">나</template>
         <template v-else> <slot name="author"></slot></template>
@@ -18,8 +11,9 @@
       <template v-if="mode === 'edit'">
         <textarea
           class="ReactionItem__EditInput"
-          placeholder="새 내용을 입력해 주세요"
+          :placeholder="`수정할 ${REACTION_ENUM_WITH_PARTICLE[type]} 입력해 주세요`"
           :value="editValue"
+          @input="editValueChange"
         />
       </template>
       <p class="ReactionItem__Text" v-else>
@@ -27,39 +21,42 @@
       </p>
     </div>
     <div class="ReactionItem__Actions">
-      <VueflixBtn
-        component="button"
-        v-if="!self"
-        class="ReactionItem__ActionItem"
-        ><template #text> 신고 </template></VueflixBtn
-      >
-      <VueflixBtn
-        component="button"
-        v-if="self"
-        @click="editTrigger"
-        class="ReactionItem__ActionItem"
-      >
-        <template #text>
+      <UpdownReaction :parent="reactionId" class="ReactionItem__Updown" />
+      <div class="ReactionItem__SubActions">
+        <button v-if="!self" class="ReactionItem__ActionItem">신고</button>
+        <button
+          v-if="self"
+          @click="editTrigger"
+          class="ReactionItem__ActionItem"
+        >
           {{ mode === "show" ? "수정" : "취소" }}
-        </template>
-      </VueflixBtn>
-      <VueflixBtn
-        component="button"
-        v-if="self && mode === 'show'"
-        @click="deleteTrigger"
-        class="ReactionItem__ActionItem"
-      >
-        <template #text> 삭제 </template>
-      </VueflixBtn>
+        </button>
+        <button
+          v-if="mode === 'edit'"
+          @click="updateReaction"
+          class="ReactionItem__ActionItem"
+          :disabled="!editValue"
+        >
+          수정
+        </button>
+        <button
+          v-if="self && mode === 'show'"
+          @click="deleteTrigger"
+          class="ReactionItem__ActionItem"
+        >
+          삭제
+        </button>
+      </div>
     </div>
   </component>
 </template>
 
 <script setup>
+import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 import { ref } from "vue";
-import { useFromDate } from "@/composables/dateFormat";
+import { useFormatDate } from "@/composables/dateFormat";
 import { useReaction } from "@/api/reaction";
-import VueflixBtn from "./VueflixBtn.vue";
+import UpdownReaction from "./UpdownReaction.vue";
 
 const props = defineProps({
   date: {
@@ -86,7 +83,7 @@ const props = defineProps({
   },
 });
 
-const { date: formattedDate } = useFromDate(props.date.toDate());
+const { date: formattedDate } = useFormatDate(props.date.toDate());
 
 const { Update, Delete } = useReaction({
   type: props.type,
@@ -94,57 +91,67 @@ const { Update, Delete } = useReaction({
 });
 
 const editValue = ref("");
+function editValueChange(e) {
+  editValue.value = e.target.value;
+}
 
 const mode = ref("show");
 function editTrigger() {
   mode.value = mode.value === "edit" ? "show" : "edit";
 }
-function updateReaction() {
-  Update({ id: reactionId, content: editValue.value });
+const emits = defineEmits(["mutate"]);
+async function updateReaction() {
+  if (!editValue.value) {
+    return;
+  }
+  await Update({ id: props.reactionId, content: editValue.value });
+  mode.value = "show";
+  emits("mutate");
 }
-
-function deleteTrigger() {
-  emit("request-delete", props.uid);
+async function deleteTrigger() {
+  await Delete({ id: props.reactionId });
+  emits("mutate");
 }
 </script>
 
 <style lang="scss" scoped>
 .ReactionItem {
-  padding: 1.6rem 0;
-  &--Me {
-    border-radius: var(--global-radius);
-    background-color: hsl(var(--bg-200));
-  }
-  &--Other {
-    &:not(:last-child) {
-      border-bottom: 1px solid hsl(var(--bg-200));
-    }
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+
+  &__MetaData {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.4rem;
+    gap: 0.8rem;
   }
   &__Author {
-    font-size: 1.6rem;
-    margin-right: 1rem;
+    font-size: 1.5rem;
   }
   &__Date {
     font-size: 1.2rem;
     font-weight: 300;
     margin-right: 0.5rem;
   }
+
   &__Content {
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
     position: relative;
+    width: 100%;
   }
   &__Text {
     white-space: pre-line;
     word-break: break-all;
     font-size: 1.4rem;
     font-weight: 500;
-    line-height: 1.3;
+    line-height: 1.5;
     animation: fade 150ms ease-out;
-    padding: 0 2rem;
   }
-
   &__EditInput {
     resize: none;
+    overflow-y: scroll;
+    line-height: 1.5;
     width: 100%;
     height: 9rem;
     font-size: 1.4rem;
@@ -152,33 +159,36 @@ function deleteTrigger() {
     color: inherit;
     background-color: hsl(var(--bg-300));
     border-radius: var(--global-radius);
-    padding: 1.2rem 2rem;
     animation: down-fade 150ms ease-out;
+    padding: 1.2rem 1.6rem;
     &::placeholder {
       font-size: 1.4rem;
       color: hsl(var(--bg-500));
     }
   }
 
-  .row-top {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    padding: 0 2rem;
-  }
-
   &__Actions {
     display: flex;
+    justify-content: space-between;
+  }
+  &__SubActions {
+    display: flex;
     align-items: center;
-    padding: 0 2rem;
+    border-radius: var(--global-radius);
+    overflow: hidden;
+    gap: 0.2rem;
+    align-self: flex-end;
   }
   &__ActionItem {
-    color: hsl(var(--text-700));
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     font-weight: 500;
     box-shadow: none;
-    &:not(:last-child) {
-      margin-right: 0.4rem;
+    padding: 0.8rem 1.2rem;
+    background-color: hsl(var(--text-900) / 0.1);
+
+    &:disabled {
+      background-color: hsl(var(--text-900) / 0.05);
+      color: hsl(var(--text-300));
     }
   }
 }

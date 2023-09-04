@@ -16,25 +16,27 @@
           v-for="({ name, tabName }, index) in children"
           v-slot="{ isActive, href, navigate }"
           custom
-          ><a
-            v-bind="$attrs"
-            :href="href"
-            @click="
-              (e) => {
-                e.preventDefault();
-                navigate();
-                indicatorMove(index);
-              }
-            "
-            @focus="indicatorMove(index)"
-            ref="$Tab"
-            :class="[
-              { 'AnimeLayout__Tab--Active': isActive },
-              'AnimeLayout__Tab',
-            ]"
-          >
-            {{ tabName }}
-          </a></RouterLink
+          ><h3>
+            <a
+              v-bind="$attrs"
+              :href="href"
+              @click="
+                (e) => {
+                  e.preventDefault();
+                  navigate();
+                  indicatorMove(index);
+                }
+              "
+              @focus="indicatorMove(index)"
+              ref="$Tab"
+              :class="[
+                { 'AnimeLayout__Tab--Active': isActive },
+                'AnimeLayout__Tab',
+              ]"
+            >
+              {{ tabName }}
+            </a>
+          </h3></RouterLink
         >
         <div class="AnimeLayout__TabIndicator"></div>
       </div>
