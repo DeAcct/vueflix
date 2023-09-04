@@ -172,7 +172,6 @@ const alt = computed(() => {
 
   &--row {
     width: 100%;
-    padding: 0.8rem;
   }
   &--row &__Image {
     width: var(--thumbnail-width, 55vw);
@@ -180,10 +179,14 @@ const alt = computed(() => {
   &--row &__Info {
     flex-direction: column;
     align-items: unset;
+    padding: 0.6rem 0.6rem 0.6rem 0;
   }
   &--row &__WatchPercent {
     position: static;
     margin-left: -0.4rem;
+  }
+  &--row &__Text {
+    gap: 0.2rem;
   }
 
   &--column &__Info {

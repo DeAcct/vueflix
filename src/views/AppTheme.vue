@@ -41,7 +41,7 @@
 
 <script setup>
 import { useStore } from "vuex";
-import InputBoolean from "../components/InputBoolean.vue";
+import InputBoolean from "@/components/InputBoolean.vue";
 import { computed } from "vue";
 
 const store = useStore();

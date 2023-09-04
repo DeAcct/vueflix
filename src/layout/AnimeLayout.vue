@@ -64,7 +64,7 @@ import {
   setDoc,
   doc,
 } from "firebase/firestore";
-import { db } from "../utility/firebase";
+import { db } from "@/utility/firebase";
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import {
   onMounted,
@@ -82,7 +82,7 @@ import { useScroll } from "@/composables/scroll";
 import AnimeItemHead from "@/components/AnimeItemHead.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
 import ToTop from "@/components/ToTop.vue";
-import { useIndicatorAnimation } from "../composables/indicator";
+import { useIndicatorAnimation } from "@/composables/indicator";
 
 const store = useStore();
 const router = useRouter();

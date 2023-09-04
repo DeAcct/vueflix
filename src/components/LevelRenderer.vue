@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { useUserLevel } from "../composables/level";
+import { useUserLevel } from "@/composables/level";
 
 import IconBase from "./IconBase.vue";
 import IconInfo from "./icons/IconInfo.vue";

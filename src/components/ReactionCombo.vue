@@ -44,7 +44,7 @@
 
 import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 
 import { useReaction } from "@/api/reaction";
 
@@ -68,8 +68,6 @@ const props = defineProps({
   },
 });
 
-const route = useRoute();
-
 const store = useStore();
 const user = computed(() => store.state.auth.user);
 
@@ -79,7 +77,6 @@ const { reactions, parent, Read } = useReaction({
 
 onMounted(async () => {
   await Read();
-  console.log("mounted");
 });
 const router = useRouter();
 router.afterEach(async () => {
@@ -106,19 +103,19 @@ async function onMutate() {
     font-size: 1.3rem;
   }
   &__Body {
-    border-radius: var(--global-radius);
+    border-radius: var(--body-radius, var(--global-radius));
     overflow: hidden;
-    width: calc(100% - 4rem);
+    width: var(--reaction-body-width, calc(100% - 4rem));
     margin: 0 auto;
   }
   &__Write {
     overflow: hidden;
     margin-bottom: 0.8rem;
-    background-color: hsl(var(--bg-200));
+    background-color: var(--reaction-combo-bg, hsl(var(--bg-200)));
     padding: 2rem;
   }
   &__List {
-    background-color: hsl(var(--bg-200));
+    background-color: var(--reaction-combo-bg, hsl(var(--bg-200)));
     overflow: hidden;
   }
   &__Item {
@@ -134,6 +131,7 @@ async function onMutate() {
     &__Title {
       font-size: 1.8rem;
       margin-bottom: 1rem;
+      padding: 0;
     }
   }
 }

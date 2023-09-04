@@ -52,7 +52,7 @@ import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import SlideContent from "./SlideContent.vue";
 
 import { getDoc, doc } from "firebase/firestore";
-import { db } from "../utility/firebase";
+import { db } from "@/utility/firebase";
 
 import { register } from "swiper/element/bundle";
 import { onMounted, ref } from "vue";

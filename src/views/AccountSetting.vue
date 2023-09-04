@@ -76,17 +76,17 @@
 
 <script>
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../utility/firebase";
+import { db } from "@/utility/firebase";
 import { getStorage, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { mapState } from "vuex";
-import ProfileImg from "../components/ProfileImg.vue";
-import IconBase from "../components/IconBase.vue";
-import IconScreenshot from "../components/icons/IconScreenshot.vue";
-import IconArrowPrev from "../components/icons/IconArrowPrev.vue";
-import IconMale from "../components/icons/IconMale.vue";
-import IconFemale from "../components/icons/IconFemale.vue";
-import VueflixBtn from "../components/VueflixBtn.vue";
+import ProfileImg from "@/components/ProfileImg.vue";
+import IconBase from "@/components/IconBase.vue";
+import IconScreenshot from "@/components/icons/IconScreenshot.vue";
+import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
+import IconMale from "@/components/icons/IconMale.vue";
+import IconFemale from "@/components/icons/IconFemale.vue";
+import VueflixBtn from "@/components/VueflixBtn.vue";
 export default {
   name: "AccountSetting",
   components: {

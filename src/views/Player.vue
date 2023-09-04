@@ -1,13 +1,6 @@
 <template>
   <div class="Player">
-    <!--AmbientPlayer :src="videoSrc" class="Player__Body"></AmbientPlayer-->
-    <div class="Player__Video">
-      <OptimizedMedia
-        type="img"
-        src="https://http.cat/404"
-        alt="임시 고양이 이미지"
-      ></OptimizedMedia>
-    </div>
+    <AmbientPlayer :src="videoSrc" class="Player__Video"></AmbientPlayer>
     <section class="Player__TitleRenderer">
       <div class="Player__Titles">
         <h2
@@ -95,24 +88,25 @@
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../utility/firebase";
+import { db } from "@/utility/firebase";
 
 import { onMounted, ref, computed, inject } from "vue";
 import { useRoute } from "vue-router";
 import { useAsyncState } from "@vueuse/core";
 
-import AccordionWidget from "../components/AccordionWidget.vue";
-import ThumbnailSet from "../components/ThumbnailSet.vue";
-import VueflixCarousel from "../components/VueflixCarousel.vue";
+import AccordionWidget from "@/components/AccordionWidget.vue";
+import ThumbnailSet from "@/components/ThumbnailSet.vue";
+import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
-import IconBase from "../components/IconBase.vue";
-import IconShare from "../components/icons/IconShare.vue";
+import IconBase from "@/components/IconBase.vue";
+import IconShare from "@/components/icons/IconShare.vue";
+
+// 개발 시 임시로 사용할 동영상(요청량 절약)
+//import TestAnime from "@/assets/TestAnime.mp4";
 
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
-// 개발 상황에서는 httpcat 이미지를 대신 사용
-// -> 파이어베이스 이용량 절약
 const storage = getStorage();
 const { state: videoSrc } = useAsyncState(
   getDownloadURL(fireRef(storage, "testAnime.mp4"))
@@ -165,30 +159,33 @@ async function openSystemShare() {
   padding-top: 6rem;
   padding-bottom: 2rem;
   width: 100%;
-  max-width: 132rem;
+  max-width: 170rem;
   margin: 0 auto;
-  &__Ambient {
-  }
   &__Video {
-    aspect-ratio: 16/9;
+    position: sticky;
+    top: 6rem;
+    z-index: 100;
   }
-  img {
-    width: 100%;
-    aspect-ratio: 16/9;
-    object-fit: cover;
-  }
+
   &__TitleRenderer {
+    z-index: 4;
     padding: 2rem var(--inner-padding);
     display: flex;
+    gap: 0.8rem;
     justify-content: space-between;
   }
+  &__Titles {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 0.4rem;
+  }
   &__AniTitle {
-    width: var(--ani-title-width);
     font-size: 1.2rem;
     font-weight: 500;
     line-height: 1.5;
     color: transparent;
-    transition: color 150ms ease-out;
+    transition: 150ms ease-out;
     min-width: 0;
     &--Loaded {
       color: inherit;
@@ -199,7 +196,6 @@ async function openSystemShare() {
     }
   }
   &__EpisodeTitle {
-    width: var(--episode-title-width);
     min-width: 0;
     font-size: 1.6rem;
     font-weight: 700;
@@ -211,20 +207,24 @@ async function openSystemShare() {
       background: transparent;
     }
   }
-  &__EpisodesCounter {
-    font-size: 1.6rem;
-  }
-  &__ScrollContainer {
-    min-height: 30rem;
-  }
+
   &__Parts {
+    z-index: 5;
     padding: var(--inner-padding);
     display: flex;
     flex-direction: column;
     gap: 1.6rem;
-    border: 1px solid hsl(var(--bg-200));
+    background-color: hsl(var(--text-900) / 0.05);
     border-radius: calc(var(--global-radius) * 4);
     margin-bottom: 2rem;
+  }
+  &__EpisodesCounter {
+    font-size: 1.6rem;
+  }
+  &__ScrollContainer {
+    overflow: scroll;
+    height: 30rem;
+    border-radius: var(--global-radius);
   }
   &__PartsAccordion {
     --carousel-padding: 0;
@@ -236,12 +236,20 @@ async function openSystemShare() {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+
     --accordion-sticky-top: 0;
     --accordion-direction: row;
   }
+
   &__Comments {
+    z-index: 6;
     padding: 0;
     font-size: 1.6rem;
+    max-width: unset;
+    width: 100%;
+    --reaction-body-width: 100%;
+    --body-radius: calc(var(--global-radius) * 4);
+    --reaction-combo-bg: hsl(var(--text-900) / 0.05);
   }
 }
 
@@ -249,10 +257,6 @@ async function openSystemShare() {
   .Player {
     &__PartsAccordion {
       --thumbnail-width: 15rem;
-    }
-    &__ScrollContainer {
-      overflow: scroll;
-      border-radius: var(--global-radius);
     }
   }
 }
@@ -267,6 +271,12 @@ async function openSystemShare() {
     grid-template-rows: repeat(3, auto);
     grid-auto-rows: minmax(0px, auto);
     column-gap: 2rem;
+
+    &__Video {
+      position: relative;
+      top: unset;
+      z-index: 1;
+    }
 
     &__TitleRenderer {
       padding: {
@@ -310,7 +320,6 @@ async function openSystemShare() {
     }
     &__ScrollContainer {
       width: 40rem;
-      min-height: auto;
       flex-grow: 1;
       position: relative;
     }

@@ -42,7 +42,7 @@
 
 <script setup>
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../utility/firebase";
+import { db } from "@/utility/firebase";
 import { getDownloadURL, ref as fireRef, getStorage } from "firebase/storage";
 import { onMounted, reactive, ref } from "vue";
 

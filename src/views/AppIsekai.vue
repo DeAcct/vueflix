@@ -3,7 +3,7 @@
     <h2>404 Not Found</h2>
     <i class="icon">
       <img
-        src="../assets/NotFoundAqua.svg"
+        src="@/assets/NotFoundAqua.svg"
         alt="처량하게 우는 코노스바 아쿠아"
       />
     </i>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import VueflixBtn from "../components/VueflixBtn.vue";
+import VueflixBtn from "@/components/VueflixBtn.vue";
 export default {
   name: "AppIsekai",
   components: {

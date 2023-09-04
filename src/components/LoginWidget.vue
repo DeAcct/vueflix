@@ -6,7 +6,11 @@
         <slot name="text"></slot>
       </div>
     </div>
-    <VueflixBtn class="widget" component="button" @click="btnFunc">
+    <VueflixBtn
+      class="LoginWidget__LoginButton"
+      component="button"
+      @click="btnFunc"
+    >
       <template #text>
         <slot name="login-state-text"></slot>
       </template>
@@ -15,7 +19,7 @@
 </template>
 
 <script setup>
-import VueflixBtn from "../components/VueflixBtn.vue";
+import VueflixBtn from "@/components/VueflixBtn.vue";
 
 defineProps({
   btnFunc: {
@@ -58,8 +62,8 @@ defineProps({
     font-size: 1.1rem;
   }
 
-  .btn {
-    border-radius: 9999px;
+  &__LoginButton {
+    border-radius: var(--global-radius);
     background-color: hsl(var(--theme-500));
     color: #fff;
   }

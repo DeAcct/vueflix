@@ -9,8 +9,8 @@
 </template>
 
 <script setup>
-import IconBase from "../components/IconBase.vue";
-import IconArrowPrev from "../components/icons/IconArrowPrev.vue";
+import IconBase from "@/components/IconBase.vue";
+import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
 
 function toTop() {
   window.scrollTo({ top: 0, behavior: "smooth" });

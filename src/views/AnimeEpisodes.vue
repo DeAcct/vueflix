@@ -10,16 +10,6 @@
         {{ part }}
       </template>
       <template v-slot:content>
-        <!-- <EpisodeCard
-          v-for="episode in episodes"
-          :key="episode.title"
-          :data="episode"
-          :part="part"
-          :link="`/player/${animeInfo.name}/${part}/${episode.index}`"
-          @login-require="openLoginModal"
-        >
-          <template v-slot:index> {{ episode.index }} </template>
-        </EpisodeCard> -->
         <Thumbnailset
           v-for="{ title, index, thumbnail } in episodes"
           class="AnimeEpisodes__Item"
@@ -41,7 +31,7 @@
 
 <script setup>
 import AccordionWidget from "@/components/AccordionWidget.vue";
-import Thumbnailset from "@/components/thumbnailset.vue";
+import Thumbnailset from "@/components/ThumbnailSet.vue";
 import { inject, onMounted } from "vue";
 import { useRoute } from "vue-router";
 

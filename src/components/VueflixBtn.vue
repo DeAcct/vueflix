@@ -32,7 +32,6 @@ defineProps({
   padding: 1rem 1.5rem;
   justify-content: center;
   align-items: center;
-  border-radius: 0.3rem;
 
   width: -moz-fit-content;
   width: fit-content;

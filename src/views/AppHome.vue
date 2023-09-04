@@ -98,7 +98,7 @@ import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import Cookies from "js-cookie";
 import { useStore } from "vuex";
 import { getDocs, collection, doc, getDoc } from "firebase/firestore";
-import { db } from "../utility/firebase";
+import { db } from "@/utility/firebase";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 
 const now = new Date();

@@ -25,7 +25,11 @@
         class="AppAuth__CTAItem AppAuth__CTAItem--Google"
         @click="googleContinue"
       >
-        <template v-slot:icon><IconGoogle /></template>
+        <template v-slot:icon>
+          <IconBase>
+            <IconGoogle />
+          </IconBase>
+        </template>
         <template v-slot:text>Google 계정으로 계속하기</template>
       </VueflixBtn>
     </div>
@@ -35,12 +39,13 @@
 <script setup>
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { db } from "../utility/firebase";
+import { db } from "@/utility/firebase";
 
-import VueflixLogo from "../components/VueflixLogo.vue";
-import VueflixBtn from "../components/VueflixBtn.vue";
-import IconGoogle from "../components/icons/IconGoogle.vue";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
+import VueflixLogo from "@/components/VueflixLogo.vue";
+import VueflixBtn from "@/components/VueflixBtn.vue";
+import IconBase from "@/components/IconBase.vue";
+import IconGoogle from "@/components/icons/IconGoogle.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import { useStore } from "vuex";
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -144,6 +149,7 @@ async function googleContinue() {
     height: 4rem;
     justify-content: space-between;
     box-shadow: none;
+    border-radius: var(--global-radius);
     color: var(--google-login-text);
   }
 }

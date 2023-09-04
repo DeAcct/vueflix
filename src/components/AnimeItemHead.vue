@@ -90,7 +90,7 @@ import { ref, inject, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { setDoc, doc } from "firebase/firestore";
-import { db } from "../utility/firebase";
+import { db } from "@/utility/firebase";
 
 import ActionSheet from "./ActionSheet.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";

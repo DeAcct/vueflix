@@ -9,7 +9,7 @@
       </IconBase>
       <span class="blind">좋아요</span>
     </button>
-    <p class="UpdownReaction__Counter">{{ updown }}</p>
+    <p class="UpdownReaction__CounterClip">{{ updown }}</p>
     <button
       class="UpdownReaction__Button UpdownReaction__Button--Down"
       @click="change(-1)"
@@ -52,9 +52,7 @@ async function change(number) {
 .UpdownReaction {
   display: flex;
   align-items: center;
-  background-color: hsl(var(--text-900) / 0.1);
-  border-radius: var(--global-radius);
-  padding: 0 0.8rem;
+
   gap: 0.8rem;
   &__Button {
     color: hsl(var(--text-500));
@@ -68,6 +66,9 @@ async function change(number) {
       margin-bottom: 0.2rem;
       margin-left: 0.2rem;
     }
+  }
+  &__CounterClip {
+    overflow: hidden;
   }
 }
 </style>

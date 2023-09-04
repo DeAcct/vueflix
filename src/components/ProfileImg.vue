@@ -9,7 +9,7 @@
 <script setup>
 import { computed } from "vue";
 import { useStore } from "vuex";
-import NotFoundAqua from "../assets/NotFoundAqua.svg";
+import NotFoundAqua from "@/assets/NotFoundAqua.svg";
 
 defineProps({
   inputProfile: {

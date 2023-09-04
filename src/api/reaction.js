@@ -11,7 +11,7 @@ import {
   deleteDoc,
   arrayRemove,
 } from "firebase/firestore";
-import { db } from "../utility/firebase";
+import { db } from "@/utility/firebase";
 import { useRoute } from "vue-router";
 
 /**

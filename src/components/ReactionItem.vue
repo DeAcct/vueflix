@@ -54,7 +54,7 @@
 <script setup>
 import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 import { ref } from "vue";
-import { useFormatDate } from "@/composables/dateFormat";
+import { useFormatDate } from "@/composables/formatter";
 import { useReaction } from "@/api/reaction";
 import UpdownReaction from "./UpdownReaction.vue";
 
@@ -139,6 +139,7 @@ async function deleteTrigger() {
     margin-bottom: 1.2rem;
     position: relative;
     width: 100%;
+    max-width: 80ch;
   }
   &__Text {
     white-space: pre-line;
@@ -216,11 +217,6 @@ async function deleteTrigger() {
     }
     &__Content {
       font-size: 1.5rem;
-    }
-    &__Actions {
-      button {
-        font-size: 1.3rem;
-      }
     }
     .row-top {
       margin-bottom: 0.5rem;

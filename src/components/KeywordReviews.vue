@@ -1,7 +1,12 @@
 <template>
   <section class="KeywordReviews inner">
     <h3 class="KeywordReviews__Title">키워드</h3>
-    <div class="KeywordReviews__Interactive">
+    <div
+      :class="[
+        'KeywordReviews__Interactive',
+        { 'KeywordReviews__Interactive--Centered': !user },
+      ]"
+    >
       <KeywordMy
         @data-changed="syncData"
         v-if="user"
@@ -35,7 +40,7 @@ import LinearChart from "./LinearChart.vue";
 import KeywordMy from "./KeywordMy.vue";
 
 import { getDoc, doc } from "firebase/firestore";
-import { db } from "../utility/firebase";
+import { db } from "@/utility/firebase";
 import { useRoute } from "vue-router";
 import { ref, onMounted, computed } from "vue";
 import { useStore } from "vuex";
@@ -126,6 +131,9 @@ onMounted(async () => {
       padding: 2.4rem 1.2rem;
       & > * {
         width: 50%;
+      }
+      &--Centered {
+        justify-content: center;
       }
     }
     &__Title {

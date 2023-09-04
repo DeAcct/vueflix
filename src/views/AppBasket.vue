@@ -77,9 +77,9 @@
 
 import { useStore } from "vuex";
 import { computed, ref } from "vue";
-import ThumbnailSet from "../components/ThumbnailSet.vue";
-import IconBase from "../components/IconBase.vue";
-import IconRemove from "../components/icons/IconRemove.vue";
+import ThumbnailSet from "@/components/ThumbnailSet.vue";
+import IconBase from "@/components/IconBase.vue";
+import IconRemove from "@/components/icons/IconRemove.vue";
 
 const tabItems = [
   { text: "최근 본", type: "recentWatched" },

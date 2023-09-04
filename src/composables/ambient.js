@@ -1,8 +1,9 @@
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 
 export default function useAmbient() {
   const $video = ref(null);
   const $effect = ref(null);
+  const isVideoLoaded = ref(false);
   let step;
   let ctx;
 
@@ -23,11 +24,19 @@ export default function useAmbient() {
   }
   function drawPause() {
     window.cancelAnimationFrame(step);
+    ctx.clearRect(0, 0, $effect.width, $effect.height);
     step = undefined;
   }
 
   function init() {
-    $video.value.addEventListener("loadeddata", draw, false);
+    $video.value.addEventListener(
+      "loadeddata",
+      () => {
+        draw();
+        isVideoLoaded.value = true;
+      },
+      false
+    );
     $video.value.addEventListener("seeked", draw, false);
     $video.value.addEventListener("play", drawLoop, false);
     $video.value.addEventListener("pause", drawPause, false);
@@ -55,5 +64,6 @@ export default function useAmbient() {
   return {
     $video,
     $effect,
+    isVideoLoaded,
   };
 }

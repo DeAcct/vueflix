@@ -30,11 +30,11 @@
 </template>
 
 <script setup>
-import { toRef, ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 
-import { updateDoc, increment, doc, setDoc, getDoc } from "firebase/firestore";
-import { db } from "../utility/firebase";
+import { updateDoc, increment, doc, getDoc } from "firebase/firestore";
+import { db } from "@/utility/firebase";
 
 import IconBase from "./IconBase.vue";
 import IconSelected from "./icons/IconSelected.vue";
