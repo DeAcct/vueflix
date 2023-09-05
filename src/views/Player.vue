@@ -160,15 +160,25 @@ const mode = ref("normal");
 const area = reactive({
   video: "1 / 1 / 2 / 2",
   parts: "1 / 2 / 2 / 3",
+  partsTop: "0px",
   title: "2 / 1 / 3 / 2",
   comments: "3 / 1 / 4 / 2",
 });
 function toggleTheater() {
   if (mode.value === "normal") {
-    module.value = "theater";
+    mode.value = "theater";
+    area.video = "1 / 1 / 2 / 3";
+    area.parts = "2 / 2 / 4 / 3";
+    area.title = "2 / 1 / 3 / 2";
+    area.comments = "3 / 1 / 4 / 2";
     return;
   }
-  module.value = "normal";
+  mode.value = "normal";
+  area.video = "1 / 1 / 2 / 2";
+  area.parts = "1 / 2 / 2 / 3";
+  area.partsTop = "0px";
+  area.title = "2 / 1 / 3 / 2";
+  area.comments = "3 / 1 / 4 / 2";
 }
 </script>
 

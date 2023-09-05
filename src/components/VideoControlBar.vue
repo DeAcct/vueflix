@@ -28,7 +28,9 @@
         <slot name="time"></slot>
       </p>
       <div class="VideoControlBar__HowWatch">
-        <button class="VideoControlBar__Button" @click="toggleTheater"></button>
+        <button class="VideoControlBar__Button" @click="toggleTheater">
+          영화관 모드
+        </button>
         <button class="VideoControlBar__Button" @click="togglePIP">
           <IconBase>
             <IconPIP />
