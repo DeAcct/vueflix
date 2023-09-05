@@ -20,8 +20,8 @@
           direction="row"
           :link="`/player/${animeInfo.name}/${part}/${index}`"
           :replace="{
-            main: true,
-            sub: true,
+            main: false,
+            sub: false,
           }"
         ></Thumbnailset>
       </template>

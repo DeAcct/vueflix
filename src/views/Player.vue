@@ -1,6 +1,9 @@
 <template>
   <div class="Player">
-    <AmbientPlayer :src="videoSrc" class="Player__Video"></AmbientPlayer>
+    <AmbientPlayer
+      class="Player__Video"
+      @toggle-theater="toggleTheater"
+    ></AmbientPlayer>
     <section class="Player__TitleRenderer">
       <div class="Player__Titles">
         <h2
@@ -90,7 +93,7 @@ import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 
-import { onMounted, ref, computed, inject } from "vue";
+import { onMounted, ref, computed, inject, reactive } from "vue";
 import { useRoute } from "vue-router";
 import { useAsyncState } from "@vueuse/core";
 
@@ -152,6 +155,21 @@ async function openSystemShare() {
   };
   await navigator.share(shareData);
 }
+
+const mode = ref("normal");
+const area = reactive({
+  video: "1 / 1 / 2 / 2",
+  parts: "1 / 2 / 2 / 3",
+  title: "2 / 1 / 3 / 2",
+  comments: "3 / 1 / 4 / 2",
+});
+function toggleTheater() {
+  if (mode.value === "normal") {
+    module.value = "theater";
+    return;
+  }
+  module.value = "normal";
+}
 </script>
 
 <style lang="scss" scoped>
@@ -159,12 +177,13 @@ async function openSystemShare() {
   padding-top: 6rem;
   padding-bottom: 2rem;
   width: 100%;
-  max-width: 170rem;
+  max-width: 124rem;
   margin: 0 auto;
   &__Video {
     position: sticky;
     top: 6rem;
     z-index: 100;
+    background-color: #000;
   }
 
   &__TitleRenderer {
@@ -276,6 +295,7 @@ async function openSystemShare() {
       position: relative;
       top: unset;
       z-index: 1;
+      grid-area: v-bind("area.video");
     }
 
     &__TitleRenderer {
@@ -283,14 +303,14 @@ async function openSystemShare() {
         left: 0;
         right: 0;
       }
-      grid-area: 2 / 1 / 3 / 2;
+      grid-area: v-bind("area.title");
     }
     &__AniTitle {
       font-size: 1.5rem;
     }
 
     &__Parts {
-      grid-area: 1 / 2 / 2 / 3;
+      grid-area: v-bind("area.parts");
       gap: 2rem;
       padding: 2rem;
       overflow: hidden;
@@ -331,7 +351,7 @@ async function openSystemShare() {
     }
 
     &__Comments {
-      grid-area: 3 / 1 / 4 / 2;
+      grid-area: v-bind("area.comments");
     }
   }
 }

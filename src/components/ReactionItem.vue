@@ -2,8 +2,7 @@
   <component :is="component" class="ReactionItem">
     <div class="ReactionItem__MetaData">
       <strong class="ReactionItem__Author">
-        <template v-if="self">나</template>
-        <template v-else> <slot name="author"></slot></template>
+        <slot name="author"></slot>
       </strong>
       <p class="ReactionItem__Date">{{ formattedDate }}</p>
     </div>
@@ -21,7 +20,11 @@
       </p>
     </div>
     <div class="ReactionItem__Actions">
-      <UpdownReaction :parent="reactionId" class="ReactionItem__Updown" />
+      <UpdownReaction
+        :parent="reactionId"
+        :writer="writer"
+        class="ReactionItem__Updown"
+      />
       <div class="ReactionItem__SubActions">
         <button v-if="!self" class="ReactionItem__ActionItem">신고</button>
         <button
@@ -34,7 +37,7 @@
         <button
           v-if="mode === 'edit'"
           @click="updateReaction"
-          class="ReactionItem__ActionItem"
+          class="ReactionItem__ActionItem ReactionItem__ActionItem--Submit"
           :disabled="!editValue"
         >
           수정
@@ -76,6 +79,9 @@ const props = defineProps({
     type: String,
   },
   parent: {
+    type: String,
+  },
+  writer: {
     type: String,
   },
   reactionId: {
@@ -190,6 +196,10 @@ async function deleteTrigger() {
     &:disabled {
       background-color: hsl(var(--text-900) / 0.05);
       color: hsl(var(--text-300));
+    }
+    &--Submit {
+      background-color: hsl(var(--theme-500));
+      color: #fff;
     }
   }
 }

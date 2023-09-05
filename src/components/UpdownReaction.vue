@@ -3,6 +3,7 @@
     <button
       class="UpdownReaction__Button UpdownReaction__Button--Up"
       @click="change(1)"
+      :disabled="user?.uid === writer"
     >
       <IconBase>
         <IconArrowNext></IconArrowNext>
@@ -13,6 +14,7 @@
     <button
       class="UpdownReaction__Button UpdownReaction__Button--Down"
       @click="change(-1)"
+      :disabled="user?.uid === writer"
     >
       <IconBase>
         <IconArrowPrev></IconArrowPrev>
@@ -23,7 +25,8 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, computed } from "vue";
+import { useStore } from "vuex";
 import { useUpdown } from "@/api/updown";
 
 import IconBase from "./IconBase.vue";
@@ -35,9 +38,16 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  writer: {
+    type: String,
+    required: true,
+  },
 });
 
-const { updown, Update, Read } = useUpdown({ id: props.parent });
+const { updown, Update, Read } = useUpdown({
+  id: props.parent,
+  writer: props.writer,
+});
 onMounted(async () => {
   await Read();
 });
@@ -46,6 +56,9 @@ async function change(number) {
   await Update({ action: number });
   await Read();
 }
+
+const store = useStore();
+const user = computed(() => store.state.auth.user);
 </script>
 
 <style lang="scss" scoped>
@@ -65,6 +78,9 @@ async function change(number) {
     &--Down {
       margin-bottom: 0.2rem;
       margin-left: 0.2rem;
+    }
+    &:disabled {
+      color: hsl(var(--text-100));
     }
   }
   &__CounterClip {

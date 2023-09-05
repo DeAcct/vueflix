@@ -2,7 +2,10 @@
   <section class="ReactionCombo">
     <component :is="titleTag" class="ReactionCombo__Title"
       ><slot name="title"></slot
-    ></component>
+      ><span class="ReactionCombo__Counter">{{
+        reactions.length
+      }}</span></component
+    >
     <div class="ReactionCombo__Body">
       <WriteReaction
         class="ReactionCombo__Write"
@@ -21,14 +24,15 @@
           v-for="{ time, _id, uid, author, content } in reactions"
           :key="_id"
           :date="time"
-          :self="uid === user?.uid"
+          :self="user?.uid === uid"
+          :writer="uid"
           :reaction-id="_id"
           :type="type"
           :parent="parent"
           @mutate="onMutate"
           class="ReactionCombo__Item"
         >
-          <template #author>{{ author }}</template>
+          <template #author>{{ uid === user?.uid ? "나" : author }}</template>
           <template #content>{{ content }}</template>
         </ReactionItem>
       </ul>
@@ -98,6 +102,8 @@ async function onMutate() {
     font-weight: 700;
     margin-bottom: 1.2rem;
     padding: 0 2rem;
+    display: flex;
+    gap: 0.4rem;
   }
   &__description {
     font-size: 1.3rem;

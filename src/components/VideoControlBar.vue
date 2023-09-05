@@ -5,7 +5,7 @@
       :percent="progress"
     ></ProgressBar>
     <div class="VideoControlBar__Info">
-      <div class="VideoControlBar__PlayStateButton">
+      <div class="VideoControlBar__PlayState">
         <button class="VideoControlBar__Button" @click="playToggle">
           <IconBase>
             <IconPlay v-if="playing" />
@@ -17,10 +17,30 @@
             <IconNextEpisode />
           </IconBase>
         </button>
+        <button class="VideoControlBar__Button">
+          <IconBase>
+            <IconMuteOff v-if="true" />
+            <IconMuteOn v-else />
+          </IconBase>
+        </button>
       </div>
       <p class="VideoControlBar__Time">
         <slot name="time"></slot>
       </p>
+      <div class="VideoControlBar__HowWatch">
+        <button class="VideoControlBar__Button" @click="toggleTheater"></button>
+        <button class="VideoControlBar__Button" @click="togglePIP">
+          <IconBase>
+            <IconPIP />
+          </IconBase>
+        </button>
+        <button class="VideoControlBar__Button" @click="toggleFullScreen">
+          <IconBase>
+            <IconFullScreenOn v-if="true" />
+            <IconFullScreenOff v-else />
+          </IconBase>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -33,8 +53,18 @@ import IconBase from "./IconBase.vue";
 import IconPlay from "./icons/IconPlay.vue";
 import IconNextEpisode from "./icons/IconNextEpisode.vue";
 import IconPause from "./icons/IconPause.vue";
+import IconFullScreenOff from "./icons/IconFullScreenOff.vue";
+import IconFullScreenOn from "./icons/IconFullScreenOn.vue";
+import IconPIP from "./icons/IconPIP.vue";
+import IconMuteOn from "./icons/IconMuteOn.vue";
+import IconMuteOff from "./icons/IconMuteOff.vue";
 
-const emits = defineEmits(["play-toggle"]);
+const emits = defineEmits([
+  "play-toggle",
+  "request-fullscreen",
+  "request-pip",
+  "request-theater",
+]);
 
 const props = defineProps({
   progress: {
@@ -50,6 +80,16 @@ function playToggle() {
 }
 
 const expanded = ref(false);
+
+function toggleFullScreen() {
+  emits("request-fullscreen");
+}
+function togglePIP() {
+  emits("request-pip");
+}
+function toggleTheater() {
+  emits("request-theater");
+}
 </script>
 
 <style lang="scss" scoped>
@@ -57,8 +97,8 @@ const expanded = ref(false);
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+  margin-bottom: 0.8rem;
   width: 100%;
-  padding: 1.2rem 0;
   background: linear-gradient(
     hsl(var(--text-900) / 0),
     hsl(var(--text-900) / 0.5)
@@ -73,12 +113,12 @@ const expanded = ref(false);
   &__Info {
     display: flex;
     align-items: center;
-    padding: 0 2rem;
-    gap: 1.2rem;
+    padding: 0 3.2rem;
+    gap: 2.4rem;
   }
-  &__PlayStateButton {
+  &__PlayState {
     display: flex;
-    gap: 0.4rem;
+    gap: 1.6rem;
   }
   &__Button {
     color: #fff;
@@ -87,6 +127,19 @@ const expanded = ref(false);
     font-size: 1.3rem;
     font-weight: 500;
     color: #fff;
+  }
+  &__HowWatch {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    gap: 1.6rem;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .VideoControlBar {
+    gap: 2rem;
+    margin-bottom: 2rem;
   }
 }
 </style>

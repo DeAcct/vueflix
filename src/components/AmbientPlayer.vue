@@ -1,21 +1,23 @@
 <template>
-  <div class="AmbientPlayer loading-target">
-    <video
-      ref="$video"
-      :src="src"
-      crossorigin="anonymous"
-      class="AmbientPlayer__Video"
-      autoplay
-      muted
-    ></video>
-    <VideoControlBar
-      v-on="videoEvents"
-      class="AmbientPlayer__Control"
-      :progress="progress"
-      :playing="playing"
-    >
-      <template #time>{{ time.current }} / {{ time.duration }}</template>
-    </VideoControlBar>
+  <div class="AmbientPlayer">
+    <div class="AmbientPlayer__FullscreenRoot" ref="$fullscreenRoot">
+      <video
+        ref="$video"
+        :src="src"
+        crossorigin="anonymous"
+        class="AmbientPlayer__Video"
+        autoplay
+        muted
+      ></video>
+      <VideoControlBar
+        v-on="videoEvents"
+        class="AmbientPlayer__Control"
+        :progress="progress"
+        :playing="playing"
+      >
+        <template #time>{{ time.current }} / {{ time.duration }}</template>
+      </VideoControlBar>
+    </div>
     <canvas
       ref="$effect"
       class="AmbientPlayer__Effect"
@@ -28,10 +30,11 @@
 
 <script setup>
 // todo
-// - 전체화면
-// - PIP
-// - 각종 emit(다음 에피소드...)
-// - 단축키(
+// - 전체화면 (구현 완료)
+// - PIP (구현됨, 실제 비디오 테스트 필요)
+// - 영화관모드
+// - 다음 에피소드 이동
+// - 단축키
 // f:전체화면,
 // p:PIP,
 // w:영화관모드(emit),
@@ -40,7 +43,7 @@
 // m:음소거,
 // >:다음 에피소드,
 // <:이전 에피소드,
-// e:에피소드 목록 페이지(/episodes/:title/episodes)로 가기)
+// e:에피소드 목록 페이지(/episodes/:title/episodes)로 가기
 
 import { reactive, ref } from "vue";
 import VideoControlBar from "./VideoControlBar.vue";
@@ -56,13 +59,41 @@ const { $video, $effect, isVideoLoaded } = useAmbient();
 
 const videoEvents = {
   playToggle,
+  requestFullscreen,
+  requestPip,
+  requestTheater,
 };
+
 function playToggle() {
+  console.log("dd");
   if ($video.value.paused) {
     $video.value.play();
     return;
   }
   $video.value.pause();
+}
+
+const $fullscreenRoot = ref(null);
+function requestFullscreen() {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+    return;
+  }
+  $fullscreenRoot.value.requestFullscreen();
+}
+
+function requestPip() {
+  console.log("pip");
+  if (document.pictureInPictureElement) {
+    document.exitPictureInPicture();
+    return;
+  }
+  $video.value.requestPictureInPicture();
+}
+
+const emits = defineEmits(["toggle-theater"]);
+function requestTheater() {
+  emits("toggle-theater");
 }
 
 const progress = ref("0%");
@@ -93,8 +124,16 @@ useEventListener($video, ["play", "pause"], setPlaying);
 
 <style lang="scss" scoped>
 .AmbientPlayer {
-  position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
+
+  &__FullscreenRoot {
+    position: relative;
+    //개발용 임시
+    aspect-ratio: 16/9;
+    width: 100%;
+  }
   &__Video {
     z-index: 2;
     width: 100%;

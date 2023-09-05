@@ -16,18 +16,22 @@ import { useStore } from "vuex";
  * @param {{id:string}} 변경할 리액션의 id를 정합니다.
  * @returns
  */
-export function useUpdown({ id }) {
+export function useUpdown({ id, writer }) {
   const updown = ref(0);
   const store = useStore();
   const user = computed(() => store.state.auth.user);
 
   /**
    * 지정한 수치만큼 updown 수치를 변경하고 자동으로 새로 고칩니다.
-   * @param {{action:number}} option updown 수치를 어떻게 업데이트할 지 정합니다.
+   * @param {{action:1|-1}} option updown 수치를 어떻게 업데이트할 지 정합니다.
    * ex)-1, 1, 2, ...
    */
   async function Update({ action }) {
     if (!user.value) {
+      return;
+    }
+    // 본인의 리액션에 반응할 수 없음
+    if (user.value.uid === writer) {
       return;
     }
     await setDoc(
