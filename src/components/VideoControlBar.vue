@@ -8,7 +8,7 @@
       <div class="VideoControlBar__PlayState">
         <button class="VideoControlBar__Button" @click="playToggle">
           <IconBase>
-            <IconPlay v-if="playing" />
+            <IconPlay v-if="isPlaying" />
             <IconPause v-else />
           </IconBase>
         </button>
@@ -17,7 +17,7 @@
             <IconNextEpisode />
           </IconBase>
         </button>
-        <button class="VideoControlBar__Button">
+        <button class="VideoControlBar__Button" @click="setMuted">
           <IconBase>
             <IconMuteOff v-if="true" />
             <IconMuteOn v-else />
@@ -38,8 +38,8 @@
         </button>
         <button class="VideoControlBar__Button" @click="toggleFullScreen">
           <IconBase>
-            <IconFullScreenOn v-if="true" />
-            <IconFullScreenOff v-else />
+            <IconFullScreenOff v-if="isFull" />
+            <IconFullScreenOn v-else />
           </IconBase>
         </button>
       </div>
@@ -60,19 +60,21 @@ import IconFullScreenOn from "./icons/IconFullScreenOn.vue";
 import IconPIP from "./icons/IconPIP.vue";
 import IconMuteOn from "./icons/IconMuteOn.vue";
 import IconMuteOff from "./icons/IconMuteOff.vue";
+import { useEventListener } from "@vueuse/core";
 
 const emits = defineEmits([
   "play-toggle",
   "request-fullscreen",
   "request-pip",
   "request-theater",
+  "request-mute",
 ]);
 
 const props = defineProps({
   progress: {
     type: String,
   },
-  playing: {
+  isPlaying: {
     type: Boolean,
   },
 });
@@ -80,8 +82,6 @@ const props = defineProps({
 function playToggle() {
   emits("play-toggle");
 }
-
-const expanded = ref(false);
 
 function toggleFullScreen() {
   emits("request-fullscreen");
@@ -91,6 +91,20 @@ function togglePIP() {
 }
 function toggleTheater() {
   emits("request-theater");
+}
+
+const isFull = ref(document.fullscreenElement);
+useEventListener(document, "fullscreenchange", (event) => {
+  isFull.value = document.fullscreenElement;
+  if (isFull) {
+    screen.orientation.lock("landscape");
+    return;
+  }
+  screen.orientation.lock("natural");
+});
+
+function setMuted() {
+  emits("request-mute");
 }
 </script>
 
@@ -126,10 +140,9 @@ function toggleTheater() {
     color: #fff;
   }
   &__Time {
-    font-size: 1.3rem;
-    font-weight: 500;
-    color: #fff;
+    display: none;
   }
+
   &__HowWatch {
     display: flex;
     align-items: center;
@@ -142,6 +155,12 @@ function toggleTheater() {
   .VideoControlBar {
     gap: 2rem;
     margin-bottom: 2rem;
+    &__Time {
+      display: block;
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #fff;
+    }
   }
 }
 </style>

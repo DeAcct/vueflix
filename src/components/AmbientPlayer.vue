@@ -13,7 +13,7 @@
         v-on="videoEvents"
         class="AmbientPlayer__Control"
         :progress="progress"
-        :playing="playing"
+        :is-playing="playing"
       >
         <template #time>{{ time.current }} / {{ time.duration }}</template>
       </VideoControlBar>

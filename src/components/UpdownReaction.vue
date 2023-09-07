@@ -3,7 +3,7 @@
     <button
       class="UpdownReaction__Button UpdownReaction__Button--Up"
       @click="change(1)"
-      :disabled="user?.uid === writer"
+      :disabled="user?.uid === writer || !user"
     >
       <IconBase>
         <IconArrowNext></IconArrowNext>
@@ -14,7 +14,7 @@
     <button
       class="UpdownReaction__Button UpdownReaction__Button--Down"
       @click="change(-1)"
-      :disabled="user?.uid === writer"
+      :disabled="user?.uid === writer || !user"
     >
       <IconBase>
         <IconArrowPrev></IconArrowPrev>
@@ -81,6 +81,7 @@ const user = computed(() => store.state.auth.user);
     }
     &:disabled {
       color: hsl(var(--text-100));
+      cursor: not-allowed;
     }
   }
   &__CounterClip {
