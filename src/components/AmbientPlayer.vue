@@ -14,6 +14,7 @@
         class="AmbientPlayer__Control"
         :progress="progress"
         :is-playing="playing"
+        :next-episode="nextEpisode"
       >
         <template #time>{{ time.current }} / {{ time.duration }}</template>
       </VideoControlBar>
@@ -52,7 +53,12 @@ import { useEventListener } from "@vueuse/core";
 import { useSecToHourMinSec } from "@/composables/formatter";
 
 const props = defineProps({
-  src: String,
+  src: {
+    type: String,
+  },
+  nextEpisode: {
+    type: [Object, String],
+  },
 });
 
 const { $video, $effect, isVideoLoaded } = useAmbient();
@@ -65,7 +71,6 @@ const videoEvents = {
 };
 
 function playToggle() {
-  console.log("dd");
   if ($video.value.paused) {
     $video.value.play();
     return;
@@ -106,8 +111,9 @@ function timeChange() {
     ($video.value.currentTime / $video.value.duration) * 100
   }%`;
   time.current = useSecToHourMinSec($video.value.currentTime);
-  time.duration = useSecToHourMinSec($video.value.duration);
-  console.log(time);
+  if (time.duration === "00:00") {
+    time.duration = useSecToHourMinSec($video.value.duration);
+  }
 }
 useEventListener($video, "timeupdate", timeChange);
 
@@ -130,14 +136,12 @@ useEventListener($video, ["play", "pause"], setPlaying);
 
   &__FullscreenRoot {
     position: relative;
-    //개발용 임시
-    aspect-ratio: 16/9;
     width: 100%;
+    display: flex;
+    align-items: center;
   }
   &__Video {
-    z-index: 2;
     width: 100%;
-    height: 100%;
   }
   &__Control {
     position: absolute;

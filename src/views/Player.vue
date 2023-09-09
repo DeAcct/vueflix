@@ -1,9 +1,18 @@
 <template>
   <div class="Player">
-    <AmbientPlayer
-      class="Player__Video"
-      @toggle-theater="toggleTheater"
-    ></AmbientPlayer>
+    <div
+      :class="[
+        'Player__Frame',
+        { 'Player__Frame--Theater': mode === 'theater' },
+      ]"
+    >
+      <AmbientPlayer
+        class="Player__Video"
+        @toggle-theater="toggleTheater"
+        :src="videoSrc"
+        :next-episode="nextEpisode"
+      ></AmbientPlayer>
+    </div>
     <section class="Player__TitleRenderer">
       <div class="Player__Titles">
         <h2
@@ -34,7 +43,12 @@
         </IconBase>
       </button>
     </section>
-    <section class="Player__Parts">
+    <section
+      :class="[
+        'Player__Parts',
+        { 'Player__Parts--Theater': mode === 'theater' },
+      ]"
+    >
       <h3 class="Player__EpisodesCounter">
         총 {{ episodeCounter }}개의 에피소드
       </h3>
@@ -93,14 +107,13 @@ import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 
-import { onMounted, ref, computed, inject, reactive } from "vue";
+import { onMounted, ref, computed, inject, reactive, provide } from "vue";
 import { useRoute } from "vue-router";
 import { useAsyncState } from "@vueuse/core";
 
 import AccordionWidget from "@/components/AccordionWidget.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
-import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
@@ -131,10 +144,7 @@ const nowEpisode = computed(() => {
   const currentPart = animeInfo.value.parts.find(
     ({ part }) => part === route.params.part
   ).episodes;
-  const currentEpisode = currentPart.find(
-    ({ index }) => route.params.index === index
-  );
-  return currentEpisode;
+  return currentPart.find(({ index }) => route.params.index === index);
 });
 
 const episodeCounter = computed(() => {
@@ -145,6 +155,43 @@ const episodeCounter = computed(() => {
     (acc, cur) => acc + cur.episodes.length,
     0
   );
+});
+
+const nextEpisode = computed(() => {
+  if (!animeInfo.value.parts) {
+    return undefined;
+  }
+  const lastEpisode = animeInfo.value.parts
+    .find(({ part }) => part === route.params.part)
+    .episodes.at(-1);
+  const lastPart = animeInfo.value.parts.at(-1);
+
+  // 다음 에피소드에 관한 정보를 현재 에피소드로 초기화한 후 작업
+  let nextPart = animeInfo.value.parts.findIndex(
+    ({ part }) => part === route.params.part
+  );
+  let nextIndex = animeInfo.value.parts[nextPart].episodes.findIndex(
+    ({ index }) => route.params.index === index
+  );
+
+  if (
+    lastPart.part === route.params.part &&
+    lastEpisode.index === route.params.index
+  ) {
+    return "다음 화 없음";
+  }
+  if (lastEpisode.index === route.params.index) {
+    nextIndex = 0;
+    nextPart++;
+  } else {
+    nextIndex++;
+  }
+
+  const { part, episodes } = animeInfo.value.parts[nextPart];
+  return {
+    part,
+    ...episodes[nextIndex],
+  };
 });
 
 async function openSystemShare() {
@@ -187,13 +234,11 @@ function toggleTheater() {
   padding-top: 6rem;
   padding-bottom: 2rem;
   width: 100%;
-  max-width: 124rem;
   margin: 0 auto;
-  &__Video {
+  &__Frame {
     position: sticky;
     top: 6rem;
     z-index: 100;
-    background-color: #000;
   }
 
   &__TitleRenderer {
@@ -223,6 +268,11 @@ function toggleTheater() {
     a {
       color: inherit;
     }
+
+    &:hover,
+    &:focus {
+      color: hsl(var(--theme-500));
+    }
   }
   &__EpisodeTitle {
     min-width: 0;
@@ -243,7 +293,7 @@ function toggleTheater() {
     display: flex;
     flex-direction: column;
     gap: 1.6rem;
-    background-color: hsl(var(--text-900) / 0.05);
+    border: 1px solid hsl(var(--text-900) / 0.05);
     border-radius: calc(var(--global-radius) * 4);
     margin-bottom: 2rem;
   }
@@ -276,7 +326,6 @@ function toggleTheater() {
     font-size: 1.6rem;
     max-width: unset;
     width: 100%;
-    --reaction-body-width: 100%;
     --body-radius: calc(var(--global-radius) * 4);
     --reaction-combo-bg: hsl(var(--text-900) / 0.05);
   }
@@ -293,7 +342,8 @@ function toggleTheater() {
 @media screen and (min-width: 1080px) {
   .Player {
     display: grid;
-    padding: 9.2rem 2rem;
+    padding: 9.2rem 2rem 0;
+    max-width: 85vw;
     // 좌 - 우 공간너비 지정
     grid-template-columns: auto 44rem;
     // 상 - 하 공간높이 지정
@@ -301,11 +351,14 @@ function toggleTheater() {
     grid-auto-rows: minmax(0px, auto);
     column-gap: 2rem;
 
-    &__Video {
+    &__Frame {
       position: relative;
       top: unset;
       z-index: 1;
       grid-area: v-bind("area.video");
+      &--Theater {
+        margin-top: -2rem;
+      }
     }
 
     &__TitleRenderer {
@@ -327,6 +380,9 @@ function toggleTheater() {
       display: flex;
       --carousel-overflow: scroll;
       margin-bottom: 0;
+      &--Theater {
+        margin-top: 2rem;
+      }
     }
     &__EpisodeTitle {
       font-size: 2rem;
@@ -362,6 +418,8 @@ function toggleTheater() {
 
     &__Comments {
       grid-area: v-bind("area.comments");
+      --reaction-body-width: 100%;
+      max-width: 1080px;
     }
   }
 }

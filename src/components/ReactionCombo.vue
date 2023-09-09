@@ -109,20 +109,24 @@ async function onMutate() {
     font-size: 1.3rem;
   }
   &__Body {
+    display: flex;
+    flex-direction: column;
     border-radius: var(--body-radius, var(--global-radius));
     overflow: hidden;
     width: var(--reaction-body-width, calc(100% - 4rem));
     margin: 0 auto;
+    gap: 0.4rem;
   }
   &__Write {
     overflow: hidden;
-    margin-bottom: 0.8rem;
     background-color: var(--reaction-combo-bg, hsl(var(--bg-200)));
     padding: 2rem;
+    border-radius: var(--global-radius);
   }
   &__List {
     background-color: var(--reaction-combo-bg, hsl(var(--bg-200)));
     overflow: hidden;
+    border-radius: var(--global-radius);
   }
   &__Item {
     background-color: transparent;
@@ -136,7 +140,6 @@ async function onMutate() {
   .ReactionCombo {
     &__Title {
       font-size: 1.8rem;
-      margin-bottom: 1rem;
       padding: 0;
     }
   }
