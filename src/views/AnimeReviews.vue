@@ -3,7 +3,7 @@
     <LoginWidget
       v-if="!user"
       :btn-func="goAuth"
-      class="AnimeReviews__LoginRequired inner"
+      class="AnimeReviews__LoginRequired"
     >
       <template v-slot:text>
         <h2>로그인하고 이 작품을 평가해보세요</h2>
@@ -48,6 +48,10 @@ const user = computed(() => store.state.auth.user);
   &__LoginRequired {
     background-color: hsl(var(--text-100));
     position: relative;
+    padding: {
+      left: 2rem;
+      right: 2rem;
+    }
     &::before,
     &::after {
       position: absolute;
@@ -77,6 +81,7 @@ const user = computed(() => store.state.auth.user);
 
   &__Method--Review {
     font-size: 1.5rem;
+    --reaction-combo-title-padding: 2rem;
   }
 }
 </style>

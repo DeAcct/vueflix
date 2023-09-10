@@ -101,7 +101,7 @@ async function onMutate() {
     font-size: inherit;
     font-weight: 700;
     margin-bottom: 1.2rem;
-    padding: 0 2rem;
+    padding: 0 var(--reaction-combo-title-padding, 2rem);
     display: flex;
     gap: 0.4rem;
   }
@@ -140,7 +140,6 @@ async function onMutate() {
   .ReactionCombo {
     &__Title {
       font-size: 1.8rem;
-      padding: 0;
     }
   }
 }

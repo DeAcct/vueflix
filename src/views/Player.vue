@@ -9,8 +9,10 @@
       <AmbientPlayer
         class="Player__Video"
         @toggle-theater="toggleTheater"
-        :src="videoSrc"
+        :src="TestAnime"
         :next-episode="nextEpisode"
+        :prev-episode="prevEpisode"
+        :ambient="mode !== 'theater'"
       ></AmbientPlayer>
     </div>
     <section class="Player__TitleRenderer">
@@ -107,9 +109,10 @@ import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 
-import { onMounted, ref, computed, inject, reactive, provide } from "vue";
-import { useRoute } from "vue-router";
+import { onMounted, ref, computed, inject, reactive } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useAsyncState } from "@vueuse/core";
+import { useStore } from "vuex";
 
 import AccordionWidget from "@/components/AccordionWidget.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
@@ -119,14 +122,19 @@ import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
 
 // 개발 시 임시로 사용할 동영상(요청량 절약)
-//import TestAnime from "@/assets/TestAnime.mp4";
+import TestAnime from "@/assets/TestAnime.mp4";
 
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
 const storage = getStorage();
-const { state: videoSrc } = useAsyncState(
-  getDownloadURL(fireRef(storage, "testAnime.mp4"))
-);
+// const { state: videoSrc } = useAsyncState(
+//   getDownloadURL(fireRef(storage, "testAnime.mp4"))
+// );
+const videoSrc = ref("");
+onMounted(getVideoUrl);
+async function getVideoUrl() {
+  videoSrc.value = await getDownloadURL(fireRef(storage, "testAnime.mp4"));
+}
 
 const deviceInfo = inject("device-info");
 
@@ -136,6 +144,9 @@ onMounted(async () => {
   const data = (await getDoc(doc(db, "anime", route.params.title))).data();
   animeInfo.value = data;
 });
+
+const store = useStore();
+const user = computed(() => store.state.auth.user);
 
 const nowEpisode = computed(() => {
   if (!animeInfo.value.parts) {
@@ -191,6 +202,45 @@ const nextEpisode = computed(() => {
   return {
     part,
     ...episodes[nextIndex],
+  };
+});
+
+const prevEpisode = computed(() => {
+  if (!animeInfo.value.parts) {
+    return undefined;
+  }
+  const firstEpisode = animeInfo.value.parts
+    .find(({ part }) => part === route.params.part)
+    .episodes.at(0);
+  const firstPart = animeInfo.value.parts.at(0);
+
+  // 이전 에피소드에 관한 정보를 현재 에피소드로 초기화한 후 작업
+  let prevPart = animeInfo.value.parts.findIndex(
+    ({ part }) => part === route.params.part
+  );
+  let prevIndex = animeInfo.value.parts[prevPart].episodes.findIndex(
+    ({ index }) => route.params.index === index
+  );
+
+  if (
+    firstPart.part === route.params.part &&
+    firstEpisode.index === route.params.index
+  ) {
+    return "이전 화 없음";
+  }
+  if (firstEpisode.index === route.params.index) {
+    prevIndex =
+      animeInfo.value.parts.find(({ part }) => part === route.params.part)
+        .index - 1;
+    prevPart--;
+  } else {
+    prevIndex--;
+  }
+
+  const { part, episodes } = animeInfo.value.parts[prevPart];
+  return {
+    part,
+    ...episodes[prevIndex],
   };
 });
 
@@ -327,7 +377,8 @@ function toggleTheater() {
     max-width: unset;
     width: 100%;
     --body-radius: calc(var(--global-radius) * 4);
-    --reaction-combo-bg: hsl(var(--text-900) / 0.05);
+    --reaction-body-width: 100%;
+    --reaction-combo-title-padding: 2rem;
   }
 }
 
@@ -342,8 +393,8 @@ function toggleTheater() {
 @media screen and (min-width: 1080px) {
   .Player {
     display: grid;
-    padding: 9.2rem 2rem 0;
-    max-width: 85vw;
+    padding: 9.2rem 2rem 2rem;
+    max-width: 192rem;
     // 좌 - 우 공간너비 지정
     grid-template-columns: auto 44rem;
     // 상 - 하 공간높이 지정
@@ -358,7 +409,17 @@ function toggleTheater() {
       grid-area: v-bind("area.video");
       &--Theater {
         margin-top: -2rem;
+        height: 56.25vw;
+        max-height: 80vh;
       }
+    }
+    &__Frame--Theater &__Video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100vw;
+      height: 100%;
     }
 
     &__TitleRenderer {
@@ -418,8 +479,9 @@ function toggleTheater() {
 
     &__Comments {
       grid-area: v-bind("area.comments");
-      --reaction-body-width: 100%;
       max-width: 1080px;
+      --reaction-body-width: 100%;
+      --reaction-combo-title-padding: 0;
     }
   }
 }
