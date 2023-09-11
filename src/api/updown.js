@@ -7,9 +7,9 @@ import {
   setDoc,
   doc,
 } from "firebase/firestore";
-import { db } from "@/utility/firebase";
 import { ref, computed } from "vue";
 import { useStore } from "vuex";
+import { db } from "@/utility/firebase";
 
 /**
  * updown과 관련된 api입니다.
@@ -37,7 +37,7 @@ export function useUpdown({ id, writer }) {
     await setDoc(
       doc(db, "reaction", id),
       { updown: increment(action) },
-      { merge: true }
+      { merge: true },
     );
   }
 
@@ -46,8 +46,8 @@ export function useUpdown({ id, writer }) {
    */
   async function Read() {
     const q = query(collection(db, "reaction"), where("_id", "==", id));
-    const animeReviews = (await getDocs(q)).docs.map((doc) => doc.data())[0];
-    updown.value = animeReviews.updown;
+    const animeReactions = (await getDocs(q)).docs.map((reaction) => reaction.data())[0];
+    updown.value = animeReactions.updown;
   }
 
   return { updown, Update, Read };

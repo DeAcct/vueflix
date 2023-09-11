@@ -20,9 +20,7 @@ dayjs.extend(relativeTime);
 dayjs.locale("ko");
 
 export function useFormatDate(origin) {
-  const date = computed(() => {
-    return dayjs(origin).fromNow();
-  });
+  const date = computed(() => dayjs(origin).fromNow());
   return { date };
 }
 
@@ -30,6 +28,6 @@ export function useSecToHourMinSec(origin) {
   return `${
     origin >= 3600 ? `${useDigit(Math.floor(origin / 3600))}:` : ""
   }${useDigit(Math.floor((origin % 3600) / 60))}:${useDigit(
-    Math.floor(origin % 60)
+    Math.floor(origin % 60),
   )}`;
 }

@@ -1,6 +1,5 @@
-import { ref, onMounted, reactive, isRef } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import { useResizeObserver } from "@vueuse/core";
-import { DAYS } from "@/enums/Days";
 
 /**
  * 초기 인덱스값을 받아 탭메뉴 루트요소, , 탭메뉴의 인디케이터 위치, 인디케이터가 이동하게 하는 함수를 반환하는 함수입니다.
@@ -49,5 +48,10 @@ export function useIndicatorAnimation(index) {
   useResizeObserver(selector, () => {
     move(index);
   });
-  return { selector, items, to, move };
+  return {
+    selector,
+    items,
+    to,
+    move,
+  };
 }

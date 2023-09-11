@@ -11,7 +11,7 @@ const mutations = {
   },
   destoryToast(id) {
     state.toasts = new Set(
-      [...state.toasts].filter((toast) => toast.id !== id)
+      [...state.toasts].filter((toast) => toast.id !== id),
     );
   },
 };

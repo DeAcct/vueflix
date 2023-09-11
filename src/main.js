@@ -1,5 +1,5 @@
-import { router } from "./router";
 import { createApp } from "vue";
+import { router } from "./router";
 import store from "./store/store";
 import "./common.scss";
 

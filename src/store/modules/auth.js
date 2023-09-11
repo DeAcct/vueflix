@@ -1,14 +1,17 @@
+import { useTimeSort } from "@/composables/sort";
+
 const state = {
   user: undefined,
 };
 
+/* eslint no-shadow: ["error", { "allow": ["state"] }] */
 const mutations = {
   setUser(state, payload) {
     state.user = payload;
   },
   updateRecentWatched(state, payload) {
     const targetIndex = state.user.recentWatched.findIndex(
-      (recent) => recent.aniTitle === payload.aniTitle
+      (recent) => recent.aniTitle === payload.aniTitle,
     );
     if (targetIndex !== -1) {
       state.user.recentWatched[targetIndex] = payload;
@@ -16,22 +19,41 @@ const mutations = {
       state.user.recentWatched.unshift(payload);
     }
     if (state.user.recentWatched.length > 1) {
-      const sortOrder = ["year", "month", "date", "hour", "min", "sec"];
+      // const sortOrder = ["year", "month", "date", "hour", "min", "sec"];
 
-      state.user.recentWatched = state.user.recentWatched.sort((a, b) => {
-        for (const sortBy of sortOrder) {
-          if (a.watchedPoint[sortBy] > b.watchedPoint[sortBy]) {
-            return -1;
-          } else if (a.watchedPoint[sortBy] < b.watchedPoint[sortBy]) {
-            return 1;
-          }
-        }
-      });
+      // state.user.recentWatched = state.user.recentWatched.sort((a, b) =>
+      //   let sortPriority;
+      //   for (const sortBy of sortOrder) {
+      //     if (a.watchedPoint[sortBy] > b.watchedPoint[sortBy]) {
+      //       sortPriority = -1;
+      //       continue;
+      //     }
+      //     if (a.watchedPoint[sortBy] < b.watchedPoint[sortBy]) {
+      //       sortPriority = 1;
+      //       continue;
+      //     }
+      //     sortPriority = 0;
+      //   }
+
+      //   sortOrder.reduce((acc, sortBy) => {
+      //     if (a.watchedPoint[sortBy] > b.watchedPoint[sortBy]) {
+      //       return -1;
+      //     }
+      //     if (a.watchedPoint[sortBy] < b.watchedPoint[sortBy]) {
+      //       return 1;
+      //     }
+      //     return 0;
+      //   })
+      // );
+      state.user.recentWatched = useTimeSort(
+        state.user.recentWatched,
+        "watchedPoint",
+      );
     }
   },
   updateWannaSee(state, payload) {
     const targetIndex = state.user.wannaSee.findIndex(
-      (wanna) => wanna.aniTitle === payload.aniTitle
+      (wanna) => wanna.aniTitle === payload.aniTitle,
     );
     if (targetIndex !== -1) {
       state.user.wannaSee[targetIndex] = payload;
@@ -39,23 +61,26 @@ const mutations = {
       state.user.wannaSee.unshift(payload);
     }
     if (state.user.wannaSee.length > 1) {
-      const sortOrder = ["year", "month", "date", "hour", "min", "sec"];
+      // const sortOrder = ["year", "month", "date", "hour", "min", "sec"];
 
+      /*
       state.user.wannaSee = state.user.wannaSee.sort((a, b) => {
         for (const sortBy of sortOrder) {
           if (a.time[sortBy] > b.time[sortBy]) {
             return -1;
-          } else if (a.time[sortBy] < b.time[sortBy]) {
+          }
+          if (a.time[sortBy] < b.time[sortBy]) {
             return 1;
           }
         }
       });
+      */
+      state.user.wannaSee = useTimeSort(state.user.wannaSee, "time");
     }
   },
   deleteWannaSee(state, payload) {
-    console.log(state);
     state.user.wannaSee = state.user.wannaSee.filter(
-      (anime) => anime.aniTitle !== payload
+      (anime) => anime.aniTitle !== payload,
     );
   },
   mergeUser(state, payload) {
@@ -63,7 +88,7 @@ const mutations = {
   },
   updatePurchased(state, payload) {
     const targetIndex = state.user.purchased.findIndex(
-      (purchase) => purchase.aniTitle === payload.aniTitle
+      (purchase) => purchase.aniTitle === payload.aniTitle,
     );
     if (targetIndex !== -1) {
       state.user.purchased[targetIndex].episodes = [
@@ -81,9 +106,11 @@ const mutations = {
         state.user.purchased = state.user.purchased.sort((a, b) => {
           if (a.aniTitle < b.aniTitle) {
             return -1;
-          } else if (a.aniTitle > b.aniTitle) {
+          }
+          if (a.aniTitle > b.aniTitle) {
             return 1;
           }
+          return 0;
         });
       }
     }
@@ -93,7 +120,7 @@ const mutations = {
   },
   updateMaratonWatch(state, payload) {
     const targetIndex = state.user.maratonWatch.findIndex(
-      (anime) => anime.aniTitle === payload.aniTitle
+      (anime) => anime.aniTitle === payload.aniTitle,
     );
     if (targetIndex === -1) {
       const data = {
@@ -117,31 +144,28 @@ const mutations = {
        */
       const target = state.user.maratonWatch[targetIndex];
       const mutateTargetEpIndex = target.items.findIndex(
-        (item) =>
-          item.part === payload.item.part && item.index === payload.item.index
+        (item) => item.part === payload.item.part && item.index === payload.item.index,
       );
-      const maratonEnd =
-        target.items.reduce(
-          (prev, next) => prev && next.episodePercent === "100%",
-          true
-        ) && target.items.length === target.allEpisodes;
+      const maratonEnd = target.items.reduce(
+        (prev, next) => prev && next.episodePercent === "100%",
+        true,
+      ) && target.items.length === target.allEpisodes;
       if (mutateTargetEpIndex === -1) {
         target.items.push(payload.item);
       } else {
-        target.items[mutateTargetEpIndex].episodePercent =
-          payload.item.episodePercent;
+        target.items[mutateTargetEpIndex].episodePercent = payload.item.episodePercent;
       }
       state.user.maratonWatch[targetIndex].maratonEnd = maratonEnd;
     }
   },
   clearMaraton(state, payload) {
     state.user.maratonWatch = state.user.maratonWatch.filter(
-      (anime) => payload !== anime.aniTitle
+      (anime) => payload !== anime.aniTitle,
     );
   },
   updateKeywordReview(state, payload) {
     const exists = state.user.keywordReview.findIndex(
-      (animeItem) => animeItem.aniTitle === payload.aniTitle
+      (animeItem) => animeItem.aniTitle === payload.aniTitle,
     );
     if (exists !== -1) {
       state.user.keywordReview[exists].likeIt = payload.likeIt;

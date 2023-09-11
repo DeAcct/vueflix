@@ -30,11 +30,6 @@
                 <icon-overflow />
               </icon-base>
             </button>
-            <action-sheet
-              v-if="isActionSheetOpened"
-              :action-origin="actions"
-              @overflow-menu-close="actionSheetClose"
-            />
           </div>
         </div>
       </div>
@@ -92,7 +87,6 @@ import { useRouter, useRoute } from "vue-router";
 import { setDoc, doc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 
-import ActionSheet from "./ActionSheet.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconBase from "./IconBase.vue";
 import IconShare from "./icons/IconShare.vue";
@@ -155,18 +149,6 @@ async function openSystemShare() {
     url: window.location.href,
   };
   await navigator.share(shareData);
-}
-
-const isActionSheetOpened = ref(false);
-function actionSheetToggle() {
-  if (deviceInfo.isMobile) {
-    emit("overflow-menu-open");
-    return;
-  }
-  isActionSheetOpened.value = !isActionSheetOpened.value;
-}
-function actionSheetClose() {
-  isActionSheetOpened.value = false;
 }
 
 function purchase() {

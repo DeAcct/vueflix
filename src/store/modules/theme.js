@@ -1,7 +1,7 @@
 const state = {
   theme: "light",
 };
-
+/* eslint no-shadow: ["error", { "allow": ["state"] }] */
 const mutations = {
   setTheme(state, payload) {
     state.theme = payload;

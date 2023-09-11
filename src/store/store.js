@@ -5,5 +5,7 @@ import toast from "./modules/toast";
 import modal from "./modules/modal";
 
 export default createStore({
-  modules: { auth, theme, toast, modal },
+  modules: {
+    auth, theme, toast, modal,
+  },
 });

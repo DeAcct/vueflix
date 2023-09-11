@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 export default function useAmbient() {
   const $video = ref(null);
@@ -24,7 +24,6 @@ export default function useAmbient() {
   }
   function drawPause() {
     window.cancelAnimationFrame(step);
-    ctx.clearRect(0, 0, $effect.width, $effect.height);
     step = undefined;
   }
 

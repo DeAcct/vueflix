@@ -38,28 +38,66 @@ export function useUserLevel() {
     // 7lv(전문가): 1000일 이상
 
     const LEVEL_MAP = [
-      [0, 0, "베이비", "baby"],
-      [29, 39, "모험가", "traveler"],
-      [99, 49, "용사", "braver"],
-      [282, 99, "임팩트", "impact"],
-      [345, 149, "인플루언서", "influencer"],
-      [764, 299, "아이돌", "idol"],
-      [999, 999, "애니필", "aniphile"],
-      [Infinity, Infinity, "전문가", "expert"],
+      {
+        maxDays: 0,
+        maxLikeit: 0,
+        levelName: "베이비",
+        styleIdentifier: "baby",
+      },
+      {
+        maxDays: 29,
+        maxLikeit: 39,
+        levelName: "모험가",
+        styleIdentifier: "traveler",
+      },
+      {
+        maxDays: 99,
+        maxLikeit: 49,
+        levelName: "용사",
+        styleIdentifier: "braver",
+      },
+      {
+        maxDays: 282,
+        maxLikeit: 99,
+        levelName: "임팩트",
+        styleIdentifier: "impact",
+      },
+      {
+        maxDays: 345,
+        maxLikeit: 149,
+        levelName: "인플루언서",
+        styleIdentifier: "influencer",
+      },
+      {
+        maxDays: 764,
+        maxLikeit: 299,
+        levelName: "아이돌",
+        styleIdentifier: "idol",
+      },
+      {
+        maxDays: 999,
+        maxLikeit: 999,
+        levelName: "애니필",
+        styleIdentifier: "aniphile",
+      },
+      {
+        maxDays: Infinity,
+        maxLikeit: Infinity,
+        levelName: "전문가",
+        styleIdentifier: "expert",
+      },
     ];
 
     const subscriptionDays = Math.floor(
-      (currentMonth - initMonth) / ONE_DAY_TO_MILLISECOND
+      (currentMonth - initMonth) / ONE_DAY_TO_MILLISECOND,
     );
 
-    for (const [
-      index,
-      [maxDays, maxLikeit, levelName, styleIdentifier],
-    ] of LEVEL_MAP.entries()) {
-      if (subscriptionDays <= maxDays) {
-        return { number: index, text: levelName, styleIdentifier };
-      }
-    }
+    return LEVEL_MAP.map(({ maxDays, levelName, styleIdentifier }, i) => ({
+      number: i,
+      text: levelName,
+      styleIdentifier,
+      maxDays,
+    })).find(({ maxDays }) => subscriptionDays <= maxDays);
   });
   return { level };
 }

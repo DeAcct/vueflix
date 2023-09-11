@@ -9,7 +9,7 @@
       <AmbientPlayer
         class="Player__Video"
         @toggle-theater="toggleTheater"
-        :src="TestAnime"
+        :src="videoSrc"
         :next-episode="nextEpisode"
         :prev-episode="prevEpisode"
         :ambient="mode !== 'theater'"
@@ -122,7 +122,7 @@ import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
 
 // 개발 시 임시로 사용할 동영상(요청량 절약)
-import TestAnime from "@/assets/TestAnime.mp4";
+//import TestAnime from "@/assets/TestAnime.mp4";
 
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음

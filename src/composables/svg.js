@@ -11,10 +11,9 @@ export default function usePercentToSVGRound(percent) {
   });
 
   const bodyLength = computed(
-    () =>
-      trackLength.value *
-      0.01 *
-      (100 - Math.floor(Number(percent.slice(0, -1))))
+    () => trackLength.value
+      * 0.01
+      * (100 - Math.floor(Number(percent.slice(0, -1)))),
   );
   return { $body, trackLength, bodyLength };
 }

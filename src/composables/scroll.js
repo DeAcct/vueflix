@@ -17,10 +17,10 @@ export function useScroll() {
       return;
     }
     if (lastScroll < current) {
-      //console.log("current is bigger");
+      // console.log("current is bigger");
       scrollBehavior.value = "down";
     } else {
-      //console.log("last was bigger");
+      // console.log("last was bigger");
       scrollBehavior.value = "up";
     }
     lastScroll = current;
