@@ -15,7 +15,3 @@
     max-age=31536000,
     immutable
     '''
-
-[build.environment]
-  YARN_VERSION = "1.22.19"
-  NODE_ENV = "production"
