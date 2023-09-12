@@ -88,8 +88,9 @@ async function googleContinue() {
     store.commit("auth/setUser", docSnap.data());
     router.back();
   } catch {
-    isLoginWaiting.value = false;
+    console.log("error");
   }
+  isLoginWaiting.value = false;
 }
 </script>
 

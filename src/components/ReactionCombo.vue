@@ -18,6 +18,7 @@
           (type === 'review' &&
             reactions.filter((review) => review.uid === user?.uid))
         "
+        @interact="setInteract"
       />
       <ul class="ReactionCombo__List">
         <ReactionItem
@@ -71,6 +72,11 @@ const props = defineProps({
     },
   },
 });
+
+const emits = defineEmits(["interact"]);
+function setInteract(e) {
+  emits("interact", e);
+}
 
 const store = useStore();
 const user = computed(() => store.state.auth.user);

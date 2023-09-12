@@ -25,9 +25,11 @@ export function useReaction({ type }) {
   const store = useStore();
   const route = useRoute();
   const user = computed(() => store.state.auth.user);
-  const parent = computed(() => (type === "review"
-    ? route.params.title
-    : `${route.params.title} ${route.params.part} ${route.params.index}`));
+  const parent = computed(() =>
+    type === "review"
+      ? route.params.title
+      : `${route.params.title} ${route.params.part} ${route.params.index}`
+  );
 
   /**
    * 리액션(리뷰, 댓글)을 새로 생성합니다.
@@ -57,7 +59,7 @@ export function useReaction({ type }) {
     await setDoc(
       doc(db, "user", user.value.uid),
       { reaction: arrayUnion(newDoc.id) },
-      { merge: true },
+      { merge: true }
     );
   }
 
@@ -68,9 +70,11 @@ export function useReaction({ type }) {
     const q = query(
       collection(db, "reaction"),
       where("parent", "==", parent.value),
-      where("type", "==", type),
+      where("type", "==", type)
     );
-    const animeReactions = (await getDocs(q)).docs.map((reaction) => reaction.data());
+    const animeReactions = (await getDocs(q)).docs.map((reaction) =>
+      reaction.data()
+    );
     reactions.value = animeReactions;
   }
 
@@ -88,7 +92,7 @@ export function useReaction({ type }) {
     await setDoc(
       doc(db, "reaction", id),
       { content, isEdited: true },
-      { merge: true },
+      { merge: true }
     );
   }
 
@@ -107,7 +111,7 @@ export function useReaction({ type }) {
     await setDoc(
       doc(db, "user", user.value.uid),
       { reaction: arrayRemove(id) },
-      { merge: true },
+      { merge: true }
     );
   }
 

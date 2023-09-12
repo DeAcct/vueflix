@@ -33,6 +33,7 @@
                 { 'VideoControlBar__Button--Disabled': nextLink === '#' },
               ]"
               :to="nextLink"
+              replace
             >
               <IconBase>
                 <IconNextEpisode />

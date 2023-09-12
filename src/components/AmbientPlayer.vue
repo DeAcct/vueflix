@@ -57,6 +57,9 @@ const props = defineProps({
   ambient: {
     type: Boolean,
   },
+  preventKeyBinding: {
+    type: Boolean,
+  },
 });
 
 const keyBinding = {
@@ -92,6 +95,9 @@ const keyBinding = {
 };
 
 useEventListener(window, "keydown", (e) => {
+  if (props.preventKeyBinding) {
+    return;
+  }
   if (!Object.keys(keyBinding).includes(e.key)) {
     return;
   }
@@ -125,7 +131,6 @@ function requestFullscreen() {
 }
 
 function requestPip() {
-  console.log("pip");
   if (document.pictureInPictureElement) {
     document.exitPictureInPicture();
     return;

@@ -5,6 +5,8 @@
       class="WriteReaction__InputArea"
       :disabled="!user"
       @input="setReviewData"
+      @focus="setFocus"
+      @blur="setBlur"
       ref="reviewTextArea"
       :value="reviewData"
     />
@@ -36,6 +38,8 @@ import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 import { ref, computed } from "vue";
 import { useReaction } from "@/api/reaction";
 
+const emits = defineEmits(["mutate", "interact"]);
+
 const props = defineProps({
   user: {
     type: Object,
@@ -51,6 +55,13 @@ const props = defineProps({
     type: String,
   },
 });
+
+function setBlur() {
+  emits("interact", false);
+}
+function setFocus() {
+  emits("interact", true);
+}
 
 const placeholder = computed(() => {
   if (!props.user) {
@@ -68,7 +79,7 @@ function setReviewData(e) {
 }
 
 const { Create } = useReaction({ type: props.type, parent: props.parent });
-const emits = defineEmits(["mutate"]);
+
 async function reviewTrigger() {
   await Create({ content: reviewData.value });
   emits("mutate");

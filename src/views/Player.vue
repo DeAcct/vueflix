@@ -9,10 +9,11 @@
       <AmbientPlayer
         class="Player__Video"
         @toggle-theater="toggleTheater"
-        :src="videoSrc"
+        :src="TestAnime"
         :next-episode="nextEpisode"
         :prev-episode="prevEpisode"
         :ambient="mode !== 'theater'"
+        :prevent-key-binding="isInteracting"
       ></AmbientPlayer>
     </div>
     <section class="Player__TitleRenderer">
@@ -96,7 +97,12 @@
         </div>
       </div>
     </section>
-    <ReactionCombo class="Player__Comments" type="comment" title-tag="h4">
+    <ReactionCombo
+      class="Player__Comments"
+      type="comment"
+      title-tag="h4"
+      @interact="setInteract"
+    >
       <template #title>댓글</template>
     </ReactionCombo>
   </div>
@@ -107,12 +113,11 @@
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 import { doc, getDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { db } from "@/utility/firebase";
 
 import { onMounted, ref, computed, inject, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useAsyncState } from "@vueuse/core";
-import { useStore } from "vuex";
 
 import AccordionWidget from "@/components/AccordionWidget.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
@@ -122,7 +127,7 @@ import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
 
 // 개발 시 임시로 사용할 동영상(요청량 절약)
-//import TestAnime from "@/assets/TestAnime.mp4";
+import TestAnime from "@/assets/TestAnime.mp4";
 
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
@@ -136,17 +141,25 @@ async function getVideoUrl() {
   videoSrc.value = await getDownloadURL(fireRef(storage, "testAnime.mp4"));
 }
 
+const isInteracting = ref(false);
+function setInteract(e) {
+  isInteracting.value = e;
+}
+
 const deviceInfo = inject("device-info");
 
 const route = useRoute();
 const animeInfo = ref({});
 onMounted(async () => {
+  if (!session) {
+    router.replace(`/anime/${route.params.title}/episodes`);
+  }
   const data = (await getDoc(doc(db, "anime", route.params.title))).data();
   animeInfo.value = data;
 });
 
-const store = useStore();
-const user = computed(() => store.state.auth.user);
+const session = getAuth().currentUser;
+const router = useRouter();
 
 const nowEpisode = computed(() => {
   if (!animeInfo.value.parts) {
@@ -177,7 +190,7 @@ const nextEpisode = computed(() => {
     .episodes.at(-1);
   const lastPart = animeInfo.value.parts.at(-1);
 
-  // 다음 에피소드에 관한 정보를 현재 에피소드로 초기화한 후 작업
+  // 현재 에피소드로 초기화한 후 작업
   let nextPart = animeInfo.value.parts.findIndex(
     ({ part }) => part === route.params.part
   );
@@ -214,7 +227,7 @@ const prevEpisode = computed(() => {
     .episodes.at(0);
   const firstPart = animeInfo.value.parts.at(0);
 
-  // 이전 에피소드에 관한 정보를 현재 에피소드로 초기화한 후 작업
+  // 현재 에피소드로 초기화한 후 작업
   let prevPart = animeInfo.value.parts.findIndex(
     ({ part }) => part === route.params.part
   );
@@ -229,9 +242,9 @@ const prevEpisode = computed(() => {
     return "이전 화 없음";
   }
   if (firstEpisode.index === route.params.index) {
-    prevIndex =
-      animeInfo.value.parts.find(({ part }) => part === route.params.part)
-        .index - 1;
+    prevIndex = animeInfo.value.parts.find(
+      ({ part }) => part === route.params.part
+    ).episodes.length;
     prevPart--;
   } else {
     prevIndex--;
