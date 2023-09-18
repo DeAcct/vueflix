@@ -83,7 +83,6 @@ const props = defineProps({
   },
 });
 
-//const fileName = `${props.aniTitle}/${props.data.thumbnail}`;
 const formattedTitle = props.aniTitle.replaceAll(/:/g, "_");
 const fileName = computed(
   () =>
@@ -94,13 +93,6 @@ const fileName = computed(
     }`
 );
 const { fileSrc: thumbnailURL } = useFirebaseStorage(fileName.value);
-
-// const link = computed(() => {
-//   if (!props.aniTitle) {
-//     return "#none";
-//   }
-//   return props.continueLink || `/anime/${props.aniTitle}/episodes`;
-// });
 
 const alt = computed(() => {
   if (!props.aniTitle) {
@@ -126,13 +118,12 @@ const alt = computed(() => {
     width: var(--thumbnail-width, 55vw);
   }
   &__Image {
+    position: relative;
     flex-shrink: 0;
     --radius: var(--global-radius);
     --aspect-ratio: calc(9 / 16 * 100%);
   }
   &__WatchPercent {
-    position: absolute;
-    right: 0.4rem;
     width: 3.2rem;
     height: 3.2rem;
     flex-shrink: 0;
@@ -181,22 +172,22 @@ const alt = computed(() => {
     align-items: unset;
     padding: 0.6rem 0.6rem 0.6rem 0;
   }
-  &--row &__WatchPercent {
-    position: static;
-    margin-left: -0.4rem;
-  }
   &--row &__Text {
     gap: 0.2rem;
+  }
+  &--row &__WatchPercent {
+    margin-left: -0.4rem;
   }
 
   &--column &__Info {
     padding: 0 0.8rem 0.8rem;
   }
   &--column &__Text {
-    width: calc(100% - 3.6rem);
+    flex-grow: 1;
+    min-width: 0;
   }
 }
-@media all and (min-width: 768px) {
+@media screen and (min-width: 768px) {
   .ThumbnailSet {
     gap: 1.2rem;
     &--column {
@@ -216,12 +207,10 @@ const alt = computed(() => {
       font-size: 1.5rem;
       --episode-title-width: 30ch;
     }
-    &--row &__Info {
-    }
   }
 }
 
-@media all and (min-width: 1080px) {
+@media screen and (min-width: 1080px) {
   .ThumbnailSet {
     &--column {
       width: var(--thumbnail-width, 28vw);
@@ -231,32 +220,22 @@ const alt = computed(() => {
     }
 
     &--row &__PartIndex {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
     }
     &--row &__Title {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       --episode-title-width: 30ch;
     }
   }
 }
 
-@media all and (min-width: 1920px) {
+@media screen and (min-width: 1920px) {
   .ThumbnailSet {
     &--column {
       width: var(--thumbnail-width, 15vw);
     }
     &--row &__Image {
       width: var(--thumbnail-width, 15vw);
-    }
-    &__ratio-holder {
-      margin-bottom: 1.7rem;
-    }
-    &__Text {
-      gap: 1rem;
-    }
-    &__Title {
-      --episode-title-width: 20ch;
-      font-size: 2rem;
     }
   }
 }

@@ -34,21 +34,25 @@
             aniTitle,
             part,
             index,
-            watchedPercent,
-            shortTitle,
+            time,
+            thumbnail,
+            title,
           } in basketList"
           :type="selectedTab === 'recentWatched' ? 'episode' : 'series'"
           :key="`${selectedTab}-${aniTitle}`"
           :ani-title="aniTitle"
-          :part="part"
-          :index="index"
-          :watched-percent="watchedPercent"
-          :short-title="shortTitle"
+          :watch-percent="`${(time.current / time.max) * 100}%`"
           :link="
             selectedTab === 'recentWatched'
               ? `/player/${aniTitle}/${part}/${index}`
               : `/anime/${aniTitle}/episodes`
           "
+          :data="{
+            part,
+            index,
+            thumbnail,
+            title,
+          }"
           :replace="{
             main: selectedTab === 'recentWatched',
             sub: false,

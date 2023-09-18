@@ -1,13 +1,17 @@
 <template>
   <div class="AnimeActions">
     <div class="col-left">
-      <RouterLink class="AnimeActions__Continue" :to="continueLink" replace>
+      <RouterLink
+        class="AnimeActions__Continue"
+        :to="continueData.link"
+        replace
+      >
         <i class="icon">
           <IconBase>
             <IconPlay />
           </IconBase>
         </i>
-        <span class="text">{{ continueString }}</span>
+        <span class="text">{{ continueData.text }}</span>
       </RouterLink>
     </div>
     <div class="col-right">
@@ -53,7 +57,7 @@ import IconPurchase from "./icons/IconPurchase.vue";
 import IconWannaSeeAdd from "./icons/IconWannaSeeAdd.vue";
 import IconWannaSeeAdded from "./icons/IconWannaSeeAdded.vue";
 
-const props = defineProps(["continueString", "continueLink", "wannaSee"]);
+const props = defineProps(["continueData", "wannaSee"]);
 const emits = defineEmits(["wanna-see-toggle", "purchase"]);
 
 function wannaSeeToggle() {

@@ -12,6 +12,16 @@
         autoplay
         muted
       ></video>
+      <div class="AmbientPlayer__GestureArea">
+        <button
+          @touchstart="double('before')"
+          class="AmbientPlayer__GestureItem"
+        ></button>
+        <button
+          @touchstart="double('after')"
+          class="AmbientPlayer__GestureItem"
+        ></button>
+      </div>
       <VideoControlBar
         v-on="videoEvents"
         class="AmbientPlayer__Control"
@@ -20,7 +30,9 @@
         :next-episode="nextEpisode"
         @change-play-progress="onChangePlayProgress"
         @change-volume="onVolumeChange"
-        :volume="`${volume}%`"
+        @prev-sec="moveBeforeFiveSec"
+        @next-sec="moveAfterFiveSec"
+        :volume="volume"
       >
         <template #time>{{ time.current }} / {{ time.duration }}</template>
       </VideoControlBar>
@@ -142,6 +154,7 @@ const emits = defineEmits([
   "toggle-theater",
   "request-next-episode",
   "request-prev-episode",
+  "save-point",
 ]);
 function requestTheater() {
   emits("toggle-theater");
@@ -159,9 +172,6 @@ function timeChange() {
   if (!isVideoLoaded.value) {
     return;
   }
-  // progress.value = `${
-  //   ($video.value.currentTime / $video.value.duration) * 100
-  // }%`;
   progress.current = $video.value.currentTime;
   progress.max = $video.value.duration;
   time.current = useSecToHourMinSec($video.value.currentTime);
@@ -191,33 +201,63 @@ function moveBeforeFiveSec() {
 function moveAfterFiveSec() {
   $video.value.currentTime += 5;
 }
+let touches = 0;
+function double(to) {
+  touches++;
+  setTimeout(() => {
+    touches = 0;
+  }, 300);
+  if (touches !== 2) {
+    return;
+  }
+  if (to === "before") {
+    moveBeforeFiveSec();
+  }
+  if (to === "after") {
+    moveAfterFiveSec();
+  }
+}
 
-const volume = ref(100);
+const volume = reactive({
+  current: 1,
+  max: 1,
+});
 function onVolumeChange(e) {
-  volume.value = e;
-  $video.value.volume = volume.value / 100;
+  volume.current = e.target.value;
+  $video.value.volume = volume.current;
 }
 function volumeDown() {
-  if (volume.value / 100 <= 0) {
+  if (volume.current <= 0) {
     return;
   }
-  volume.value -= 10;
-  $video.value.volume = volume.value / 100;
+  volume.current -= 0.1;
+  $video.value.volume = volume.current;
 }
 function volumeUp() {
-  if (volume.value / 100 >= 1) {
+  if (volume.current >= 1) {
     return;
   }
-  volume.value += 10;
-  $video.value.volume = volume.value / 100;
+  volume.current += 0.1;
+  $video.value.volume = volume.current;
 }
 function toggleMute() {
-  volume.value = volume.value === 0 ? 100 : 0;
-  $video.value.volume = volume.value / 100;
+  volume.current = volume.current === 0 ? 1 : 0;
+  $video.value.volume = volume.current;
 }
 
 const route = useRoute();
 const router = useRouter();
+router.beforeEach(async (to, from) => {
+  if (!$video.value) {
+    return;
+  }
+  emits("save-point", {
+    current: $video.value.currentTime,
+    max: $video.value.duration,
+  });
+  $video.value.currentTime = 0;
+});
+
 const nextLink = computed(() => {
   if (props.nextEpisode === "다음 화 없음" || !props.nextEpisode) {
     return "#";
@@ -260,6 +300,15 @@ function goToAnime() {
     height: 100%;
     background-color: #000;
   }
+  &__GestureArea {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+  }
+  &__GestureItem {
+    flex-grow: 1;
+  }
   &__Control {
     position: absolute;
     bottom: 0;
@@ -280,6 +329,9 @@ function goToAnime() {
   .AmbientPlayer {
     &__Effect {
       filter: blur(100px);
+    }
+    &__GestureArea {
+      display: none;
     }
   }
 }

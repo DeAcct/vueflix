@@ -1,15 +1,15 @@
 <template>
   <div class="VideoControlBar">
-    <input
-      type="range"
+    <ProgressBar
+      :progress="progress"
       class="VideoControlBar__Progress"
-      :max="progress.max"
-      :value="progress.current"
       @input="onChangePlayProgress"
+      @keydown.left.prevent
+      @keydown.right.prevent
     />
     <div class="VideoControlBar__Control">
       <div class="VideoControlBar__PlayState">
-        <ToolTip class="VideoControlBar__ControlItem">
+        <ToolTip class="VideoControlBar__ControlItem" align="flex-start">
           <template #content>
             <div class="VideoControlBar__ToolTipContent">
               {{ isPlaying ? "재생" : "일시정지" }}
@@ -24,29 +24,82 @@
             </button>
           </template>
         </ToolTip>
-        <ToolTip class="VideoControlBar__ControlItem">
-          <template #content
-            ><div class="VideoControlBar__ToolTipContent">
-              5초 앞으로
-            </div></template
-          >
-          <template #trigger>
-            <button class="VideoControlBar__Button">&lt;5</button>
-          </template>
-        </ToolTip>
-        <ToolTip class="VideoControlBar__ControlItem">
-          <template #content
-            ><div class="VideoControlBar__ToolTipContent">
-              5초 뒤로
-            </div></template
-          >
-          <template #trigger>
-            <button class="VideoControlBar__Button">5&gt;</button>
-          </template>
-        </ToolTip>
-        <ToolTip class="VideoControlBar__ControlItem">
+        <div class="VideoControlBar__QuickMove">
+          <ToolTip class="VideoControlBar__ControlItem" align="flex-start">
+            <template #content
+              ><div class="VideoControlBar__ToolTipContent">
+                5초 앞으로
+              </div></template
+            >
+            <template #trigger>
+              <button class="VideoControlBar__Button" @click="prevSec">
+                <IconBase>
+                  <IconPrevFiveSec />
+                </IconBase>
+              </button>
+            </template>
+          </ToolTip>
+          <ToolTip class="VideoControlBar__ControlItem" align="flex-start">
+            <template #content>
+              <div class="VideoControlBar__ToolTipContent">5초 뒤로</div>
+            </template>
+            <template #trigger>
+              <button class="VideoControlBar__Button" @click="nextSec">
+                <IconBase>
+                  <IconNextFiveSec />
+                </IconBase>
+              </button>
+            </template>
+          </ToolTip>
+        </div>
+        <ToolTip direction="row" class="VideoControlBar__ControlItem">
           <template #content>
-            <div class="VideoControlBar__ToolTipContent">다음 에피소드</div>
+            <div
+              class="VideoControlBar__ToolTipContent VideoControlBar__ToolTipContent--Volume"
+              v-if="!deviceInfo.isTouch"
+            >
+              <ProgressBar
+                class="VideoControlBar__VolumeSlide"
+                :progress="volume"
+                @input="onVolumeChange"
+              ></ProgressBar>
+            </div>
+          </template>
+          <template #trigger>
+            <button class="VideoControlBar__Button" @click="toggleMuted">
+              <IconBase>
+                <IconMuteOn v-if="isMuted" />
+                <IconMuteOff v-else />
+              </IconBase>
+            </button>
+          </template>
+        </ToolTip>
+        <ToolTip
+          class="VideoControlBar__ControlItem"
+          v-if="nextEpisode !== undefined && nextEpisode !== '다음화 없음'"
+          align="flex-start"
+        >
+          <template #content>
+            <div class="VideoControlBar__ToolTipContent">
+              <p class="VideoControlBar__ToolTipText">다음화</p>
+              <ThumbnailSet
+                :link="`/player/${route.params.title}/${nextEpisode.part}/${nextEpisode.index}`"
+                :key="`${route.params.title}-${nextEpisode.part}-${nextEpisode.index}`"
+                :ani-title="route.params.title"
+                :data="{
+                  thumbnail: nextEpisode.thumbnail,
+                  part: nextEpisode.part,
+                  index: nextEpisode.index,
+                  title: nextEpisode.title,
+                }"
+                type="episode"
+                watch-percent="0%"
+                :replace="{
+                  main: true,
+                  sub: true,
+                }"
+              />
+            </div>
           </template>
           <template #trigger>
             <RouterLink
@@ -63,28 +116,7 @@
             </RouterLink>
           </template>
         </ToolTip>
-        <ToolTip direction="row" class="VideoControlBar__ControlItem">
-          <template #content>
-            <div
-              class="VideoControlBar__ToolTipContent VideoControlBar__ToolTipContent--Volume"
-              v-if="!deviceInfo.isTouch"
-            >
-              <ProgressBar
-                class="VideoControlBar__VolumeSlide"
-                :percent="volume"
-                @value-change="onVolumeChange"
-              ></ProgressBar>
-            </div>
-          </template>
-          <template #trigger>
-            <button class="VideoControlBar__Button" @click="toggleMuted">
-              <IconBase>
-                <IconMuteOn v-if="isMuted" />
-                <IconMuteOff v-else />
-              </IconBase>
-            </button>
-          </template>
-        </ToolTip>
+
         <p class="VideoControlBar__Time">
           <slot name="time"></slot>
         </p>
@@ -144,6 +176,8 @@ import { useEventListener } from "@vueuse/core";
 import { useRoute } from "vue-router";
 
 import ProgressBar from "./ProgressBar.vue";
+import ToolTip from "./ToolTip.vue";
+import ThumbnailSet from "./ThumbnailSet.vue";
 
 import IconBase from "./IconBase.vue";
 import IconPlay from "./icons/IconPlay.vue";
@@ -156,7 +190,8 @@ import IconMuteOn from "./icons/IconMuteOn.vue";
 import IconMuteOff from "./icons/IconMuteOff.vue";
 import IconExpand from "./icons/IconExpand.vue";
 import IconShirink from "./icons/IconShirink.vue";
-import ToolTip from "./ToolTip.vue";
+import IconPrevFiveSec from "./icons/IconPrevFiveSec.vue";
+import IconNextFiveSec from "./icons/IconNextFiveSec.vue";
 
 const deviceInfo = inject("device-info");
 
@@ -167,6 +202,8 @@ const emits = defineEmits([
   "request-theater",
   "change-play-progress",
   "change-volume",
+  "prev-sec",
+  "next-sec",
 ]);
 
 const props = defineProps({
@@ -191,7 +228,7 @@ const props = defineProps({
     },
   },
   volume: {
-    type: String,
+    type: Object,
   },
 });
 
@@ -218,6 +255,13 @@ function toggleTheater() {
   emits("request-theater");
 }
 
+function prevSec() {
+  emits("prev-sec");
+}
+function nextSec() {
+  emits("next-sec");
+}
+
 const isFull = ref(document.fullscreenElement);
 useEventListener(document, "fullscreenchange", () => {
   isFull.value = document.fullscreenElement;
@@ -236,7 +280,7 @@ function toggleMuted() {
 watch(
   () => props.volume,
   () => {
-    isMuted.value = props.volume === "0%";
+    isMuted.value = props.volume === 0;
   }
 );
 
@@ -259,31 +303,9 @@ function onVolumeChange(e) {
     hsl(var(--text-900) / 0),
     hsl(var(--text-900) / 0.5)
   );
+
   &__Progress {
-    width: calc(100% - 4rem);
-    margin: 0 auto;
-    height: 1.2rem;
-    background-color: hsl(var(--bg-200) / 0.5);
-    backdrop-filter: blur(10px);
-    border-radius: 9999px;
-    -webkit-appearance: none;
-    accent-color: hsl(var(--theme-500));
-    overflow: hidden;
-    &::-webkit-slider-runnable-track {
-      height: 0.6rem;
-      border-radius: 9999px;
-      outline: none;
-      box-shadow: -999999px 0 0;
-    }
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 1.2rem;
-      height: 1.2rem;
-      background-color: hsl(var(--theme-500));
-      box-shadow: -100vw 0 0 100vw hsl(var(--theme-500));
-      margin-top: -0.3rem;
-      border-radius: 9999px;
-    }
+    margin-bottom: -0.9rem;
   }
 
   &__Control {
@@ -299,6 +321,9 @@ function onVolumeChange(e) {
     align-items: center;
     gap: 1.6rem;
   }
+  &__QuickMove {
+    display: none;
+  }
 
   &__Button {
     width: 2.4rem;
@@ -311,17 +336,24 @@ function onVolumeChange(e) {
 
   &__ToolTipContent {
     padding: 1rem;
-    background-color: hsl(var(--bg-200));
-    border-radius: var(--global-radius);
+    background-color: hsl(var(--bg-100));
+    border-radius: calc(var(--global-radius) + 1rem);
     font-size: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    --thumbnail-width: 20rem;
     &--Volume {
       background-color: transparent;
     }
   }
+  &__ToolTipText {
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 0.5rem;
+  }
   &__VolumeSlide {
-    width: 6rem;
-    height: 1.6rem;
-    margin-right: 0.2rem;
+    width: 7.2rem;
   }
   &__Time {
     display: none;
@@ -339,6 +371,10 @@ function onVolumeChange(e) {
   .VideoControlBar {
     gap: 1.2rem;
     padding-bottom: 1.2rem;
+    &__QuickMove {
+      display: flex;
+      gap: 1.2rem;
+    }
     &__Time {
       display: block;
       font-size: 1.3rem;

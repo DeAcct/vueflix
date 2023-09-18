@@ -67,8 +67,7 @@
         </div>
         <AnimeActions
           v-bind="{
-            continueString,
-            continueLink,
+            continueData,
             wannaSee,
           }"
           @wanna-see-toggle="wannaSeeToggle"
@@ -160,52 +159,24 @@ function purchase() {
   }
 }
 
-function removeWatchHistory() {
-  emit("remove-watch-history");
-}
-function handleInterest() {
-  emit("handle-interest");
-}
-
 const animeInfo = inject("anime-info");
 const bgURL = computed(() => `url(${animeInfo.value.poster})`);
 const gradientPercent = computed(() => (!deviceInfo.isMobile ? "90%" : "80%"));
 
-const continueLink = computed(() => {
+const continueData = computed(() => {
   if (user.value) {
     const last = user.value.recentWatched.find(
       (anime) => anime.aniTitle === route.params.title
     );
-    if (last) {
-      return last.continueLink;
-    }
+    return {
+      link: `/player/${route.params.title}/${last.part}/${last.index}`,
+      text: `${last.part} ${last.index}부터 이어보기`,
+    };
   }
-  return `/player/${route.params.title}/1기/1화`;
-});
-
-const actions = [
-  {
-    text: "시청기록 초기화",
-    method: removeWatchHistory,
-  },
-  {
-    text: "관심없음",
-    method: handleInterest,
-  },
-];
-
-const continueString = computed(() => {
-  const last = user.value?.recentWatched.find(
-    (anime) => anime.aniTitle === route.params.title
-  );
-  if (last) {
-    const stringOrigin = last.continueLink.split("/");
-    const part = stringOrigin[3];
-    const index = stringOrigin[4];
-    return `${part} ${index} 이어보기`;
-  }
-
-  return "1화 무료보기";
+  return {
+    link: `/player/${route.params.title}/1기/1화`,
+    text: "정주행 시작하기",
+  };
 });
 
 const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));

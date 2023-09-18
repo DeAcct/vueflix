@@ -11,7 +11,7 @@ const mutations = {
   },
   updateRecentWatched(state, payload) {
     const targetIndex = state.user.recentWatched.findIndex(
-      (recent) => recent.aniTitle === payload.aniTitle,
+      (recent) => recent.aniTitle === payload.aniTitle
     );
     if (targetIndex !== -1) {
       state.user.recentWatched[targetIndex] = payload;
@@ -42,18 +42,27 @@ const mutations = {
       //     if (a.watchedPoint[sortBy] < b.watchedPoint[sortBy]) {
       //       return 1;
       //     }
-      //     return 0;
+      //     return 0;`
       //   })
       // );
-      state.user.recentWatched = useTimeSort(
-        state.user.recentWatched,
-        "watchedPoint",
-      );
+      // state.user.recentWatched = useTimeSort(
+      //   state.user.recentWatched,
+      //   "watchedPoint"
+      // );
+      state.user.recentWatched = [...state.user.recentWatched].sort((a, b) => {
+        if (a.watchedPoint > b.watchedPoint) {
+          return -1;
+        }
+        if (a.watchedPoint < b.watchedPoint) {
+          return 1;
+        }
+        return 0;
+      });
     }
   },
   updateWannaSee(state, payload) {
     const targetIndex = state.user.wannaSee.findIndex(
-      (wanna) => wanna.aniTitle === payload.aniTitle,
+      (wanna) => wanna.aniTitle === payload.aniTitle
     );
     if (targetIndex !== -1) {
       state.user.wannaSee[targetIndex] = payload;
@@ -80,7 +89,7 @@ const mutations = {
   },
   deleteWannaSee(state, payload) {
     state.user.wannaSee = state.user.wannaSee.filter(
-      (anime) => anime.aniTitle !== payload,
+      (anime) => anime.aniTitle !== payload
     );
   },
   mergeUser(state, payload) {
@@ -88,7 +97,7 @@ const mutations = {
   },
   updatePurchased(state, payload) {
     const targetIndex = state.user.purchased.findIndex(
-      (purchase) => purchase.aniTitle === payload.aniTitle,
+      (purchase) => purchase.aniTitle === payload.aniTitle
     );
     if (targetIndex !== -1) {
       state.user.purchased[targetIndex].episodes = [
@@ -120,12 +129,12 @@ const mutations = {
   },
   updateMaratonWatch(state, payload) {
     const targetIndex = state.user.maratonWatch.findIndex(
-      (anime) => anime.aniTitle === payload.aniTitle,
+      (anime) => anime.aniTitle === payload.aniTitle
     );
     if (targetIndex === -1) {
       const data = {
         aniTitle: payload.aniTitle,
-        recentTime: payload.recentTime,
+        time: payload.time,
         allEpisodes: payload.allEpisodes,
         items: [payload.item],
         maratonEnd: false,
@@ -135,7 +144,7 @@ const mutations = {
       /* 시간정보 업데이트 */
       state.user.maratonWatch[targetIndex] = {
         ...state.user.maratonWatch[targetIndex],
-        recentTime: payload.recentTime,
+        time: payload.time,
       };
       /*
        * 100%면 안건들기
@@ -144,28 +153,31 @@ const mutations = {
        */
       const target = state.user.maratonWatch[targetIndex];
       const mutateTargetEpIndex = target.items.findIndex(
-        (item) => item.part === payload.item.part && item.index === payload.item.index,
+        (item) =>
+          item.part === payload.item.part && item.index === payload.item.index
       );
-      const maratonEnd = target.items.reduce(
-        (prev, next) => prev && next.episodePercent === "100%",
-        true,
-      ) && target.items.length === target.allEpisodes;
+      const maratonEnd =
+        target.items.reduce(
+          (prev, next) => prev && next.episodePercent === "100%",
+          true
+        ) && target.items.length === target.allEpisodes;
       if (mutateTargetEpIndex === -1) {
         target.items.push(payload.item);
       } else {
-        target.items[mutateTargetEpIndex].episodePercent = payload.item.episodePercent;
+        target.items[mutateTargetEpIndex].episodePercent =
+          payload.item.episodePercent;
       }
       state.user.maratonWatch[targetIndex].maratonEnd = maratonEnd;
     }
   },
   clearMaraton(state, payload) {
     state.user.maratonWatch = state.user.maratonWatch.filter(
-      (anime) => payload !== anime.aniTitle,
+      (anime) => payload !== anime.aniTitle
     );
   },
   updateKeywordReview(state, payload) {
     const exists = state.user.keywordReview.findIndex(
-      (animeItem) => animeItem.aniTitle === payload.aniTitle,
+      (animeItem) => animeItem.aniTitle === payload.aniTitle
     );
     if (exists !== -1) {
       state.user.keywordReview[exists].likeIt = payload.likeIt;

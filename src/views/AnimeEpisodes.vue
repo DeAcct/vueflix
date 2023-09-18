@@ -1,31 +1,33 @@
 <template>
   <div class="AnimeEpisodes">
-    <AccordionWidget
-      v-for="({ part, episodes }, iteratePart) in animeInfo.parts"
-      :key="iteratePart"
-      :open="iteratePart === 0"
-      class="AnimeEpisodes__Accordion"
-    >
-      <template v-slot:title>
-        {{ part }}
-      </template>
-      <template v-slot:content>
-        <Thumbnailset
-          v-for="{ title, index, thumbnail } in episodes"
-          class="AnimeEpisodes__Item"
-          type="episode"
-          :ani-title="animeInfo.name"
-          :data="{ index, title, part, thumbnail }"
-          watch-percent="0%"
-          direction="row"
-          :link="`/player/${animeInfo.name}/${part}/${index}`"
-          :replace="{
-            main: false,
-            sub: false,
-          }"
-        ></Thumbnailset>
-      </template>
-    </AccordionWidget>
+    <template v-if="animeInfo.parts">
+      <AccordionWidget
+        v-for="({ part, episodes }, iteratePart) in animeInfo.parts"
+        :key="iteratePart"
+        :open="iteratePart === 0"
+        class="AnimeEpisodes__Accordion"
+      >
+        <template v-slot:title>
+          {{ part }}
+        </template>
+        <template v-slot:content>
+          <Thumbnailset
+            v-for="{ title, index, thumbnail } in episodes"
+            class="AnimeEpisodes__Item"
+            type="episode"
+            :ani-title="animeInfo.name"
+            :data="{ index, title, part, thumbnail }"
+            watch-percent="0%"
+            direction="row"
+            :link="`/player/${animeInfo.name}/${part}/${index}`"
+            :replace="{
+              main: false,
+              sub: false,
+            }"
+          ></Thumbnailset>
+        </template>
+      </AccordionWidget>
+    </template>
   </div>
 </template>
 
@@ -39,9 +41,6 @@ const animeInfo = inject("anime-info");
 
 const emit = defineEmits(["open-login-modal"]);
 const route = useRoute();
-function openLoginModal() {
-  emit("open-login-modal");
-}
 
 onMounted(() => {
   document.title = `${route.params.title} 다시보기`;

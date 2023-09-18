@@ -9,7 +9,8 @@
       <AmbientPlayer
         class="Player__Video"
         @toggle-theater="toggleTheater"
-        :src="TestAnime"
+        @save-point="savePoint"
+        :src="videoSrc"
         :next-episode="nextEpisode"
         :prev-episode="prevEpisode"
         :ambient="mode !== 'theater'"
@@ -112,12 +113,13 @@
 
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
-import { doc, getDoc } from "firebase/firestore";
+import { arrayUnion, doc, getDoc, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "@/utility/firebase";
 
 import { onMounted, ref, computed, inject, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 import AccordionWidget from "@/components/AccordionWidget.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
@@ -132,13 +134,35 @@ import TestAnime from "@/assets/TestAnime.mp4";
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
 const storage = getStorage();
-// const { state: videoSrc } = useAsyncState(
-//   getDownloadURL(fireRef(storage, "testAnime.mp4"))
-// );
 const videoSrc = ref("");
 onMounted(getVideoUrl);
 async function getVideoUrl() {
   videoSrc.value = await getDownloadURL(fireRef(storage, "testAnime.mp4"));
+}
+const router = useRouter();
+router.afterEach(async () => {
+  await getVideoUrl();
+});
+const store = useStore();
+const recentWatched = computed(() => store.state.auth.user.recentWatched);
+async function savePoint(e) {
+  console.log(nowEpisode.value);
+  const newData = {
+    aniTitle: route.params.title,
+    title: nowEpisode.value.title,
+    thumbnail: nowEpisode.value.thumbnail,
+    part: route.params.part,
+    index: route.params.index,
+    time: e,
+    watchedPoint: new Date(),
+  };
+  store.commit("auth/updateRecentWatched", newData);
+  store.commit("auth/updateMaratonWatch", newData);
+  await setDoc(
+    doc(db, "user", session.uid),
+    { recentWatched: recentWatched.value },
+    { merge: true }
+  );
 }
 
 const isInteracting = ref(false);
@@ -159,7 +183,6 @@ onMounted(async () => {
 });
 
 const session = getAuth().currentUser;
-const router = useRouter();
 
 const nowEpisode = computed(() => {
   if (!animeInfo.value.parts) {
@@ -320,7 +343,6 @@ function toggleTheater() {
   &__AniTitle {
     font-size: 1.2rem;
     font-weight: 500;
-    line-height: 1.5;
     color: transparent;
     transition: 150ms ease-out;
     min-width: 0;
@@ -329,6 +351,8 @@ function toggleTheater() {
       background: transparent;
     }
     a {
+      line-height: 1.5;
+      display: block;
       color: inherit;
     }
 

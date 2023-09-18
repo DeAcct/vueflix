@@ -12,23 +12,25 @@
           >
             <ThumbnailSet
               v-for="{
-                name,
+                aniTitle,
                 part,
                 index,
-                watchedPercent,
-                shortName,
+                time,
+                thumbnail,
+                title,
               } in auth?.recentWatched"
               type="episode"
-              :link="`/player/${name}/${part}/${index}`"
-              :sub-link="`/anime/${name}/episodes`"
-              :ani-title="name"
+              :link="`/player/${aniTitle}/${part}/${index}`"
+              :sub-link="`/anime/${aniTitle}/episodes`"
+              :ani-title="aniTitle"
               :data="{
                 part,
                 index,
+                thumbnail,
+                title,
               }"
-              :watch-percent="watchedPercent"
-              :short-title="shortName"
-              :key="name"
+              :watch-percent="`${(time.current / time.max) * 100}%`"
+              :key="aniTitle"
               :replace="{
                 main: false,
                 sub: false,
