@@ -147,7 +147,10 @@ function requestTheater() {
   emits("toggle-theater");
 }
 
-const progress = ref("0%");
+const progress = reactive({
+  current: 0,
+  max: 0,
+});
 const time = reactive({ current: "00:00", duration: "00:00" });
 function timeChange() {
   if (!$video.value) {
@@ -156,9 +159,11 @@ function timeChange() {
   if (!isVideoLoaded.value) {
     return;
   }
-  progress.value = `${
-    ($video.value.currentTime / $video.value.duration) * 100
-  }%`;
+  // progress.value = `${
+  //   ($video.value.currentTime / $video.value.duration) * 100
+  // }%`;
+  progress.current = $video.value.currentTime;
+  progress.max = $video.value.duration;
   time.current = useSecToHourMinSec($video.value.currentTime);
   if (time.duration === "00:00") {
     time.duration = useSecToHourMinSec($video.value.duration);
@@ -178,7 +183,7 @@ function setPlaying() {
 }
 
 function onChangePlayProgress(e) {
-  $video.value.currentTime = ($video.value.duration * e) / 100;
+  $video.value.currentTime = $video.value.duration * e;
 }
 function moveBeforeFiveSec() {
   $video.value.currentTime -= 5;

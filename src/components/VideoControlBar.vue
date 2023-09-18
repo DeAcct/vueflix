@@ -1,10 +1,12 @@
 <template>
   <div class="VideoControlBar">
-    <ProgressBar
+    <input
+      type="range"
       class="VideoControlBar__Progress"
-      :percent="progress"
-      @value-change="onChangePlayProgress"
-    ></ProgressBar>
+      :max="progress.max"
+      :value="progress.current"
+      @input="onChangePlayProgress"
+    />
     <div class="VideoControlBar__Control">
       <div class="VideoControlBar__PlayState">
         <ToolTip class="VideoControlBar__ControlItem">
@@ -20,6 +22,26 @@
                 <IconPause v-else />
               </IconBase>
             </button>
+          </template>
+        </ToolTip>
+        <ToolTip class="VideoControlBar__ControlItem">
+          <template #content
+            ><div class="VideoControlBar__ToolTipContent">
+              5초 앞으로
+            </div></template
+          >
+          <template #trigger>
+            <button class="VideoControlBar__Button">&lt;5</button>
+          </template>
+        </ToolTip>
+        <ToolTip class="VideoControlBar__ControlItem">
+          <template #content
+            ><div class="VideoControlBar__ToolTipContent">
+              5초 뒤로
+            </div></template
+          >
+          <template #trigger>
+            <button class="VideoControlBar__Button">5&gt;</button>
           </template>
         </ToolTip>
         <ToolTip class="VideoControlBar__ControlItem">
@@ -69,7 +91,7 @@
       </div>
 
       <div class="VideoControlBar__HowWatch">
-        <ToolTip v-if="!isFull" align="flex-end">
+        <ToolTip v-if="!isFull && !deviceInfo.isMobile" align="flex-end">
           <template #content>
             <div class="VideoControlBar__ToolTipContent">영화관 모드</div>
           </template>
@@ -149,7 +171,7 @@ const emits = defineEmits([
 
 const props = defineProps({
   progress: {
-    type: String,
+    type: Object,
   },
   isPlaying: {
     type: Boolean,
@@ -219,7 +241,7 @@ watch(
 );
 
 function onChangePlayProgress(e) {
-  emits("change-play-progress", e);
+  emits("change-play-progress", Number(e.target.value) / props.progress.max);
 }
 function onVolumeChange(e) {
   emits("change-volume", e);
@@ -239,9 +261,29 @@ function onVolumeChange(e) {
   );
   &__Progress {
     width: calc(100% - 4rem);
-    margin: 0 auto -0.6rem;
-    height: 1.6rem;
+    margin: 0 auto;
+    height: 1.2rem;
+    background-color: hsl(var(--bg-200) / 0.5);
+    backdrop-filter: blur(10px);
     border-radius: 9999px;
+    -webkit-appearance: none;
+    accent-color: hsl(var(--theme-500));
+    overflow: hidden;
+    &::-webkit-slider-runnable-track {
+      height: 0.6rem;
+      border-radius: 9999px;
+      outline: none;
+      box-shadow: -999999px 0 0;
+    }
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 1.2rem;
+      height: 1.2rem;
+      background-color: hsl(var(--theme-500));
+      box-shadow: -100vw 0 0 100vw hsl(var(--theme-500));
+      margin-top: -0.3rem;
+      border-radius: 9999px;
+    }
   }
 
   &__Control {
