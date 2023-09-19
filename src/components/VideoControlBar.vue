@@ -367,6 +367,17 @@ function onVolumeChange(e) {
   }
 }
 
+@media screen and (min-width: 768px) {
+  .VideoControlBar {
+    &__Time {
+      display: block;
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #fff;
+    }
+  }
+}
+
 @media screen and (min-width: 1080px) {
   .VideoControlBar {
     gap: 1.2rem;
@@ -374,12 +385,6 @@ function onVolumeChange(e) {
     &__QuickMove {
       display: flex;
       gap: 1.2rem;
-    }
-    &__Time {
-      display: block;
-      font-size: 1.3rem;
-      font-weight: 500;
-      color: #fff;
     }
   }
 }

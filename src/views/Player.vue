@@ -146,7 +146,6 @@ router.afterEach(async () => {
 const store = useStore();
 const recentWatched = computed(() => store.state.auth.user.recentWatched);
 async function savePoint(e) {
-  console.log(nowEpisode.value);
   const newData = {
     aniTitle: route.params.title,
     title: nowEpisode.value.title,
@@ -155,6 +154,7 @@ async function savePoint(e) {
     index: route.params.index,
     time: e,
     watchedPoint: new Date(),
+    maratonMax: episodeCounter.value,
   };
   store.commit("auth/updateRecentWatched", newData);
   store.commit("auth/updateMaratonWatch", newData);

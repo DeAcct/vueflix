@@ -164,10 +164,17 @@ const bgURL = computed(() => `url(${animeInfo.value.poster})`);
 const gradientPercent = computed(() => (!deviceInfo.isMobile ? "90%" : "80%"));
 
 const continueData = computed(() => {
-  if (user.value) {
-    const last = user.value.recentWatched.find(
-      (anime) => anime.aniTitle === route.params.title
-    );
+  if (!user.value) {
+    return {
+      link: `/player/${route.params.title}/1기/1화`,
+      text: "가입하고 정주행 시작",
+    };
+  }
+  const last = user.value.recentWatched.find(
+    (anime) => anime.aniTitle === route.params.title
+  );
+
+  if (last) {
     return {
       link: `/player/${route.params.title}/${last.part}/${last.index}`,
       text: `${last.part} ${last.index}부터 이어보기`,
@@ -175,7 +182,7 @@ const continueData = computed(() => {
   }
   return {
     link: `/player/${route.params.title}/1기/1화`,
-    text: "정주행 시작하기",
+    text: "정주행 시작",
   };
 });
 
