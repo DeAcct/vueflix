@@ -168,15 +168,16 @@ async function savePoint(e) {
 }
 
 console.log(maratonWatch);
-const teleportTime = computed(
-  () =>
-    maratonWatch.value
-      .find((anime) => anime.aniTitle === route.params.title)
-      .list.find(
-        (log) =>
-          log.part === route.params.part && log.index === route.params.index
-      )?.time.current
-);
+const teleportTime = computed(() => {
+  const target = maratonWatch.value.find(
+    (anime) => anime.aniTitle === route.params.title
+  ).list;
+
+  const current = target.find(
+    (log) => log.part === route.params.part && log.index === route.params.index
+  );
+  return current?.time.current;
+});
 
 const isInteracting = ref(false);
 function setInteract(e) {
