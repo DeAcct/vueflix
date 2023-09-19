@@ -1,11 +1,13 @@
 <template>
   <div class="AmbientPlayer">
     <div class="AmbientPlayer__FullscreenRoot" ref="$fullscreenRoot">
+      <LoadingSpinner :is-loading="isLoading" class="AmbientPlayer__Loading" />
       <video
         ref="$video"
         :src="src"
         crossorigin="anonymous"
         class="AmbientPlayer__Video"
+        @loadeddata="onLoadedVideo"
         @timeupdate="timeChange"
         @play="setPlaying"
         @pause="setPlaying"
@@ -50,11 +52,12 @@
 
 <script setup>
 import { reactive, ref, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import VideoControlBar from "./VideoControlBar.vue";
 import useAmbient from "@/composables/ambient";
+import LoadingSpinner from "./LoadingSpinner.vue";
 import { useSecToHourMinSec } from "@/composables/formatter";
 import { useEventListener } from "@vueuse/core";
-import { useRoute, useRouter } from "vue-router";
 
 const props = defineProps({
   src: {
@@ -71,6 +74,9 @@ const props = defineProps({
   },
   preventKeyBinding: {
     type: Boolean,
+  },
+  teleportTime: {
+    type: Number,
   },
 });
 
@@ -115,6 +121,12 @@ useEventListener(window, "keydown", (e) => {
   }
   keyBinding[e.key]();
 });
+
+const isLoading = ref(true);
+function onLoadedVideo() {
+  isLoading.value = false;
+  $video.value.currentTime = props.teleportTime;
+}
 
 const { $video, $effect, isVideoLoaded } = useAmbient();
 
@@ -294,6 +306,14 @@ function goToAnime() {
     height: 100%;
     display: flex;
     align-items: center;
+  }
+  &__Loading {
+    width: 4.8rem;
+    height: 4.8rem;
+    position: absolute;
+    top: calc(50% - 2.4rem);
+    left: calc(50% - 2.4rem);
+    color: #fff;
   }
   &__Video {
     width: 100%;

@@ -10,6 +10,7 @@
         class="Player__Video"
         @toggle-theater="toggleTheater"
         @save-point="savePoint"
+        :teleport-time="teleportTime"
         :src="videoSrc"
         :next-episode="nextEpisode"
         :prev-episode="prevEpisode"
@@ -145,6 +146,7 @@ router.afterEach(async () => {
 });
 const store = useStore();
 const recentWatched = computed(() => store.state.auth.user.recentWatched);
+const maratonWatch = computed(() => store.state.auth.user.maratonWatch);
 async function savePoint(e) {
   const newData = {
     aniTitle: route.params.title,
@@ -160,10 +162,21 @@ async function savePoint(e) {
   store.commit("auth/updateMaratonWatch", newData);
   await setDoc(
     doc(db, "user", session.uid),
-    { recentWatched: recentWatched.value },
+    { recentWatched: recentWatched.value, maratonWatch: maratonWatch.value },
     { merge: true }
   );
 }
+
+console.log(maratonWatch);
+const teleportTime = computed(
+  () =>
+    maratonWatch.value
+      .find((anime) => anime.aniTitle === route.params.title)
+      .list.find(
+        (log) =>
+          log.part === route.params.part && log.index === route.params.index
+      )?.time.current
+);
 
 const isInteracting = ref(false);
 function setInteract(e) {
