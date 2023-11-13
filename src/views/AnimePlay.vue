@@ -76,7 +76,7 @@
               >
                 <ThumbnailSet
                   v-for="{ title, index, thumbnail } in episodes"
-                  :link="`/player/${animeInfo.name}/${part}/${index}`"
+                  :link="`/anime-play/${animeInfo.name}/${part}/${index}`"
                   :direction="deviceInfo.isTouch ? 'column' : 'row'"
                   :key="`${title}-${part}-${index}`"
                   :ani-title="animeInfo.name"
@@ -167,7 +167,6 @@ async function savePoint(e) {
   );
 }
 
-console.log(maratonWatch);
 const teleportTime = computed(() => {
   const target = maratonWatch.value.find(
     (anime) => anime.aniTitle === route.params.title
@@ -176,6 +175,7 @@ const teleportTime = computed(() => {
   const current = target.find(
     (log) => log.part === route.params.part && log.index === route.params.index
   );
+  console.log(current?.time.current);
   return current?.time.current;
 });
 

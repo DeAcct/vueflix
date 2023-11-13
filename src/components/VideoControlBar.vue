@@ -83,7 +83,7 @@
             <div class="VideoControlBar__ToolTipContent">
               <p class="VideoControlBar__ToolTipText">다음화</p>
               <ThumbnailSet
-                :link="`/player/${route.params.title}/${nextEpisode.part}/${nextEpisode.index}`"
+                :link="`/anime-play/${route.params.title}/${nextEpisode.part}/${nextEpisode.index}`"
                 :key="`${route.params.title}-${nextEpisode.part}-${nextEpisode.index}`"
                 :ani-title="route.params.title"
                 :data="{
@@ -237,7 +237,7 @@ const nextLink = computed(() => {
   if (props.nextEpisode === "다음 화 없음" || !props.nextEpisode) {
     return "#";
   }
-  return `/player/${route.params.title}/${props.nextEpisode.part}/${props.nextEpisode.index}`;
+  return `/anime-play/${route.params.title}/${props.nextEpisode.part}/${props.nextEpisode.index}`;
 });
 
 function togglePlay() {
@@ -299,10 +299,7 @@ function onVolumeChange(e) {
   gap: 0.8rem;
   padding-bottom: 0.8rem;
   width: 100%;
-  background: linear-gradient(
-    hsl(var(--text-900) / 0),
-    hsl(var(--text-900) / 0.5)
-  );
+  background: linear-gradient(hsl(0 0% 0% / 0), hsl(0 0% 0% / 0.5));
 
   &__Progress {
     margin-bottom: -0.9rem;

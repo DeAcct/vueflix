@@ -44,7 +44,7 @@
           :watch-percent="`${(time.current / time.max) * 100}%`"
           :link="
             selectedTab === 'recentWatched'
-              ? `/player/${aniTitle}/${part}/${index}`
+              ? `/anime-play/${aniTitle}/${part}/${index}`
               : `/anime/${aniTitle}/episodes`
           "
           :data="{

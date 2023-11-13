@@ -44,9 +44,9 @@ const routes = [
     ],
   },
   {
-    path: "/player/:title/:part/:index",
-    name: "player",
-    component: () => import("@/views/Player.vue"),
+    path: "/anime-play/:title/:part/:index",
+    name: "anime-play",
+    component: () => import("@/views/AnimePlay.vue"),
     meta: {
       appBar: {
         backButton: true,

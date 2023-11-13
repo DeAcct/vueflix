@@ -106,7 +106,8 @@
   --general-bg: hsl(var(--bg-200));
 }
 
-#app[data-theme="dark"] {
+#app[data-theme="dark"],
+#app[data-theme="dark"] + * {
   --header-content: var(--text-800);
 
   --text-900: 210 20% 95%;

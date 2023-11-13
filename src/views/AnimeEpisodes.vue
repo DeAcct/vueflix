@@ -19,7 +19,7 @@
             :data="{ index, title, part, thumbnail }"
             watch-percent="0%"
             direction="row"
-            :link="`/player/${animeInfo.name}/${part}/${index}`"
+            :link="`/anime-play/${animeInfo.name}/${part}/${index}`"
             :replace="{
               main: false,
               sub: false,

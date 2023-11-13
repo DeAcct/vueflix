@@ -168,6 +168,13 @@ summary {
   background-repeat: repeat-x;
 }
 
+#Overay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
 @keyframes loading-animation {
   from {
     background-position-x: 0%;

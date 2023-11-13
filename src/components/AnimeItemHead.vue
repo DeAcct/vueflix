@@ -166,7 +166,7 @@ const gradientPercent = computed(() => (!deviceInfo.isMobile ? "90%" : "80%"));
 const continueData = computed(() => {
   if (!user.value) {
     return {
-      link: `/player/${route.params.title}/1기/1화`,
+      link: `/anime-play/${route.params.title}/1기/1화`,
       text: "가입하고 정주행 시작",
     };
   }
@@ -176,12 +176,12 @@ const continueData = computed(() => {
 
   if (last) {
     return {
-      link: `/player/${route.params.title}/${last.part}/${last.index}`,
+      link: `/anime-play/${route.params.title}/${last.part}/${last.index}`,
       text: `${last.part} ${last.index}부터 이어보기`,
     };
   }
   return {
-    link: `/player/${route.params.title}/1기/1화`,
+    link: `/anime-play/${route.params.title}/1기/1화`,
     text: "정주행 시작",
   };
 });

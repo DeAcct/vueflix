@@ -3,7 +3,7 @@
     <component
       :is="type"
       :src="src"
-      :alt="alt"
+      :alt="type === 'img' ? alt : undefined"
       :class="[
         'OptimizedMedia__Body',
         { 'OptimizedMedia__Body--Loaded': isLoaded },

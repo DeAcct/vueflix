@@ -6,12 +6,12 @@ const mutations = {
   pushToast(item) {
     state.toasts.add(item);
     setTimeout(() => {
-      this.destoryToast(item.id);
+      mutations.destoryToast(item.id);
     }, item.time);
   },
   destoryToast(id) {
     state.toasts = new Set(
-      [...state.toasts].filter((toast) => toast.id !== id),
+      [...state.toasts].filter((toast) => toast.id !== id)
     );
   },
 };

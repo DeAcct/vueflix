@@ -47,17 +47,35 @@
       height="9"
       aria-hidden="true"
     ></canvas>
+    <button class="AmbientPlayer__ScreenshotButton" @click="takeScreenshot">
+      <IconBase>
+        <IconScreenshot />
+      </IconBase>
+    </button>
   </div>
+  <Teleport to="#Overay">
+    <Transition name="slide-up">
+      <ScreenshotSet
+        :src="screenshotPreview.imgSrc"
+        v-if="screenshotPreview.show"
+      ></ScreenshotSet>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup>
 import { reactive, ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import VideoControlBar from "./VideoControlBar.vue";
-import useAmbient from "@/composables/ambient";
-import LoadingSpinner from "./LoadingSpinner.vue";
-import { useSecToHourMinSec } from "@/composables/formatter";
 import { useEventListener } from "@vueuse/core";
+import useAmbient from "@/composables/ambient";
+import { useSecToHourMinSec } from "@/composables/formatter";
+import { useVideoScreenshot } from "@/composables/screenshot";
+
+import ScreenshotSet from "./ScreenshotSet.vue";
+import VideoControlBar from "./VideoControlBar.vue";
+import LoadingSpinner from "./LoadingSpinner.vue";
+import IconBase from "./IconBase.vue";
+import IconScreenshot from "./icons/IconScreenshot.vue";
 
 const props = defineProps({
   src: {
@@ -94,7 +112,7 @@ const keyBinding = {
   m: toggleMute,
 
   // e: 에피소드 목록 페이지
-  e: goToAnime,
+  e: goToAnimeList,
 
   // 상/하 화살표: 볼륨 상/하
   ArrowUp: volumeUp,
@@ -111,7 +129,6 @@ const keyBinding = {
   // 스페이스 바: 일시정지/재생
   " ": playToggle,
 };
-
 useEventListener(window, "keydown", (e) => {
   if (props.preventKeyBinding) {
     return;
@@ -259,7 +276,7 @@ function toggleMute() {
 
 const route = useRoute();
 const router = useRouter();
-router.beforeEach(async (to, from) => {
+router.beforeEach((to, from) => {
   if (!$video.value) {
     return;
   }
@@ -274,13 +291,13 @@ const nextLink = computed(() => {
   if (props.nextEpisode === "다음 화 없음" || !props.nextEpisode) {
     return "#";
   }
-  return `/player/${route.params.title}/${props.nextEpisode.part}/${props.nextEpisode.index}`;
+  return `/anime-play/${route.params.title}/${props.nextEpisode.part}/${props.nextEpisode.index}`;
 });
 const prevLink = computed(() => {
   if (props.prevEpisode === "이전 화 없음" || !props.prevEpisode) {
     return "#";
   }
-  return `/player/${route.params.title}/${props.prevEpisode.part}/${props.prevEpisode.index}`;
+  return `/anime-play/${route.params.title}/${props.prevEpisode.part}/${props.prevEpisode.index}`;
 });
 function requestNextEpisode() {
   router.push(nextLink.value);
@@ -289,8 +306,19 @@ function requestPrevEpisode() {
   router.push(prevLink.value);
 }
 
-function goToAnime() {
+function goToAnimeList() {
   router.push(`/anime/${route.params.title}/episodes`);
+}
+
+const screenshotPreview = ref({
+  show: false,
+  imgSrc: "",
+});
+function takeScreenshot() {
+  const { downloadURL } = useVideoScreenshot($video);
+  console.log(downloadURL.value, "알림영역으로 전파");
+  screenshotPreview.value.imgSrc = downloadURL.value;
+  screenshotPreview.value.show = true;
 }
 </script>
 
@@ -314,6 +342,18 @@ function goToAnime() {
     top: calc(50% - 2.4rem);
     left: calc(50% - 2.4rem);
     color: #fff;
+  }
+  &__ScreenshotButton {
+    position: absolute;
+    right: 2rem;
+    width: 3.6rem;
+    height: 3.6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.8rem;
+    background-color: hsl(var(--bg-100) / 0.3);
+    border-radius: 50%;
   }
   &__Video {
     width: 100%;
@@ -354,5 +394,14 @@ function goToAnime() {
       display: none;
     }
   }
+}
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: 300ms ease-out;
+}
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translate(0, 100%);
 }
 </style>

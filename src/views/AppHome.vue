@@ -20,7 +20,7 @@
                 title,
               } in auth?.recentWatched"
               type="episode"
-              :link="`/player/${aniTitle}/${part}/${index}`"
+              :link="`/anime-play/${aniTitle}/${part}/${index}`"
               :sub-link="`/anime/${aniTitle}/episodes`"
               :ani-title="aniTitle"
               :data="{

@@ -111,7 +111,7 @@ function handleScroll() {
   if (
     window.scrollY >= 500 ||
     activity.value !== "Logo" ||
-    route.name === "player"
+    route.name === "anime-play"
   ) {
     scrollPercent.value = 1;
     return;
