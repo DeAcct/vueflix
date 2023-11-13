@@ -124,7 +124,6 @@ watch(selectedDay, async () => {
 const isModalOpened = ref(false);
 onMounted(() => {
   window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
     if (Cookies.get("add-to-home-screen") === undefined) {
       isModalOpened.value = e;
     }
