@@ -54,6 +54,10 @@
     </button>
   </div>
   <Teleport to="#Overay">
+    <ModalBackdrop
+      :action="closeScreenshotPreview"
+      v-if="screenshotPreview.show"
+    />
     <Transition name="slide-up">
       <ScreenshotSet
         :src="screenshotPreview.imgSrc"
@@ -76,6 +80,7 @@ import VideoControlBar from "./VideoControlBar.vue";
 import LoadingSpinner from "./LoadingSpinner.vue";
 import IconBase from "./IconBase.vue";
 import IconScreenshot from "./icons/IconScreenshot.vue";
+import ModalBackdrop from "./ModalBackdrop.vue";
 
 const props = defineProps({
   src: {
@@ -318,6 +323,9 @@ function takeScreenshot() {
   const { downloadURL } = useVideoScreenshot($video);
   screenshotPreview.value.imgSrc = downloadURL.value;
   screenshotPreview.value.show = true;
+}
+function closeScreenshotPreview() {
+  screenshotPreview.value.show = false;
 }
 </script>
 
