@@ -13,7 +13,7 @@ export function useVideoScreenshot($video) {
 
   const ctx = canvas.getContext("2d");
   ctx.drawImage($video.value, 0, 0, canvas.width, canvas.height);
-  downloadURL.value = canvas.toDataURL("image/jpeg");
+  downloadURL.value = canvas.toDataURL("image/png");
 
   return { downloadURL };
 }

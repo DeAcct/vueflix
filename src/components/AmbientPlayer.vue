@@ -13,7 +13,7 @@
         @pause="setPlaying"
         autoplay
         muted
-      ></video>
+      />
       <div class="AmbientPlayer__GestureArea">
         <button
           @touchstart="double('before')"
@@ -316,7 +316,6 @@ const screenshotPreview = ref({
 });
 function takeScreenshot() {
   const { downloadURL } = useVideoScreenshot($video);
-  console.log(downloadURL.value, "알림영역으로 전파");
   screenshotPreview.value.imgSrc = downloadURL.value;
   screenshotPreview.value.show = true;
 }

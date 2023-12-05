@@ -1,30 +1,30 @@
 <template>
-  <div class="Player">
+  <div class="AnimePlay">
     <div
       :class="[
-        'Player__Frame',
-        { 'Player__Frame--Theater': mode === 'theater' },
+        'AnimePlay__Frame',
+        { 'AnimePlay__Frame--Theater': mode === 'theater' },
       ]"
     >
       <AmbientPlayer
         class="Player__Video"
         @toggle-theater="toggleTheater"
         @save-point="savePoint"
-        :teleport-time="teleportTime"
         :src="videoSrc"
+        :teleport-time="teleportTime"
         :next-episode="nextEpisode"
         :prev-episode="prevEpisode"
         :ambient="mode !== 'theater'"
         :prevent-key-binding="isInteracting"
-      ></AmbientPlayer>
+      />
     </div>
-    <section class="Player__TitleRenderer">
-      <div class="Player__Titles">
+    <section class="AnimePlay__TitleRenderer">
+      <div class="AnimePlay__Titles">
         <h2
           :class="[
-            'Player__AniTitle',
+            'AnimePlay__AniTitle',
             'loading-target',
-            { 'Player__AniTitle--Loaded': nowEpisode },
+            { 'AnimePlay__AniTitle--Loaded': nowEpisode },
           ]"
         >
           <RouterLink :to="`/anime/${route.params.title}/episodes`">
@@ -33,9 +33,9 @@
         </h2>
         <h3
           :class="[
-            'Player__EpisodeTitle',
+            'AnimePlay__EpisodeTitle',
             'loading-target',
-            { 'Player__EpisodeTitle--Loaded': nowEpisode },
+            { 'AnimePlay__EpisodeTitle--Loaded': nowEpisode },
           ]"
         >
           {{ route.params.part }} {{ route.params.index }}
@@ -50,20 +50,20 @@
     </section>
     <section
       :class="[
-        'Player__Parts',
-        { 'Player__Parts--Theater': mode === 'theater' },
+        'AnimePlay__Parts',
+        { 'AnimePlay__Parts--Theater': mode === 'theater' },
       ]"
     >
-      <h3 class="Player__EpisodesCounter">
+      <h3 class="AnimePlay__EpisodesCounter">
         총 {{ episodeCounter }}개의 에피소드
       </h3>
-      <div class="Player__ScrollContainer">
-        <div class="Player__Episodes">
+      <div class="AnimePlay__ScrollContainer">
+        <div class="AnimePlay__Episodes">
           <AccordionWidget
             v-for="({ part, episodes }, iterateParts) in animeInfo.parts"
             :open="iterateParts === 0"
             :key="iterateParts"
-            class="Player__PartsAccordion"
+            class="AnimePlay__PartsAccordion"
           >
             <template v-slot:title>
               {{ part }}
@@ -100,7 +100,7 @@
       </div>
     </section>
     <ReactionCombo
-      class="Player__Comments"
+      class="AnimePlay__Comments"
       type="comment"
       title-tag="h4"
       @interact="setInteract"
@@ -168,6 +168,9 @@ async function savePoint(e) {
 }
 
 const teleportTime = computed(() => {
+  if (maratonWatch.value.length === 0 || !maratonWatch.value) {
+    return 0;
+  }
   const target = maratonWatch.value.find(
     (anime) => anime.aniTitle === route.params.title
   ).list;
@@ -175,7 +178,6 @@ const teleportTime = computed(() => {
   const current = target.find(
     (log) => log.part === route.params.part && log.index === route.params.index
   );
-  console.log(current?.time.current);
   return current?.time.current;
 });
 
@@ -330,7 +332,7 @@ function toggleTheater() {
 </script>
 
 <style lang="scss" scoped>
-.Player {
+.AnimePlay {
   padding-top: 6rem;
   padding-bottom: 2rem;
   width: 100%;
@@ -434,7 +436,7 @@ function toggleTheater() {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .Player {
+  .AnimePlay {
     &__PartsAccordion {
       --thumbnail-width: 15rem;
     }
@@ -442,7 +444,7 @@ function toggleTheater() {
 }
 
 @media screen and (min-width: 1080px) {
-  .Player {
+  .AnimePlay {
     display: grid;
     padding: 9.2rem 2rem 2rem;
     max-width: 192rem;
