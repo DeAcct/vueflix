@@ -2,7 +2,7 @@
   <div class="ScreenshotSet">
     <OptimizedMedia :src="src" class="ScreenshotSet__Preview" />
     <div class="ScreenshotSet__Actions">
-      <button class="ScreenshotSet__Action">플레이짤 업로드</button>
+      <!--button class="ScreenshotSet__Action">플레이짤 업로드</button -->
       <button class="ScreenshotSet__Action" @click="download">다운로드</button>
       <button class="ScreenshotSet__Action" @click="share">
         다른 앱으로 공유
