@@ -87,7 +87,7 @@
                     title,
                   }"
                   type="episode"
-                  watch-percent="0%"
+                  :watch-percent="getEpisodePercent(part, index)"
                   :replace="{
                     main: true,
                     sub: true,
@@ -112,9 +112,8 @@
 <script setup>
 // 그리드 어리어를 활용한 2차원 레이아웃
 
-import AmbientPlayer from "@/components/AmbientPlayer.vue";
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
-import { arrayUnion, doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "@/utility/firebase";
 
@@ -122,10 +121,13 @@ import { onMounted, ref, computed, inject, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 
+import { useMaratonData } from "@/composables/maraton";
+
+import AmbientPlayer from "@/components/AmbientPlayer.vue";
 import AccordionWidget from "@/components/AccordionWidget.vue";
+import ReactionCombo from "@/components/ReactionCombo.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
-import ReactionCombo from "@/components/ReactionCombo.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
 
@@ -166,6 +168,8 @@ async function savePoint(e) {
     { merge: true }
   );
 }
+
+const { getEpisodePercent } = useMaratonData();
 
 const teleportTime = computed(() => {
   if (maratonWatch.value.length === 0 || !maratonWatch.value) {
@@ -345,10 +349,11 @@ function toggleTheater() {
 
   &__TitleRenderer {
     z-index: 4;
-    padding: 2rem var(--inner-padding);
+    padding: 2rem var(--inner-padding) 0;
     display: flex;
     gap: 0.8rem;
     justify-content: space-between;
+    margin-bottom: 3rem;
   }
   &__Titles {
     display: flex;
@@ -391,21 +396,18 @@ function toggleTheater() {
   }
 
   &__Parts {
-    z-index: 5;
-    padding: var(--inner-padding);
+    padding: 0 2rem;
     display: flex;
     flex-direction: column;
     gap: 1.6rem;
-    border: 1px solid hsl(var(--text-900) / 0.05);
     border-radius: calc(var(--global-radius) * 4);
-    margin-bottom: 2rem;
+    margin-bottom: 4rem;
   }
   &__EpisodesCounter {
     font-size: 1.6rem;
   }
   &__ScrollContainer {
     overflow: scroll;
-    height: 30rem;
     border-radius: var(--global-radius);
   }
   &__PartsAccordion {
@@ -425,13 +427,10 @@ function toggleTheater() {
 
   &__Comments {
     z-index: 6;
-    padding: 0;
+    padding: 0 2rem;
     font-size: 1.6rem;
     max-width: unset;
     width: 100%;
-    --body-radius: calc(var(--global-radius) * 4);
-    --reaction-body-width: 100%;
-    --reaction-combo-title-padding: 2rem;
   }
 }
 
@@ -489,8 +488,7 @@ function toggleTheater() {
     &__Parts {
       grid-area: v-bind("area.parts");
       gap: 2rem;
-      padding: 2rem;
-      overflow: hidden;
+      padding: 0;
       display: flex;
       --carousel-overflow: scroll;
       margin-bottom: 0;
@@ -533,6 +531,7 @@ function toggleTheater() {
     &__Comments {
       grid-area: v-bind("area.comments");
       max-width: 1080px;
+      padding: 0;
       --reaction-body-width: 100%;
       --reaction-combo-title-padding: 0;
     }

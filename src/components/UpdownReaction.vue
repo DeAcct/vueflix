@@ -68,7 +68,7 @@ const user = computed(() => store.state.auth.user);
 
   gap: 0.8rem;
   &__Button {
-    color: hsl(var(--text-500));
+    color: hsl(var(--bg-800));
     transform: rotate(-90deg);
 
     //시각보정
@@ -77,10 +77,9 @@ const user = computed(() => store.state.auth.user);
     }
     &--Down {
       margin-bottom: 0.2rem;
-      margin-left: 0.2rem;
     }
     &:disabled {
-      color: hsl(var(--text-100));
+      color: hsl(var(--bg-400));
       cursor: not-allowed;
     }
   }

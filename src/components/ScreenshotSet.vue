@@ -31,7 +31,6 @@ function download() {
 }
 
 async function share() {
-  console.log(typeof props.src);
   if (!("canShare" in navigator)) {
     return;
   }
@@ -53,7 +52,7 @@ async function share() {
 
 <style lang="scss" scoped>
 .ScreenshotSet {
-  width: 100vw;
+  width: calc(100 * 1px * var(--vw));
   padding: var(--inner-padding);
   background-color: hsl(var(--bg-100));
   --screenshot-set-radius: calc(var(--global-radius) + var(--inner-padding));

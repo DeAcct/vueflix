@@ -3,11 +3,19 @@
     <RouterLink
       :to="link"
       @click.prevent
-      class="ThumbnailSet__Image"
+      :class="[
+        'ThumbnailSet__Image',
+        { 'ThumbnailSet__Image--NowWatching': watchPercent !== '0%' },
+      ]"
       exact-active-class="ThumbnailSet__Image--Selected"
       :replace="replace.main"
     >
       <OptimizedMedia :src="thumbnailURL" :alt="alt"></OptimizedMedia>
+      <ProgressCircle
+        class="ThumbnailSet__WatchPercent"
+        :percent="watchPercent"
+        v-if="type === 'episode' && watchPercent !== '0%'"
+      ></ProgressCircle>
     </RouterLink>
     <div class="ThumbnailSet__Info">
       <template v-if="type === 'skeleton'">
@@ -29,11 +37,6 @@
             <span class="ThumbnailSet__Title">{{ data.title }}</span>
           </template>
         </RouterLink>
-        <ProgressCircle
-          class="ThumbnailSet__WatchPercent"
-          :percent="watchPercent"
-          v-if="type === 'episode'"
-        ></ProgressCircle>
       </template>
     </div>
   </li>
@@ -122,12 +125,28 @@ const alt = computed(() => {
     flex-shrink: 0;
     --radius: var(--global-radius);
     --aspect-ratio: calc(9 / 16 * 100%);
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent, hsl(0 0 0 / 0.8) 90%);
+      opacity: 0;
+      border-radius: var(--global-radius);
+    }
+    &--NowWatching::after {
+      opacity: 1;
+    }
   }
   &__WatchPercent {
-    width: 3.2rem;
-    height: 3.2rem;
+    position: absolute;
+    z-index: 2;
+    width: 100%;
     flex-shrink: 0;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
+    left: 0;
+    padding: 0.75rem;
+    bottom: 0;
+    color: #fff;
   }
   &__SkeletonInfo {
     width: 100%;
@@ -174,9 +193,6 @@ const alt = computed(() => {
   }
   &--row &__Text {
     gap: 0.2rem;
-  }
-  &--row &__WatchPercent {
-    margin-left: -0.4rem;
   }
 
   &--column &__Info {

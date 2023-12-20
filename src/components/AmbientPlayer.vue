@@ -16,11 +16,11 @@
       />
       <div class="AmbientPlayer__GestureArea">
         <button
-          @touchstart="double('before')"
+          @touchstart.passive="double('before')"
           class="AmbientPlayer__GestureItem"
         ></button>
         <button
-          @touchstart="double('after')"
+          @touchstart.passive="double('after')"
           class="AmbientPlayer__GestureItem"
         ></button>
       </div>
@@ -52,19 +52,19 @@
         <IconScreenshot />
       </IconBase>
     </button>
-  </div>
-  <Teleport to="#Overay">
-    <ModalBackdrop
-      :action="closeScreenshotPreview"
-      v-if="screenshotPreview.show"
-    />
-    <Transition name="slide-up">
-      <ScreenshotSet
-        :src="screenshotPreview.imgSrc"
+    <Teleport to="#Overay">
+      <ModalBackdrop
+        :action="closeScreenshotPreview"
         v-if="screenshotPreview.show"
-      ></ScreenshotSet>
-    </Transition>
-  </Teleport>
+      />
+      <Transition name="slide-up">
+        <ScreenshotSet
+          :src="screenshotPreview.imgSrc"
+          v-if="screenshotPreview.show"
+        ></ScreenshotSet>
+      </Transition>
+    </Teleport>
+  </div>
 </template>
 
 <script setup>
@@ -334,6 +334,8 @@ function closeScreenshotPreview() {
   z-index: 1;
   display: flex;
   align-items: center;
+  border-radius: var(--global-radius);
+  overflow: hidden;
 
   &__FullscreenRoot {
     position: relative;

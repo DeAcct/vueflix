@@ -32,16 +32,16 @@ const { $body, trackLength, bodyLength } = usePercentToSVGRound(props.percent);
 .ProgressCircle {
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: var(--gap, 0);
+  gap: var(--progress-gap, 0);
   &__Graph {
-    width: 100%;
-    height: 100%;
+    width: 2.4rem;
+    height: 2.4rem;
   }
   &__Track {
     fill: none;
-    stroke: hsl(var(--bg-200));
+    stroke: hsl(0 0 100% / 0.5);
     stroke-width: 2px;
   }
   &__Body {
@@ -56,9 +56,9 @@ const { $body, trackLength, bodyLength } = usePercentToSVGRound(props.percent);
     animation: 300ms fill;
   }
   &__Percent {
-    position: var(--position, absolute);
     font-weight: 500;
     font-size: inherit;
+    color: inherit;
   }
 }
 

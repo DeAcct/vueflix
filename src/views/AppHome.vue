@@ -143,19 +143,7 @@ async function PWAinstall() {
 const recommendedAnime = ref({});
 onMounted(async () => {
   const qSnapshot = await getDocs(collection(db, "recommend"));
-  const data = qSnapshot.docs
-    .map((doc) => doc.data())
-    .map((lists) => ({
-      ...lists,
-      list: lists.list.sort((a, b) => {
-        if (a < b) {
-          return -1;
-        } else if (a > b) {
-          return 1;
-        }
-        return 0;
-      }),
-    }));
+  const data = qSnapshot.docs.map((doc) => doc.data());
   recommendedAnime.value = data;
 });
 

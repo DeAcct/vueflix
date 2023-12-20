@@ -21,4 +21,9 @@ defineProps({
   height: calc(var(--vh) * 100 * 1px);
   background-color: rgba(0 0 0 / 0.5);
 }
+@media (hover: hover) and (pointer: fine) {
+  .ModalBackdrop {
+    cursor: pointer;
+  }
+}
 </style>

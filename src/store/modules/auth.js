@@ -70,20 +70,6 @@ const mutations = {
       state.user.wannaSee.unshift(payload);
     }
     if (state.user.wannaSee.length > 1) {
-      // const sortOrder = ["year", "month", "date", "hour", "min", "sec"];
-
-      /*
-      state.user.wannaSee = state.user.wannaSee.sort((a, b) => {
-        for (const sortBy of sortOrder) {
-          if (a.time[sortBy] > b.time[sortBy]) {
-            return -1;
-          }
-          if (a.time[sortBy] < b.time[sortBy]) {
-            return 1;
-          }
-        }
-      });
-      */
       state.user.wannaSee = useTimeSort(state.user.wannaSee, "time");
     }
   },

@@ -107,7 +107,6 @@ async function onMutate() {
     font-size: inherit;
     font-weight: 700;
     margin-bottom: 1.2rem;
-    padding: 0 var(--reaction-combo-title-padding, 2rem);
     display: flex;
     gap: 0.4rem;
   }
@@ -117,22 +116,29 @@ async function onMutate() {
   &__Body {
     display: flex;
     flex-direction: column;
-    border-radius: var(--body-radius, var(--global-radius));
-    overflow: hidden;
-    width: var(--reaction-body-width, calc(100% - 4rem));
+    border-radius: var(--global-radius);
+    width: 100%;
     margin: 0 auto;
-    gap: 0.4rem;
+    background: linear-gradient(
+      150deg,
+      hsl(var(--bg-900) / 0.2),
+      hsl(var(--bg-900) / 0.025)
+    );
+    padding: 1px;
+    gap: 1px;
   }
   &__Write {
-    overflow: hidden;
-    background-color: var(--reaction-combo-bg, hsl(var(--bg-200)));
     padding: 2rem;
-    border-radius: var(--global-radius);
+    background-color: hsl(var(--bg-200) / 0.5);
+    border-radius: var(--global-radius) var(--global-radius) 0 0;
+    &:last-of-type {
+      border-radius: var(--global-radius);
+    }
   }
   &__List {
-    background-color: var(--reaction-combo-bg, hsl(var(--bg-200)));
     overflow: hidden;
-    border-radius: var(--global-radius);
+    border-radius: 0 0 var(--global-radius) var(--global-radius);
+    background-color: hsl(var(--bg-200) / 0.5);
   }
   &__Item {
     background-color: transparent;

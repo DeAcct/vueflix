@@ -1,17 +1,19 @@
 <template>
   <section class="AccordionWidget">
     <button class="AccordionWidget__PartTitle" @click="toggle">
-      <slot name="title"></slot>
-      <i
-        :class="[
-          'AccordionWidget__OpenIcon',
-          { 'AccordionWidget__OpenIcon--WidgetOpened': isOpen },
-        ]"
-      >
-        <IconBase :icon-name="isOpen ? '닫기' : '열기'">
-          <IconArrowPrev />
-        </IconBase>
-      </i>
+      <div class="border-wrap">
+        <slot name="title"></slot>
+        <i
+          :class="[
+            'AccordionWidget__OpenIcon',
+            { 'AccordionWidget__OpenIcon--WidgetOpened': isOpen },
+          ]"
+        >
+          <IconBase :icon-name="isOpen ? '닫기' : '열기'">
+            <IconArrowPrev />
+          </IconBase>
+        </i>
+      </div>
     </button>
     <div
       :class="[
@@ -45,14 +47,23 @@ function toggle() {
     position: sticky;
     top: var(--accordion-sticky-top, 6rem);
     z-index: 50;
-    display: flex;
-    background-color: var(--anime-layout-parts);
+    background: linear-gradient(
+      150deg,
+      hsl(var(--bg-900) / 0.2),
+      hsl(var(--bg-900) / 0.025)
+    );
     backdrop-filter: blur(10px);
     border-radius: var(--global-radius);
-    padding: 1.5rem 2rem;
+    padding: 1px;
     width: 100%;
-    justify-content: space-between;
-    align-items: center;
+    .border-wrap {
+      display: flex;
+      justify-content: space-between;
+      border-radius: calc(var(--global-radius) - 1px);
+      align-items: center;
+      padding: 1.4rem 1.9rem;
+      background-color: hsl(var(--bg-200) / 0.5);
+    }
   }
   &__PartTitle {
     font-size: 1.3rem;

@@ -17,7 +17,7 @@
             type="episode"
             :ani-title="animeInfo.name"
             :data="{ index, title, part, thumbnail }"
-            watch-percent="0%"
+            :watch-percent="getEpisodePercent(part, index)"
             direction="row"
             :link="`/anime-play/${animeInfo.name}/${part}/${index}`"
             :replace="{
@@ -36,6 +36,7 @@ import AccordionWidget from "@/components/AccordionWidget.vue";
 import Thumbnailset from "@/components/ThumbnailSet.vue";
 import { inject, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { useMaratonData } from "@/composables/maraton";
 
 const animeInfo = inject("anime-info");
 
@@ -45,6 +46,8 @@ const route = useRoute();
 onMounted(() => {
   document.title = `${route.params.title} 다시보기`;
 });
+
+const { getEpisodePercent } = useMaratonData();
 </script>
 
 <style lang="scss" scoped>
