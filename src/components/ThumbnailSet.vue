@@ -129,7 +129,7 @@ const alt = computed(() => {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(transparent, hsl(0 0 0 / 0.8) 90%);
+      background: linear-gradient(transparent, hsl(0 0 0% / 0.8) 90%);
       opacity: 0;
       border-radius: var(--global-radius);
     }

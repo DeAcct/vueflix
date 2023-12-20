@@ -530,10 +530,7 @@ function toggleTheater() {
 
     &__Comments {
       grid-area: v-bind("area.comments");
-      max-width: 1080px;
       padding: 0;
-      --reaction-body-width: 100%;
-      --reaction-combo-title-padding: 0;
     }
   }
 }

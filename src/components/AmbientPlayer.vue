@@ -334,7 +334,7 @@ function closeScreenshotPreview() {
   z-index: 1;
   display: flex;
   align-items: center;
-  border-radius: var(--global-radius);
+
   overflow: hidden;
 
   &__FullscreenRoot {
@@ -396,6 +396,7 @@ function closeScreenshotPreview() {
 
 @media screen and (min-width: 1080px) {
   .AmbientPlayer {
+    border-radius: var(--global-radius);
     &__Effect {
       filter: blur(100px);
     }
