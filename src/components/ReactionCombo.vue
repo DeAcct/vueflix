@@ -1,11 +1,13 @@
 <template>
   <section class="ReactionCombo">
-    <component :is="titleTag" class="ReactionCombo__Title"
-      ><slot name="title"></slot
-      ><span class="ReactionCombo__Counter">{{
-        reactions.length
-      }}</span></component
-    >
+    <template v-if="showTitle">
+      <component :is="titleTag" class="ReactionCombo__Title"
+        ><slot name="title"></slot
+        ><span class="ReactionCombo__Counter">{{
+          reactions.length
+        }}</span></component
+      >
+    </template>
     <div class="ReactionCombo__Body">
       <WriteReaction
         class="ReactionCombo__Write"
@@ -20,21 +22,27 @@
         "
         @interact="setInteract"
       />
-      <ul class="ReactionCombo__List">
+      <ul class="ReactionCombo__List" v-if="reactions?.length">
         <ReactionItem
-          v-for="{ time, _id, uid, author, content } in reactions"
-          :key="_id"
-          :date="time"
-          :self="user?.uid === uid"
-          :writer="uid"
-          :reaction-id="_id"
+          v-for="reaction in reactions"
+          :key="reaction._id"
+          :reaction-data="reaction"
+          :user="user"
           :type="type"
-          :parent="parent"
           @mutate="onMutate"
+          @interact="setInteract"
           class="ReactionCombo__Item"
         >
-          <template #author>{{ uid === user?.uid ? "나" : author }}</template>
-          <template #content>{{ content }}</template>
+          <template #author>{{
+            reaction.uid === user?.uid ? "나" : reaction.author
+          }}</template>
+          <template #content>
+            <ReactionParser
+              :content="reaction.content"
+              @request-teleport="requestTeleport"
+            />
+          </template>
+          <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
         </ReactionItem>
       </ul>
     </div>
@@ -55,6 +63,7 @@ import { useReaction } from "@/api/reaction";
 
 import WriteReaction from "./WriteReaction.vue";
 import ReactionItem from "./ReactionItem.vue";
+import ReactionParser from "./ReactionParser.vue";
 
 const props = defineProps({
   type: {
@@ -71,9 +80,16 @@ const props = defineProps({
       return ["h1", "h2", "h3", "h4", "h5", "h6"].includes(value);
     },
   },
+  parent: {
+    type: String,
+  },
+  showTitle: {
+    type: Boolean,
+    default: true,
+  },
 });
 
-const emits = defineEmits(["interact"]);
+const emits = defineEmits(["interact", "request-teleport"]);
 function setInteract(e) {
   emits("interact", e);
 }
@@ -83,6 +99,7 @@ const user = computed(() => store.state.auth.user);
 
 const { reactions, parent, Read } = useReaction({
   type: props.type,
+  parent: props.parent,
 });
 
 onMounted(async () => {
@@ -94,6 +111,9 @@ router.afterEach(async () => {
 });
 async function onMutate() {
   await Read();
+}
+function requestTeleport(e){
+  emits("request-teleport", e)
 }
 </script>
 
@@ -131,7 +151,7 @@ async function onMutate() {
     padding: 2rem;
     background-color: hsl(var(--bg-200) / 0.5);
     border-radius: var(--global-radius) var(--global-radius) 0 0;
-    &:last-of-type {
+    &:last-child {
       border-radius: var(--global-radius);
     }
   }

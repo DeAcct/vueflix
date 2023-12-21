@@ -11,7 +11,7 @@
         @toggle-theater="toggleTheater"
         @save-point="savePoint"
         :src="videoSrc"
-        :teleport-time="teleportTime"
+        :time="time"
         :next-episode="nextEpisode"
         :prev-episode="prevEpisode"
         :ambient="mode !== 'theater'"
@@ -55,7 +55,7 @@
       ]"
     >
       <h3 class="AnimePlay__EpisodesCounter">
-        총 {{ episodeCounter }}개의 에피소드
+        {{ episodeCounter }}개의 에피소드
       </h3>
       <div class="AnimePlay__ScrollContainer">
         <div class="AnimePlay__Episodes">
@@ -104,9 +104,17 @@
       type="comment"
       title-tag="h4"
       @interact="setInteract"
+      :parent="`${route.params.title} ${route.params.part} ${route.params.index}`"
+      @request-teleport="onRequestTeleport"
     >
       <template #title>댓글</template>
     </ReactionCombo>
+    <ToTop
+      :class="[
+        'AnimePlay__ToTop',
+        { 'AnimePlay__ToTop--Show': scrollBehavior !== 'top' },
+      ]"
+    ></ToTop>
   </div>
 </template>
 <script setup>
@@ -122,17 +130,20 @@ import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 import { useMaratonData } from "@/composables/maraton";
+import { useScroll } from "@/composables/scroll";
 
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
 import AccordionWidget from "@/components/AccordionWidget.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
+import ToTop from "../components/ToTop.vue";
+
 import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
 
 // 개발 시 임시로 사용할 동영상(요청량 절약)
-//import TestAnime from "@/assets/TestAnime.mp4";
+// import TestAnime from "@/assets/TestAnime.mp4";
 
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
@@ -170,20 +181,38 @@ async function savePoint(e) {
 }
 
 const { getEpisodePercent } = useMaratonData();
+// const teleportTime = computed(() => {
+//   const target = maratonWatch.value.find(
+//     (anime) => anime.aniTitle === route.params.title
+//   );
+//   // 현재 애니가 정주행 목록에 존재하지 않으면(처음 보는 애니면) 0 반환(처음부터 재생)
+//   if (!target) {
+//     return 0;
+//   }
 
-const teleportTime = computed(() => {
-  if (maratonWatch.value.length === 0 || !maratonWatch.value) {
-    return 0;
-  }
+//   const log = target.list.find(
+//     (log) => log.part === route.params.part && log.index === route.params.index
+//   );
+//   return log.time.current;
+// });
+const time = ref(0);
+onMounted(() => {
   const target = maratonWatch.value.find(
     (anime) => anime.aniTitle === route.params.title
-  ).list;
+  );
+  // 현재 애니가 정주행 목록에 존재하지 않으면(처음 보는 애니면) 0 반환(처음부터 재생)
+  if (!target) {
+    time.value = 0;
+  }
 
-  const current = target.find(
+  const log = target.list.find(
     (log) => log.part === route.params.part && log.index === route.params.index
   );
-  return current?.time.current;
+  time.value = log.time.current;
 });
+function onRequestTeleport(e) {
+  time.value = e;
+}
 
 const isInteracting = ref(false);
 function setInteract(e) {
@@ -333,6 +362,8 @@ function toggleTheater() {
   area.title = "2 / 1 / 3 / 2";
   area.comments = "3 / 1 / 4 / 2";
 }
+
+const { scrollBehavior } = useScroll();
 </script>
 
 <style lang="scss" scoped>
@@ -409,6 +440,7 @@ function toggleTheater() {
   &__ScrollContainer {
     overflow: scroll;
     border-radius: var(--global-radius);
+    height: 30rem;
   }
   &__PartsAccordion {
     --carousel-padding: 0;
@@ -431,6 +463,17 @@ function toggleTheater() {
     font-size: 1.6rem;
     max-width: unset;
     width: 100%;
+  }
+
+  &__ToTop {
+    width: 4.8rem;
+    height: 4.8rem;
+    position: fixed;
+    bottom: 1.2rem;
+    left: 50%;
+    transform: translate(-50%);
+    background-color: hsl(var(--theme-500));
+    z-index: 100;
   }
 }
 
@@ -456,11 +499,11 @@ function toggleTheater() {
 
     &__Frame {
       position: relative;
-      top: unset;
       z-index: 1;
+      top: 0;
       grid-area: v-bind("area.video");
       &--Theater {
-        margin-top: -2rem;
+        margin-top: -5.2rem;
         height: 56.25vw;
         max-height: 80vh;
       }

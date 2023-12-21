@@ -3,10 +3,7 @@
     <RouterLink
       :to="link"
       @click.prevent
-      :class="[
-        'ThumbnailSet__Image',
-        { 'ThumbnailSet__Image--NowWatching': watchPercent !== '0%' },
-      ]"
+      class="ThumbnailSet__Image"
       exact-active-class="ThumbnailSet__Image--Selected"
       :replace="replace.main"
     >
@@ -125,17 +122,6 @@ const alt = computed(() => {
     flex-shrink: 0;
     --radius: var(--global-radius);
     --aspect-ratio: calc(9 / 16 * 100%);
-    &::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(transparent, hsl(0 0 0% / 0.8) 90%);
-      opacity: 0;
-      border-radius: var(--global-radius);
-    }
-    &--NowWatching::after {
-      opacity: 1;
-    }
   }
   &__WatchPercent {
     position: absolute;
@@ -147,6 +133,7 @@ const alt = computed(() => {
     padding: 0.75rem;
     bottom: 0;
     color: #fff;
+    background: linear-gradient(transparent, hsl(0 0 0% / 0.9));
   }
   &__SkeletonInfo {
     width: 100%;

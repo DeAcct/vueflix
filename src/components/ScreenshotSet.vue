@@ -1,23 +1,48 @@
 <template>
-  <div class="ScreenshotSet">
-    <OptimizedMedia :src="src" class="ScreenshotSet__Preview" />
-    <div class="ScreenshotSet__Actions">
-      <!--button class="ScreenshotSet__Action">플레이짤 업로드</button -->
-      <button class="ScreenshotSet__Action" @click="download">다운로드</button>
-      <button class="ScreenshotSet__Action" @click="share">
-        다른 앱으로 공유
-      </button>
+  <Transition name="slide-up">
+    <div class="ScreenshotSet" v-if="show">
+      <div class="ScreenshotSet__Body">
+        <OptimizedMedia
+          :src="src"
+          class="ScreenshotSet__Preview"
+        ></OptimizedMedia>
+        <div class="ScreenshotSet__Actions">
+          <!--button class="ScreenshotSet__Action">플레이짤 업로드</button -->
+          <button class="ScreenshotSet__Delete" @click="closeAction">
+            <IconBase>
+              <IconTrash />
+            </IconBase>
+          </button>
+          <div class="split">
+            <button class="ScreenshotSet__Action" @click="download">
+              다운로드
+            </button>
+            <button class="ScreenshotSet__Action" @click="share">
+              다른 앱으로 공유
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <script setup>
 import { useRoute } from "vue-router";
 import OptimizedMedia from "./OptimizedMedia.vue";
+import ModalBackdrop from "./ModalBackdrop.vue";
+import IconBase from "./IconBase.vue";
+import IconTrash from "./icons/IconTrash.vue";
 
 const props = defineProps({
   src: {
     type: String,
+  },
+  show: {
+    type: Boolean,
+  },
+  closeAction: {
+    type: Function,
   },
 });
 
@@ -52,24 +77,76 @@ async function share() {
 
 <style lang="scss" scoped>
 .ScreenshotSet {
+  position: fixed;
+  z-index: 1000;
+  bottom: 0;
+  transform: translateY(0);
+  background: linear-gradient(
+    150deg,
+    hsl(var(--bg-900) / 0.2),
+    hsl(var(--bg-900) / 0.025)
+  );
+  padding: 1px;
+  border-radius: var(--global-radius) var(--global-radius) 0 0;
+  backdrop-filter: blur(10px);
   width: calc(100 * 1px * var(--vw));
-  padding: var(--inner-padding);
-  background-color: hsl(var(--bg-100));
-  --screenshot-set-radius: calc(var(--global-radius) + var(--inner-padding));
-  border-radius: var(--screenshot-set-radius) var(--screenshot-set-radius) 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  &__Body {
+    border-radius: calc(var(--global-radius) - 1px)
+      calc(var(--global-radius) - 1px) 0 0;
+    padding: calc(var(--inner-padding) - 1px);
+    background-color: hsl(var(--bg-200) / 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow: hidden;
+  }
+
   &__Actions {
     display: flex;
-    border-radius: var(--global-radius);
-    overflow: hidden;
+  }
+  &__Delete {
+    width: 4.8rem;
+    height: 4.8rem;
+  }
+  .split {
+    display: flex;
+    flex-grow: 1;
   }
   &__Action {
     flex-grow: 1;
     min-width: 0;
     padding: 1.5rem;
     background-color: hsl(var(--bg-300));
+    &:first-child {
+      border-radius: var(--global-radius) 0 0 var(--global-radius);
+    }
+    &:last-child {
+      border-radius: 0 var(--global-radius) var(--global-radius) 0;
+    }
+  }
+}
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: 150ms ease-out;
+}
+.slide-up-enter-from,
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(50%);
+}
+
+@media screen and (min-width: 1080px) {
+  .ScreenshotSet {
+    width: 480px;
+    left: auto;
+    right: max(calc((100 * 1px * var(--vw) - 1920px) / 2), 2rem);
+    padding: 0;
+    border-radius: calc(2rem + var(--global-radius))
+      calc(2rem + var(--global-radius)) 0 0;
+    &__Body {
+      padding: 1.9rem;
+    }
   }
 }
 </style>

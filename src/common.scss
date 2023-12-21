@@ -120,7 +120,8 @@ li {
   list-style: none;
 }
 img,
-video {
+video,
+textarea {
   vertical-align: middle;
 }
 summary {
@@ -168,12 +169,12 @@ summary {
   background-repeat: repeat-x;
 }
 
-#Overay {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  z-index: 1000;
-}
+// #Overay {
+//   position: fixed;
+//   bottom: 0;
+//   left: 0;
+//   z-index: 1000;
+// }
 
 @keyframes loading-animation {
   from {

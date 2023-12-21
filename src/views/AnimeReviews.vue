@@ -15,6 +15,8 @@
       class="AnimeReviews__Method AnimeReviews__Method--Review"
       type="review"
       title-tag="h3"
+      :ancestor="route.params.title"
+      :parent="route.params.title"
     >
       <template #title>리뷰</template>
     </ReactionCombo>
@@ -26,8 +28,10 @@ import KeywordReviews from "@/components/KeywordReviews.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
 import LoginWidget from "@/components/LoginWidget.vue";
 import { computed } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
+
+const route = useRoute();
 
 const router = useRouter();
 function goAuth() {

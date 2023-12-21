@@ -21,6 +21,13 @@
       </div>
       <div class="WriteReaction__BtnArea">
         <button
+          class="WriteReaction__Button WriteReaction__Button--Clear"
+          @click="clear"
+          :disabled="reviewData.length === 0"
+        >
+          지우기
+        </button>
+        <button
           :disabled="reviewData.length > 300 || reviewData.length === 0"
           @click="reviewTrigger"
           class="WriteReaction__Button WriteReaction__Button--Submit"
@@ -54,6 +61,9 @@ const props = defineProps({
   parent: {
     type: String,
   },
+  ancestor: {
+    type: String,
+  },
 });
 
 function setBlur() {
@@ -69,7 +79,11 @@ const placeholder = computed(() => {
       REACTION_ENUM_WITH_PARTICLE[props.type]
     } 남기려면 먼저 로그인을 해주세요`;
   }
-  return `여기를 눌러 ${REACTION_ENUM_WITH_PARTICLE[props.type]} 작성하세요`;
+  return `여기를 눌러 ${REACTION_ENUM_WITH_PARTICLE[props.type]} 작성하세요.${
+    props.type === "comment"
+      ? "\n시간:분:초 형식으로 작성하면 애니 시간을 첨부할 수 있어요!"
+      : ""
+  } `;
 });
 
 const reviewData = ref("");
@@ -78,11 +92,18 @@ function setReviewData(e) {
   reviewData.value = e.target.value;
 }
 
-const { Create } = useReaction({ type: props.type, parent: props.parent });
+const { Create } = useReaction({
+  type: props.type,
+  parent: props.parent,
+});
 
 async function reviewTrigger() {
   await Create({ content: reviewData.value });
   emits("mutate");
+  reviewData.value = "";
+}
+
+function clear() {
   reviewData.value = "";
 }
 </script>
@@ -101,7 +122,7 @@ async function reviewTrigger() {
     font-weight: 500;
     margin-bottom: 1rem;
     &::placeholder {
-      color: var(--bg-400);
+      color: hsl(var(--bg-700));
       font-weight: 500;
     }
   }
@@ -134,25 +155,40 @@ async function reviewTrigger() {
 
   &__BtnArea {
     display: flex;
+    gap: 0.2rem;
   }
   &__Button {
-    border-radius: 2rem;
-    background-color: hsl(var(--theme-500));
+    background: linear-gradient(
+      150deg,
+      hsl(var(--theme-500) / 0.5),
+      hsl(var(--theme-500) / 0.025)
+    );
     color: #fff;
-    border-radius: var(--global-radius);
     box-shadow: none;
     font-weight: 500;
     font-size: 1.5rem;
     padding: 0.8rem 1.2rem;
+    position: relative;
+    &--Clear {
+      background: linear-gradient(
+        150deg,
+        hsl(var(--bg-900) / 0.2),
+        hsl(var(--bg-900) / 0.025)
+      );
+    }
     &:disabled {
-      background-color: hsl(var(--theme-200));
+      background: linear-gradient(
+        150deg,
+        hsl(var(--bg-900) / 0.2),
+        hsl(var(--bg-900) / 0.025)
+      );
+      color: hsl(var(--bg-900) / 0.3);
     }
-    &--Cancel {
-      background-color: transparent;
-      color: hsl(var(--text-700));
+    &:first-child {
+      border-radius: var(--global-radius) 0 0 var(--global-radius);
     }
-    &--Submit {
-      background-color: hsl(var(--theme-500));
+    &:last-child {
+      border-radius: 0 var(--global-radius) var(--global-radius) 0;
     }
   }
 }

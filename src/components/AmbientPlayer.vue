@@ -53,26 +53,21 @@
       </IconBase>
     </button>
     <Teleport to="#Overay">
-      <ModalBackdrop
-        :action="closeScreenshotPreview"
-        v-if="screenshotPreview.show"
-      />
-      <Transition name="slide-up">
-        <ScreenshotSet
-          :src="screenshotPreview.imgSrc"
-          v-if="screenshotPreview.show"
-        ></ScreenshotSet>
-      </Transition>
+      <ScreenshotSet
+        :src="screenshotPreview.imgSrc"
+        :show="screenshotPreview.show"
+        :close-action="closeScreenshotPreview"
+      ></ScreenshotSet>
     </Teleport>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useEventListener } from "@vueuse/core";
 import useAmbient from "@/composables/ambient";
-import { useSecToHourMinSec } from "@/composables/formatter";
+import { useSecToFormat } from "@/composables/formatter";
 import { useVideoScreenshot } from "@/composables/screenshot";
 
 import ScreenshotSet from "./ScreenshotSet.vue";
@@ -98,7 +93,7 @@ const props = defineProps({
   preventKeyBinding: {
     type: Boolean,
   },
-  teleportTime: {
+  time: {
     type: Number,
   },
 });
@@ -147,8 +142,14 @@ useEventListener(window, "keydown", (e) => {
 const isLoading = ref(true);
 function onLoadedVideo() {
   isLoading.value = false;
-  $video.value.currentTime = props.teleportTime;
+  $video.value.currentTime = props.time;
 }
+watch(
+  () => props.time,
+  () => {
+    $video.value.currentTime = props.time;
+  }
+);
 
 const { $video, $effect, isVideoLoaded } = useAmbient();
 
@@ -208,9 +209,9 @@ function timeChange() {
   }
   progress.current = $video.value.currentTime;
   progress.max = $video.value.duration;
-  time.current = useSecToHourMinSec($video.value.currentTime);
+  time.current = useSecToFormat($video.value.currentTime);
   if (time.duration === "00:00") {
-    time.duration = useSecToHourMinSec($video.value.duration);
+    time.duration = useSecToFormat($video.value.duration);
   }
 }
 
@@ -404,14 +405,5 @@ function closeScreenshotPreview() {
       display: none;
     }
   }
-}
-
-.slide-up-enter-active,
-.slide-up-leave-active {
-  transition: 300ms ease-out;
-}
-.slide-up-enter-from,
-.slide-up-leave-to {
-  transform: translate(0, 100%);
 }
 </style>

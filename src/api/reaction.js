@@ -10,26 +10,24 @@ import {
   query,
   deleteDoc,
   arrayRemove,
+  getDoc,
 } from "firebase/firestore";
 import { useRoute } from "vue-router";
 import { db } from "@/utility/firebase";
+import { useTimeSplit } from "../composables/formatter";
 
 /**
  * 리액션(리뷰, 댓글)과 관련된 api입니다.
  * @param {{
- *  type:"comment" | "review" ,
+ *  type: "comment" | "review"
+ *  parent: string,
  * }} option 변경할 리액션의 id를 정합니다.
  */
-export function useReaction({ type }) {
+export function useReaction({ type, parent, maxTime }) {
   const reactions = ref([]);
   const store = useStore();
   const route = useRoute();
   const user = computed(() => store.state.auth.user);
-  const parent = computed(() =>
-    type === "review"
-      ? route.params.title
-      : `${route.params.title} ${route.params.part} ${route.params.index}`
-  );
 
   /**
    * 리액션(리뷰, 댓글)을 새로 생성합니다.
@@ -39,15 +37,23 @@ export function useReaction({ type }) {
    */
   async function Create({ content }) {
     if (!user.value) {
+      console.error("로그인하지 않으면 리액션을 생성할 수 없습니다.");
       return;
     }
+
+    // 숫자 부분을 기준으로 잘라 배열 생성
+    // 시간 부분은 <time>시간 형식으로 저장
+    // comment인 경우에만 적용, 아닌 경우에는 원본 문자열을 배열에 그대로 담음
+    const formattedContent =
+      type === "comment" ? useTimeSplit(content) : [content];
+
     const newItem = {
-      author: user.value.nickname,
       uid: user.value.uid,
-      content,
+      parent: parent,
+      author: user.value.nickname,
+      content: formattedContent,
       updown: 0,
       time: new Date(),
-      parent: parent.value,
       type,
       isEdited: false,
       thumbs: 0,
@@ -69,12 +75,26 @@ export function useReaction({ type }) {
   async function Read() {
     const q = query(
       collection(db, "reaction"),
-      where("parent", "==", parent.value),
+      where("parent", "==", parent),
       where("type", "==", type)
     );
-    const animeReactions = (await getDocs(q)).docs.map((reaction) =>
+    let animeReactions = (await getDocs(q)).docs.map((reaction) =>
       reaction.data()
     );
+
+    animeReactions = animeReactions.toSorted(
+      (prev, next) => prev.time.toDate() - next.time.toDate()
+    );
+
+    if (user) {
+      animeReactions = animeReactions.toSorted((prev, next) => {
+        if (prev.uid === user.uid) {
+          return 1;
+        }
+        return -1;
+      });
+    }
+
     reactions.value = animeReactions;
   }
 
@@ -89,9 +109,12 @@ export function useReaction({ type }) {
     if (!user.value) {
       return;
     }
+    const formattedContent =
+      type === "comment" ? useTimeSplit(content) : [content];
+
     await setDoc(
       doc(db, "reaction", id),
-      { content, isEdited: true },
+      { content: formattedContent, isEdited: true },
       { merge: true }
     );
   }
