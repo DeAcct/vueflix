@@ -35,9 +35,22 @@
         @prev-sec="moveBeforeFiveSec"
         @next-sec="moveAfterFiveSec"
         :volume="volume"
+        :meta="meta"
       >
         <template #time>{{ time.current }} / {{ time.duration }}</template>
       </VideoControlBar>
+      <div class="AmbientPlayer__ScreenshotSet">
+        <button class="AmbientPlayer__ScreenshotButton" @click="takeScreenshot">
+          <IconBase>
+            <IconScreenshot />
+          </IconBase>
+        </button>
+        <Transition name="player-alert">
+          <div class="AmbientPlayer__Alert" v-if="screenshotAlert">
+            스크린샷이 기록되었어요
+          </div>
+        </Transition>
+      </div>
     </div>
     <canvas
       ref="$effect"
@@ -47,11 +60,6 @@
       height="9"
       aria-hidden="true"
     ></canvas>
-    <button class="AmbientPlayer__ScreenshotButton" @click="takeScreenshot">
-      <IconBase>
-        <IconScreenshot />
-      </IconBase>
-    </button>
     <Teleport to="#Overay">
       <ScreenshotSet
         :src="screenshotPreview.imgSrc"
@@ -59,11 +67,12 @@
         :close-action="closeScreenshotPreview"
       ></ScreenshotSet>
     </Teleport>
+    <slot name="time-limit"></slot>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref, computed, watch } from "vue";
+import { reactive, ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useEventListener } from "@vueuse/core";
 import useAmbient from "@/composables/ambient";
@@ -93,8 +102,8 @@ const props = defineProps({
   preventKeyBinding: {
     type: Boolean,
   },
-  time: {
-    type: Number,
+  meta: {
+    type: Object,
   },
 });
 
@@ -142,16 +151,12 @@ useEventListener(window, "keydown", (e) => {
 const isLoading = ref(true);
 function onLoadedVideo() {
   isLoading.value = false;
-  $video.value.currentTime = props.time;
 }
-watch(
-  () => props.time,
-  () => {
-    $video.value.currentTime = props.time;
-  }
-);
 
 const { $video, $effect, isVideoLoaded } = useAmbient();
+defineExpose({
+  $video,
+});
 
 const videoEvents = {
   playToggle,
@@ -189,7 +194,7 @@ const emits = defineEmits([
   "toggle-theater",
   "request-next-episode",
   "request-prev-episode",
-  "save-point",
+  "time-update",
 ]);
 function requestTheater() {
   emits("toggle-theater");
@@ -207,6 +212,7 @@ function timeChange() {
   if (!isVideoLoaded.value) {
     return;
   }
+  emits("time-update", $video.value.currentTime);
   progress.current = $video.value.currentTime;
   progress.max = $video.value.duration;
   time.current = useSecToFormat($video.value.currentTime);
@@ -282,16 +288,6 @@ function toggleMute() {
 
 const route = useRoute();
 const router = useRouter();
-router.beforeEach((to, from) => {
-  if (!$video.value) {
-    return;
-  }
-  emits("save-point", {
-    current: $video.value.currentTime,
-    max: $video.value.duration,
-  });
-  $video.value.currentTime = 0;
-});
 
 const nextLink = computed(() => {
   if (props.nextEpisode === "다음 화 없음" || !props.nextEpisode) {
@@ -316,14 +312,23 @@ function goToAnimeList() {
   router.push(`/anime/${route.params.title}/episodes`);
 }
 
+const screenshotAlert = ref(false);
 const screenshotPreview = ref({
   show: false,
   imgSrc: "",
 });
 function takeScreenshot() {
+  screenshotAlert.value = true;
   const { downloadURL } = useVideoScreenshot($video);
   screenshotPreview.value.imgSrc = downloadURL.value;
   screenshotPreview.value.show = true;
+  $video.value.style.transform = "scale(0.95)";
+  setTimeout(() => {
+    $video.value.style.transform = "scale(1)";
+  }, 300);
+  setTimeout(() => {
+    screenshotAlert.value = false;
+  }, 1200);
 }
 function closeScreenshotPreview() {
   screenshotPreview.value.show = false;
@@ -344,6 +349,7 @@ function closeScreenshotPreview() {
     height: 100%;
     display: flex;
     align-items: center;
+    background-color: #000;
   }
   &__Loading {
     width: 4.8rem;
@@ -353,22 +359,39 @@ function closeScreenshotPreview() {
     left: calc(50% - 2.4rem);
     color: #fff;
   }
-  &__ScreenshotButton {
+  &__ScreenshotSet {
     position: absolute;
     right: 2rem;
+  }
+  &__ScreenshotButton {
     width: 3.6rem;
     height: 3.6rem;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0.8rem;
-    background-color: hsl(var(--bg-100) / 0.3);
+    background-color: hsl(var(--bg-100) / 0.5);
     border-radius: 50%;
+  }
+  &__Alert {
+    display: flex;
+    height: 3.6rem;
+    align-items: center;
+    white-space: nowrap;
+    position: absolute;
+    top: 0;
+    right: 4.6rem;
+    background-color: hsl(0 0 0% / 0.5);
+    border-radius: 9999px;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.8rem;
   }
   &__Video {
     width: 100%;
     height: 100%;
     background-color: #000;
+    transition: transform 150ms ease-out;
+    transform-origin: center bottom;
   }
   &__GestureArea {
     position: absolute;
@@ -393,6 +416,21 @@ function closeScreenshotPreview() {
     filter: blur(30px);
     transform: translate(-50%, calc(-50% + 3rem));
   }
+}
+
+.player-alert-enter-active,
+.player-alert-leave-active {
+  transition: transform 150ms ease-in-out, opacity 150ms ease-in-out;
+}
+
+.player-alert-enter-from {
+  transform: translateY(-1rem);
+  opacity: 0;
+}
+
+.player-alert-leave-to {
+  transform: translateY(1rem);
+  opacity: 0;
 }
 
 @media screen and (min-width: 1080px) {

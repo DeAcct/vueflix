@@ -13,8 +13,7 @@ import { db } from "@/utility/firebase";
 
 /**
  * updown과 관련된 api입니다.
- * @param {{id:string}} 변경할 리액션의 id를 정합니다.
- * @returns
+ * @param {{id:string, writer:string}} 변경할 리액션의 id를 정합니다.
  */
 export function useUpdown({ id, writer }) {
   const updown = ref(0);
@@ -24,7 +23,6 @@ export function useUpdown({ id, writer }) {
   /**
    * 지정한 수치만큼 updown 수치를 변경하고 자동으로 새로 고칩니다.
    * @param {{action:1|-1}} option updown 수치를 어떻게 업데이트할 지 정합니다.
-   * ex)-1, 1, 2, ...
    */
   async function Update({ action }) {
     if (!user.value) {
@@ -37,7 +35,7 @@ export function useUpdown({ id, writer }) {
     await setDoc(
       doc(db, "reaction", id),
       { updown: increment(action) },
-      { merge: true },
+      { merge: true }
     );
   }
 
@@ -46,7 +44,9 @@ export function useUpdown({ id, writer }) {
    */
   async function Read() {
     const q = query(collection(db, "reaction"), where("_id", "==", id));
-    const animeReactions = (await getDocs(q)).docs.map((reaction) => reaction.data())[0];
+    const animeReactions = (await getDocs(q)).docs.map((reaction) =>
+      reaction.data()
+    )[0];
     updown.value = animeReactions.updown;
   }
 

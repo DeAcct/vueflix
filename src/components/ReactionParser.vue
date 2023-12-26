@@ -30,6 +30,7 @@ function teleport(time){
 <style lang="scss" scoped>
 .ReactionParser{
   font-size: inherit;
+  line-height: 1.5;
   &__TimeButton{
     font-size: inherit;
     color: hsl(var(--theme-500));

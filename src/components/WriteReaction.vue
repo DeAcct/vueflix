@@ -43,7 +43,7 @@
 <script setup>
 import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 import { ref, computed } from "vue";
-import { useReaction } from "@/api/reaction";
+import { Create } from "@/api/reaction";
 
 const emits = defineEmits(["mutate", "interact"]);
 
@@ -91,11 +91,6 @@ function setReviewData(e) {
   // 한글 특성상 v-model 사용불가
   reviewData.value = e.target.value;
 }
-
-const { Create } = useReaction({
-  type: props.type,
-  parent: props.parent,
-});
 
 async function reviewTrigger() {
   await Create({ content: reviewData.value });
@@ -163,7 +158,7 @@ function clear() {
       hsl(var(--theme-500) / 0.5),
       hsl(var(--theme-500) / 0.025)
     );
-    color: #fff;
+    color: hsl(var(--text-900));
     box-shadow: none;
     font-weight: 500;
     font-size: 1.5rem;

@@ -67,7 +67,7 @@
 import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 import { ref, computed } from "vue";
 import { useFormatDate } from "@/composables/formatter";
-import { useReaction } from "@/api/reaction";
+import { Update, Delete } from "@/api/reaction";
 import UpdownReaction from "./UpdownReaction.vue";
 
 const placeholder = computed(
@@ -101,15 +101,7 @@ const props = defineProps({
 const self = computed(() => props.user?.uid === props.reactionData.uid);
 const { date: formattedDate } = useFormatDate(props.reactionData.time.toDate());
 
-const { Update, Delete } = useReaction({
-  type: props.reactionData.type,
-  parent: props.reactionData.parent,
-});
-
 const editValue = ref(temporalRemoveTimeFlag());
-// const temporalRemoveTimeFlag = computed(() =>
-//   props.reactionData.content.map((item) => item.replace("<time>", ""))
-// );
 function temporalRemoveTimeFlag() {
   return props.reactionData.content
     .map((item) => item.replace("<time>", ""))
@@ -153,7 +145,7 @@ async function deleteTrigger() {
   &__MetaData {
     display: flex;
     align-items: center;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.4rem;
   }
   &__Author {
     font-size: 1.4rem;
@@ -262,18 +254,6 @@ async function deleteTrigger() {
   }
 }
 
-/* @keyframes down-fade {
-  from {
-    opacity: 0;
-    height: 0;
-  }
-}
-@keyframes fade {
-  from {
-    opacity: 0;
-  }
-} */
-
 .down-fade-enter-active,
 .down-fade-leave-active {
   transition: height 150ms ease;
@@ -288,7 +268,7 @@ async function deleteTrigger() {
 @media screen and (min-width: 1080px) {
   .ReactionItem {
     &__MetaData {
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
     }
     &__Author {
       font-size: 1.6rem;

@@ -30,7 +30,6 @@
 <script setup>
 import { useRoute } from "vue-router";
 import OptimizedMedia from "./OptimizedMedia.vue";
-import ModalBackdrop from "./ModalBackdrop.vue";
 import IconBase from "./IconBase.vue";
 import IconTrash from "./icons/IconTrash.vue";
 
@@ -59,8 +58,7 @@ async function share() {
   if (!("canShare" in navigator)) {
     return;
   }
-  const resp = await fetch(props.src);
-  const blob = await resp.blob();
+  const blob = await (await fetch(props.src)).blob();
   const file = new File(
     [blob],
     `${route.params.title} ${route.params.part} ${route.params.index} 스크린샷.png`,
@@ -110,10 +108,12 @@ async function share() {
   }
   .split {
     display: flex;
+    gap: 2px;
     flex-grow: 1;
   }
   &__Action {
     flex-grow: 1;
+    flex-basis: 0;
     min-width: 0;
     padding: 1.5rem;
     background-color: hsl(var(--bg-300));

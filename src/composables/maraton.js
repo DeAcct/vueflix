@@ -27,6 +27,9 @@ export function useMaratonData(queryPart, queryIndex) {
   });
 
   function getEpisodePercent(queryPart, queryIndex) {
+    if (!user.value) {
+      return "0%";
+    }
     const checker = maraton.value.find(
       ({ part, index }) => queryPart === part && queryIndex === index
     );

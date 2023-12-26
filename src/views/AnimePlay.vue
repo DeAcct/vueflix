@@ -7,16 +7,36 @@
       ]"
     >
       <AmbientPlayer
-        class="Player__Video"
+        class="AnimePlay__Video"
         @toggle-theater="toggleTheater"
         @save-point="savePoint"
-        :src="videoSrc"
+        @time-update="updateTime"
+        :src="TestAnime2"
         :time="time"
         :next-episode="nextEpisode"
         :prev-episode="prevEpisode"
         :ambient="mode !== 'theater'"
         :prevent-key-binding="isInteracting"
-      />
+        :meta="{
+          episode: `${route.params.title} ${route.params.part} ${route.params.index}`,
+          title: nowEpisode?.title,
+        }"
+        ref="$player"
+      >
+        <template #time-limit>
+          <Transition name="limit-fade">
+            <div class="AnimePlay__TimeLimit" v-if="isReachedLimit">
+              <strong class="AnimePlay__LimitTitle"
+                >1분 미리보기가 끝났어요ㅠㅠ</strong
+              >
+              <p class="AnimePlay__LimitExplain">
+                더 보고싶다면 로그인해주세요!
+              </p>
+              <RouterLink to="/auth" class="AnimePlay__CTA">로그인</RouterLink>
+            </div>
+          </Transition>
+        </template>
+      </AmbientPlayer>
     </div>
     <section class="AnimePlay__TitleRenderer">
       <div class="AnimePlay__Titles">
@@ -143,31 +163,33 @@ import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
 
 // 개발 시 임시로 사용할 동영상(요청량 절약)
-// import TestAnime from "@/assets/TestAnime.mp4";
+import TestAnime2 from "@/assets/TestAnime2.mp4";
 
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
 const storage = getStorage();
 const videoSrc = ref("");
-onMounted(getVideoUrl);
-async function getVideoUrl() {
-  videoSrc.value = await getDownloadURL(fireRef(storage, "testAnime.mp4"));
-}
+
 const router = useRouter();
 router.afterEach(async () => {
   await getVideoUrl();
 });
+const route = useRoute();
 const store = useStore();
-const recentWatched = computed(() => store.state.auth.user.recentWatched);
-const maratonWatch = computed(() => store.state.auth.user.maratonWatch);
-async function savePoint(e) {
+const user = computed(() => store.state.auth.user);
+const recentWatched = computed(() => user.value?.recentWatched);
+const maratonWatch = computed(() => user.value?.maratonWatch);
+async function savePoint(time) {
+  if (!session) {
+    return;
+  }
   const newData = {
     aniTitle: route.params.title,
     title: nowEpisode.value.title,
     thumbnail: nowEpisode.value.thumbnail,
     part: route.params.part,
     index: route.params.index,
-    time: e,
+    time,
     watchedPoint: new Date(),
     maratonMax: episodeCounter.value,
   };
@@ -179,40 +201,67 @@ async function savePoint(e) {
     { merge: true }
   );
 }
+router.beforeEach(() => {
+  if (!$player.value) {
+    return;
+  }
+  savePoint({
+    current: $player.value.$video.currentTime,
+    max: $player.value.$video.duration,
+  });
+});
 
 const { getEpisodePercent } = useMaratonData();
-// const teleportTime = computed(() => {
-//   const target = maratonWatch.value.find(
-//     (anime) => anime.aniTitle === route.params.title
-//   );
-//   // 현재 애니가 정주행 목록에 존재하지 않으면(처음 보는 애니면) 0 반환(처음부터 재생)
-//   if (!target) {
-//     return 0;
-//   }
-
-//   const log = target.list.find(
-//     (log) => log.part === route.params.part && log.index === route.params.index
-//   );
-//   return log.time.current;
-// });
+const TRIAL_TIME_LIMIT = 60;
 const time = ref(0);
-onMounted(() => {
+const $player = ref(null);
+const isReachedLimit = ref(false);
+function updateTime(e) {
+  isReachedLimit.value = e > TRIAL_TIME_LIMIT && !session;
+  if (e > TRIAL_TIME_LIMIT) {
+    $player.value.$video.pause();
+  }
+}
+function findTimeLog() {
+  if (!maratonWatch.value) {
+    return 0;
+  }
   const target = maratonWatch.value.find(
     (anime) => anime.aniTitle === route.params.title
   );
-  // 현재 애니가 정주행 목록에 존재하지 않으면(처음 보는 애니면) 0 반환(처음부터 재생)
+  // 현재 애니가 정주행 목록에 존재하지 않으면(처음 보는 애니면) 시작시간을 0으로
   if (!target) {
-    time.value = 0;
+    return 0;
   }
-
   const log = target.list.find(
     (log) => log.part === route.params.part && log.index === route.params.index
   );
-  time.value = log.time.current;
+  return log.time.current;
+}
+const animeInfo = ref({});
+async function getVideoUrl() {
+  videoSrc.value = await getDownloadURL(fireRef(storage, "TestAnime2.mp4"));
+}
+async function getAnimeData() {
+  const data = (await getDoc(doc(db, "anime", route.params.title))).data();
+  return data;
+}
+onMounted(async () => {
+  await getVideoUrl();
+  const query = route.query;
+
+  animeInfo.value = await getAnimeData();
+  $player.value.$video.currentTime = Number(query.time) || findTimeLog();
 });
 function onRequestTeleport(e) {
-  time.value = e;
+  $player.value.$video.currentTime = e;
 }
+router.beforeEach(async () => {
+  if (!$player.value?.$video) {
+    return;
+  }
+  $player.value.$video.currentTime = findTimeLog();
+});
 
 const isInteracting = ref(false);
 function setInteract(e) {
@@ -220,17 +269,6 @@ function setInteract(e) {
 }
 
 const deviceInfo = inject("device-info");
-
-const route = useRoute();
-const animeInfo = ref({});
-onMounted(async () => {
-  if (!session) {
-    router.replace(`/anime/${route.params.title}/episodes`);
-  }
-  const data = (await getDoc(doc(db, "anime", route.params.title))).data();
-  animeInfo.value = data;
-});
-
 const session = getAuth().currentUser;
 
 const nowEpisode = computed(() => {
@@ -377,6 +415,33 @@ const { scrollBehavior } = useScroll();
     top: 6rem;
     z-index: 100;
   }
+  &__TimeLimit {
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(10px);
+    background-color: hsl(0 0 100% / 0.5);
+    display: flex;
+    flex-direction: column;
+    padding: var(--inner-padding);
+    justify-content: center;
+    align-items: flex-start;
+  }
+  &__LimitTitle {
+    color: #000;
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
+  }
+  &__LimitExplain {
+    color: #000;
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+  &__CTA {
+    background-color: hsl(var(--theme-500));
+    padding: 0.8rem 1.2rem;
+    font-size: 1.5rem;
+    border-radius: var(--global-radius);
+  }
 
   &__TitleRenderer {
     z-index: 4;
@@ -384,12 +449,12 @@ const { scrollBehavior } = useScroll();
     display: flex;
     gap: 0.8rem;
     justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 3rem;
   }
   &__Titles {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
     gap: 0.4rem;
   }
   &__AniTitle {
@@ -397,7 +462,6 @@ const { scrollBehavior } = useScroll();
     font-weight: 500;
     color: transparent;
     transition: 150ms ease-out;
-    min-width: 0;
     &--Loaded {
       color: inherit;
       background: transparent;
@@ -477,6 +541,16 @@ const { scrollBehavior } = useScroll();
   }
 }
 
+.limit-fade-enter-active,
+.limit-fade-leave-active {
+  transition: opacity 150ms ease;
+}
+
+.limit-fade-enter-from,
+.limit-fade-leave-to {
+  opacity: 0;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .AnimePlay {
     &__PartsAccordion {
@@ -515,6 +589,9 @@ const { scrollBehavior } = useScroll();
       transform: translate(-50%, -50%);
       width: 100vw;
       height: 100%;
+    }
+    &__TimeLimit {
+      border-radius: var(--global-radius);
     }
 
     &__TitleRenderer {
@@ -560,12 +637,12 @@ const { scrollBehavior } = useScroll();
       align-items: center;
     }
     &__ScrollContainer {
-      width: 40rem;
+      width: 100%;
       flex-grow: 1;
       position: relative;
     }
     &__Episodes {
-      width: 40rem;
+      width: 100%;
       gap: 1.2rem;
       position: absolute;
       --accordion-direction: column;
@@ -574,6 +651,15 @@ const { scrollBehavior } = useScroll();
     &__Comments {
       grid-area: v-bind("area.comments");
       padding: 0;
+    }
+
+    &__ToTop {
+      left: auto;
+      right: max(calc((100% - 1920px) / 2), 2rem);
+      transform: translateY(10rem);
+      &--Show {
+        transform: none;
+      }
     }
   }
 }

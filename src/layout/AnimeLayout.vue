@@ -303,7 +303,7 @@ const {
     }
     &__ToTop {
       left: auto;
-      right: calc((100% - 118rem) / 2);
+      right: calc((100% - 128rem) / 2);
       transform: translateY(10rem);
       &--Show {
         transform: none;

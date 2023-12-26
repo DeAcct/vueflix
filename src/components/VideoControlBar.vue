@@ -121,6 +121,12 @@
           <slot name="time"></slot>
         </p>
       </div>
+      <div class="VideoControlBar__Meta" v-if="isFull">
+        <strong class="VideoControlBar__Episode">{{ meta.episode }}</strong>
+        <p class="VideoControlBar__Title">
+          {{ meta.title }}
+        </p>
+      </div>
 
       <div class="VideoControlBar__HowWatch">
         <ToolTip v-if="!isFull && !deviceInfo.isMobile" align="flex-end">
@@ -230,6 +236,9 @@ const props = defineProps({
   volume: {
     type: Object,
   },
+  meta: {
+    type: Object,
+  },
 });
 
 const route = useRoute();
@@ -306,6 +315,7 @@ function onVolumeChange(e) {
   }
 
   &__Control {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 0 3.2rem;
@@ -319,6 +329,9 @@ function onVolumeChange(e) {
     gap: 1.6rem;
   }
   &__QuickMove {
+    display: none;
+  }
+  &__Meta {
     display: none;
   }
 
@@ -377,11 +390,25 @@ function onVolumeChange(e) {
 
 @media screen and (min-width: 1080px) {
   .VideoControlBar {
-    gap: 1.2rem;
-    padding-bottom: 1.2rem;
+    gap: 2rem;
+    padding-bottom: 2rem;
     &__QuickMove {
       display: flex;
       gap: 1.2rem;
+    }
+    &__Meta {
+      display: flex;
+      position: absolute;
+      transform: translate(-50%);
+      left: 50%;
+      font-size: 1.6rem;
+      > * {
+        padding: 0 1.2rem;
+        border-right: 2px solid #fff;
+        &:last-child {
+          border: 0;
+        }
+      }
     }
   }
 }
