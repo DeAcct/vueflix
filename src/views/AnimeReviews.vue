@@ -50,7 +50,7 @@ const user = computed(() => store.state.auth.user);
   overflow: hidden;
 
   &__LoginRequired {
-    background-color: hsl(var(--text-100));
+    background-color: hsl(var(--bg-300));
     position: relative;
     padding: {
       left: 2rem;
@@ -70,12 +70,12 @@ const user = computed(() => store.state.auth.user);
     &::before {
       left: 0;
       box-shadow: calc(var(--global-radius) * -6)
-        calc(var(--global-radius) * -6) 0 hsl(var(--text-100));
+        calc(var(--global-radius) * -6) 0 hsl(var(--bg-300));
     }
     &::after {
       right: 0;
       box-shadow: calc(var(--global-radius) * 6) calc(var(--global-radius) * -6)
-        0 hsl(var(--text-100));
+        0 hsl(var(--bg-300));
     }
   }
 

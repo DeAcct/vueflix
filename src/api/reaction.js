@@ -16,17 +16,16 @@ import { useRoute } from "vue-router";
 import { db } from "@/utility/firebase";
 import { useTimeSplit } from "../composables/formatter";
 
-const store = useStore();
-const user = computed(() => store.state.auth.user);
 /**
  * 리액션(리뷰, 댓글)을 새로 생성합니다.
  * @param {{
  *  content: string,
  *  parent: string,
- *  type: "comment" | "review"
+ *  type: "comment" | "review",
+ *  user: import("vue").ComputedRef
  * }} option 리액션의 내용을 받습니다.
  */
-export async function Create({ content, parent, type }) {
+export async function Create({ content, parent, type, user }) {
   if (!user.value) {
     console.error("로그인하지 않으면 리액션을 생성할 수 없습니다.");
     return;
@@ -63,11 +62,12 @@ export async function Create({ content, parent, type }) {
 /**
  * @param {{
  *  parent: string,
- *  type: "comment" | "review"
+ *  type: "comment" | "review",
+ *  user: import("vue").ComputedRef
  * }}
  * 리액션(리뷰, 댓글) 목록을 새로 고칩니다.
  */
-export async function Read({ parent, type }) {
+export async function Read({ parent, type, user }) {
   const q = query(
     collection(db, "reaction"),
     where("parent", "==", parent),
@@ -97,10 +97,11 @@ export async function Read({ parent, type }) {
  * 리액션(리뷰, 댓글)을 수정합니다.
  * @param {{
  *  id: string,
- *  content: string
+ *  content: string,
+ *  user: import("vue").ComputedRef
  * }} option 수정할 리액션의 id와 새 내용을 받습니다.
  */
-export async function Update({ id, content }) {
+export async function Update({ id, content, user, type }) {
   if (!user.value) {
     return;
   }
@@ -118,9 +119,10 @@ export async function Update({ id, content }) {
  * 리액션(리뷰, 댓글)을 삭제합니다.
  * @param {{
  *  id: string,
+ *  user: import("vue").ComputedRef
  * }} option 삭제할 리액션의 id를 받습니다.
  */
-export async function Delete({ id }) {
+export async function Delete({ id, user }) {
   if (!user.value) {
     return;
   }

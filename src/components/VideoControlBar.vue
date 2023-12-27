@@ -308,7 +308,7 @@ function onVolumeChange(e) {
   gap: 0.8rem;
   padding-bottom: 0.8rem;
   width: 100%;
-  background: linear-gradient(hsl(0 0% 0% / 0), hsl(0 0% 0% / 0.5));
+  background: linear-gradient(hsl(0 0% 0% / 0), hsl(0 0% 0% / 1));
 
   &__Progress {
     margin-bottom: -0.9rem;
@@ -390,8 +390,6 @@ function onVolumeChange(e) {
 
 @media screen and (min-width: 1080px) {
   .VideoControlBar {
-    gap: 2rem;
-    padding-bottom: 2rem;
     &__QuickMove {
       display: flex;
       gap: 1.2rem;

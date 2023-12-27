@@ -69,6 +69,7 @@ import { ref, computed } from "vue";
 import { useFormatDate } from "@/composables/formatter";
 import { Update, Delete } from "@/api/reaction";
 import UpdownReaction from "./UpdownReaction.vue";
+import { useStore } from "vuex";
 
 const placeholder = computed(
   () =>
@@ -121,17 +122,24 @@ function editTrigger() {
   emits("interact", mode.value === "edit");
 }
 const emits = defineEmits(["mutate", "interact"]);
+const store = useStore();
+const user = computed(() => store.state.auth.user);
 async function updateReaction() {
   if (!editValue.value) {
     return;
   }
-  await Update({ id: props.reactionData._id, content: editValue.value });
+  await Update({
+    id: props.reactionData._id,
+    content: editValue.value,
+    user,
+    type: props.type,
+  });
   mode.value = "show";
   emits("mutate");
   emits("interact", false);
 }
 async function deleteTrigger() {
-  await Delete({ id: props.reactionData._id });
+  await Delete({ id: props.reactionData._id, user });
   emits("mutate");
 }
 </script>

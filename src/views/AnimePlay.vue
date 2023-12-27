@@ -11,7 +11,7 @@
         @toggle-theater="toggleTheater"
         @save-point="savePoint"
         @time-update="updateTime"
-        :src="videoSrc"
+        :src="TestAnime2"
         :time="time"
         :next-episode="nextEpisode"
         :prev-episode="prevEpisode"
@@ -25,7 +25,7 @@
       >
         <template #time-limit>
           <Transition name="limit-fade">
-            <div class="AnimePlay__TimeLimit" v-if="isReachedLimit">
+            <div class="AnimePlay__TimeLimit" v-if="showLimitAlert">
               <strong class="AnimePlay__LimitTitle"
                 >1분 미리보기가 끝났어요ㅠㅠ</strong
               >
@@ -163,7 +163,7 @@ import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
 
 // 개발 시 임시로 사용할 동영상(요청량 절약)
-// import TestAnime2 from "@/assets/TestAnime2.mp4";
+import TestAnime2 from "@/assets/TestAnime2.mp4";
 
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
@@ -215,10 +215,10 @@ const { getEpisodePercent } = useMaratonData();
 const TRIAL_TIME_LIMIT = 60;
 const time = ref(0);
 const $player = ref(null);
-const isReachedLimit = ref(false);
+const showLimitAlert = ref(false);
 function updateTime(e) {
-  isReachedLimit.value = e > TRIAL_TIME_LIMIT && !session;
-  if (e > TRIAL_TIME_LIMIT) {
+  showLimitAlert.value = e > TRIAL_TIME_LIMIT && !user.value;
+  if (showLimitAlert.value) {
     $player.value.$video.pause();
   }
 }
@@ -236,7 +236,7 @@ function findTimeLog() {
   const log = target.list.find(
     (log) => log.part === route.params.part && log.index === route.params.index
   );
-  return log.time.current;
+  return log ? log.time.current : 0;
 }
 const animeInfo = ref({});
 async function getVideoUrl() {

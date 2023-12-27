@@ -73,6 +73,10 @@
           @wanna-see-toggle="wannaSeeToggle"
           @purchase="purchase"
           v-show="!!animeInfo.type && !!animeInfo.rating && !!animeInfo.name"
+          :disabled="{
+            wanna: !!user,
+            purchase: !!user,
+          }"
         ></AnimeActions>
       </div>
     </div>
@@ -167,7 +171,7 @@ const continueData = computed(() => {
   if (!user.value) {
     return {
       link: `/anime-play/${route.params.title}/1기/1화`,
-      text: "가입하고 정주행 시작",
+      text: "1화 1분 미리보기",
     };
   }
   const last = user.value.recentWatched.find(

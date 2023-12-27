@@ -57,7 +57,33 @@ import IconPurchase from "./icons/IconPurchase.vue";
 import IconWannaSeeAdd from "./icons/IconWannaSeeAdd.vue";
 import IconWannaSeeAdded from "./icons/IconWannaSeeAdded.vue";
 
-const props = defineProps(["continueData", "wannaSee"]);
+const props = defineProps({
+  continueData: {
+    type: Object,
+  },
+  wannaSee: {
+    type: Boolean,
+  },
+  disabled: {
+    type: Object,
+    validator(obj) {
+      const VALID_KEYS = ["purchase", "wanna"];
+      const isValidKey = Object.keys(obj).reduce(
+        (acc, current) => acc && VALID_KEYS.includes(current),
+        true
+      );
+      const isValidValue = Object.values(obj).reduce(
+        (acc, current) => acc && typeof current === "boolean",
+        true
+      );
+      return isValidKey && isValidValue;
+    },
+    default: {
+      purchase: true,
+      wanna: true,
+    },
+  },
+});
 const emits = defineEmits(["wanna-see-toggle", "purchase"]);
 
 function wannaSeeToggle() {
@@ -84,6 +110,7 @@ function activeTrigger() {
     width: auto;
     height: auto;
     display: flex;
+    gap: 1rem;
   }
   .bg-less {
     height: 4rem;
@@ -167,10 +194,6 @@ function activeTrigger() {
         opacity: 0;
       }
     }
-  }
-
-  button:not(:last-child) {
-    margin-right: 1rem;
   }
 }
 

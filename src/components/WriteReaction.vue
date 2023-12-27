@@ -13,13 +13,19 @@
     <div class="WriteReaction__Interaction">
       <div class="WriteReaction__Status">
         <strong class="WriteReaction__Length"
-          >{{ reviewData.length || 0 }}/300</strong
+          >{{ reviewData.length || 0 }}/1000</strong
         >
-        <p v-if="reviewData.length > 300" class="WriteReaction__TooLongAlert">
+        <p v-if="reviewData.length > 1000" class="WriteReaction__TooLongAlert">
           너무 길어요!
         </p>
       </div>
       <div class="WriteReaction__BtnArea">
+        <button
+          class="WriteReaction__Button WriteReaction__Button--AddTime"
+          v-if="parent === 'comment'"
+        >
+          현재 시간 추가
+        </button>
         <button
           class="WriteReaction__Button WriteReaction__Button--Clear"
           @click="clear"
@@ -28,7 +34,7 @@
           지우기
         </button>
         <button
-          :disabled="reviewData.length > 300 || reviewData.length === 0"
+          :disabled="reviewData.length > 1000 || reviewData.length === 0"
           @click="reviewTrigger"
           class="WriteReaction__Button WriteReaction__Button--Submit"
           type="button"
@@ -44,6 +50,7 @@
 import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 import { ref, computed } from "vue";
 import { Create } from "@/api/reaction";
+import { useStore } from "vuex";
 
 const emits = defineEmits(["mutate", "interact"]);
 
@@ -92,8 +99,15 @@ function setReviewData(e) {
   reviewData.value = e.target.value;
 }
 
+const store = useStore();
+const user = computed(() => store.state.auth.user);
 async function reviewTrigger() {
-  await Create({ content: reviewData.value });
+  await Create({
+    content: reviewData.value,
+    parent: props.parent,
+    user,
+    type: props.type,
+  });
   emits("mutate");
   reviewData.value = "";
 }
@@ -135,7 +149,7 @@ function clear() {
   }
   &__Length {
     display: block;
-    color: hsl(var(--bg-400));
+    color: hsl(var(--bg-500));
     font-size: 1.4rem;
     font-weight: 500;
     margin-bottom: 0.5rem;
@@ -155,8 +169,8 @@ function clear() {
   &__Button {
     background: linear-gradient(
       150deg,
-      hsl(var(--theme-500) / 0.5),
-      hsl(var(--theme-500) / 0.025)
+      hsl(var(--bg-900) / 0.2),
+      hsl(var(--bg-900) / 0.025)
     );
     color: hsl(var(--text-900));
     box-shadow: none;
@@ -164,11 +178,11 @@ function clear() {
     font-size: 1.5rem;
     padding: 0.8rem 1.2rem;
     position: relative;
-    &--Clear {
+    &--Submit {
       background: linear-gradient(
         150deg,
-        hsl(var(--bg-900) / 0.2),
-        hsl(var(--bg-900) / 0.025)
+        hsl(var(--theme-500) / 0.5),
+        hsl(var(--theme-500) / 0.025)
       );
     }
     &:disabled {

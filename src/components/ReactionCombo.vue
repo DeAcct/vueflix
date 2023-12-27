@@ -55,7 +55,7 @@
 // 리뷰는 애니메이션에 작성하는 항목
 // 코멘트는 각 에피소드마다 작성하는 항목
 
-import { computed, onMounted, watch, ref } from "vue";
+import { computed, watchEffect, ref } from "vue";
 import { useStore } from "vuex";
 
 import { Read } from "@/api/reaction";
@@ -97,17 +97,20 @@ const store = useStore();
 const user = computed(() => store.state.auth.user);
 
 const reactions = ref([]);
-onMounted(async () => {
-  reactions.value = await Read({ parent: props.parent, type: props.type });
+
+watchEffect(async () => {
+  reactions.value = await Read({
+    parent: props.parent,
+    type: props.type,
+    user,
+  });
 });
-watch(
-  () => props.parent,
-  async () => {
-    reactions.value = await Read({ parent: props.parent, type: props.type });
-  }
-);
 async function onMutate() {
-  await Read();
+  reactions.value = await Read({
+    parent: props.parent,
+    type: props.type,
+    user,
+  });
 }
 function requestTeleport(e) {
   emits("request-teleport", e);

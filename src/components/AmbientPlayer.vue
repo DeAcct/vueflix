@@ -14,16 +14,11 @@
         autoplay
         muted
       />
-      <div class="AmbientPlayer__GestureArea">
-        <button
-          @touchstart.passive="double('before')"
-          class="AmbientPlayer__GestureItem"
-        ></button>
-        <button
-          @touchstart.passive="double('after')"
-          class="AmbientPlayer__GestureItem"
-        ></button>
-      </div>
+      <GestureArea
+        class="AmbientPlayer__GestureArea"
+        :before-move="moveBeforeFiveSec"
+        :after-move="moveAfterFiveSec"
+      />
       <VideoControlBar
         v-on="videoEvents"
         class="AmbientPlayer__Control"
@@ -79,12 +74,12 @@ import useAmbient from "@/composables/ambient";
 import { useSecToFormat } from "@/composables/formatter";
 import { useVideoScreenshot } from "@/composables/screenshot";
 
+import GestureArea from "./GestureArea.vue";
+import LoadingSpinner from "./LoadingSpinner.vue";
 import ScreenshotSet from "./ScreenshotSet.vue";
 import VideoControlBar from "./VideoControlBar.vue";
-import LoadingSpinner from "./LoadingSpinner.vue";
 import IconBase from "./IconBase.vue";
 import IconScreenshot from "./icons/IconScreenshot.vue";
-import ModalBackdrop from "./ModalBackdrop.vue";
 
 const props = defineProps({
   src: {
@@ -242,22 +237,6 @@ function moveBeforeFiveSec() {
 function moveAfterFiveSec() {
   $video.value.currentTime += 5;
 }
-let touches = 0;
-function double(to) {
-  touches++;
-  setTimeout(() => {
-    touches = 0;
-  }, 300);
-  if (touches !== 2) {
-    return;
-  }
-  if (to === "before") {
-    moveBeforeFiveSec();
-  }
-  if (to === "after") {
-    moveAfterFiveSec();
-  }
-}
 
 const volume = reactive({
   current: 1,
@@ -362,6 +341,8 @@ function closeScreenshotPreview() {
   &__ScreenshotSet {
     position: absolute;
     right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
   }
   &__ScreenshotButton {
     width: 3.6rem;
@@ -371,6 +352,7 @@ function closeScreenshotPreview() {
     align-items: center;
     padding: 0.8rem;
     background-color: hsl(var(--bg-100) / 0.5);
+    backdrop-filter: blur(10px);
     border-radius: 50%;
   }
   &__Alert {
@@ -382,9 +364,10 @@ function closeScreenshotPreview() {
     top: 0;
     right: 4.6rem;
     background-color: hsl(0 0 0% / 0.5);
+    backdrop-filter: blur(10px);
     border-radius: 9999px;
     padding: 0.8rem 1.2rem;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
   &__Video {
     width: 100%;
@@ -395,12 +378,7 @@ function closeScreenshotPreview() {
   }
   &__GestureArea {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-  }
-  &__GestureItem {
-    flex-grow: 1;
+    inset: 0;
   }
   &__Control {
     position: absolute;
@@ -439,8 +417,13 @@ function closeScreenshotPreview() {
     &__Effect {
       filter: blur(100px);
     }
-    &__GestureArea {
-      display: none;
+  }
+}
+
+@media screen and (orientation: landscape) {
+  .AmbientPlayer {
+    &__ScreenshotSet {
+      transform: translateY(calc(-50% - 1.8rem));
     }
   }
 }

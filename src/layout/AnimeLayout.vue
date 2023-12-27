@@ -206,7 +206,7 @@ const {
   &__Tab {
     font-size: 1.5rem;
     font-weight: 500;
-    padding: 2rem 0;
+    padding: 1.6rem 0 1.2rem;
     display: flex;
     align-items: last baseline;
     gap: 0.4rem;

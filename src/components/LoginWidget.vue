@@ -34,6 +34,7 @@ defineProps({
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-radius: calc(var(--global-radius) * 6);
   padding: {
     top: 2rem;
     bottom: 2rem;
@@ -47,12 +48,6 @@ defineProps({
     height: 4.8rem;
     margin-right: 1rem;
     border: 1.8px solid transparent;
-    &--male {
-      border-color: hsl(var(--gender-male));
-    }
-    &--female {
-      border-color: hsl(var(--gender-female));
-    }
   }
   h2 {
     font-size: 1.5rem;

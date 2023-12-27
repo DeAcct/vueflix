@@ -32,9 +32,16 @@ export function useSecToFormat(origin) {
   )}`;
 }
 
-export function useTimeSplit(origin, timeMax) {
-  // 정규 표현식을 사용하여 HH:MM:DD 또는 MM:DD 시간 형식을 찾음 (전역 검색)
-  const timePattern = /(\d{1,3}:\d{2}:\d{2})|(\d{2}:\d{2})/g;
+/**
+ *
+ * @param {number} origin
+ * @returns {`${string}:${string} | ${string}:${string}:${string}`}
+ */
+export function useTimeSplit(origin) {
+  // 정규 표현식을 사용하여 HH[H]:MM:DD 또는 M[M]:DD 시간 형식을 찾음 (전역 검색)
+  // 시간은 최대 3자리, 분은 시간이 존재하지 않을 때 1자리가 될 수 있다.
+  // 먼저 시:분:초 | 분:초 두가지로 크게 나눴다.
+  const timePattern = /(\d{1,3}:\d{2}:\d{2})|(\d{1,2}:\d{2})/g;
 
   // 모든 매치를 찾아 배열에 저장
   const matches = origin.match(timePattern) || [];
