@@ -419,12 +419,4 @@ function closeScreenshotPreview() {
     }
   }
 }
-
-@media screen and (orientation: landscape) {
-  .AmbientPlayer {
-    &__ScreenshotSet {
-      transform: translateY(calc(-50% - 1.8rem));
-    }
-  }
-}
 </style>

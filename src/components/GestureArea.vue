@@ -99,6 +99,10 @@ function double(to) {
       --gesture-area-direction: -1;
     }
   }
+  &__Icon {
+    width: 3.6rem;
+    height: 3.6rem;
+  }
 }
 
 .gesture-area-before-enter-active,
