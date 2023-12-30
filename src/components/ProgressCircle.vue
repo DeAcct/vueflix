@@ -41,7 +41,7 @@ const { $body, trackLength, bodyLength } = usePercentToSVGRound(props.percent);
   }
   &__Track {
     fill: none;
-    stroke: hsl(0 0 100% / 0.5);
+    stroke: hsl(0 0% 100% / 0.5);
     stroke-width: 2px;
   }
   &__Body {

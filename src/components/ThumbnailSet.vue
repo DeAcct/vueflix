@@ -133,7 +133,7 @@ const alt = computed(() => {
     padding: 0.75rem;
     bottom: 0;
     color: #fff;
-    background: linear-gradient(transparent, hsl(0 0 0% / 0.5));
+    background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
     border-radius: var(--global-radius);
   }
   &__SkeletonInfo {
