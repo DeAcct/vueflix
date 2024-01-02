@@ -5,6 +5,7 @@
         'AnimePlay__Frame',
         { 'AnimePlay__Frame--Theater': mode === 'theater' },
       ]"
+      ref="$VideoFrame"
     >
       <AmbientPlayer
         class="AnimePlay__Video"
@@ -38,7 +39,7 @@
         </template>
       </AmbientPlayer>
     </div>
-    <section class="AnimePlay__TitleRenderer">
+    <section class="AnimePlay__TitleRenderer" ref="$TitleRenderer">
       <div class="AnimePlay__Titles">
         <h2
           :class="[
@@ -73,6 +74,7 @@
         'AnimePlay__Parts',
         { 'AnimePlay__Parts--Theater': mode === 'theater' },
       ]"
+      ref="$Parts"
     >
       <h3 class="AnimePlay__EpisodesCounter">
         {{ episodeCounter }}개의 에피소드
@@ -123,9 +125,10 @@
       class="AnimePlay__Comments"
       type="comment"
       title-tag="h4"
-      @interact="setInteract"
       :parent="`${route.params.title} ${route.params.part} ${route.params.index}`"
+      @interact="setInteract"
       @request-teleport="onRequestTeleport"
+      ref="$Comments"
     >
       <template #title>댓글</template>
     </ReactionCombo>
@@ -163,7 +166,7 @@ import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
 
 // 개발 시 임시로 사용할 동영상(요청량 절약)
-// import TestAnime2 from "@/assets/TestAnime2.mp4";
+import TestAnime2 from "@/assets/TestAnime2.mp4";
 
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
@@ -240,6 +243,10 @@ function findTimeLog() {
 }
 const animeInfo = ref({});
 async function getVideoUrl() {
+  if (import.meta.env.DEV) {
+    videoSrc.value = TestAnime2;
+    return;
+  }
   videoSrc.value = await getDownloadURL(fireRef(storage, "TestAnime2.mp4"));
 }
 async function getAnimeData() {
@@ -419,7 +426,7 @@ const { scrollBehavior } = useScroll();
     position: absolute;
     inset: 0;
     backdrop-filter: blur(10px);
-    background-color: hsl(0 0 100% / 0.5);
+    background-color: hsl(0 0% 100% / 0.5);
     display: flex;
     flex-direction: column;
     padding: var(--inner-padding);
@@ -574,12 +581,12 @@ const { scrollBehavior } = useScroll();
     &__Frame {
       position: relative;
       z-index: 1;
-      top: 0;
+      top: unset;
       grid-area: v-bind("area.video");
       &--Theater {
-        margin-top: -5.2rem;
         height: 56.25vw;
         max-height: 80vh;
+        margin-top: -2rem;
       }
     }
     &__Frame--Theater &__Video {
@@ -589,9 +596,6 @@ const { scrollBehavior } = useScroll();
       transform: translate(-50%, -50%);
       width: 100vw;
       height: 100%;
-    }
-    &__TimeLimit {
-      border-radius: var(--global-radius);
     }
 
     &__TitleRenderer {

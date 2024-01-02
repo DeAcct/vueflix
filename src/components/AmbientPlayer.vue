@@ -34,7 +34,7 @@
       >
         <template #time>{{ time.current }} / {{ time.duration }}</template>
       </VideoControlBar>
-      <div class="AmbientPlayer__ScreenshotSet">
+      <div class="AmbientPlayer__TakeScreenshot">
         <button class="AmbientPlayer__ScreenshotButton" @click="takeScreenshot">
           <IconBase>
             <IconScreenshot />
@@ -56,13 +56,34 @@
       aria-hidden="true"
     ></canvas>
     <Teleport to="#Overay">
-      <ScreenshotSet
-        :src="screenshotPreview.imgSrc"
-        :show="screenshotPreview.show"
-        :close-action="closeScreenshotPreview"
-      ></ScreenshotSet>
+      <DialogSet :show="screenshotPreview.show" class="ScreenshotDialog">
+        <template #content>
+          <Transition name="new-screenshot">
+            <OptimizedMedia
+              :src="screenshotPreview.imgSrc"
+              :key="screenshotPreview.imgSrc"
+              class="ScreenshotDialog__Preview"
+            ></OptimizedMedia>
+          </Transition>
+        </template>
+        <template #control>
+          <button
+            class="ScreenshotDialog__Delete"
+            @click="closeScreenshotPreview"
+          >
+            <IconBase>
+              <IconTrash />
+            </IconBase>
+          </button>
+          <button class="ScreenshotDialog__Action" @click="download">
+            다운로드
+          </button>
+          <button class="ScreenshotDialog__Action" @click="share">
+            다른 앱으로 공유
+          </button>
+        </template>
+      </DialogSet>
     </Teleport>
-    <slot name="time-limit"></slot>
   </div>
 </template>
 
@@ -74,12 +95,15 @@ import useAmbient from "@/composables/ambient";
 import { useSecToFormat } from "@/composables/formatter";
 import { useVideoScreenshot } from "@/composables/screenshot";
 
+import DialogSet from "./DialogSet.vue";
 import GestureArea from "./GestureArea.vue";
 import LoadingSpinner from "./LoadingSpinner.vue";
-import ScreenshotSet from "./ScreenshotSet.vue";
+import OptimizedMedia from "./OptimizedMedia.vue";
 import VideoControlBar from "./VideoControlBar.vue";
+
 import IconBase from "./IconBase.vue";
 import IconScreenshot from "./icons/IconScreenshot.vue";
+import IconTrash from "./icons/IconTrash.vue";
 
 const props = defineProps({
   src: {
@@ -312,6 +336,31 @@ function takeScreenshot() {
 function closeScreenshotPreview() {
   screenshotPreview.value.show = false;
 }
+
+function download() {
+  const temporalAnchor = document.createElement("a");
+  temporalAnchor.href = screenshotPreview.value.imgSrc;
+  temporalAnchor.download = `${route.params.title} ${route.params.part} ${route.params.index} 스크린샷`;
+  temporalAnchor.click();
+}
+
+async function share() {
+  if (!("canShare" in navigator)) {
+    return;
+  }
+  const blob = await (await fetch(screenshotPreview.value.imgSrc)).blob();
+  const file = new File(
+    [blob],
+    `${route.params.title} ${route.params.part} ${route.params.index} 스크린샷.png`,
+    {
+      type: blob.type,
+    }
+  );
+  navigator.share({
+    title: `스크린샷`,
+    files: [file],
+  });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -338,7 +387,7 @@ function closeScreenshotPreview() {
     left: calc(50% - 2.4rem);
     color: #fff;
   }
-  &__ScreenshotSet {
+  &__TakeScreenshot {
     position: absolute;
     right: 2rem;
     top: 50%;
@@ -351,9 +400,10 @@ function closeScreenshotPreview() {
     justify-content: center;
     align-items: center;
     padding: 0.8rem;
-    background-color: hsl(var(--bg-100) / 0.5);
+    background-color: hsl(0 0 0% / 0.5);
     backdrop-filter: blur(10px);
     border-radius: 50%;
+    color: #fff;
   }
   &__Alert {
     display: flex;
@@ -368,6 +418,7 @@ function closeScreenshotPreview() {
     border-radius: 9999px;
     padding: 0.8rem 1.2rem;
     font-size: 1.6rem;
+    color: #fff;
   }
   &__Video {
     width: 100%;
@@ -396,6 +447,26 @@ function closeScreenshotPreview() {
   }
 }
 
+.ScreenshotDialog {
+  &__Delete {
+    width: 3.6rem;
+    height: 3.6rem;
+    margin-right: auto;
+  }
+  &__Action {
+    background-color: hsl(var(--bg-300));
+    padding: 0 1.2rem;
+    &:nth-child(2) {
+      // 다운로드 버튼
+      border-radius: var(--global-radius) 0 0 var(--global-radius);
+    }
+    &:last-of-type {
+      // 다른 앱으로 공유 버튼
+      border-radius: 0 var(--global-radius) var(--global-radius) 0;
+    }
+  }
+}
+
 .player-alert-enter-active,
 .player-alert-leave-active {
   transition: transform 150ms ease-in-out, opacity 150ms ease-in-out;
@@ -411,9 +482,24 @@ function closeScreenshotPreview() {
   opacity: 0;
 }
 
+.new-screenshot-enter-active,
+.new-screenshot-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.new-screenshot-enter-from {
+  transform: translateY(-3rem);
+  opacity: 0;
+}
+.new-screenshot-from {
+  opacity: 0;
+}
+.new-screenshot-leave-active {
+  display: none;
+}
+
 @media screen and (min-width: 1080px) {
   .AmbientPlayer {
-    border-radius: var(--global-radius);
     &__Effect {
       filter: blur(100px);
     }
