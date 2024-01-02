@@ -165,9 +165,6 @@ import ToTop from "../components/ToTop.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
 
-// 개발 시 임시로 사용할 동영상(요청량 절약)
-import TestAnime2 from "@/assets/TestAnime2.mp4";
-
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
 const storage = getStorage();
@@ -244,7 +241,10 @@ function findTimeLog() {
 const animeInfo = ref({});
 async function getVideoUrl() {
   if (import.meta.env.DEV) {
-    videoSrc.value = TestAnime2;
+    // 개발 시 임시로 사용할 동영상(요청량 절약)
+    const TestAnime = new URL("../assets/TestAnime2.mp4", import.meta.url).href;
+    console.log(TestAnime);
+    videoSrc.value = TestAnime;
     return;
   }
   videoSrc.value = await getDownloadURL(fireRef(storage, "TestAnime2.mp4"));
