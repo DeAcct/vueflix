@@ -243,10 +243,10 @@ async function getVideoUrl() {
   if (import.meta.env.DEV) {
     // 개발 시 임시로 사용할 동영상(요청량 절약)
     const TestAnime = new URL("../assets/TestAnime2.mp4", import.meta.url).href;
-    console.log(TestAnime);
     videoSrc.value = TestAnime;
     return;
   }
+  // videoSrc.value = await getDownloadURL(fireRef(storage, `${animationName}/${part}/${index}`.mp4"));
   videoSrc.value = await getDownloadURL(fireRef(storage, "TestAnime2.mp4"));
 }
 async function getAnimeData() {
