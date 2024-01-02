@@ -72,4 +72,14 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          const module = id.split("node_modules/").pop().split("/")[0];
+          return `vendor/${module}`;
+        },
+      },
+    },
+  },
 });
