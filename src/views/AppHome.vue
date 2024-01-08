@@ -17,25 +17,43 @@
                 index,
                 time,
                 thumbnail,
-                title,
-              } in auth?.recentWatched"
-              type="episode"
-              :link="`/anime-play/${aniTitle}/${part}/${index}`"
-              :sub-link="`/anime/${aniTitle}/episodes`"
-              :ani-title="aniTitle"
-              :data="{
-                part,
-                index,
-                thumbnail,
-                title,
-              }"
-              :watch-percent="`${(time.current / time.max) * 100}%`"
+              } in auth.recentWatched"
+              :is-loading="false"
               :key="aniTitle"
-              :replace="{
-                main: false,
-                sub: false,
-              }"
-            />
+              direction="row"
+              class="AppHome__CurationItem"
+            >
+              <template #image>
+                <RouterLink
+                  :to="`/anime-play/${aniTitle}/${part}/${index}`"
+                  class="AppHome__Image"
+                  exact-active-class="AppHome__Image--Selected"
+                >
+                  <OptimizedMedia
+                    :src="`${aniTitle}/${thumbnail}`"
+                    :alt="`${aniTitle} ${part} ${index} 이어보기`"
+                  />
+                  <ProgressCircle
+                    class="AppHome__WatchPercent"
+                    :percent="`${(time.current / time.max) * 100}%`"
+                  />
+                </RouterLink>
+              </template>
+              <template #text>
+                <RouterLink
+                  class="AppHome__TextLink"
+                  :to="`/anime/${aniTitle}/episodes`"
+                >
+                  <span class="AppHome__AniTitle">
+                    {{ aniTitle }}
+                  </span>
+                  <strong class="AppHome__PartIndex">
+                    {{ part }} {{ index }}
+                  </strong>
+                  <span class="AppHome__Episode">{{ title }}</span>
+                </RouterLink>
+              </template>
+            </ThumbnailSet>
           </VueflixCarousel>
         </div>
         <div class="AppHome__Item">
@@ -52,15 +70,32 @@
           >
             <ThumbnailSet
               v-for="anime in selectedDailyAnime"
-              type="series"
-              :link="`/anime/${anime}/episodes`"
-              :ani-title="anime"
-              :key="anime"
-              :replace="{
-                main: false,
-                sub: false,
-              }"
-            />
+              :key="`${selectedDay}-${anime}`"
+              class="AppHome__CurationItem"
+            >
+              <template #image>
+                <RouterLink
+                  :to="`/anime/${anime}/episodes`"
+                  class="AppHome__Image"
+                  exact-active-class="AppHome__Image--Selected"
+                >
+                  <OptimizedMedia
+                    :src="`${anime}/${anime.replaceAll(/:/g, '_')}.webp`"
+                    :alt="`${anime} 포스터`"
+                  />
+                </RouterLink>
+              </template>
+              <template #text>
+                <RouterLink
+                  :to="`/anime/${anime}/episodes`"
+                  class="AppHome__TextLink"
+                >
+                  <span class="AppHome__AniTitle">
+                    {{ anime }}
+                  </span>
+                </RouterLink>
+              </template>
+            </ThumbnailSet>
           </VueflixCarousel>
         </div>
         <div class="AppHome__Item" v-for="recommended in recommendedAnime">
@@ -74,15 +109,32 @@
           >
             <ThumbnailSet
               v-for="anime in recommended.list"
-              type="series"
-              :link="`/anime/${anime}/episodes`"
-              :ani-title="anime"
-              :key="anime"
-              :replace="{
-                main: false,
-                sub: false,
-              }"
-            />
+              class="AppHome__CurationItem"
+              :key="`${recommended.subject}-${anime}`"
+            >
+              <template #image>
+                <RouterLink
+                  :to="`/anime/${anime}/episodes`"
+                  class="AppHome__Image"
+                  exact-active-class="AppHome__Image--Selected"
+                >
+                  <OptimizedMedia
+                    :src="`${anime}/${anime.replaceAll(/:/g, '_')}.webp`"
+                    :alt="`${anime} 포스터`"
+                  />
+                </RouterLink>
+              </template>
+              <template #text>
+                <RouterLink
+                  :to="`/anime/${anime}/episodes`"
+                  class="AppHome__TextLink"
+                >
+                  <span class="AppHome__AniTitle">
+                    {{ anime }}
+                  </span>
+                </RouterLink>
+              </template>
+            </ThumbnailSet>
           </VueflixCarousel>
         </div>
       </div>
@@ -176,6 +228,8 @@ const auth = computed(() => store.state.auth.user);
   &__Title {
     font-size: 2rem;
     margin-bottom: 2rem;
+    font-weight: 800;
+    line-height: 1.3;
   }
   &__DaySelector {
     width: calc(100% - var(--inner-padding) * 2);
@@ -184,6 +238,48 @@ const auth = computed(() => store.state.auth.user);
   }
   &__Carousel {
     margin-top: 1.6rem;
+  }
+  &__CurationItem {
+    flex-direction: column;
+    width: var(--thumbnail-width, 55vw);
+  }
+  &__Image {
+    position: relative;
+    flex-shrink: 0;
+    --radius: var(--global-radius);
+    --aspect-ratio: calc(9 / 16 * 100%);
+  }
+  &__WatchPercent {
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    flex-shrink: 0;
+    font-size: 1.3rem;
+    left: 0;
+    padding: 0.75rem;
+    bottom: 0;
+    color: #fff;
+    background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
+    border-radius: var(--global-radius);
+  }
+  &__TextLink {
+    width: 100%;
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+  }
+  &__AniTitle {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    width: 100%;
+    min-height: calc(1.4rem * 1.5 * 2);
+    overflow: hidden;
+    --episode-title-width: 20ch;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    font-weight: 600;
   }
 }
 @media screen and (min-width: 768px) {
@@ -200,6 +296,9 @@ const auth = computed(() => store.state.auth.user);
         margin-bottom: 4.5rem;
       }
     }
+    &__CurationItem {
+      width: var(--thumbnail-width, 32vw);
+    }
   }
 }
 @media screen and (min-width: 1080px) {
@@ -210,6 +309,16 @@ const auth = computed(() => store.state.auth.user);
     &__DaySelector {
       width: 40rem;
       margin-left: var(--inner-padding);
+    }
+    &__CurationItem {
+      width: var(--thumbnail-width, 28vw);
+    }
+  }
+}
+@media screen and (min-width: 1920px) {
+  .AppHome {
+    &__CurationItem {
+      width: var(--thumbnail-width, 15vw);
     }
   }
 }
