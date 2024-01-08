@@ -147,6 +147,7 @@ import { DAYS } from "@/enums/Days";
 
 import BannerSlide from "@/components/BannerSlide.vue";
 import DaySelector from "@/components/DaySelector.vue";
+import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import Cookies from "js-cookie";
