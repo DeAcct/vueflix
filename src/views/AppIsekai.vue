@@ -2,10 +2,7 @@
   <main class="app-isekai">
     <h2>404 Not Found</h2>
     <i class="icon">
-      <img
-        src="@/assets/NotFoundAqua.svg"
-        alt="처량하게 우는 코노스바 아쿠아"
-      />
+      <img :src="aqua" alt="처량하게 우는 코노스바 아쿠아" />
     </i>
     <p>
       <span class="line-break">여긴 아무것도 없어요ㅠㅠ</span>
@@ -22,14 +19,9 @@
   </main>
 </template>
 
-<script>
+<script setup>
+import aqua from "@/assets/aqua.svg";
 import VueflixBtn from "@/components/VueflixBtn.vue";
-export default {
-  name: "AppIsekai",
-  components: {
-    VueflixBtn,
-  },
-};
 </script>
 
 <style lang="scss" scoped>

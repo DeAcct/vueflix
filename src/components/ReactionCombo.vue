@@ -1,5 +1,5 @@
 <template>
-  <section class="ReactionCombo" ref="$DirectRoot">
+  <section class="ReactionCombo">
     <template v-if="showTitle">
       <component :is="titleTag" class="ReactionCombo__Title"
         ><slot name="title"></slot
@@ -115,11 +115,6 @@ async function onMutate() {
 function requestTeleport(e) {
   emits("request-teleport", e);
 }
-
-const $DirectRoot = ref(null);
-defineExpose({
-  $DirectRoot,
-});
 </script>
 
 <style lang="scss" scoped>

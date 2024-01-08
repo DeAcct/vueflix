@@ -78,9 +78,8 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref, watch, computed } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useStore } from "vuex";
 
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
@@ -136,9 +135,6 @@ const searchMode = ref(false);
 function toggleSearchMode() {
   searchMode.value = !searchMode.value;
 }
-
-const store = useStore();
-const user = computed(() => store.state.auth.user);
 </script>
 
 <style lang="scss" scoped>

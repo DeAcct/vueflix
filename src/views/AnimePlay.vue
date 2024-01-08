@@ -5,7 +5,6 @@
         'AnimePlay__Frame',
         { 'AnimePlay__Frame--Theater': mode === 'theater' },
       ]"
-      ref="$VideoFrame"
     >
       <AmbientPlayer
         class="AnimePlay__Video"
@@ -39,7 +38,7 @@
         </template>
       </AmbientPlayer>
     </div>
-    <section class="AnimePlay__TitleRenderer" ref="$TitleRenderer">
+    <section class="AnimePlay__TitleRenderer">
       <div class="AnimePlay__Titles">
         <h2
           :class="[
@@ -48,7 +47,7 @@
             { 'AnimePlay__AniTitle--Loaded': nowEpisode },
           ]"
         >
-          <RouterLink :to="`/anime/${route.params.title}/episodes`">
+          <RouterLink :to="`/anime/${route.params.title}/episodes`" replace>
             {{ route.params.title }}
           </RouterLink>
         </h2>
@@ -74,7 +73,6 @@
         'AnimePlay__Parts',
         { 'AnimePlay__Parts--Theater': mode === 'theater' },
       ]"
-      ref="$Parts"
     >
       <h3 class="AnimePlay__EpisodesCounter">
         {{ episodeCounter }}개의 에피소드
@@ -128,7 +126,6 @@
       :parent="`${route.params.title} ${route.params.part} ${route.params.index}`"
       @interact="setInteract"
       @request-teleport="onRequestTeleport"
-      ref="$Comments"
     >
       <template #title>댓글</template>
     </ReactionCombo>

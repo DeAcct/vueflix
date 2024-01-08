@@ -75,7 +75,7 @@ import {
   provide,
   readonly,
 } from "vue";
-import { useStore } from "vuex";
+// import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { useScroll } from "@/composables/scroll";
 

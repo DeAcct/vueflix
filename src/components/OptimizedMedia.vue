@@ -2,7 +2,7 @@
   <span class="OptimizedMedia loading-target">
     <component
       :is="type"
-      :src="src"
+      :src="fileSrc"
       :alt="type === 'img' ? alt : undefined"
       :class="[
         'OptimizedMedia__Body',
@@ -16,8 +16,9 @@
 
 <script setup>
 import { ref } from "vue";
+import { useFirebaseStorage } from "@/composables/firebase";
 
-defineProps({
+const props = defineProps({
   src: {
     type: String,
   },
@@ -40,6 +41,8 @@ const isLoaded = ref(false);
 function loadTrigger() {
   isLoaded.value = true;
 }
+
+const { fileSrc } = useFirebaseStorage(props.src);
 </script>
 
 <style lang="scss" scoped>

@@ -7,6 +7,7 @@ const state = {
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 const mutations = {
   setUser(state, payload) {
+    console.log(state);
     state.user = payload;
   },
   updateRecentWatched(state, payload) {

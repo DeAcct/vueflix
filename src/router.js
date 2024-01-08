@@ -16,7 +16,7 @@ const routes = [
   {
     path: "/anime/:title",
     name: "anime",
-    component: () => import("@/layout/AnimeLayout.vue"),
+    component: () => import("@/layout/Anime.layout.vue"),
     meta: {
       bottomTabMenu: false,
     },
@@ -121,7 +121,7 @@ const routes = [
   {
     path: "/auth",
     name: "auth",
-    component: () => import("@/views/AppAuth.vue"),
+    component: () => import("@/layout/Auth.layout.vue"),
     meta: {
       title: "뷰플릭스에 어서오세요!",
       appBar: {
@@ -130,6 +130,27 @@ const routes = [
       },
       bottomTabMenu: false,
     },
+    children: [
+      {
+        path: "login",
+        name: "login",
+        component: () => import("@/views/Login.vue"),
+        alias: ["/auth/login", ""],
+        meta: {
+          title: "로그인",
+          bottomTabMenu: false,
+        },
+      },
+      {
+        path: "sign-up",
+        name: "sign-up",
+        component: () => import("@/views/SignUp.vue"),
+        meta: {
+          title: "회원가입",
+          bottomTabMenu: false,
+        },
+      },
+    ],
   },
   {
     path: "/notification",

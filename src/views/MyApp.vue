@@ -4,14 +4,16 @@
       <div class="MyApp__Identify">
         <div class="MyApp__IdentifyText">
           <h2 class="MyApp__Nickname">
-            {{ user ? user.nickname : "게스트" }}
+            {{ store.user ? store.user.nickname : "게스트" }}
           </h2>
-          <template v-if="user">
-            <p class="MyApp__Email">{{ user.email }}</p>
+          <template v-if="store.user">
+            <p class="MyApp__Email">{{ store.user.email }}</p>
             <ul class="MyApp__Stat">
               <li class="MyApp__StatItem">
                 <h3 class="MyApp__StatName">보고싶다</h3>
-                <p class="MyApp__StatValue">{{ user.wannaSee.length }}개</p>
+                <p class="MyApp__StatValue">
+                  {{ store.user.wannaSee.length }}개
+                </p>
               </li>
               <li class="MyApp__StatItem">
                 <h3 class="MyApp__StatName">리뷰</h3>
@@ -28,18 +30,21 @@
           ]"
         />
       </div>
-      <LevelRenderer to="/my/level" class="MyApp__Level" v-if="user" />
+      <LevelRenderer to="/my/level" class="MyApp__Level" v-if="store.user" />
     </div>
     <div class="MyApp__Menu">
       <template v-for="unit in viewModel">
         <div
           class="MyApp__MenuGroup"
           v-if="
-            unit.reduce((acc, now) => acc && (!now.requireLogin || user), true)
+            unit.reduce(
+              (acc, now) => acc && (!now.requireLogin || store.user),
+              true
+            )
           "
         >
           <template v-for="{ icon, text, to, requireLogin } in unit" key="text">
-            <div v-if="!requireLogin || user" class="MyApp__MenuItem">
+            <div v-if="!requireLogin || store.user" class="MyApp__MenuItem">
               <ArrowBtnWidget
                 class="MyApp__MenuBtn"
                 :component="to ? 'RouterLink' : 'button'"
@@ -64,7 +69,9 @@
                 <IconAccount />
               </IconBase>
             </template>
-            <template v-slot:text>{{ user ? "로그아웃" : "로그인" }}</template>
+            <template v-slot:text>{{
+              store.user ? "로그아웃" : "로그인"
+            }}</template>
           </ArrowBtnWidget>
         </div>
       </div>
@@ -73,11 +80,11 @@
 </template>
 
 <script setup>
-import { getAuth, signOut } from "firebase/auth";
-
-import { useStore } from "vuex";
+// import { useStore } from "vuex";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+
+import { useAuth } from "../store/auth";
 
 import ArrowBtnWidget from "@/components/ArrowBtnWidget.vue";
 import LevelRenderer from "@/components/LevelRenderer.vue";
@@ -128,23 +135,17 @@ const viewModel = [
   ],
 ];
 
-const store = useStore();
 const router = useRouter();
-const user = computed(() => store.state.auth.user);
+const store = useAuth();
 async function onLoginButtonClick() {
-  if (!user.value) {
+  if (!store.user) {
     login();
     return;
   }
-  logout();
+  store.logout();
 }
 function login() {
   router.push("auth");
-}
-async function logout() {
-  const auth = getAuth();
-  await signOut(auth);
-  store.commit("auth/setUser", null);
 }
 </script>
 

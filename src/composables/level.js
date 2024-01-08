@@ -1,16 +1,15 @@
-import { useStore } from "vuex";
+// import { useStore } from "vuex";
 import { computed } from "vue";
 
 export function useUserLevel() {
-  const store = useStore();
-  const user = computed(() => store.state.auth.user);
+  const store = useAuth();
   const level = computed(() => {
-    if (!user.value) {
+    if (!store.user.value) {
       return 0;
     }
 
     const currentMonth = new Date();
-    const initMonth = user.value.membership.initDate.toDate();
+    const initMonth = store.user.value.membership.initDate.toDate();
 
     const ONE_DAY_TO_MILLISECOND = 24 * 60 * 60 * 1000;
 
@@ -89,7 +88,7 @@ export function useUserLevel() {
     ];
 
     const subscriptionDays = Math.floor(
-      (currentMonth - initMonth) / ONE_DAY_TO_MILLISECOND,
+      (currentMonth - initMonth) / ONE_DAY_TO_MILLISECOND
     );
 
     return LEVEL_MAP.map(({ maxDays, levelName, styleIdentifier }, i) => ({

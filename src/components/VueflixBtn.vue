@@ -47,9 +47,6 @@ defineProps({
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 2.4rem;
-    height: 2.4rem;
-    margin-right: 0.7rem;
     svg {
       width: 100%;
       height: 100%;

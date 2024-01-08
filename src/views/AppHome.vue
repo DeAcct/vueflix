@@ -3,21 +3,16 @@
     <main>
       <BannerSlide />
       <div class="AppHome__Curator">
-        <div class="AppHome__Item" v-if="auth?.recentWatched.length">
+        <div class="AppHome__Item" v-if="store.user?.recentWatched.length">
           <h2 class="AppHome__Title inner">최근 본 애니</h2>
           <VueflixCarousel
-            :length="auth?.recentWatched.length"
+            :length="store.user?.recentWatched.length"
             class="AppHome__Carousel"
             type="arrow"
           >
             <ThumbnailSet
-              v-for="{
-                aniTitle,
-                part,
-                index,
-                time,
-                thumbnail,
-              } in auth.recentWatched"
+              v-for="{ aniTitle, part, index, time, thumbnail } in store.user
+                .recentWatched"
               :is-loading="false"
               :key="aniTitle"
               direction="row"
@@ -147,13 +142,18 @@ import { DAYS } from "@/enums/Days";
 
 import BannerSlide from "@/components/BannerSlide.vue";
 import DaySelector from "@/components/DaySelector.vue";
-import ThumbnailSet from "@/components/ThumbnailSet.vue";
+import OptimizedMedia from "@/components/OptimizedMedia.vue";
+import ProgressCircle from "@/components/ProgressCircle.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
+import ThumbnailSet from "@/components/ThumbnailSet.vue";
+
 import Cookies from "js-cookie";
-import { useStore } from "vuex";
+
+// import { useStore } from "vuex";
 import { getDocs, collection, doc, getDoc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
+import { useAuth } from "../store/auth";
 
 const now = new Date();
 const selectedDay = ref(DAYS.map(({ key }) => key)[now.getDay()]);
@@ -211,8 +211,7 @@ onUnmounted(async () => {
   });
 });
 
-const store = useStore();
-const auth = computed(() => store.state.auth.user);
+const store = useAuth();
 </script>
 
 <style lang="scss" scoped>

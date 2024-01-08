@@ -1,20 +1,20 @@
 <template>
   <RouterLink class="ProfileCombo">
     <span class="ProfileCombo__UserName">{{
-      user ? user.nickname : "게스트"
+      false ? user.nickname : "게스트"
     }}</span>
     <ProfileImg class="ProfileCombo__Profile" />
   </RouterLink>
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { useStore } from "vuex";
+// import { computed } from "vue";
+// import { useStore } from "vuex";
 
 import ProfileImg from "./ProfileImg.vue";
 
-const store = useStore();
-const user = computed(() => store.state.auth.user);
+// const store = useStore();
+// const user = computed(() => store.state.auth.user);
 </script>
 
 <style lang="scss" scoped>
