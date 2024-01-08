@@ -148,8 +148,10 @@ import { DAYS } from "@/enums/Days";
 import BannerSlide from "@/components/BannerSlide.vue";
 import DaySelector from "@/components/DaySelector.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
-import ThumbnailSet from "@/components/ThumbnailSet.vue";
+import ProgressCircle from "@/components/ProgressCircle.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
+import ThumbnailSet from "@/components/ThumbnailSet.vue";
+
 import Cookies from "js-cookie";
 import { useStore } from "vuex";
 import { getDocs, collection, doc, getDoc } from "firebase/firestore";
