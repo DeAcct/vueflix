@@ -3,22 +3,34 @@
     <ProfileSelector v-model="profileImg" class="SignUp__ProfileImage" />
     <TextInput type="text" class="SignUp__Input" v-model:input-value="nickname">
       <template #label>닉네임</template>
-    </TextInput>
-    <TextInput type="email" class="SignUp__Input" v-model:input-value="email">
-      <template #label>이메일</template>
       <template #etc-action>
         <VueflixBtn
           type="button"
           component="button"
-          @click="validCheck"
-          class="SignUp__Button SignUp__Button--DuplicateCheck"
+          @click="generateRandomNickname"
+          class="SignUp__Button SignUp__Button--OtherAction"
         >
-          <template #text>사용 가능여부 확인</template>
+          <template #text>랜덤 닉네임 생성</template>
         </VueflixBtn>
       </template>
       <template #message>
         <span
-          :class="`Signup__Message--${emailState}`"
+          :class="`SignUp__Message--${nicknameState.code}`"
+          class="SignUp__Message"
+          v-if="nicknameState.code !== 'Unchecked'"
+        >
+          <template v-if="nicknameState.code === 'Invalid'">
+            {{ nicknameState.reason }}
+          </template>
+          <template v-else>사용 가능합니다</template>
+        </span>
+      </template>
+    </TextInput>
+    <TextInput type="email" class="SignUp__Input" v-model:input-value="email">
+      <template #label>이메일</template>
+      <template #message>
+        <span
+          :class="`SignUp__Message--${emailState}`"
           class="SignUp__Message"
           v-if="emailState !== 'Unchecked'"
         >
@@ -39,6 +51,18 @@
       autocomplete="off"
     >
       <template #label>패스워드</template>
+      <template #message>
+        <span
+          :class="`SignUp__Message--${passwordState.code}`"
+          class="SignUp__Message"
+          v-if="passwordState.code !== 'Unchecked'"
+        >
+          <template v-if="passwordState.code === 'Invalid'">
+            {{ passwordState.reason }}
+          </template>
+          <template v-else>사용 가능합니다</template>
+        </span>
+      </template>
     </TextInput>
     <div class="SignUp__ButtonList">
       <button type="button" class="SignUp__Back" @click="router.back()">
@@ -60,39 +84,27 @@
 
 <script setup>
 import { ref } from "vue";
-import { useAuth } from "@/store/auth";
 import { useRouter } from "vue-router";
+import { useNickname, useEmail, usePassword } from "@/composables/strictUser";
 
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import TextInput from "@/components/TextInput.vue";
 import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
 
-import ProfileSelector from "../components/ProfileSelector.vue";
-import IconBase from "../components/IconBase.vue";
-// import NotFoundAqua from "@/assets/NotfoundAqua.svg";
-// import Hakari from "@/assets/Hakari.jpg";
-// import Karane from "@/assets/Karane.jpg";
+import ProfileSelector from "@/components/ProfileSelector.vue";
+import IconBase from "@/components/IconBase.vue";
 
 const profileImg = ref("");
-const email = ref("");
-const password = ref("");
-const nickname = ref("");
 
-const emailState = ref("Unchecked");
+const {
+  nickname,
+  state: nicknameState,
+  generateRandomNickname,
+} = useNickname();
+const { email, state: emailState } = useEmail();
 
-const auth = useAuth();
+const { password, state: passwordState } = usePassword();
 
-async function validCheck() {
-  const containsAt = email.value.includes("@");
-  const containsDomain = email.value.split("@").pop().includes(".");
-  if (!containsAt || !containsDomain) {
-    emailState.value = "Invalid";
-    return;
-  }
-  emailState.value = (await auth.checkEmailDuplicate(email))
-    ? "Duplicated"
-    : "Valid";
-}
 async function signUp() {
   console.log(
     await auth.createEmailUser({ email, password, nickname, profileImg })
@@ -111,19 +123,26 @@ const router = useRouter();
   gap: 1.2rem;
 
   &__ProfileImage {
-    width: calc(100% - 4rem);
+    width: 100%;
   }
   &__Input {
-    width: calc(100% - 4rem);
+    width: 100%;
     --input-padding: 0 1.4rem;
     --input-height: 4rem;
   }
 
   &__Message {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    font-weight: 700;
     width: 100%;
     padding: 1rem 0;
     border-top: 1px solid hsl(var(--bg-200));
+    &--Invalid {
+      color: hsl(var(--theme-500));
+    }
+    &--Valid {
+      color: hsl(var(--message-safe));
+    }
   }
   &__Button {
     display: flex;
@@ -143,7 +162,7 @@ const router = useRouter();
       height: 100%;
       border-radius: 0;
     }
-    &--DuplicateCheck {
+    &--OtherAction {
       color: hsl(var(--theme-500));
       width: auto;
       flex-shrink: 0;

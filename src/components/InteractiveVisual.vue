@@ -177,7 +177,7 @@ onMounted(() => {
   }
   &__Answer {
     text-align: left;
-    font-size: 6rem;
+    font-size: 5rem;
     color: hsl(var(--bg-900));
     font-weight: 900;
     width: min(80vw, 1080px);

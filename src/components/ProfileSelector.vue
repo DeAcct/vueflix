@@ -16,22 +16,26 @@
         class="ProfileSelector__OpenLocalFileBtn"
         @click="openFileModal"
       >
-        <template #text>사진 다시 고르기</template>
+        <template #text>{{
+          preview.src ? "사진 다시 고르기" : "내 사진 가져오기"
+        }}</template>
       </VueflixBtn>
-      <i
+      <button
         class="ProfileSelector__PreviewHolder"
         :class="{
           'ProfileSelector__PreviewHolder--Selected':
             profileImg.type === 'custom',
         }"
+        type="button"
+        @click="setProfileAsLocalImage"
       >
         <Transition name="preview-fade">
-          <IconBase v-if="!previewSrc">
+          <IconBase v-if="!preview.src">
             <IconScreenshot />
           </IconBase>
-          <img v-else :src="previewSrc" class="ProfileSelector__Preview" />
+          <img v-else :src="preview.src" class="ProfileSelector__Preview" />
         </Transition>
-      </i>
+      </button>
       <input
         type="file"
         class="blind"
@@ -62,25 +66,34 @@ const $fileOpenBtn = ref(null);
 function openFileModal() {
   $fileOpenBtn.value.click();
 }
-function fileChange(e) {
+async function fileChange(e) {
+  if (!e.target.files) {
+    return;
+  }
   const [file] = e.target.files;
-  profileImg.value = { type: "custom", file };
-  fileToActualImg(file);
+  preview.value.originFile = file;
+  setProfileAsLocalImage();
+  preview.value.src = await fileToActualImg(file);
 }
 
 function fileToActualImg(target) {
   if (!FileReader) {
-    throw new Error("파일을 불러오는데 실패했습니다.");
+    throw new Error("파일을 변환하는데 실패했습니다.");
   }
   const reader = new FileReader();
-  reader.onload = () => {
-    previewSrc.value = reader.result;
-  };
-  reader.readAsDataURL(target);
+  return new Promise((resolve) => {
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+    reader.readAsDataURL(target);
+  });
 }
 
-const previewSrc = ref("");
+function setProfileAsLocalImage() {
+  profileImg.value = { type: "custom", name: preview.value.originFile.name };
+}
 
+const preview = ref({ src: "", originFile: null });
 const profileImg = defineModel();
 </script>
 
@@ -118,6 +131,7 @@ const profileImg = defineModel();
     justify-content: center;
     gap: 1rem;
     border-top: 1px solid hsl(var(--bg-200));
+    padding: 1.4rem 0;
   }
   &__OpenLocalFileBtn {
     box-shadow: none;

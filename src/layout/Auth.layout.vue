@@ -59,7 +59,7 @@ const route = useRoute();
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 16rem;
+    margin-top: 10rem;
   }
   &__Logo {
     width: 15rem;
