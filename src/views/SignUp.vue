@@ -1,7 +1,7 @@
 <template>
   <form class="SignUp">
     <ProfileSelector v-model="profileImg" class="SignUp__ProfileImage" />
-    <TextInput type="text" class="SignUp__Input" v-model:input-value="nickname">
+    <TextInput type="text" class="SignUp__Input" v-model="nickname">
       <template #label>닉네임</template>
       <template #etc-action>
         <VueflixBtn
@@ -19,35 +19,26 @@
           class="SignUp__Message"
           v-if="nicknameState.code !== 'Unchecked'"
         >
-          <template v-if="nicknameState.code === 'Invalid'">
-            {{ nicknameState.reason }}
-          </template>
-          <template v-else>사용 가능합니다</template>
+          {{ nicknameState.message }}
         </span>
       </template>
     </TextInput>
-    <TextInput type="email" class="SignUp__Input" v-model:input-value="email">
+    <TextInput type="email" class="SignUp__Input" v-model="email">
       <template #label>이메일</template>
       <template #message>
         <span
-          :class="`SignUp__Message--${emailState}`"
+          :class="`SignUp__Message--${emailState.code}`"
           class="SignUp__Message"
           v-if="emailState !== 'Unchecked'"
         >
-          <template v-if="emailState === 'Duplicated'">
-            이메일이 이미 있습니다
-          </template>
-          <template v-else-if="emailState === 'Invalid'">
-            잘못된 형식입니다
-          </template>
-          <template v-else>사용 가능합니다</template>
+          {{ emailState.message }}
         </span>
       </template>
     </TextInput>
     <TextInput
       type="password"
       class="SignUp__Input"
-      v-model:input-value="password"
+      v-model="password"
       autocomplete="off"
     >
       <template #label>패스워드</template>
@@ -57,10 +48,7 @@
           class="SignUp__Message"
           v-if="passwordState.code !== 'Unchecked'"
         >
-          <template v-if="passwordState.code === 'Invalid'">
-            {{ passwordState.reason }}
-          </template>
-          <template v-else>사용 가능합니다</template>
+          {{ passwordState.message }}
         </span>
       </template>
     </TextInput>
@@ -86,6 +74,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useNickname, useEmail, usePassword } from "@/composables/strictUser";
+import { useAuth } from "@/store/auth";
 
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import TextInput from "@/components/TextInput.vue";
@@ -102,10 +91,15 @@ const {
   generateRandomNickname,
 } = useNickname();
 const { email, state: emailState } = useEmail();
-
 const { password, state: passwordState } = usePassword();
 
+const auth = useAuth();
 async function signUp() {
+  validate();
+  console.log(blink.value);
+  if (blink.value.length) {
+    return;
+  }
   console.log(
     await auth.createEmailUser({ email, password, nickname, profileImg })
   );

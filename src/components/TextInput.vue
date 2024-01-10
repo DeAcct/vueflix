@@ -4,7 +4,7 @@
       <input
         :type="type"
         class="TextInput__Input"
-        @input="emitInputValue"
+        @input="onInput"
         :value="inputValue"
         :autocomplete
       />
@@ -40,9 +40,10 @@ const props = defineProps({
     validator: (value) => ["on", "off"].includes(value),
   },
 });
-const textInputEmits = defineEmits(["update:input-value"]);
-function emitInputValue(e) {
-  textInputEmits("update:inputValue", e.target.value);
+
+const inputValue = defineModel();
+function onInput(e) {
+  inputValue.value = e.target.value;
 }
 </script>
 

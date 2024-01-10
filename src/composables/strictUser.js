@@ -1,22 +1,81 @@
 import { ref, watch, computed } from "vue";
 import { useAuth } from "@/store/auth";
+import { useRandomNickname } from "@/utility/randomNickname";
+
+const FORBIDDEN_WORD = [
+  // 사칭 가능성이 높은 단어
+  "운영자",
+  "스태프",
+  "스탭",
+  "뷰플릭스",
+  // 젠더이슈 및 위험한 웹사이트
+  "페미",
+  "메갈",
+  "워마드",
+  "여성시대",
+  "일베",
+  "일간베스트",
+  "한남",
+  "한녀",
+  "소추",
+  "재기",
+  "인셀",
+  "퇘지",
+  "쿵쾅",
+  "허버허버",
+  "오조오억",
+  "5조5억",
+  // 2차세계대전
+  "나치",
+  "하켄크로이츠",
+  "유대인",
+  // 비속어
+  "씨발",
+  "시발",
+  "ㅅㅂ",
+  "병신",
+  "ㅂㅅ",
+  "지랄",
+  "ㅈㄹ",
+  "좆",
+  "자지",
+  "잦",
+  "보지",
+  "봋",
+  "자살",
+  "니거",
+  "nigga",
+  "nigger",
+];
 
 export function useNickname() {
-  // 사칭 가능성이 높은 단어만 금지 단어로 설정.
   const nickname = ref("");
   const state = computed(() => {
     if (!nickname.value) {
       return { code: "Unchecked" };
     }
-    const FORBIDDEN_WORD = ["운영자", "스태프", "스탭", "뷰플릭스"];
-    const contains = FORBIDDEN_WORD.filter((word) =>
-      nickname.value.includes(word)
-    );
-    return {
-      code: contains.length ? "Invalid" : "Valid",
-      reason: `${contains.join(", ")}은(는) 금지된 단어입니다.`,
-    };
+    if (nickname.value.length > 10) {
+      return { code: "Invalid", message: "너무 길어요" };
+    }
+
+    const stringOrNumber = /\p{L}|[0-9]/u.test(nickname.value);
+    if (!stringOrNumber) {
+      return {
+        code: "Invalid",
+        message: "특수문자는 사용할 수 없어요",
+      };
+    }
+
+    const word = FORBIDDEN_WORD.filter((word) => nickname.value.includes(word));
+
+    return !word.length
+      ? { code: "Valid", message: "사용 가능해요" }
+      : {
+          code: "Invalid",
+          message: `${word.join(", ")}은(는) 금지된 단어예요`,
+        };
   });
+
   function generateRandomNickname() {
     nickname.value = useRandomNickname();
   }
@@ -29,20 +88,25 @@ export function useEmail() {
   const auth = useAuth();
   const email = ref("");
   const state = ref("Unchecked");
+
   watch(email, async () => {
-    const containsAt = email.value.includes("@");
-    const containsDomain = email.value.split("@").pop().includes(".");
-    if (!containsAt || !containsDomain) {
-      state.value = "Invalid";
+    const at = email.value.includes("@");
+    const domain = email.value.split("@").pop().includes(".");
+
+    if (!at || !domain) {
+      state.value = { code: "Invalid", message: "잘못된 형식이에요" };
       return;
     }
+
     state.value = (await auth.checkEmailDuplicate(email))
-      ? "Duplicated"
-      : "Valid";
+      ? { code: "Duplicated", message: "중복된 이메일이에요" }
+      : { code: "Valid", message: "사용 가능해요" };
   });
 
   return { email, state };
 }
+
+const EASY_KEYWORDS = ["qwer", "1234", "vueflix", "asdf", "zxcv"];
 
 export function usePassword() {
   // 8글자 이상, 너무 뻔한 키워드는 금지단어로 설정.
@@ -51,21 +115,33 @@ export function usePassword() {
     if (!password.value) {
       return { code: "Unchecked" };
     }
-    const FORBIDDEN_WORD = ["qwer", "1234", "vueflix", "asdf"];
-    const contains = FORBIDDEN_WORD.filter((word) =>
-      password.value.includes(word)
-    );
 
     if (password.value.length < 8) {
       return {
         code: "Invalid",
-        reason: "비밀번호가 너무 짧아요",
+        message: "비밀번호가 너무 짧아요",
       };
     }
-    return {
-      code: contains.length ? "Invalid" : "Valid",
-      reason: `${contains.join(", ")}은(는) 비밀번호에 포함할 수 없어요.`,
-    };
+
+    const alphabetOrNumber = /[a-zA-Z]|[0-9]|\!|\*|\^|_|-/g.test(
+      password.value
+    );
+    console.log(alphabetOrNumber, password.value);
+    if (!alphabetOrNumber) {
+      return {
+        code: "Invalid",
+        message: "알파벳과 숫자, !, *, ^, _, -만 사용할 수 있어요",
+      };
+    }
+
+    const easy = EASY_KEYWORDS.filter((word) => password.value.includes(word));
+
+    return easy.length
+      ? {
+          code: "Duplicated",
+          message: `너무 쉬운 단어라서 ${easy.join(", ")}는 포함할 수 없어요`,
+        }
+      : { code: "Valid", message: "사용 가능해요" };
   });
 
   return { password, state };
