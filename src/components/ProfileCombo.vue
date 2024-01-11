@@ -1,20 +1,17 @@
 <template>
   <RouterLink class="ProfileCombo">
     <span class="ProfileCombo__UserName">{{
-      false ? user.nickname : "게스트"
+      store.user ? store.user.nickname : "게스트"
     }}</span>
     <ProfileImg class="ProfileCombo__Profile" />
   </RouterLink>
 </template>
 
 <script setup>
-// import { computed } from "vue";
-// import { useStore } from "vuex";
-
+import { useAuth } from "../store/auth";
 import ProfileImg from "./ProfileImg.vue";
 
-// const store = useStore();
-// const user = computed(() => store.state.auth.user);
+const store = useAuth();
 </script>
 
 <style lang="scss" scoped>

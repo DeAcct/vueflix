@@ -39,9 +39,21 @@ import InteractiveVisual from "@/components/InteractiveVisual.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
+import { useAuth } from "@/store/auth";
+import { watch } from "vue";
 
 const route = useRoute();
 const router = useRouter();
+
+const auth = useAuth();
+watch(
+  () => auth.user,
+  () => {
+    if (auth.user) {
+      router.back();
+    }
+  }
+);
 </script>
 
 <style lang="scss" scoped>

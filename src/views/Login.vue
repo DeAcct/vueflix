@@ -1,13 +1,13 @@
 <template>
   <div class="Login">
     <form class="Login__Email">
-      <TextInput type="email" class="Login__Input" v-model:input-value="email">
+      <TextInput type="email" class="Login__Input" v-model="email">
         <template #label>이메일</template>
       </TextInput>
       <TextInput
         type="password"
         class="Login__Input"
-        v-model:input-value="password"
+        v-model="password"
         autocomplete="on"
       >
         <template #label>패스워드</template>
@@ -85,11 +85,6 @@ import IconGoogle from "@/components/icons/IconGoogle.vue";
 import { usePassword } from "@/composables/strictUser";
 
 const router = useRouter();
-// onMounted(() => {
-//   if (user.value) {
-//     router.back();
-//   }
-// });
 
 const isLoginWaiting = ref(false);
 async function googleContinue() {}
@@ -97,6 +92,7 @@ async function googleContinue() {}
 const auth = useAuth();
 async function signIn() {
   await auth.signInEmailUser(email, password);
+  router.back();
 }
 
 const email = ref("");

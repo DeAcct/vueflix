@@ -1,15 +1,14 @@
 // import { useStore } from "vuex";
 import { computed } from "vue";
+import { useAuth } from "@/store/auth";
 
 export function useUserLevel() {
   const store = useAuth();
-  const level = computed(() => {
-    if (!store.user.value) {
-      return 0;
-    }
+  const user = computed(() => store.user);
 
+  const level = computed(() => {
     const currentMonth = new Date();
-    const initMonth = store.user.value.membership.initDate.toDate();
+    const initMonth = user.value.membership.initDate.toDate();
 
     const ONE_DAY_TO_MILLISECOND = 24 * 60 * 60 * 1000;
 

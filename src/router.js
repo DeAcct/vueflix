@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useAuth } from "./store/auth";
+import { computed } from "vue";
 
 const routes = [
   {

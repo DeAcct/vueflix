@@ -60,7 +60,8 @@
           @mouseup="toggleSeek"
           @touchstart.passive="toggleSeek"
           @touchend.passive="toggleSeek"
-          class="SignUp__Button SignUp__Button--OtherAction"
+          class="SignUp__Button SignUp__Button--Seek"
+          icon
         >
           <template #icon>
             <IconBase>
@@ -196,6 +197,11 @@ async function signUp() {
         left: 0;
         right: 0;
       }
+    }
+    &--Seek {
+      width: 2.4rem;
+      height: 2.4rem;
+      padding: 0;
     }
   }
 }

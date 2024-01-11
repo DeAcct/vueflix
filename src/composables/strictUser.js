@@ -4,7 +4,7 @@ import { useRandomNickname } from "@/utility/randomNickname";
 
 const FORBIDDEN_WORD = [
   // 사칭 가능성이 높은 단어
-  "운영자",
+  "운영",
   "스태프",
   "스탭",
   "뷰플릭스",

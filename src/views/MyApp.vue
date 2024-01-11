@@ -17,15 +17,14 @@
               </li>
               <li class="MyApp__StatItem">
                 <h3 class="MyApp__StatName">리뷰</h3>
-                <p class="MyApp__StatValue">{{ user.reaction.length }}개</p>
+                <p class="MyApp__StatValue">
+                  {{ store.user.reaction.length }}개
+                </p>
               </li>
             </ul>
           </template>
         </div>
-        <ProfileImg
-          :input-profile="store.user ? store.user.profileImgSrc : undefined"
-          class="MyApp__Profile"
-        />
+        <ProfileImg class="MyApp__Profile" />
       </div>
       <LevelRenderer to="/my/level" class="MyApp__Level" v-if="store.user" />
     </div>
@@ -163,7 +162,7 @@ function login() {
     gap: 1.6rem;
     display: flex;
     flex-direction: column;
-    border-radius: calc(var(--global-radius) * 6);
+    border-radius: calc(var(--global-radius) + var(--inner-padding));
   }
   &__Identify {
     display: flex;
@@ -202,7 +201,7 @@ function login() {
     font-weight: 700;
   }
   &__Level {
-    border-radius: calc(var(--global-radius) * 6 - var(--inner-padding));
+    border-radius: var(--global-radius);
   }
 
   &__Menu {
@@ -213,7 +212,7 @@ function login() {
   }
   &__MenuGroup {
     background-color: var(--top-item);
-    border-radius: calc(var(--global-radius) * 6);
+    border-radius: calc(var(--global-radius) + var(--inner-padding));
     overflow: hidden;
   }
   &__MenuItem {
@@ -236,9 +235,17 @@ function login() {
     gap: 2rem;
     &__Visual {
       flex-grow: 1;
+      padding: 3rem;
+      border-radius: calc(var(--global-radius) + 3rem);
     }
     &__Menu {
       flex-grow: 1;
+    }
+    &__MenuGroup {
+      border-radius: calc(var(--global-radius) + 3rem);
+    }
+    &__MenuBtn {
+      padding: 1.8rem 3rem;
     }
   }
   .tab-one {
