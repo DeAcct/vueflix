@@ -89,21 +89,21 @@ export function useEmail() {
   const email = ref("");
   const state = ref("Unchecked");
 
-  watch(email, async () => {
-    const at = email.value.includes("@");
-    const domain = email.value.split("@").pop().includes(".");
-
-    if (!at || !domain) {
-      state.value = { code: "Invalid", message: "잘못된 형식이에요" };
+  async function checkDuplicate() {
+    if (!email.value) {
+      state.value = {
+        code: "Invalid",
+        message: "이메일을 입력해야 중복을 확인할 수 있어요",
+      };
       return;
     }
 
     state.value = (await auth.checkEmailDuplicate(email))
       ? { code: "Duplicated", message: "중복된 이메일이에요" }
       : { code: "Valid", message: "사용 가능해요" };
-  });
+  }
 
-  return { email, state };
+  return { email, state, checkDuplicate };
 }
 
 const EASY_KEYWORDS = ["qwer", "1234", "vueflix", "asdf", "zxcv"];
@@ -111,6 +111,7 @@ const EASY_KEYWORDS = ["qwer", "1234", "vueflix", "asdf", "zxcv"];
 export function usePassword() {
   // 8글자 이상, 너무 뻔한 키워드는 금지단어로 설정.
   const password = ref("");
+  const seek = ref(false);
   const state = computed(() => {
     if (!password.value) {
       return { code: "Unchecked" };
@@ -126,7 +127,6 @@ export function usePassword() {
     const alphabetOrNumber = /[a-zA-Z]|[0-9]|\!|\*|\^|_|-/g.test(
       password.value
     );
-    console.log(alphabetOrNumber, password.value);
     if (!alphabetOrNumber) {
       return {
         code: "Invalid",
@@ -144,5 +144,9 @@ export function usePassword() {
       : { code: "Valid", message: "사용 가능해요" };
   });
 
-  return { password, state };
+  function toggleSeek() {
+    seek.value = !seek.value;
+  }
+
+  return { password, state, seek, toggleSeek };
 }

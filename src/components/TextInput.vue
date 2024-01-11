@@ -12,7 +12,7 @@
       <span
         :class="[
           'TextInput__Placeholder',
-          { 'TextInput__Placeholder--NotEmpty': inputValue.length },
+          { 'TextInput__Placeholder--NotEmpty': inputValue?.length },
         ]"
       >
         <slot name="label"></slot>
@@ -29,9 +29,7 @@ const props = defineProps({
   type: {
     type: String,
     validator: (value) =>
-      ["number", "text", "color", "date", "password", "email", "file"].includes(
-        value
-      ),
+      ["number", "text", "color", "date", "password", "email"].includes(value),
     default: "text",
   },
   inputValue: { type: String },

@@ -7,12 +7,24 @@
       <InteractiveVisual class="Auth__Hero"></InteractiveVisual>
     </div>
     <div class="Auth__PageView">
-      <h2 class="Auth__PageTitle">
-        {{ route.meta.title }}
-      </h2>
+      <div class="Auth__ViewController">
+        <button
+          type="button"
+          class="SignUp__Back"
+          @click="router.back()"
+          v-if="route.name === 'sign-up'"
+        >
+          <IconBase>
+            <IconArrowPrev />
+          </IconBase>
+        </button>
+        <h2 class="Auth__PageTitle">
+          {{ route.meta.title }}
+        </h2>
+      </div>
       <RouterView v-slot="{ Component }">
-        <Transition :name="route.name" :key="route.meta.title">
-          <component :is="Component"></component>
+        <Transition :name="route.name">
+          <component :is="Component" :key="route.meta.title"></component>
         </Transition>
       </RouterView>
     </div>
@@ -20,11 +32,16 @@
 </template>
 
 <script setup>
+import { useRoute, useRouter } from "vue-router";
+
 import VueflixLogo from "@/components/VueflixLogo.vue";
 import InteractiveVisual from "@/components/InteractiveVisual.vue";
 
-import { useRoute } from "vue-router";
+import IconBase from "@/components/IconBase.vue";
+import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
+
 const route = useRoute();
+const router = useRouter();
 </script>
 
 <style lang="scss" scoped>
@@ -47,9 +64,14 @@ const route = useRoute();
   &__PageView {
     display: flex;
     flex-direction: column;
-    gap: 1.4rem;
+    gap: 1.8rem;
     margin-bottom: 8rem;
     width: min(37.5rem, 100%);
+  }
+  &__ViewController {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
   }
   &__PageTitle {
     font-size: 2rem;
@@ -98,7 +120,7 @@ const route = useRoute();
 .login-leave-active,
 .sign-up-enter-active,
 .sign-up-leave-active {
-  transition: all 150ms ease-out;
+  transition: all 300ms ease-out;
 }
 
 .login-enter-from {
@@ -110,8 +132,8 @@ const route = useRoute();
   opacity: 0;
 }
 
-.login-leave-to,
-.sign-up-leave-to {
-  opacity: 0;
+.login-leave-active,
+.sign-up-leave-active {
+  display: none !important;
 }
 </style>

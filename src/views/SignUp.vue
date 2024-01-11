@@ -25,6 +25,16 @@
     </TextInput>
     <TextInput type="email" class="SignUp__Input" v-model="email">
       <template #label>이메일</template>
+      <template #etc-action>
+        <VueflixBtn
+          type="button"
+          component="button"
+          @click="checkDuplicate"
+          class="SignUp__Button SignUp__Button--OtherAction"
+        >
+          <template #text>중복 확인</template>
+        </VueflixBtn>
+      </template>
       <template #message>
         <span
           :class="`SignUp__Message--${emailState.code}`"
@@ -36,12 +46,30 @@
       </template>
     </TextInput>
     <TextInput
-      type="password"
+      :type="seek ? 'text' : 'password'"
       class="SignUp__Input"
       v-model="password"
       autocomplete="off"
     >
       <template #label>패스워드</template>
+      <template #etc-action>
+        <VueflixBtn
+          type="button"
+          component="button"
+          @mousedown="toggleSeek"
+          @mouseup="toggleSeek"
+          @touchstart.passive="toggleSeek"
+          @touchend.passive="toggleSeek"
+          class="SignUp__Button SignUp__Button--OtherAction"
+        >
+          <template #icon>
+            <IconBase>
+              <IconSeekOn v-if="seek" />
+              <IconSeekOff v-else />
+            </IconBase>
+          </template>
+        </VueflixBtn>
+      </template>
       <template #message>
         <span
           :class="`SignUp__Message--${passwordState.code}`"
@@ -52,36 +80,31 @@
         </span>
       </template>
     </TextInput>
-    <div class="SignUp__ButtonList">
-      <button type="button" class="SignUp__Back" @click="router.back()">
-        <IconBase>
-          <IconArrowPrev />
-        </IconBase>
-      </button>
-      <VueflixBtn
-        type="button"
-        class="SignUp__Button SignUp__Button--SignUp"
-        component="button"
-        @click="signUp"
-      >
-        <template #text>회원가입</template>
-      </VueflixBtn>
-    </div>
+
+    <VueflixBtn
+      type="button"
+      class="SignUp__Button SignUp__Button--SignUp"
+      component="button"
+      @click="signUp"
+    >
+      <template #text>회원가입</template>
+    </VueflixBtn>
   </form>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useNickname, useEmail, usePassword } from "@/composables/strictUser";
 import { useAuth } from "@/store/auth";
 
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import TextInput from "@/components/TextInput.vue";
-import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
+import IconBase from "@/components/IconBase.vue";
+import IconSeekOff from "@/components/icons/IconSeekOff.vue";
+import IconSeekOn from "@/components/icons/IconSeekOn.vue";
 
 import ProfileSelector from "@/components/ProfileSelector.vue";
-import IconBase from "@/components/IconBase.vue";
 
 const profileImg = ref("");
 
@@ -90,22 +113,29 @@ const {
   state: nicknameState,
   generateRandomNickname,
 } = useNickname();
-const { email, state: emailState } = useEmail();
-const { password, state: passwordState } = usePassword();
-
-const auth = useAuth();
-async function signUp() {
-  validate();
-  console.log(blink.value);
-  if (blink.value.length) {
-    return;
-  }
-  console.log(
-    await auth.createEmailUser({ email, password, nickname, profileImg })
-  );
-}
+const { email, state: emailState, checkDuplicate } = useEmail();
+const { password, state: passwordState, seek, toggleSeek } = usePassword();
 
 const router = useRouter();
+const auth = useAuth();
+const isCompleted = computed(() => {
+  const image = profileImg.value;
+  const texts = [nicknameState, emailState, passwordState].reduce(
+    (prev, item) => item.value.code === "Valid" && prev,
+    true
+  );
+  console.log(image, texts);
+  return image && texts;
+});
+async function signUp() {
+  console.log(isCompleted.value);
+  if (!isCompleted.value) {
+    return;
+  }
+
+  await auth.createEmailUser({ email, password, nickname, profileImg });
+  router.go(-2);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -118,11 +148,13 @@ const router = useRouter();
 
   &__ProfileImage {
     width: 100%;
+    border-radius: calc(var(--global-radius) * 2);
   }
   &__Input {
     width: 100%;
     --input-padding: 0 1.4rem;
     --input-height: 4rem;
+    border-radius: calc(var(--global-radius) * 2);
   }
 
   &__Message {
@@ -143,18 +175,18 @@ const router = useRouter();
     width: 100%;
     background-color: #fff;
     box-shadow: none;
-    border-radius: var(--global-radius);
+    border-radius: calc(var(--global-radius) * 2);
     color: var(--google-login-text);
     font-size: 1.4rem;
     height: 4rem;
 
     &--SignUp {
-      width: auto;
+      width: 100%;
       flex-grow: 1;
       background-color: hsl(var(--theme-500));
       color: #fff;
-      height: 100%;
-      border-radius: 0;
+      height: 4.8rem;
+      border-radius: calc(var(--global-radius) * 2);
     }
     &--OtherAction {
       color: hsl(var(--theme-500));
@@ -165,20 +197,6 @@ const router = useRouter();
         right: 0;
       }
     }
-  }
-
-  &__ButtonList {
-    display: flex;
-    width: 100%;
-    height: 4.8rem;
-    margin-top: 2rem;
-    background-color: hsl(var(--bg-200));
-  }
-  &__Back {
-    width: 4.8rem;
-    background-color: hsl(var(--bg-200));
-    justify-content: center;
-    align-items: center;
   }
 }
 

@@ -23,7 +23,7 @@ export const useAuth = defineStore("auth", () => {
   const auth = getAuth();
 
   // 이메일-패스워드 회원가입
-  async function createEmailUser({ email, password, nickname, profileImg }) {
+  async function createEmailUser({ profileImg, nickname, email, password }) {
     try {
       // 중복 체크
       const isDuplicated = await checkEmailDuplicate(email);
@@ -45,9 +45,9 @@ export const useAuth = defineStore("auth", () => {
       const user = {
         // 개인식별정보
         uid: userRef.id,
-        nickname,
-        profileImg,
-        email,
+        nickname: nickname.value,
+        email: email.value,
+        profileImg: profileImg.value,
         // 사용기록
         recentWatched: [],
         wannaSee: [],
@@ -59,9 +59,12 @@ export const useAuth = defineStore("auth", () => {
           initDate: new Date(),
         },
       };
-      // 기본정보 업로드
+
+      console.log(user);
+      //기본정보 업로드
       await setDoc(userRef, user);
       user.value = user;
+      console.log(user.value);
 
       // const user = credential.user;
     } catch (e) {

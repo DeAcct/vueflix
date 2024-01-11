@@ -11,6 +11,24 @@
         autocomplete="on"
       >
         <template #label>패스워드</template>
+        <template #etc-action>
+          <VueflixBtn
+            type="button"
+            component="button"
+            @mousedown="toggleSeek"
+            @mouseup="toggleSeek"
+            @touchstart.passive="toggleSeek"
+            @touchend.passive="toggleSeek"
+            class="Login__Button Login__Button--OtherAction"
+          >
+            <template #icon>
+              <IconBase>
+                <IconSeekOn v-if="seek" />
+                <IconSeekOff v-else />
+              </IconBase>
+            </template>
+          </VueflixBtn>
+        </template>
       </TextInput>
       <div class="Login__ButtonList">
         <VueflixBtn
@@ -53,14 +71,18 @@
 // import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 // import { doc, setDoc, getDoc } from "firebase/firestore";
 // import { db } from "@/utility/firebase";
-
-import VueflixBtn from "@/components/VueflixBtn.vue";
-import IconBase from "@/components/IconBase.vue";
-import IconGoogle from "@/components/icons/IconGoogle.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import TextInput from "../components/TextInput.vue";
+import TextInput from "@/components/TextInput.vue";
 import { useAuth } from "../store/auth";
+
+import VueflixBtn from "@/components/VueflixBtn.vue";
+
+import IconBase from "@/components/IconBase.vue";
+import IconSeekOff from "@/components/icons/IconSeekOff.vue";
+import IconSeekOn from "@/components/icons/IconSeekOn.vue";
+import IconGoogle from "@/components/icons/IconGoogle.vue";
+import { usePassword } from "@/composables/strictUser";
 
 const router = useRouter();
 // onMounted(() => {
@@ -78,7 +100,7 @@ async function signIn() {
 }
 
 const email = ref("");
-const password = ref("");
+const { password, seek, toggleSeek } = usePassword();
 </script>
 
 <style lang="scss" scoped>
@@ -112,7 +134,7 @@ const password = ref("");
   &__Input {
     --input-height: 4rem;
     --input-padding: 0 1.4rem;
-    border-radius: var(--global-radius);
+    border-radius: calc(var(--global-radius) * 2);
     background-color: hsl(var(--bg-100));
   }
   &__OAuth {
@@ -122,9 +144,9 @@ const password = ref("");
     display: flex;
     width: 100%;
     background-color: #fff;
-    height: 4rem;
+    height: 4.8rem;
     box-shadow: none;
-    border-radius: var(--global-radius);
+    border-radius: calc(var(--global-radius) * 2);
     color: var(--google-login-text);
     font-size: 1.4rem;
     &--Login {
@@ -133,6 +155,11 @@ const password = ref("");
     }
     &--Google {
       justify-content: space-between;
+    }
+    &--OtherAction {
+      width: 4rem;
+      height: 4rem;
+      padding: 0;
     }
   }
   &__ButtonList {

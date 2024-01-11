@@ -23,11 +23,8 @@
           </template>
         </div>
         <ProfileImg
-          :input-profile="user ? user.profileImgSrc : undefined"
-          :class="[
-            'MyApp__Profile',
-            user ? `MyApp__Profile--${user.gender}` : '',
-          ]"
+          :input-profile="store.user ? store.user.profileImgSrc : undefined"
+          class="MyApp__Profile"
         />
       </div>
       <LevelRenderer to="/my/level" class="MyApp__Level" v-if="store.user" />
