@@ -1,5 +1,5 @@
-import { useStore } from "vuex";
 import { computed, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import {
   doc,
   setDoc,
@@ -12,9 +12,9 @@ import {
   arrayRemove,
   getDoc,
 } from "firebase/firestore";
-import { useRoute } from "vue-router";
+
 import { db } from "@/utility/firebase";
-import { useTimeSplit } from "../composables/formatter";
+import { useTimeSplit } from "@/composables/formatter";
 
 /**
  * 리액션(리뷰, 댓글)을 새로 생성합니다.
@@ -22,7 +22,7 @@ import { useTimeSplit } from "../composables/formatter";
  *  content: string,
  *  parent: string,
  *  type: "comment" | "review",
- *  user: import("vue").ComputedRef
+ *  user: import("vue").ComputedRef | import("vue").Ref
  * }} option 리액션의 내용을 받습니다.
  */
 export async function Create({ content, parent, type, user }) {
@@ -57,13 +57,14 @@ export async function Create({ content, parent, type, user }) {
     { reaction: arrayUnion(newDoc.id) },
     { merge: true }
   );
+  await auth.syncUser();
 }
 
 /**
  * @param {{
  *  parent: string,
  *  type: "comment" | "review",
- *  user: import("vue").ComputedRef
+ *  user: import("vue").ComputedRef | import("vue").Ref
  * }}
  * 리액션(리뷰, 댓글) 목록을 새로 고칩니다.
  */
@@ -98,7 +99,7 @@ export async function Read({ parent, type, user }) {
  * @param {{
  *  id: string,
  *  content: string,
- *  user: import("vue").ComputedRef
+ *  user: import("vue").ComputedRef | import("vue").Ref
  * }} option 수정할 리액션의 id와 새 내용을 받습니다.
  */
 export async function Update({ id, content, user, type }) {
@@ -113,14 +114,16 @@ export async function Update({ id, content, user, type }) {
     { content: formattedContent, isEdited: true },
     { merge: true }
   );
+  await auth.syncUser();
 }
 
 /**
  * 리액션(리뷰, 댓글)을 삭제합니다.
  * @param {{
  *  id: string,
- *  user: import("vue").ComputedRef
- * }} option 삭제할 리액션의 id를 받습니다.
+ *  user: import("vue").ComputedRef | import("vue").Ref
+ * }} optiimport { useAuth } from '@/store/auth';
+on 삭제할 리액션의 id를 받습니다.
  */
 export async function Delete({ id, user }) {
   if (!user.value) {

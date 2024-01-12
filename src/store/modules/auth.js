@@ -61,24 +61,6 @@ const mutations = {
       });
     }
   },
-  updateWannaSee(state, payload) {
-    const targetIndex = state.user.wannaSee.findIndex(
-      (wanna) => wanna.aniTitle === payload.aniTitle
-    );
-    if (targetIndex !== -1) {
-      state.user.wannaSee[targetIndex] = payload;
-    } else {
-      state.user.wannaSee.unshift(payload);
-    }
-    if (state.user.wannaSee.length > 1) {
-      state.user.wannaSee = useTimeSort(state.user.wannaSee, "time");
-    }
-  },
-  deleteWannaSee(state, payload) {
-    state.user.wannaSee = state.user.wannaSee.filter(
-      (anime) => anime.aniTitle !== payload
-    );
-  },
   mergeUser(state, payload) {
     state.user = { ...state.user, ...payload };
   },

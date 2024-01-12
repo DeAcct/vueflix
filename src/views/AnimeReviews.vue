@@ -29,7 +29,8 @@ import ReactionCombo from "@/components/ReactionCombo.vue";
 import LoginWidget from "@/components/LoginWidget.vue";
 import { computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useStore } from "vuex";
+import { useAuth } from "@/store/auth";
+// import { useStore } from "vuex";
 
 const route = useRoute();
 
@@ -37,8 +38,9 @@ const router = useRouter();
 function goAuth() {
   router.push("/auth");
 }
-const store = useStore();
-const user = computed(() => store.state.auth.user);
+// const store = useStore();
+const auth = useAuth();
+const user = computed(() => auth.user);
 </script>
 
 <style lang="scss" scoped>

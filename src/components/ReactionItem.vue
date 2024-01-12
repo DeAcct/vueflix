@@ -69,7 +69,8 @@ import { ref, computed } from "vue";
 import { useFormatDate } from "@/composables/formatter";
 import { Update, Delete } from "@/api/reaction";
 import UpdownReaction from "./UpdownReaction.vue";
-import { useStore } from "vuex";
+import { useAuth } from "../store/auth";
+// import { useStore } from "vuex";
 
 const placeholder = computed(
   () =>
@@ -122,8 +123,10 @@ function editTrigger() {
   emits("interact", mode.value === "edit");
 }
 const emits = defineEmits(["mutate", "interact"]);
-const store = useStore();
-const user = computed(() => store.state.auth.user);
+
+const auth = useAuth();
+const user = computed(() => auth.user);
+
 async function updateReaction() {
   if (!editValue.value) {
     return;

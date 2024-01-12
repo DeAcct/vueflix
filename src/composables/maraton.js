@@ -1,6 +1,7 @@
-import { useStore } from "vuex";
+// import { useStore } from "vuex";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import { useAuth } from "@/store/auth";
 
 /**
  * 사용자의 정주행 데이터를 불러와
@@ -8,11 +9,11 @@ import { useRoute } from "vue-router";
  * @param {string} queryIndex
  * @returns
  */
-export function useMaratonData(queryPart, queryIndex) {
+export function useMaratonData() {
   const route = useRoute();
-  const store = useStore();
+  const auth = useAuth();
 
-  const user = computed(() => store.state.auth.user);
+  const user = computed(() => auth.user);
   const maraton = computed(() => {
     if (!user.value) {
       return undefined;

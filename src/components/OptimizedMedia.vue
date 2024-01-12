@@ -1,16 +1,18 @@
 <template>
-  <span class="OptimizedMedia loading-target">
-    <component
-      :is="type"
-      :src="fileSrc"
-      :alt="type === 'img' ? alt : undefined"
-      :class="[
-        'OptimizedMedia__Body',
-        { 'OptimizedMedia__Body--Loaded': isLoaded },
-      ]"
-      @load="loadTrigger"
-      loading="lazy"
-    />
+  <span class="OptimizedMedia">
+    <span class="OptimizedMedia__Wrap loading-target">
+      <component
+        :is="type"
+        :src="fileSrc"
+        :alt="type === 'img' ? alt : undefined"
+        :class="[
+          'OptimizedMedia__Body',
+          { 'OptimizedMedia__Body--Loaded': isLoaded },
+        ]"
+        @load="loadTrigger"
+        loading="lazy"
+      />
+    </span>
   </span>
 </template>
 
@@ -47,11 +49,13 @@ const { fileSrc } = useFirebaseStorage(props.src);
 
 <style lang="scss" scoped>
 .OptimizedMedia {
-  position: relative;
-  display: block;
-  width: 100%;
-  border-radius: var(--radius, var(--global-radius));
-  padding-bottom: var(--aspect-ratio, 56.25%);
+  &__Wrap {
+    position: relative;
+    display: block;
+    width: 100%;
+    border-radius: var(--radius, var(--global-radius));
+    padding-bottom: var(--aspect-ratio, 56.25%);
+  }
   &__Body {
     position: absolute;
     top: 0;

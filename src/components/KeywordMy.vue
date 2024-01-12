@@ -10,7 +10,7 @@
           type="checkbox"
           class="blind KeywordMy__SkellInput"
           v-model="surveyData"
-          @change="setSurveyData"
+          @change="setKeywordData"
           :value="id"
         />
         <i class="KeywordMy__Icon">
@@ -30,16 +30,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { useStore } from "vuex";
-
-import { updateDoc, increment, doc, getDoc } from "firebase/firestore";
-import { db } from "@/utility/firebase";
+import { useRoute } from "vue-router";
 
 import IconBase from "./IconBase.vue";
 import IconSelected from "./icons/IconSelected.vue";
 import IconNotSelected from "./icons/IconNotSelected.vue";
-import { useRoute } from "vue-router";
+import { useKeyword } from "@/api/keyword";
 
 const reviewItems = [
   {
@@ -62,48 +58,51 @@ const reviewItems = [
     keyword: "연출",
     id: "directing",
   },
-
   {
     keyword: "캐릭터",
     id: "character",
   },
+  {
+    keyword: "작화(움직임)",
+    id: "sakuga",
+  },
 ];
 
-const store = useStore();
-const user = computed(() => store.state.auth.user);
-const surveyData = ref([]);
+// const store = useStore();
+// const user = computed(() => store.state.auth.user);
 
 const route = useRoute();
-onMounted(async () => {
-  const docRef = doc(db, "user", user.value.uid);
-  const myData = (await getDoc(docRef))
-    .data()
-    .keywordReview.find(({ aniTitle }) => route.params.title === aniTitle);
+const { keyword: surveyData, setKeywordData } = useKeyword(route.params.title);
+// onMounted(async () => {
+//   const docRef = doc(db, "user", user.value.uid);
+//   const myData = (await getDoc(docRef))
+//     .data()
+//     .keywordReview.find(({ aniTitle }) => route.params.title === aniTitle);
 
-  if (!myData) {
-    return;
-  }
-  surveyData.value = myData.likeIt;
-});
+//   if (!myData) {
+//     return;
+//   }
+//   surveyData.value = myData.likeIt;
+// });
 
-const emits = defineEmits(["data-changed"]);
-async function setSurveyData(e) {
-  const method = e.currentTarget.checked ? 1 : -1;
-  const animeUpdateObj = {};
-  animeUpdateObj[`keywordReview.${e.currentTarget.value}.value`] =
-    increment(method);
-  await updateDoc(doc(db, "anime", route.params.title), animeUpdateObj);
+// const emits = defineEmits(["data-changed"]);
+// async function setSurveyData(e) {
+//   const method = e.currentTarget.checked ? 1 : -1;
+//   const animeUpdateObj = {};
+//   animeUpdateObj[`keywordReview.${e.currentTarget.value}.value`] =
+//     increment(method);
+//   await updateDoc(doc(db, "anime", route.params.title), animeUpdateObj);
 
-  store.commit("auth/updateKeywordReview", {
-    aniTitle: route.params.title,
-    likeIt: surveyData,
-  });
+//   store.commit("auth/updateKeywordReview", {
+//     aniTitle: route.params.title,
+//     likeIt: surveyData,
+//   });
 
-  await updateDoc(doc(db, "user", user.value.uid), {
-    keywordReview: user.value.keywordReview,
-  });
-  emits("data-changed");
-}
+//   await updateDoc(doc(db, "user", user.value.uid), {
+//     keywordReview: user.value.keywordReview,
+//   });
+//   emits("data-changed");
+// }
 </script>
 
 <style lang="scss" scoped>

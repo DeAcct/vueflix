@@ -50,7 +50,8 @@
 import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 import { ref, computed } from "vue";
 import { Create } from "@/api/reaction";
-import { useStore } from "vuex";
+import { useAuth } from "@/store/auth";
+// import { useStore } from "vuex";
 
 const emits = defineEmits(["mutate", "interact"]);
 
@@ -99,8 +100,8 @@ function setReviewData(e) {
   reviewData.value = e.target.value;
 }
 
-const store = useStore();
-const user = computed(() => store.state.auth.user);
+const auth = useAuth();
+const user = computed(() => auth.user);
 async function reviewTrigger() {
   await Create({
     content: reviewData.value,

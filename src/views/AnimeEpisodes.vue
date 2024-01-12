@@ -14,17 +14,35 @@
           <Thumbnailset
             v-for="{ title, index, thumbnail } in episodes"
             class="AnimeEpisodes__Item"
-            type="episode"
-            :ani-title="animeInfo.name"
-            :data="{ index, title, part, thumbnail }"
-            :watch-percent="getEpisodePercent(part, index)"
-            direction="row"
-            :link="`/anime-play/${animeInfo.name}/${part}/${index}`"
-            :replace="{
-              main: false,
-              sub: false,
-            }"
-          ></Thumbnailset>
+          >
+            <template #image>
+              <RouterLink
+                class="AnimeEpisodes__Thumbnail"
+                :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
+              >
+                <OptimizedMedia
+                  :src="`${animeInfo.name}/${thumbnail}`"
+                  :alt="`${animeInfo.name} ${part} ${index} 미리보기 이미지`"
+                />
+                <ProgressCircle
+                  v-if="getEpisodePercent(part, index) !== '0%'"
+                  class="AnimeEpisodes__WatchPercent"
+                  :percent="getEpisodePercent(part, index)"
+                />
+              </RouterLink>
+            </template>
+            <template #text>
+              <RouterLink
+                class="AnimeEpisodes__TextLink"
+                :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
+              >
+                <strong class="AnimeEpisodes__PartIndex">
+                  {{ part }} {{ index }}
+                </strong>
+                <span class="AnimeEpisodes__Title">{{ title }}</span>
+              </RouterLink>
+            </template>
+          </Thumbnailset>
         </template>
       </AccordionWidget>
     </template>
@@ -32,11 +50,14 @@
 </template>
 
 <script setup>
-import AccordionWidget from "@/components/AccordionWidget.vue";
-import Thumbnailset from "@/components/ThumbnailSet.vue";
 import { inject, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useMaratonData } from "@/composables/maraton";
+
+import AccordionWidget from "@/components/AccordionWidget.vue";
+import Thumbnailset from "@/components/ThumbnailSet.vue";
+import OptimizedMedia from "@/components/OptimizedMedia.vue";
+import ProgressCircle from "@/components/ProgressCircle.vue";
 
 const animeInfo = inject("anime-info");
 
@@ -65,6 +86,40 @@ const { getEpisodePercent } = useMaratonData();
   &__Item {
     padding: 0;
   }
+  &__Thumbnail {
+    width: 30rem;
+    position: relative;
+  }
+  &__WatchPercent {
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    flex-shrink: 0;
+    font-size: 1.3rem;
+    left: 0;
+    padding: 0.75rem;
+    bottom: 0;
+    color: #fff;
+    background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
+    border-radius: var(--global-radius);
+  }
+  &__TextLink {
+    display: flex;
+    gap: 0.6rem;
+    flex-direction: column;
+  }
+  &__PartIndex {
+    font-size: 1.4rem;
+  }
+  &__Title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 1.4rem;
+    line-height: 1.3;
+  }
 }
 
 @media screen and (min-width: 768px) {
@@ -72,6 +127,15 @@ const { getEpisodePercent } = useMaratonData();
     &__Accordion {
       --episode-gap: 1.2rem;
       --thumbnail-width: 23rem;
+    }
+    &__Thumbnail {
+      width: 40rem;
+    }
+    &__PartIndex {
+      font-size: 1.6rem;
+    }
+    &__Title {
+      font-size: 1.6rem;
     }
   }
 }

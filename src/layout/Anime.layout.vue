@@ -78,17 +78,19 @@ import {
 // import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { useScroll } from "@/composables/scroll";
+import { useAuth } from "@/store/auth";
 
 import AnimeItemHead from "@/components/AnimeItemHead.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
 import ToTop from "@/components/ToTop.vue";
 import { useIndicatorAnimation } from "@/composables/indicator";
 
-const store = useStore();
+// const store = useStore();
 const router = useRouter();
 const route = useRoute();
 
-const user = computed(() => store.state.auth.user);
+const auth = useAuth();
+const user = computed(() => auth.user);
 async function getRawData() {
   try {
     const animeRef = collection(db, "anime");
@@ -249,16 +251,6 @@ const {
   }
 }
 
-.action-sheet {
-  position: fixed;
-  top: 0;
-  z-index: 100;
-}
-.purchase-modal {
-  position: fixed;
-  top: 0;
-  z-index: 110;
-}
 @media screen and (min-width: 1080px) {
   .AnimeLayout {
     display: grid;
@@ -267,14 +259,15 @@ const {
         (100% - 128rem - 4rem) / 2
       );
     // 상 - 하 공간높이 지정
-    grid-template-rows: repeat(2, auto);
+    grid-template-rows: 50vh auto;
     grid-auto-rows: minmax(0px, auto);
     row-gap: 3.2rem;
     column-gap: 2rem;
     &__Head {
-      min-height: 50vh;
+      height: 50vh;
       border-radius: 0;
       padding-top: 8rem;
+      min-height: unset;
       grid-area: 1 / 1 / 2 / 5;
     }
     &__Meta {
@@ -303,7 +296,7 @@ const {
     }
     &__ToTop {
       left: auto;
-      right: calc((100% - 128rem) / 2);
+      right: max(calc((100% - 128rem) / 2), 2rem);
       transform: translateY(10rem);
       &--Show {
         transform: none;

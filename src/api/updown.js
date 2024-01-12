@@ -8,8 +8,8 @@ import {
   doc,
 } from "firebase/firestore";
 import { ref, computed } from "vue";
-import { useStore } from "vuex";
 import { db } from "@/utility/firebase";
+import { useAuth } from "@/store/auth";
 
 /**
  * updown과 관련된 api입니다.
@@ -17,8 +17,8 @@ import { db } from "@/utility/firebase";
  */
 export function useUpdown({ id, writer }) {
   const updown = ref(0);
-  const store = useStore();
-  const user = computed(() => store.state.auth.user);
+  const auth = useAuth();
+  const user = computed(() => auth.user);
 
   /**
    * 지정한 수치만큼 updown 수치를 변경하고 자동으로 새로 고칩니다.
@@ -37,6 +37,7 @@ export function useUpdown({ id, writer }) {
       { updown: increment(action) },
       { merge: true }
     );
+    await auth.syncUser();
   }
 
   /**

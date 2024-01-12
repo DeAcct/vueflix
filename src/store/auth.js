@@ -6,6 +6,7 @@ import {
   getDocs,
   setDoc,
   doc,
+  onSnapshot,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -16,14 +17,22 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { db } from "../utility/firebase";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 export const useAuth = defineStore("auth", () => {
   // 세션스토리지에 로그인 기록이 남아있다면 유지
   const user = ref(null);
   const auth = getAuth();
 
-  onAuthStateChanged(auth, async () => {
+  const wannaSee = computed(() => {
+    if (!user.value) {
+      return [];
+    }
+    return user.value.wannaSee;
+  });
+
+  async function syncUser() {
+    const auth = getAuth();
     if (!auth.currentUser) {
       user.value = null;
       return;
@@ -37,6 +46,9 @@ export const useAuth = defineStore("auth", () => {
       return;
     }
     user.value = dataFromEmail[0].data();
+  }
+  onAuthStateChanged(auth, async () => {
+    await syncUser(auth);
   });
 
   async function signOutUser() {
@@ -62,11 +74,11 @@ export const useAuth = defineStore("auth", () => {
 
       // 사용자 정보 저장
       // uid 생성
-      const userRef = doc(collection(db, "user"));
+      const userRef = doc(db, "user", auth.currentUser.uid);
       // 기본정보 생성
       const user = {
         // 개인식별정보
-        uid: userRef.id,
+        uid: auth.currentUser.uid,
         nickname: nickname.value,
         email: email.value,
         profileImg: profileImg.value,
@@ -82,11 +94,9 @@ export const useAuth = defineStore("auth", () => {
         },
       };
 
-      console.log(user);
       //기본정보 업로드
       await setDoc(userRef, user);
       user.value = user;
-      console.log(user.value);
 
       // const user = credential.user;
     } catch (e) {
@@ -133,6 +143,8 @@ export const useAuth = defineStore("auth", () => {
 
   return {
     user,
+    wannaSee,
+    syncUser,
     createEmailUser,
     sendVerification,
     checkEmailDuplicate,

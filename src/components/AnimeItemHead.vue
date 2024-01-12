@@ -70,7 +70,7 @@
             continueData,
             wannaSee,
           }"
-          @wanna-see-toggle="wannaSeeToggle"
+          @wanna-see-toggle="toggleWannaSee"
           @purchase="purchase"
           v-show="!!animeInfo.type && !!animeInfo.rating && !!animeInfo.name"
           :disabled="{
@@ -84,11 +84,10 @@
 </template>
 
 <script setup>
-import { ref, inject, computed } from "vue";
-import { useStore } from "vuex";
+import { inject, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { setDoc, doc } from "firebase/firestore";
-import { db } from "@/utility/firebase";
+import { useAuth } from "@/store/auth";
+import { useWannaSee } from "@/api/wannaSee";
 
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconBase from "./IconBase.vue";
@@ -119,32 +118,10 @@ function goBack() {
   router.back();
 }
 
-const store = useStore();
-const wannaSee = computed(
-  () =>
-    !!user.value?.wannaSee.find((item) => item.aniTitle === route.params.title)
-);
-async function wannaSeeToggle() {
-  if (!user.value) {
-    emit("require-login", "로그인해야 '보고싶다'를 체크할 수 있어요");
-    return;
-  }
-  const aniTitle = route.params.title;
-  if (wannaSee.value) {
-    store.commit("auth/deleteWannaSee", aniTitle);
-  } else {
-    const time = new Date();
-    store.commit("auth/updateWannaSee", {
-      aniTitle,
-      time,
-    });
-  }
-  await setDoc(doc(db, "user", user.value.uid), {
-    ...user.value,
-  });
-}
+const auth = useAuth();
+const user = computed(() => auth.user);
 
-const user = computed(() => store.state.auth.user);
+const { wannaSee, toggleWannaSee } = useWannaSee(route.params.title);
 
 async function openSystemShare() {
   const shareData = {
@@ -155,7 +132,6 @@ async function openSystemShare() {
 }
 
 function purchase() {
-  console.log(user.value);
   if (user.value) {
     emit("purchase");
   } else {

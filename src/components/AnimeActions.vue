@@ -87,6 +87,7 @@ const props = defineProps({
 const emits = defineEmits(["wanna-see-toggle", "purchase"]);
 
 function wannaSeeToggle() {
+  console.log("??");
   emits("wanna-see-toggle");
 }
 function purchase() {

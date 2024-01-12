@@ -36,14 +36,15 @@
 </template>
 
 <script setup>
-import LinearChart from "./LinearChart.vue";
-import KeywordMy from "./KeywordMy.vue";
+import { ref, onMounted, computed } from "vue";
 
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 import { useRoute } from "vue-router";
-import { ref, onMounted, computed } from "vue";
-import { useStore } from "vuex";
+import { useAuth } from "@/store/auth";
+
+import LinearChart from "./LinearChart.vue";
+import KeywordMy from "./KeywordMy.vue";
 
 const keywordData = ref([]);
 const route = useRoute();
@@ -78,8 +79,8 @@ const allKeywords = computed(() =>
   keywordData.value.reduce((acc, { value }) => (acc += value), 0)
 );
 
-const store = useStore();
-const user = computed(() => store.state.auth.user);
+const auth = useAuth();
+const user = computed(() => auth.user);
 
 onMounted(async () => {
   await syncData();

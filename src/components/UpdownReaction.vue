@@ -26,8 +26,9 @@
 
 <script setup>
 import { onMounted, computed } from "vue";
-import { useStore } from "vuex";
+// import { useStore } from "vuex";
 import { useUpdown } from "@/api/updown";
+import { useAuth } from "@/store/auth";
 
 import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
@@ -57,8 +58,8 @@ async function change(number) {
   await Read();
 }
 
-const store = useStore();
-const user = computed(() => store.state.auth.user);
+const auth = useAuth();
+const user = computed(() => auth.user);
 </script>
 
 <style lang="scss" scoped>

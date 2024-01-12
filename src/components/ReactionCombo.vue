@@ -56,9 +56,9 @@
 // 코멘트는 각 에피소드마다 작성하는 항목
 
 import { computed, watchEffect, ref } from "vue";
-import { useStore } from "vuex";
 
 import { Read } from "@/api/reaction";
+import { useAuth } from "@/store/auth";
 
 import WriteReaction from "./WriteReaction.vue";
 import ReactionItem from "./ReactionItem.vue";
@@ -93,9 +93,10 @@ function setInteract(e) {
   emits("interact", e);
 }
 
-const store = useStore();
-const user = computed(() => store.state.auth.user);
-
+// const store = useStore();
+// const user = computed(() => store.state.auth.user);
+const auth = useAuth();
+const user = computed(() => auth.user);
 const reactions = ref([]);
 
 watchEffect(async () => {
