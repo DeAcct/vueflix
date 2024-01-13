@@ -7,17 +7,18 @@
         { 'KeywordReviews__Interactive--Centered': !user },
       ]"
     >
-      <KeywordMy
-        @data-changed="syncData"
+      <KeywordSelector
         v-if="user"
+        v-model:selected="userKeyword"
+        @new-check="setKeywordData"
         class="KeywodReviews__My"
       />
       <div class="KeywordReviews__Chart">
-        <template v-if="allKeywords > 0">
-          <LinearChart :data="keywordData" class="sub-widget">
+        <template v-if="sharedAll > 0">
+          <LinearChart :data="sharedKeyword" class="sub-widget">
             <template v-slot:summary
               >다른 덕후들이 볼 때
-              <strong>{{ max }}</strong>
+              <strong>{{ sharedMax }}</strong>
               이(가) 강한 작품이에요</template
             >
           </LinearChart>
@@ -36,55 +37,30 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
-
-import { getDoc, doc } from "firebase/firestore";
-import { db } from "@/utility/firebase";
+import { computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
+
 import { useAuth } from "@/store/auth";
+import { useKeyword } from "@/api/keyword";
 
 import LinearChart from "./LinearChart.vue";
-import KeywordMy from "./KeywordMy.vue";
+import KeywordSelector from "./KeywordSelector.vue";
 
-const keywordData = ref([]);
 const route = useRoute();
-async function syncData() {
-  const docRef = doc(db, "anime", route.params.title);
-  const originData = (await getDoc(docRef)).data().keywordReview;
-  keywordData.value = Object.keys(originData)
-    .map((item) => ({
-      id: item,
-      ...originData[`${item}`],
-    }))
-    .sort(({ keyword: aKeyword }, { keyword: bKeyword }) => {
-      if (aKeyword > bKeyword) {
-        return 1;
-      }
-      if (aKeyword < bKeyword) {
-        return -1;
-      }
-      return 0;
-    });
-}
-
-const max = computed(
-  () =>
-    keywordData.value.reduce(
-      (acc, now) => (acc.value > now.value ? acc : now),
-      {}
-    ).keyword
-);
-
-const allKeywords = computed(() =>
-  keywordData.value.reduce((acc, { value }) => (acc += value), 0)
-);
+const {
+  userKeyword,
+  setKeywordData,
+  sharedKeyword,
+  sharedAll,
+  sharedMax,
+  setSharedKeywordData,
+} = useKeyword(route.params.title);
+onMounted(async () => {
+  await setSharedKeywordData();
+});
 
 const auth = useAuth();
 const user = computed(() => auth.user);
-
-onMounted(async () => {
-  await syncData();
-});
 </script>
 
 <style lang="scss" scoped>

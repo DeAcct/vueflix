@@ -76,8 +76,6 @@
 </template>
 
 <script setup>
-// import { useStore } from "vuex";
-import { computed } from "vue";
 import { useRouter } from "vue-router";
 
 import { useAuth } from "../store/auth";

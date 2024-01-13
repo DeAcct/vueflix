@@ -26,7 +26,6 @@
 
 <script setup>
 import { onMounted, computed } from "vue";
-// import { useStore } from "vuex";
 import { useUpdown } from "@/api/updown";
 import { useAuth } from "@/store/auth";
 

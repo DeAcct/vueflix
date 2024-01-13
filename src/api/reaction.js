@@ -15,6 +15,7 @@ import {
 
 import { db } from "@/utility/firebase";
 import { useTimeSplit } from "@/composables/formatter";
+import { useAuth } from "@/store/auth";
 
 /**
  * 리액션(리뷰, 댓글)을 새로 생성합니다.
@@ -22,10 +23,12 @@ import { useTimeSplit } from "@/composables/formatter";
  *  content: string,
  *  parent: string,
  *  type: "comment" | "review",
- *  user: import("vue").ComputedRef | import("vue").Ref
  * }} option 리액션의 내용을 받습니다.
  */
-export async function Create({ content, parent, type, user }) {
+export async function Create({ content, parent, type }) {
+  const auth = useAuth();
+  const user = computed(() => auth.user);
+
   if (!user.value) {
     console.error("로그인하지 않으면 리액션을 생성할 수 없습니다.");
     return;
@@ -63,12 +66,11 @@ export async function Create({ content, parent, type, user }) {
 /**
  * @param {{
  *  parent: string,
- *  type: "comment" | "review",
- *  user: import("vue").ComputedRef | import("vue").Ref
+ *  type: "comment" | "review"
  * }}
  * 리액션(리뷰, 댓글) 목록을 새로 고칩니다.
  */
-export async function Read({ parent, type, user }) {
+export async function Read({ parent, type }) {
   const q = query(
     collection(db, "reaction"),
     where("parent", "==", parent),
@@ -82,6 +84,9 @@ export async function Read({ parent, type, user }) {
     (prev, next) => prev.time.toDate() - next.time.toDate()
   );
 
+  // 로그인한 상태라면 내가 먼저 보이도록 다시 정렬
+  const auth = useAuth();
+  const user = computed(() => auth.user);
   if (user) {
     animeReactions = animeReactions.toSorted((prev, next) => {
       if (prev.uid === user.uid) {
@@ -99,10 +104,12 @@ export async function Read({ parent, type, user }) {
  * @param {{
  *  id: string,
  *  content: string,
- *  user: import("vue").ComputedRef | import("vue").Ref
+ *  type: "comment" | "review",
  * }} option 수정할 리액션의 id와 새 내용을 받습니다.
  */
-export async function Update({ id, content, user, type }) {
+export async function Update({ id, content, type }) {
+  const auth = useAuth();
+  const user = computed(() => auth.user);
   if (!user.value) {
     return;
   }
@@ -121,11 +128,11 @@ export async function Update({ id, content, user, type }) {
  * 리액션(리뷰, 댓글)을 삭제합니다.
  * @param {{
  *  id: string,
- *  user: import("vue").ComputedRef | import("vue").Ref
- * }} optiimport { useAuth } from '@/store/auth';
-on 삭제할 리액션의 id를 받습니다.
+ * }} option 삭제할 리액션의 id를 받습니다.
  */
-export async function Delete({ id, user }) {
+export async function Delete({ id }) {
+  const auth = useAuth();
+  const user = computed(() => auth.user);
   if (!user.value) {
     return;
   }
@@ -135,4 +142,5 @@ export async function Delete({ id, user }) {
     { reaction: arrayRemove(id) },
     { merge: true }
   );
+  await auth.syncUser();
 }

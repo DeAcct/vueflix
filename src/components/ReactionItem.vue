@@ -70,7 +70,6 @@ import { useFormatDate } from "@/composables/formatter";
 import { Update, Delete } from "@/api/reaction";
 import UpdownReaction from "./UpdownReaction.vue";
 import { useAuth } from "../store/auth";
-// import { useStore } from "vuex";
 
 const placeholder = computed(
   () =>
@@ -115,8 +114,8 @@ function editValueChange(e) {
 
 const mode = ref("show");
 function editTrigger() {
+  // 수정을 그냥 취소할 때 키보드단축키 재활성화
   if (mode.value === "edit") {
-    // 수정을 그냥 취소할 때 키보드단축키 재활성화
     editValue.value = temporalRemoveTimeFlag();
   }
   mode.value = mode.value === "edit" ? "show" : "edit";

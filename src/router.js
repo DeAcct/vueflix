@@ -94,32 +94,32 @@ const routes = [
       bottomTabMenu: false,
     },
   },
-  {
-    path: "/my/account-setting",
-    name: "account-setting",
-    component: () => import("@/views/AccountSetting.vue"),
-    meta: {
-      title: "계정 설정",
-      appBar: {
-        activityContent: "계정 설정",
-        backButton: true,
-      },
-      bottomTabMenu: false,
-    },
-  },
-  {
-    path: "/my/app-theme",
-    name: "app-theme",
-    component: () => import("@/views/AppTheme.vue"),
-    meta: {
-      title: "앱 테마",
-      appBar: {
-        activityContent: "앱 테마",
-        backButton: true,
-      },
-      bottomTabMenu: false,
-    },
-  },
+  // {
+  //   path: "/my/account-setting",
+  //   name: "account-setting",
+  //   component: () => import("@/views/AccountSetting.vue"),
+  //   meta: {
+  //     title: "계정 설정",
+  //     appBar: {
+  //       activityContent: "계정 설정",
+  //       backButton: true,
+  //     },
+  //     bottomTabMenu: false,
+  //   },
+  // },
+  // {
+  //   path: "/my/app-theme",
+  //   name: "app-theme",
+  //   component: () => import("@/views/AppTheme.vue"),
+  //   meta: {
+  //     title: "앱 테마",
+  //     appBar: {
+  //       activityContent: "앱 테마",
+  //       backButton: true,
+  //     },
+  //     bottomTabMenu: false,
+  //   },
+  // },
   {
     path: "/auth",
     name: "auth",

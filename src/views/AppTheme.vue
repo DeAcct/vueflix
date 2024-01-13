@@ -40,17 +40,15 @@
 </template>
 
 <script setup>
-import { useStore } from "vuex";
 import InputBoolean from "@/components/InputBoolean.vue";
 import { computed } from "vue";
 
-const store = useStore();
-const theme = computed(() => store.state.theme.theme);
+// 작업보류. 새로운 스토어(theme) 필요
 function themeToggle(e) {
   console.log(e);
   const currentTheme = e.value ? "dark" : "light";
-  store.commit("theme/setTheme", currentTheme);
-  localStorage.setItem("theme", currentTheme);
+  // store.commit("theme/setTheme", currentTheme);
+  // localStorage.setItem("theme", currentTheme);
 }
 </script>
 

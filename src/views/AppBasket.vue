@@ -79,11 +79,11 @@
 // unique한 키가 아닐 경우, 같은 아이템으로 인식하여 업데이트가 이루어지지 않는다.
 // 탭이 변경되었는데, 같은 인덱스에 같은 제목의 애니가 있을 경우 썸네일이 바뀌지 않는 오류가 있었다.
 
-import { useStore } from "vuex";
 import { computed, ref } from "vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
+import { useAuth } from "@/store/auth";
 
 const tabItems = [
   { text: "최근 본", type: "recentWatched" },
@@ -95,8 +95,11 @@ const selectedTab = ref("recentWatched");
 function changeSelected(e) {
   selectedTab.value = e.currentTarget.dataset.key;
 }
-const store = useStore();
-const user = computed(() => store.state.auth.user);
+// const store = useStore();
+// const user = computed(() => store.state.auth.user);
+
+const auth = useAuth();
+const user = computed(() => auth.user);
 const basketList = computed(() => user.value[selectedTab.value]);
 </script>
 

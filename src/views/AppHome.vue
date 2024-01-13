@@ -149,7 +149,6 @@ import ThumbnailSet from "@/components/ThumbnailSet.vue";
 
 import Cookies from "js-cookie";
 
-// import { useStore } from "vuex";
 import { getDocs, collection, doc, getDoc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 import { onMounted, onUnmounted, ref, watch } from "vue";

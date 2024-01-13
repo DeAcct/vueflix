@@ -147,7 +147,7 @@ import { db } from "@/utility/firebase";
 
 import { onMounted, ref, computed, inject, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useStore } from "vuex";
+import { useAuth } from "@/store/auth";
 
 import { useMaratonData } from "@/composables/maraton";
 import { useScroll } from "@/composables/scroll";
@@ -172,8 +172,10 @@ router.afterEach(async () => {
   await getVideoUrl();
 });
 const route = useRoute();
-const store = useStore();
-const user = computed(() => store.state.auth.user);
+
+const auth = useAuth();
+const user = computed(() => auth.user);
+
 const recentWatched = computed(() => user.value?.recentWatched);
 const maratonWatch = computed(() => user.value?.maratonWatch);
 async function savePoint(time) {

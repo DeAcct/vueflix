@@ -30,7 +30,6 @@ import LoginWidget from "@/components/LoginWidget.vue";
 import { computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useAuth } from "@/store/auth";
-// import { useStore } from "vuex";
 
 const route = useRoute();
 

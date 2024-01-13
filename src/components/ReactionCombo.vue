@@ -22,7 +22,12 @@
         "
         @interact="setInteract"
       />
-      <ul class="ReactionCombo__List" v-if="reactions?.length">
+      <TransitionGroup
+        tag="ul"
+        name="reaction-list"
+        class="ReactionCombo__List"
+        :class="{ 'ReactionCombo__List--Exist ': reactions?.length !== 0 }"
+      >
         <ReactionItem
           v-for="reaction in reactions"
           :key="reaction._id"
@@ -44,7 +49,7 @@
           </template>
           <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
         </ReactionItem>
-      </ul>
+      </TransitionGroup>
     </div>
   </section>
 </template>
@@ -103,7 +108,6 @@ watchEffect(async () => {
   reactions.value = await Read({
     parent: props.parent,
     type: props.type,
-    user,
   });
 });
 async function onMutate() {
@@ -146,7 +150,6 @@ function requestTeleport(e) {
       hsl(var(--bg-900) / 0.025)
     );
     padding: 1px;
-    gap: 1px;
   }
   &__Write {
     padding: 2rem;
@@ -160,6 +163,9 @@ function requestTeleport(e) {
     overflow: hidden;
     border-radius: 0 0 var(--global-radius) var(--global-radius);
     background-color: hsl(var(--bg-200) / 0.5);
+    &--Exist {
+      margin-top: 1px;
+    }
   }
   &__Item {
     background-color: transparent;
@@ -167,6 +173,25 @@ function requestTeleport(e) {
       border-bottom: 1px solid hsl(var(--bg-300));
     }
   }
+}
+
+/* 움직이는 엘리먼트에 트랜지션 적용 */
+.reaction-list-move,
+.reaction-list-enter-active,
+.reaction-list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.reaction-list-enter-from,
+.reaction-list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* 이동 애니메이션을 올바르게 계산할 수 있도록
+   레이아웃 흐름에서 나머지 항목을 꺼내기. */
+.list-leave-active {
+  position: absolute;
 }
 
 @media screen and (min-width: 1080px) {

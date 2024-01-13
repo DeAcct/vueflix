@@ -1,27 +1,27 @@
 <template>
-  <div class="KeywordMy">
-    <form class="KeywordMy__Survey">
+  <div class="KeywordSelector">
+    <form class="KeywordSelector__Survey">
       <label
         v-for="{ keyword, id } in reviewItems"
         :key="keyword"
-        class="KeywordMy__Keyword"
+        class="KeywordSelector__Keyword"
       >
         <input
           type="checkbox"
-          class="blind KeywordMy__SkellInput"
-          v-model="surveyData"
-          @change="setKeywordData"
+          class="blind KeywordSelector__SkellInput"
+          v-model="selected"
+          @change="onChange"
           :value="id"
         />
-        <i class="KeywordMy__Icon">
-          <IconBase v-if="surveyData.includes(id)">
+        <i class="KeywordSelector__Icon">
+          <IconBase v-if="selected.includes(id)">
             <IconSelected />
           </IconBase>
           <IconBase v-else>
             <IconNotSelected />
           </IconBase>
         </i>
-        <span class="KeywordMy__Text">
+        <span class="KeywordSelector__Text">
           {{ keyword }}
         </span>
       </label>
@@ -30,12 +30,9 @@
 </template>
 
 <script setup>
-import { useRoute } from "vue-router";
-
 import IconBase from "./IconBase.vue";
 import IconSelected from "./icons/IconSelected.vue";
 import IconNotSelected from "./icons/IconNotSelected.vue";
-import { useKeyword } from "@/api/keyword";
 
 const reviewItems = [
   {
@@ -71,42 +68,18 @@ const reviewItems = [
 // const store = useStore();
 // const user = computed(() => store.state.auth.user);
 
-const route = useRoute();
-const { keyword: surveyData, setKeywordData } = useKeyword(route.params.title);
-// onMounted(async () => {
-//   const docRef = doc(db, "user", user.value.uid);
-//   const myData = (await getDoc(docRef))
-//     .data()
-//     .keywordReview.find(({ aniTitle }) => route.params.title === aniTitle);
+const selected = defineModel("selected", {
+  type: Array,
+});
 
-//   if (!myData) {
-//     return;
-//   }
-//   surveyData.value = myData.likeIt;
-// });
-
-// const emits = defineEmits(["data-changed"]);
-// async function setSurveyData(e) {
-//   const method = e.currentTarget.checked ? 1 : -1;
-//   const animeUpdateObj = {};
-//   animeUpdateObj[`keywordReview.${e.currentTarget.value}.value`] =
-//     increment(method);
-//   await updateDoc(doc(db, "anime", route.params.title), animeUpdateObj);
-
-//   store.commit("auth/updateKeywordReview", {
-//     aniTitle: route.params.title,
-//     likeIt: surveyData,
-//   });
-
-//   await updateDoc(doc(db, "user", user.value.uid), {
-//     keywordReview: user.value.keywordReview,
-//   });
-//   emits("data-changed");
-// }
+const emits = defineEmits(["new-check"]);
+function onChange(e) {
+  emits("new-check", e);
+}
 </script>
 
 <style lang="scss" scoped>
-.KeywordMy {
+.KeywordSelector {
   &__Survey {
     display: flex;
     flex-wrap: wrap;
@@ -139,7 +112,7 @@ const { keyword: surveyData, setKeywordData } = useKeyword(route.params.title);
   }
 }
 @media screen and (min-width: 1080px) {
-  .KeywordMy {
+  .KeywordSelector {
     display: flex;
     align-items: center;
     &__Title {

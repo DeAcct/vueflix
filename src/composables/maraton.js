@@ -1,4 +1,3 @@
-// import { useStore } from "vuex";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuth } from "@/store/auth";
