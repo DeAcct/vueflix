@@ -1,16 +1,10 @@
 <template>
   <div class="InteractiveVisual">
-    <div class="InteractiveVisual__Body">
-      <p
-        class="InteractiveVisual__Bubble InteractiveVisual__Bubble--Question"
-        ref="$question"
-      >
+    <div class="InteractiveVisual__Body" ref="$interactive">
+      <p class="InteractiveVisual__Bubble InteractiveVisual__Bubble--Question">
         와... 뷰플릭스 볼 거 엄청 많다
       </p>
-      <p
-        class="InteractiveVisual__Bubble InteractiveVisual__Bubble--Loading"
-        ref="$loading"
-      >
+      <p class="InteractiveVisual__Bubble InteractiveVisual__Bubble--Loading">
         <span
           class="InteractiveVisual__Dot"
           v-for="i in 3"
@@ -19,17 +13,12 @@
         >
         </span>
       </p>
-      <p class="InteractiveVisual__Answer" ref="$answer">
+      <p class="InteractiveVisual__Answer">
         맞아맞아 그건 사실이야, 형은
         <span class="line-break">
-          <span class="InteractiveVisual__DecorateLine" ref="$line"></span>
-          <strong
-            class="InteractiveVisual__CopyAccent"
-            ref="$aniTitle"
-          ></strong>
-          <span class="InteractiveVisual__Static" ref="$static">
-            도 볼 수 있어
-          </span>
+          <span class="InteractiveVisual__DecorateLine"></span>
+          <strong class="InteractiveVisual__AniTitle"></strong>
+          <span class="InteractiveVisual__Static"> 도 볼 수 있어 </span>
         </span>
       </p>
     </div>
@@ -37,26 +26,15 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
+import { gsap, TextPlugin } from "gsap/all";
+gsap.registerPlugin(TextPlugin);
 
-import { gsap } from "gsap/gsap-core";
-import { TextPlugin } from "gsap/all";
-
-const $question = ref(null);
-const $loading = ref(null);
-const $answer = ref(null);
-const $aniTitle = ref(null);
-const $line = ref(null);
-const $static = ref(null);
-
-const trackPosters = [
-  { directory: "신세기 에반게리온", name: "neon-genesis-evangelion.webp" },
-];
+let interactiveCTX;
+const $interactive = ref(null);
 
 onMounted(() => {
-  gsap.registerPlugin(TextPlugin);
   const mediaQuery = gsap.matchMedia();
-
   const timeline = gsap.timeline({
     repeat: -1,
   });
@@ -71,73 +49,74 @@ onMounted(() => {
     opacity: 0,
   };
 
-  mediaQuery.add("(min-width: 1024px)", () => {
-    timeline
-      .from($question.value, {
-        ...fadeDown,
-        targets: ".InteractiveVisual__Bubble--Question",
-      })
-      .from($loading.value, {
-        ...fadeDown,
-        targets: ".InteractiveVisual__Bubble--Loading",
-      })
-      .to($loading.value, {
-        delay: 0.5,
-        duration: 0.25,
-        opacity: 0,
-      })
-      .set($loading.value, {
-        display: "none",
-      })
-      .from($answer.value, {
-        ...fadeDown,
-        duration: 0.3,
-        targets: ".InteractiveVisual__Answer",
-      })
-      .from($line.value, {
-        y: "-5rem",
-        targets: ".InteractiveVisual__DecorateLine",
-      })
-      .from($static.value, {
-        opacity: 0,
-        targets: ".InteractiveVisual__Static",
-      })
-      .to($line.value, {
-        duration: 1,
-        width: 0,
-        marginRight: 0,
-        targets: ".InteractiveVisual__DecorateLine",
-      })
-      .set($aniTitle.value, {
-        display: "inline",
-        targets: ".InteractiveVisual__CopyAccent",
-      })
-      .to($aniTitle.value, {
-        ...commonAttr,
-        text: "메탈릭 루쥬",
-        targets: ".InteractiveVisual__CopyAccent",
-      })
-      .to($aniTitle.value, {
-        ...commonAttr,
-        text: "장송의 프리렌",
-        targets: ".InteractiveVisual__CopyAccent",
-      })
-      .to($aniTitle.value, {
-        ...commonAttr,
-        text: "소녀혁명 우테나",
-        targets: ".InteractiveVisual__CopyAccent",
-      })
-      .to($aniTitle.value, {
-        ...commonAttr,
-        text: "신세기 에반게리온",
-        targets: ".InteractiveVisual__CopyAccent",
-      })
-      .to($aniTitle.value, {
-        ...commonAttr,
-        text: "",
-        targets: ".InteractiveVisual__CopyAccent",
-      });
-  });
+  interactiveCTX = gsap.context((self) => {
+    const $question = self.selector(".InteractiveVisual__Bubble--Question");
+    const $loading = self.selector(".InteractiveVisual__Bubble--Loading");
+    const $answer = self.selector(".InteractiveVisual__Answer");
+    const $line = self.selector(".InteractiveVisual__DecorateLine");
+    const $static = self.selector(".InteractiveVisual__Static");
+    const $aniTitle = self.selector(".InteractiveVisual__AniTitle");
+
+    mediaQuery.add("(min-width: 1024px)", () => {
+      timeline
+        .from($question, {
+          ...fadeDown,
+        })
+        .from($loading, {
+          ...fadeDown,
+        })
+        .to($loading, {
+          delay: 0.5,
+          duration: 0.25,
+          opacity: 0,
+        })
+        .set($loading, {
+          display: "none",
+        })
+        .from($answer, {
+          ...fadeDown,
+          duration: 0.3,
+        })
+        .from($line, {
+          y: "-5rem",
+        })
+        .from($static, {
+          opacity: 0,
+        })
+        .to($line, {
+          duration: 1,
+          width: 0,
+          marginRight: 0,
+        })
+        .set($aniTitle, {
+          display: "inline",
+        })
+        .to($aniTitle, {
+          ...commonAttr,
+          text: "메탈릭 루쥬",
+        })
+        .to($aniTitle, {
+          ...commonAttr,
+          text: "장송의 프리렌",
+        })
+        .to($aniTitle, {
+          ...commonAttr,
+          text: "소녀혁명 우테나",
+        })
+        .to($aniTitle, {
+          ...commonAttr,
+          text: "신세기 에반게리온",
+        })
+        .to($aniTitle, {
+          ...commonAttr,
+          text: "",
+        });
+    });
+  }, $interactive.value);
+});
+
+onUnmounted(() => {
+  interactiveCTX.revert();
 });
 </script>
 
@@ -189,7 +168,7 @@ onMounted(() => {
       align-items: flex-end;
     }
   }
-  &__CopyAccent {
+  &__AniTitle {
     display: none;
     color: hsl(var(--theme-500));
     background-position-x: left;
