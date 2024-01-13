@@ -75,7 +75,7 @@
                   exact-active-class="AppHome__Image--Selected"
                 >
                   <OptimizedMedia
-                    :src="`${anime}/${anime.replaceAll(/:/g, '_')}.webp`"
+                    :src="`${escaper(anime)}/${escaper(anime)}.webp`"
                     :alt="`${anime} 포스터`"
                   />
                 </RouterLink>
@@ -114,7 +114,7 @@
                   exact-active-class="AppHome__Image--Selected"
                 >
                   <OptimizedMedia
-                    :src="`${anime}/${anime.replaceAll(/:/g, '_')}.webp`"
+                    :src="`${escaper(anime)}/${escaper(anime)}.webp`"
                     :alt="`${anime} 포스터`"
                   />
                 </RouterLink>
@@ -211,6 +211,10 @@ onUnmounted(async () => {
 });
 
 const store = useAuth();
+
+function escaper(str) {
+  return str.replaceAll(/:/g, "_").replaceAll(/\?/g, "");
+}
 </script>
 
 <style lang="scss" scoped>
