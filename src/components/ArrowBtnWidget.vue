@@ -35,6 +35,7 @@ defineProps({
 .ArrowBtnWidget {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
   &__Col {
     display: flex;

@@ -9,10 +9,6 @@
 </template>
 
 <script setup>
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "./utility/firebase";
 import { useRoute } from "vue-router";
 import { onMounted, provide, reactive } from "vue";
 
@@ -20,20 +16,6 @@ import VueflixHeader from "@/components/VueflixHeader.vue";
 import BottomTabMenu from "@/components/BottomTabMenu.vue";
 
 const route = useRoute();
-// const store = useStore();
-
-// function setUser() {
-//   const auth = getAuth();
-//   onAuthStateChanged(auth, async (user) => {
-//     if (user) {
-//       const userRef = doc(db, "user", user.uid);
-//       const userSnap = await getDoc(userRef);
-//       // store.commit("auth/setUser", userSnap.data());
-//     } else {
-//       // store.commit("auth/setUser", undefined);
-//     }
-//   });
-// }
 
 function changeTitle() {
   document.title = route.meta.title || import.meta.env.VITE_KR_NAME;

@@ -40,7 +40,6 @@
 import IconBase from "./IconBase.vue";
 import IconHome from "./icons/IconHome.vue";
 import IconBasket from "./icons/IconBasket.vue";
-import ProfileImg from "./ProfileImg.vue";
 import ToTop from "./ToTop.vue";
 
 import { useScroll } from "@/composables/scroll";

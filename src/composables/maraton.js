@@ -3,7 +3,7 @@ import { useRoute } from "vue-router";
 import { useAuth } from "@/store/auth";
 
 /**
- * 사용자의 정주행 데이터를 불러와
+ * 사용자의 정주행 데이터를 불러온다.
  * @param {string} queryPart
  * @param {string} queryIndex
  * @returns
@@ -15,7 +15,7 @@ export function useMaratonData() {
   const user = computed(() => auth.user);
   const maraton = computed(() => {
     if (!user.value) {
-      return undefined;
+      return [];
     }
     const data = user.value.maratonWatch.find(
       ({ aniTitle }) => aniTitle === route.params.title

@@ -3,13 +3,17 @@
     <span class="ProfileCombo__UserName">{{
       store.user ? store.user.nickname : "게스트"
     }}</span>
-    <ProfileImg class="ProfileCombo__Profile" />
+    <OptimizedMedia
+      :src="store.user?.profileImg"
+      :alt="`${store.user?.nickname} 프로필 사진`"
+      class="ProfileCombo__Profile"
+    />
   </RouterLink>
 </template>
 
 <script setup>
 import { useAuth } from "../store/auth";
-import ProfileImg from "./ProfileImg.vue";
+import OptimizedMedia from "./OptimizedMedia.vue";
 
 const store = useAuth();
 </script>
@@ -35,6 +39,8 @@ const store = useAuth();
   &__Profile {
     width: var(--profile-size);
     height: var(--profile-size);
+    --aspect-ratio: 100%;
+    --radius: 50%;
   }
 }
 </style>

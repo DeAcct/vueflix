@@ -179,26 +179,27 @@ const user = computed(() => auth.user);
 const recentWatched = computed(() => user.value?.recentWatched);
 const maratonWatch = computed(() => user.value?.maratonWatch);
 async function savePoint(time) {
-  if (!session) {
-    return;
-  }
-  const newData = {
-    aniTitle: route.params.title,
-    title: nowEpisode.value.title,
-    thumbnail: nowEpisode.value.thumbnail,
-    part: route.params.part,
-    index: route.params.index,
-    time,
-    watchedPoint: new Date(),
-    maratonMax: episodeCounter.value,
-  };
-  store.commit("auth/updateRecentWatched", newData);
-  store.commit("auth/updateMaratonWatch", newData);
-  await setDoc(
-    doc(db, "user", session.uid),
-    { recentWatched: recentWatched.value, maratonWatch: maratonWatch.value },
-    { merge: true }
-  );
+  // if (!session) {
+  //   return;
+  // }
+  // const newData = {
+  //   aniTitle: route.params.title,
+  //   title: nowEpisode.value.title,
+  //   thumbnail: nowEpisode.value.thumbnail,
+  //   part: route.params.part,
+  //   index: route.params.index,
+  //   time,
+  //   watchedPoint: new Date(),
+  //   maratonMax: episodeCounter.value,
+  // };
+  // store.commit("auth/updateRecentWatched", newData);
+  // store.commit("auth/updateMaratonWatch", newData);
+  // await setDoc(
+  //   doc(db, "user", session.uid),
+  //   { recentWatched: recentWatched.value, maratonWatch: maratonWatch.value },
+  //   { merge: true }
+  // );
+  console.log(maraton);
 }
 router.beforeEach(() => {
   if (!$player.value) {
@@ -210,7 +211,7 @@ router.beforeEach(() => {
   });
 });
 
-const { getEpisodePercent } = useMaratonData();
+const { maraton, getEpisodePercent } = useMaratonData();
 const TRIAL_TIME_LIMIT = 60;
 const time = ref(0);
 const $player = ref(null);

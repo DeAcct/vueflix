@@ -9,6 +9,7 @@
           'OptimizedMedia__Body',
           { 'OptimizedMedia__Body--Loaded': isLoaded },
         ]"
+        :poster
         @load="loadTrigger"
         loading="lazy"
       />
@@ -17,8 +18,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useFirebaseStorage } from "@/composables/firebase";
+import { ref, watchEffect } from "vue";
+import { ref as fireRef, getDownloadURL } from "firebase/storage";
+import { storage } from "@/utility/firebase";
 
 const props = defineProps({
   src: {
@@ -44,13 +46,21 @@ function loadTrigger() {
   isLoaded.value = true;
 }
 
-const { fileSrc } = useFirebaseStorage(props.src);
+const fileSrc = ref();
+watchEffect(async () => {
+  if (!props.src) {
+    return;
+  }
+  const fileRef = fireRef(storage, props.src);
+  fileSrc.value = await getDownloadURL(fileRef);
+});
 </script>
 
 <style lang="scss" scoped>
 .OptimizedMedia {
+  position: relative;
+  display: block;
   &__Wrap {
-    position: relative;
     display: block;
     width: 100%;
     border-radius: var(--radius, var(--global-radius));

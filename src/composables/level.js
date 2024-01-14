@@ -6,6 +6,9 @@ export function useUserLevel() {
   const user = computed(() => store.user);
 
   const level = computed(() => {
+    if (!user.value) {
+      return 0;
+    }
     const currentMonth = new Date();
     const initMonth = user.value.membership.initDate.toDate();
 

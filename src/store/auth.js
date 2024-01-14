@@ -24,6 +24,13 @@ export const useAuth = defineStore("auth", () => {
   const user = ref(null);
   const auth = getAuth();
 
+  const uid = computed(() => {
+    if (!user.value) {
+      return null;
+    }
+    return user.value.uid;
+  });
+
   const wannaSee = computed(() => {
     if (!user.value) {
       return [];
@@ -144,6 +151,7 @@ export const useAuth = defineStore("auth", () => {
   return {
     user,
     wannaSee,
+    uid,
     syncUser,
     createEmailUser,
     sendVerification,

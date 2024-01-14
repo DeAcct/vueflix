@@ -1,37 +1,15 @@
 <template>
   <main class="MyApp">
-    <div class="MyApp__Visual">
-      <div class="MyApp__Identify">
-        <div class="MyApp__IdentifyText">
-          <h2 class="MyApp__Nickname">
-            {{ store.user ? store.user.nickname : "게스트" }}
-          </h2>
-          <template v-if="store.user">
-            <p class="MyApp__Email">{{ store.user.email }}</p>
-            <ul class="MyApp__Stat">
-              <li class="MyApp__StatItem">
-                <h3 class="MyApp__StatName">보고싶다</h3>
-                <p class="MyApp__StatValue">
-                  {{ store.user.wannaSee.length }}개
-                </p>
-              </li>
-              <li class="MyApp__StatItem">
-                <h3 class="MyApp__StatName">리뷰</h3>
-                <p class="MyApp__StatValue">
-                  {{ store.user.reaction.length }}개
-                </p>
-              </li>
-            </ul>
-          </template>
-        </div>
-        <ProfileImg class="MyApp__Profile" />
-      </div>
-      <LevelRenderer to="/my/level" class="MyApp__Level" v-if="store.user" />
-    </div>
+    <StatCard :data="user" class="MyApp__Profile" />
+    <section class="MyApp__Group MyApp__Group--Verify">
+      <h2 class="MyApp__HelperTitle">아직 이메일이 인증되지 않았어요</h2>
+      <p class="MyApp__HelperText">지금 인증하면 특별한 인증 뱃지를 드려요!</p>
+      <button class="MyApp__SendEmail">인증하기</button>
+    </section>
     <div class="MyApp__Menu">
       <template v-for="unit in viewModel">
         <div
-          class="MyApp__MenuGroup"
+          class="MyApp__Group"
           v-if="
             unit.reduce(
               (acc, now) => acc && (!now.requireLogin || store.user),
@@ -39,10 +17,13 @@
             )
           "
         >
-          <template v-for="{ icon, text, to, requireLogin } in unit" key="text">
-            <div v-if="!requireLogin || store.user" class="MyApp__MenuItem">
+          <template
+            v-for="{ icon, text, to, requireLogin } in unit"
+            :key="text"
+          >
+            <template v-if="!requireLogin || user">
               <ArrowBtnWidget
-                class="MyApp__MenuBtn"
+                class="MyApp__Item"
                 :component="to ? 'RouterLink' : 'button'"
                 :to="to || null"
               >
@@ -53,23 +34,21 @@
                 </template>
                 <template v-slot:text>{{ text }}</template>
               </ArrowBtnWidget>
-            </div>
+            </template>
           </template>
         </div>
       </template>
-      <div class="MyApp__MenuGroup">
-        <div class="MyApp__MenuItem">
-          <ArrowBtnWidget class="MyApp__MenuBtn" @click="onLoginButtonClick">
-            <template v-slot:icon>
-              <IconBase>
-                <IconAccount />
-              </IconBase>
-            </template>
-            <template v-slot:text>{{
-              store.user ? "로그아웃" : "로그인"
-            }}</template>
-          </ArrowBtnWidget>
-        </div>
+      <div class="MyApp__Group">
+        <ArrowBtnWidget class="MyApp__Item" @click="onLoginButtonClick">
+          <template v-slot:icon>
+            <IconBase>
+              <IconAccount />
+            </IconBase>
+          </template>
+          <template v-slot:text>{{
+            store.user ? "로그아웃" : "로그인"
+          }}</template>
+        </ArrowBtnWidget>
       </div>
     </div>
   </main>
@@ -77,12 +56,10 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-
 import { useAuth } from "../store/auth";
+import { computed } from "vue";
 
 import ArrowBtnWidget from "@/components/ArrowBtnWidget.vue";
-import LevelRenderer from "@/components/LevelRenderer.vue";
-import ProfileImg from "@/components/ProfileImg.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconAccount from "@/components/icons/IconAccount.vue";
@@ -91,6 +68,8 @@ import IconCustomerService from "@/components/icons/IconCustomerService.vue";
 import IconMembership from "@/components/icons/IconMembership.vue";
 import IconPurchaseHistory from "@/components/icons/IconPurchaseHistory.vue";
 import IconSetting from "@/components/icons/IconSetting.vue";
+import StatCard from "@/components/StatCard.vue";
+import { getAuth } from "firebase/auth";
 
 const viewModel = [
   [
@@ -116,7 +95,13 @@ const viewModel = [
   [
     {
       icon: IconSetting,
-      text: "설정",
+      text: "다크 모드",
+      to: "#none",
+      requireLogin: false,
+    },
+    {
+      icon: IconSetting,
+      text: "알림 설정",
       to: "#none",
       requireLogin: false,
     },
@@ -131,6 +116,8 @@ const viewModel = [
 
 const router = useRouter();
 const store = useAuth();
+const user = computed(() => store.user);
+
 async function onLoginButtonClick() {
   if (!store.user) {
     login();
@@ -141,6 +128,14 @@ async function onLoginButtonClick() {
 function login() {
   router.push("auth");
 }
+
+const verified = computed(() => {
+  const auth = getAuth();
+  if (!auth) {
+    return null;
+  }
+  return auth.currentUser.emailVerified;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -149,77 +144,52 @@ function login() {
   flex-direction: column;
   align-items: center;
   min-height: calc(var(--vh) * 100 * 1px);
-  background-color: var(--general-bg);
-  padding: 8rem 0 9rem;
-  gap: 0.8rem;
+  padding: 6rem 0 9rem;
 
-  &__Visual {
-    width: min(calc(100% - 4rem), 768px);
-    background-color: var(--top-item);
-    padding: var(--inner-padding);
-    gap: 1.6rem;
-    display: flex;
-    flex-direction: column;
-    border-radius: calc(var(--global-radius) + var(--inner-padding));
-  }
-  &__Identify {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  &__Nickname {
-    font-size: 1.7rem;
-    font-weight: 900;
-  }
-  &__Email {
-    margin-top: 0.4rem;
-    font-size: 1.3rem;
-    font-weight: 400;
-    margin-bottom: 2.4rem;
-  }
   &__Profile {
-    width: 6rem;
-    height: 6rem;
-  }
-  &__Stat {
-    display: flex;
-    gap: 1.2rem;
-  }
-  &__StatItem {
-    display: flex;
-    gap: 0.4rem;
-    text-align: center;
-  }
-  &__StatName {
-    font-size: 1.3rem;
-    font-weight: 500;
-  }
-  &__StatValue {
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
-  &__Level {
-    border-radius: var(--global-radius);
+    width: min(100%, 1280px);
   }
 
   &__Menu {
-    width: min(calc(100% - 4rem), 768px);
+    width: min(100%, 1280px);
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
+    padding: 0 var(--inner-padding);
   }
-  &__MenuGroup {
-    background-color: var(--top-item);
-    border-radius: calc(var(--global-radius) + var(--inner-padding));
+  &__Group {
     overflow: hidden;
+    border: 1px solid hsl(var(--bg-200));
+    border-radius: var(--global-radius);
+    &--Verify {
+      border: 1px solid hsl(var(--bg-200));
+      width: calc(100% - 4rem);
+      height: 14rem;
+      margin: 0 auto 1.6rem;
+      padding: var(--inner-padding);
+      display: flex;
+      flex-direction: column;
+    }
   }
-  &__MenuItem {
-    // inherit to text
-    font-size: 1.3rem;
+  &__HelperTitle {
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
   }
-  &__MenuBtn {
+  &__HelperText {
+    font-size: 1.6rem;
+    margin-bottom: auto;
+  }
+  &__SendEmail {
+    margin: 0 calc(var(--inner-padding) * -1) calc(var(--inner-padding) * -1);
+    height: 4.8rem;
+    border-top: 1px solid hsl(var(--bg-200));
+    font-size: 1.4rem;
+  }
+  &__Item {
     width: 100%;
-    padding: 1.8rem var(--inner-padding);
+    height: 6rem;
+    padding: 0 var(--inner-padding);
+    font-size: 1.4rem;
   }
 }
 
@@ -227,62 +197,27 @@ function login() {
   .MyApp {
     height: 100vh;
     margin: 0 auto;
-    flex-direction: row;
-    align-items: flex-start;
-    padding: 9.6rem calc((100% - 128rem) / 2) 0;
+    padding: 9.2rem 0 0;
     gap: 2rem;
-    &__Visual {
-      flex-grow: 1;
-      padding: 3rem;
-      border-radius: calc(var(--global-radius) + 3rem);
+    &__Profile {
+      padding: 4rem;
+      width: auto;
     }
     &__Menu {
-      flex-grow: 1;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      padding: 0;
     }
     &__MenuGroup {
-      border-radius: calc(var(--global-radius) + 3rem);
+      width: calc(50% - 0.4rem);
+      flex-grow: 0;
+      min-height: 0;
     }
-    &__MenuBtn {
-      padding: 1.8rem 3rem;
+    &__Item {
+      padding: 0 4rem;
     }
-  }
-  .tab-one {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-color: var(--top-item);
-    max-width: unset;
-    width: auto;
-    height: 100%;
-  }
-  .login-widget {
-    margin: 0;
-    width: 40rem;
-    box-shadow: none;
-    h2 {
-      font-size: 2rem;
-    }
-    p {
-      font-size: 1.2rem;
-    }
-  }
-  .MyApp__Stats {
-    box-shadow: none;
-    border-radius: 0;
-  }
-  .my-cards-wrap {
-    flex: 1;
-    margin-left: 1rem;
-    height: 100%;
-  }
-}
-
-@media screen and (min-width: 1300px) {
-  .my {
-    padding-bottom: 0;
-  }
-  .arrow-link-btn {
-    padding: 2rem 3rem;
   }
 }
 </style>
