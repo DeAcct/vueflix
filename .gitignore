@@ -20,5 +20,4 @@ package-lock.json
 *.ai
 *.xd
 
-TestAnime2.mp4
-TestAnime.mp4
+TestAnime*
