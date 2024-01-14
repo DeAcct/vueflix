@@ -241,12 +241,13 @@ const animeInfo = ref({});
 async function getVideoUrl() {
   if (import.meta.env.DEV) {
     // 개발 시 임시로 사용할 동영상(요청량 절약)
-    const TestAnime = new URL("../assets/TestAnime2.mp4", import.meta.url).href;
+    const TestAnime = new URL("../assets/TestAnime2.webm", import.meta.url)
+      .href;
     videoSrc.value = TestAnime;
     return;
   }
-  // videoSrc.value = await getDownloadURL(fireRef(storage, `${animationName}/${part}/${index}`.mp4"));
-  videoSrc.value = await getDownloadURL(fireRef(storage, "TestAnime2.mp4"));
+  // videoSrc.value = await getDownloadURL(fireRef(storage, `${animationName}/${part}/${index}`.webm"));
+  videoSrc.value = await getDownloadURL(fireRef(storage, "TestAnime2.webm"));
 }
 async function getAnimeData() {
   const data = (await getDoc(doc(db, "anime", route.params.title))).data();
