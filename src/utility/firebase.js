@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getMessaging, getToken } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -15,5 +16,7 @@ const firebaseConfig = {
 const firebaseClient = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseClient);
 const storage = getStorage();
+const messaging = getMessaging(firebaseClient);
+// getToken(messaging, { vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY });
 
-export { db, storage };
+export { db, storage, messaging };

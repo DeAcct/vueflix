@@ -1,16 +1,66 @@
 import { computed } from "vue";
 import { useAuth } from "@/store/auth";
 
-export function useUserLevel() {
-  const store = useAuth();
-  const user = computed(() => store.user);
+const LEVEL_MAP = [
+  {
+    maxDays: 0,
+    maxLikeit: 0,
+    levelName: "베이비",
+    styleIdentifier: "baby",
+  },
+  {
+    maxDays: 29,
+    maxLikeit: 39,
+    levelName: "모험가",
+    styleIdentifier: "traveler",
+  },
+  {
+    maxDays: 99,
+    maxLikeit: 49,
+    levelName: "용사",
+    styleIdentifier: "braver",
+  },
+  {
+    maxDays: 282,
+    maxLikeit: 99,
+    levelName: "임팩트",
+    styleIdentifier: "impact",
+  },
+  {
+    maxDays: 345,
+    maxLikeit: 149,
+    levelName: "인플루언서",
+    styleIdentifier: "influencer",
+  },
+  {
+    maxDays: 764,
+    maxLikeit: 299,
+    levelName: "아이돌",
+    styleIdentifier: "idol",
+  },
+  {
+    maxDays: 999,
+    maxLikeit: 999,
+    levelName: "애니필",
+    styleIdentifier: "aniphile",
+  },
+  {
+    maxDays: Infinity,
+    maxLikeit: Infinity,
+    levelName: "전문가",
+    styleIdentifier: "expert",
+  },
+];
+
+export function useUserLevel(date) {
+  // const store = useAuth();
+  // const user = computed(() => store.user);
 
   const level = computed(() => {
-    if (!user.value) {
-      return 0;
-    }
+    if (!date.value) return "loading";
+
     const currentMonth = new Date();
-    const initMonth = user.value.membership.initDate.toDate();
+    const initMonth = date.value.toDate();
 
     const ONE_DAY_TO_MILLISECOND = 24 * 60 * 60 * 1000;
 
@@ -37,57 +87,6 @@ export function useUserLevel() {
     // 6lv(애니필): 765 ~ 999일
     // 7lv(전문가): 1000일 이상
 
-    const LEVEL_MAP = [
-      {
-        maxDays: 0,
-        maxLikeit: 0,
-        levelName: "베이비",
-        styleIdentifier: "baby",
-      },
-      {
-        maxDays: 29,
-        maxLikeit: 39,
-        levelName: "모험가",
-        styleIdentifier: "traveler",
-      },
-      {
-        maxDays: 99,
-        maxLikeit: 49,
-        levelName: "용사",
-        styleIdentifier: "braver",
-      },
-      {
-        maxDays: 282,
-        maxLikeit: 99,
-        levelName: "임팩트",
-        styleIdentifier: "impact",
-      },
-      {
-        maxDays: 345,
-        maxLikeit: 149,
-        levelName: "인플루언서",
-        styleIdentifier: "influencer",
-      },
-      {
-        maxDays: 764,
-        maxLikeit: 299,
-        levelName: "아이돌",
-        styleIdentifier: "idol",
-      },
-      {
-        maxDays: 999,
-        maxLikeit: 999,
-        levelName: "애니필",
-        styleIdentifier: "aniphile",
-      },
-      {
-        maxDays: Infinity,
-        maxLikeit: Infinity,
-        levelName: "전문가",
-        styleIdentifier: "expert",
-      },
-    ];
-
     const subscriptionDays = Math.floor(
       (currentMonth - initMonth) / ONE_DAY_TO_MILLISECOND
     );
@@ -99,5 +98,6 @@ export function useUserLevel() {
       maxDays,
     })).find(({ maxDays }) => subscriptionDays <= maxDays);
   });
+
   return { level };
 }

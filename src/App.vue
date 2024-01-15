@@ -10,27 +10,16 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-import { onMounted, provide, reactive } from "vue";
+import { onMounted, onUnmounted, provide, reactive } from "vue";
 
 import VueflixHeader from "@/components/VueflixHeader.vue";
 import BottomTabMenu from "@/components/BottomTabMenu.vue";
+import { useTheme } from "./store/theme";
 
 const route = useRoute();
 
 function changeTitle() {
   document.title = route.meta.title || import.meta.env.VITE_KR_NAME;
-}
-
-function setTheme() {
-  const currentTheme = localStorage.getItem("theme");
-  if (currentTheme) {
-    // store.commit("theme/setTheme", currentTheme);
-  } else {
-    const deviceTheme = window.matchMedia("(prefers-color-scheme:dark)").matches
-      ? "dark"
-      : "light";
-    // store.commit("theme/setTheme", deviceTheme);
-  }
 }
 
 const pointerDeviceQuery = window.matchMedia(
@@ -57,13 +46,20 @@ function setViewPort() {
 
 provide("device-info", device);
 
+const theme = useTheme();
 onMounted(() => {
-  // setUser();
   changeTitle();
   setDeviceInfo();
-  setTheme();
   setViewPort();
   window.addEventListener("resize", () => {
+    setViewPort();
+  });
+  const saved = localStorage.getItem("theme") || "light";
+  theme.setMode(saved);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", () => {
     setViewPort();
   });
 });

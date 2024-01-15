@@ -2,14 +2,13 @@
   <span class="InputBoolean">
     <input
       type="checkbox"
-      :checked="inputState"
-      v-model="outputState"
-      @change="emitState"
+      v-model="modelValue"
+      :checked="modelValue"
       class="blind InputBoolean__Skell"
     />
     <i class="InputBoolean__Track" v-if="type === 'toggle'">
       <span class="InputBoolean__Body"></span>
-      <span class="blind">{{ inputState ? "켜짐" : "꺼짐" }}</span>
+      <span class="blind">{{ modelValue ? "켜짐" : "꺼짐" }}</span>
     </i>
     <i class="InputBoolean__Checkbox" v-else>
       <IconBase>
@@ -23,25 +22,19 @@
 <script setup>
 import IconNotSelected from "./icons/IconNotSelected.vue";
 import IconSelected from "./icons/IconSelected.vue";
-import { toRef } from "vue";
+import IconBase from "./IconBase.vue";
 
-const emits = defineEmits(["state-change"]);
 const props = defineProps({
-  inputState: {
-    type: Boolean,
-  },
   type: {
     type: String,
     default: "toggle",
     validator(value) {
-      ["checkbox", "toggle"].includes(value);
+      return ["checkbox", "toggle"].includes(value);
     },
   },
 });
-const outputState = toRef(props.inputState);
-function emitState() {
-  emits("state-change", outputState);
-}
+
+const modelValue = defineModel();
 </script>
 <style lang="scss" scoped>
 .InputBoolean {

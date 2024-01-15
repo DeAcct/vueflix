@@ -1,14 +1,14 @@
 <template>
   <main class="MyApp">
-    <StatCard :data="user" class="MyApp__Profile" />
-    <section class="MyApp__Group MyApp__Group--Verify">
+    <StatCard :uid="user?.uid" class="MyApp__Profile" />
+    <section class="MyApp__Verify" v-if="!verified">
       <h2 class="MyApp__HelperTitle">아직 이메일이 인증되지 않았어요</h2>
       <p class="MyApp__HelperText">지금 인증하면 특별한 인증 뱃지를 드려요!</p>
-      <button class="MyApp__SendEmail">인증하기</button>
+      <button class="MyApp__SendEmail" @click="sendEmail">인증하기</button>
     </section>
-    <div class="MyApp__Menu">
+    <section class="MyApp__FlexWrap">
       <template v-for="unit in viewModel">
-        <div
+        <section
           class="MyApp__Group"
           v-if="
             unit.reduce(
@@ -36,9 +36,17 @@
               </ArrowBtnWidget>
             </template>
           </template>
-        </div>
+        </section>
       </template>
-      <div class="MyApp__Group">
+      <section class="MyApp__Group">
+        <ArrowBtnWidget class="MyApp__Item" component="RouterLink" to="#none">
+          <template v-slot:icon>
+            <IconBase>
+              <IconAccount />
+            </IconBase>
+          </template>
+          <template v-slot:text>내 정보 수정</template>
+        </ArrowBtnWidget>
         <ArrowBtnWidget class="MyApp__Item" @click="onLoginButtonClick">
           <template v-slot:icon>
             <IconBase>
@@ -49,8 +57,8 @@
             store.user ? "로그아웃" : "로그인"
           }}</template>
         </ArrowBtnWidget>
-      </div>
-    </div>
+      </section>
+    </section>
   </main>
 </template>
 
@@ -69,7 +77,7 @@ import IconMembership from "@/components/icons/IconMembership.vue";
 import IconPurchaseHistory from "@/components/icons/IconPurchaseHistory.vue";
 import IconSetting from "@/components/icons/IconSetting.vue";
 import StatCard from "@/components/StatCard.vue";
-import { getAuth } from "firebase/auth";
+import { getAuth, sendEmailVerification } from "firebase/auth";
 
 const viewModel = [
   [
@@ -95,14 +103,14 @@ const viewModel = [
   [
     {
       icon: IconSetting,
-      text: "다크 모드",
-      to: "#none",
+      text: "테마",
+      to: "/my/app-theme",
       requireLogin: false,
     },
     {
       icon: IconSetting,
       text: "알림 설정",
-      to: "#none",
+      to: "/my/notification",
       requireLogin: false,
     },
     {
@@ -129,13 +137,25 @@ function login() {
   router.push("auth");
 }
 
-const verified = computed(() => {
+const verified = () => {
   const auth = getAuth();
-  if (!auth) {
+  if (!auth.currentUser) {
     return null;
   }
   return auth.currentUser.emailVerified;
-});
+};
+async function sendEmail() {
+  const auth = getAuth();
+  if (!auth.currentUser) {
+    return;
+  }
+  try {
+    await sendEmailVerification(auth.currentUser);
+    console.log("Email verification sent successfully.");
+  } catch (error) {
+    console.error("Failed to send email verification:", error);
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -145,31 +165,36 @@ const verified = computed(() => {
   align-items: center;
   min-height: calc(var(--vh) * 100 * 1px);
   padding: 6rem 0 9rem;
+  gap: 1.2rem;
 
   &__Profile {
-    width: min(100%, 1280px);
+    width: min(calc(100% - 4rem), 1280px);
+    padding: {
+      left: 0;
+      right: 0;
+    }
   }
 
-  &__Menu {
-    width: min(100%, 1280px);
+  &__FlexWrap {
     display: flex;
     flex-direction: column;
+    width: 100%;
     gap: 0.8rem;
-    padding: 0 var(--inner-padding);
   }
+
   &__Group {
-    overflow: hidden;
+    width: calc(100% - 4rem);
     border: 1px solid hsl(var(--bg-200));
     border-radius: var(--global-radius);
-    &--Verify {
-      border: 1px solid hsl(var(--bg-200));
-      width: calc(100% - 4rem);
-      height: 14rem;
-      margin: 0 auto 1.6rem;
-      padding: var(--inner-padding);
-      display: flex;
-      flex-direction: column;
-    }
+    margin: 0 auto;
+  }
+  &__Verify {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 4rem);
+    border: 1px solid hsl(var(--bg-200));
+    padding: var(--inner-padding);
+    border-radius: var(--global-radius);
   }
   &__HelperTitle {
     font-size: 1.8rem;
@@ -177,12 +202,12 @@ const verified = computed(() => {
   }
   &__HelperText {
     font-size: 1.6rem;
-    margin-bottom: auto;
+    margin-bottom: 2rem;
   }
   &__SendEmail {
     margin: 0 calc(var(--inner-padding) * -1) calc(var(--inner-padding) * -1);
     height: 4.8rem;
-    border-top: 1px solid hsl(var(--bg-200));
+    background-color: hsl(var(--bg-200));
     font-size: 1.4rem;
   }
   &__Item {
@@ -200,23 +225,32 @@ const verified = computed(() => {
     padding: 9.2rem 0 0;
     gap: 2rem;
     &__Profile {
-      padding: 4rem;
-      width: auto;
+      padding: 4rem 0;
     }
-    &__Menu {
-      display: flex;
+    &__FlexWrap {
       flex-direction: row;
-      flex-wrap: wrap;
       align-items: flex-start;
-      padding: 0;
+      width: min(calc(100% - 4rem), 1280px);
+      gap: 1.6rem;
     }
-    &__MenuGroup {
-      width: calc(50% - 0.4rem);
-      flex-grow: 0;
-      min-height: 0;
+    &__Group {
+      min-width: 0;
+      width: auto;
+      flex-grow: 1;
+      flex-basis: 0;
+    }
+    &__Verify {
+      width: min(calc(100% - 4rem), 1280px);
+      padding: 4rem;
+    }
+    &__HelperText {
+      margin-bottom: 4rem;
     }
     &__Item {
       padding: 0 4rem;
+    }
+    &__SendEmail {
+      margin: 0 -4rem -4rem;
     }
   }
 }

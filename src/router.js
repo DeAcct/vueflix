@@ -94,6 +94,32 @@ const routes = [
       bottomTabMenu: false,
     },
   },
+  {
+    path: "/my/notification",
+    name: "notification",
+    component: () => import("@/views/Notification.vue"),
+    meta: {
+      title: "알림",
+      appBar: {
+        activityContent: "알림",
+        backButton: true,
+      },
+      bottomTabMenu: false,
+    },
+  },
+  {
+    path: "/my/app-theme",
+    name: "app-theme",
+    component: () => import("@/views/Theme.vue"),
+    meta: {
+      title: "앱 테마",
+      appBar: {
+        activityContent: "앱 테마",
+        backButton: true,
+      },
+      bottomTabMenu: false,
+    },
+  },
   // {
   //   path: "/my/account-setting",
   //   name: "account-setting",
@@ -108,18 +134,7 @@ const routes = [
   //   },
   // },
   // {
-  //   path: "/my/app-theme",
-  //   name: "app-theme",
-  //   component: () => import("@/views/AppTheme.vue"),
-  //   meta: {
-  //     title: "앱 테마",
-  //     appBar: {
-  //       activityContent: "앱 테마",
-  //       backButton: true,
-  //     },
-  //     bottomTabMenu: false,
-  //   },
-  // },
+
   {
     path: "/auth",
     name: "auth",
@@ -153,19 +168,6 @@ const routes = [
         },
       },
     ],
-  },
-  {
-    path: "/notification",
-    name: "notification",
-    component: () => import("@/views/Notification.vue"),
-    meta: {
-      title: "알림",
-      appBar: {
-        activityContent: "알림",
-        backButton: true,
-      },
-      bottomTabMenu: false,
-    },
   },
   {
     path: "/isekai-404",
