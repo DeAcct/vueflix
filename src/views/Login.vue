@@ -30,6 +30,17 @@
           </VueflixBtn>
         </template>
       </TextInput>
+      <label class="Login__SaveLabel">
+        <InputBoolean
+          v-model="isLoginSave"
+          type="checkbox"
+          class="Login__SaveToggle"
+        />
+        로그인 상태 유지
+        <strong class="Login__SaveWarning">
+          저도 몰랐어요, 아무데서나 저장한 나비효과를...
+        </strong>
+      </label>
       <div class="Login__ButtonList">
         <VueflixBtn
           type="button"
@@ -71,18 +82,20 @@
 // import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 // import { doc, setDoc, getDoc } from "firebase/firestore";
 // import { db } from "@/utility/firebase";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import TextInput from "@/components/TextInput.vue";
 import { useAuth } from "../store/auth";
+import { usePassword } from "@/composables/strictUser";
+import { useLoginSave } from "@/composables/loginSave";
 
 import VueflixBtn from "@/components/VueflixBtn.vue";
+import TextInput from "@/components/TextInput.vue";
+import InputBoolean from "@/components/InputBoolean.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconSeekOff from "@/components/icons/IconSeekOff.vue";
 import IconSeekOn from "@/components/icons/IconSeekOn.vue";
 import IconGoogle from "@/components/icons/IconGoogle.vue";
-import { usePassword } from "@/composables/strictUser";
 
 const router = useRouter();
 
@@ -91,12 +104,28 @@ async function googleContinue() {}
 
 const auth = useAuth();
 async function signIn() {
+  isLoginWaiting.value = true;
   await auth.signInEmailUser(email, password);
+  try {
+    saveData(email, password);
+  } catch (e) {
+    console.error(e);
+  }
+  isLoginWaiting.value = false;
   router.back();
 }
 
 const email = ref("");
 const { password, seek, toggleSeek } = usePassword();
+
+onMounted(() => {
+  if (isLoginSave.value) {
+    email.value = data.value.email;
+    password.value = data.value.password;
+  }
+});
+
+const { isLoginSave, data, saveData } = useLoginSave();
 </script>
 
 <style lang="scss" scoped>
@@ -133,6 +162,17 @@ const { password, seek, toggleSeek } = usePassword();
     border-radius: calc(var(--global-radius) * 2);
     background-color: hsl(var(--bg-100));
   }
+  &__SaveLabel {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    gap: 0.4rem;
+    margin-left: calc(var(--global-radius) * 2 - 0.3rem);
+  }
+  &__SaveWarning {
+    color: hsl(var(--theme-500));
+  }
+
   &__OAuth {
     padding: 2rem 0 0;
   }

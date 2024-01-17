@@ -30,6 +30,12 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { gsap, TextPlugin } from "gsap/all";
 gsap.registerPlugin(TextPlugin);
 
+const props = defineProps({
+  aniList: {
+    type: Array,
+  },
+});
+
 let interactiveCTX;
 const $interactive = ref(null);
 
@@ -57,11 +63,22 @@ onMounted(() => {
     const $static = self.selector(".InteractiveVisual__Static");
     const $aniTitle = self.selector(".InteractiveVisual__AniTitle");
 
-    mediaQuery.add("(min-width: 1024px)", () => {
+    const BREAKPOINT = {
+      isDesktop: "screen and (min-width: 1080px)",
+      isTablet: "screen and (min-width: 768px) and (max-width: 1079px)",
+      isMobile: "screen and (max-width: 767px)",
+    };
+
+    mediaQuery.add(BREAKPOINT, (mqContext) => {
+      const { isDesktop, isTablet, isMobile } = mqContext.conditions;
       timeline
-        .from($question, {
-          ...fadeDown,
-        })
+        .from(
+          $question,
+          {
+            ...fadeDown,
+          },
+          ">0.5"
+        )
         .from($loading, {
           ...fadeDown,
         })
@@ -76,10 +93,15 @@ onMounted(() => {
         .from($answer, {
           ...fadeDown,
           duration: 0.3,
+          ease: "expo.out",
         })
-        .from($line, {
-          y: "-5rem",
-        })
+        .from(
+          $line,
+          {
+            y: isMobile ? "-2.5rem" : isTablet ? "-3rem" : "-5rem",
+          },
+          "<"
+        )
         .from($static, {
           opacity: 0,
         })
@@ -90,27 +112,19 @@ onMounted(() => {
         })
         .set($aniTitle, {
           display: "inline",
-        })
-        .to($aniTitle, {
-          ...commonAttr,
-          text: "메탈릭 루쥬",
-        })
-        .to($aniTitle, {
-          ...commonAttr,
-          text: "장송의 프리렌",
-        })
-        .to($aniTitle, {
-          ...commonAttr,
-          text: "소녀혁명 우테나",
-        })
-        .to($aniTitle, {
-          ...commonAttr,
-          text: "신세기 에반게리온",
-        })
-        .to($aniTitle, {
-          ...commonAttr,
-          text: "",
         });
+      props.aniList.forEach((title) => {
+        timeline.to($aniTitle, {
+          ...commonAttr,
+          text: title,
+        });
+      });
+      timeline.to($interactive.value, {
+        duration: 1,
+        opacity: 0,
+        y: isDesktop ? "-10rem" : "-5rem",
+        ease: "expo.out",
+      });
     });
   }, $interactive.value);
 });
@@ -130,10 +144,11 @@ onUnmounted(() => {
   }
   &__Bubble {
     display: flex;
-    border-radius: calc(var(--global-radius) * 6);
     background-color: hsl(var(--bg-300));
-    padding: calc(var(--global-radius) * 6);
-    font-size: 2rem;
+    padding: calc(var(--global-radius) * 4);
+    border-radius: calc(var(--global-radius) * 4);
+    font-size: 1.6rem;
+
     &--Question {
       margin-left: auto;
     }
@@ -143,10 +158,10 @@ onUnmounted(() => {
     }
   }
   &__Dot {
-    width: 2rem;
-    height: 2rem;
+    width: 1.6rem;
+    height: 1.6rem;
     background-color: hsl(var(--bg-200));
-    border-radius: 9999px;
+    border-radius: 50%;
     animation: chat-wiggle 1s ease-out infinite;
     animation-delay: calc(var(--iv-dot-delay) * 0.33s);
   }
@@ -156,10 +171,10 @@ onUnmounted(() => {
   }
   &__Answer {
     text-align: left;
-    font-size: 5rem;
+    font-size: 2.5rem;
     color: hsl(var(--bg-900));
     font-weight: 900;
-    width: min(80vw, 1080px);
+    width: min(100%, 1080px);
     line-height: 1.3;
     .line-break {
       font-weight: inherit;
@@ -179,10 +194,11 @@ onUnmounted(() => {
   &__DecorateLine {
     display: block;
     width: 12ch;
-    height: 1rem;
+    height: 0.5rem;
+
     background-color: hsl(var(--theme-500));
     transform-origin: left center;
-    margin-bottom: 1rem;
+
     margin-right: 0.5ch;
   }
 }
@@ -193,6 +209,44 @@ onUnmounted(() => {
   }
   66% {
     translate: 0 1rem;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .InteractiveVisual {
+    &__Bubble {
+      border-radius: calc(var(--global-radius) * 4);
+      padding: calc(var(--global-radius) * 4);
+      font-size: 1.8rem;
+    }
+    &__Answer {
+      font-size: 3rem;
+    }
+    &__Dot {
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .InteractiveVisual {
+    &__Bubble {
+      border-radius: calc(var(--global-radius) * 6);
+      padding: calc(var(--global-radius) * 6);
+      font-size: 2rem;
+    }
+    &__Answer {
+      font-size: 5rem;
+    }
+    &__Dot {
+      width: 2rem;
+      height: 2rem;
+    }
+    &__DecorateLine {
+      height: 1rem;
+      margin-bottom: 1rem;
+    }
   }
 }
 </style>

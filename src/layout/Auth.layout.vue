@@ -4,7 +4,7 @@
       <div class="Auth__Logo">
         <VueflixLogo />
       </div>
-      <InteractiveVisual class="Auth__Hero"></InteractiveVisual>
+      <InteractiveVisual class="Auth__Hero" :ani-list></InteractiveVisual>
     </div>
     <div class="Auth__PageView">
       <div class="Auth__ViewController">
@@ -54,6 +54,13 @@ watch(
     }
   }
 );
+
+const aniList = [
+  "메탈릭 루쥬",
+  "장송의 프리렌",
+  "소녀혁명 우테나",
+  "신세기 에반게리온",
+];
 </script>
 
 <style lang="scss" scoped>
@@ -78,7 +85,7 @@ watch(
     flex-direction: column;
     gap: 1.8rem;
     margin-bottom: 8rem;
-    width: min(37.5rem, 100%);
+    width: calc(100% - 4rem);
   }
   &__ViewController {
     display: flex;
@@ -94,14 +101,24 @@ watch(
     flex-direction: column;
     align-items: center;
     margin-top: 10rem;
+    width: min(calc(100% - 4rem), 1080px);
   }
   &__Logo {
     width: 15rem;
     margin-bottom: 3rem;
     fill: hsl(var(--theme-500));
   }
+
   &__Hero {
-    display: none;
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .Auth {
+    &__Logo {
+      display: none;
+    }
   }
 }
 
@@ -112,19 +129,11 @@ watch(
     &__Logo {
       display: none;
     }
-    &__Hero {
-      display: block;
-    }
 
     &__PageView {
+      width: 37.5rem;
       margin-bottom: 10rem;
     }
-  }
-}
-
-@keyframes text-animation {
-  to {
-    background-position-x: right;
   }
 }
 

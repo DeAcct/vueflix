@@ -20,6 +20,7 @@ const FORBIDDEN_WORD = [
   "소추",
   "재기",
   "인셀",
+  "incel",
   "퇘지",
   "쿵쾅",
   "허버허버",
@@ -27,8 +28,9 @@ const FORBIDDEN_WORD = [
   "5조5억",
   // 2차세계대전
   "나치",
+  "nazi",
   "하켄크로이츠",
-  "유대인",
+  "haakenkreuz",
   // 비속어
   "씨발",
   "시발",
@@ -84,7 +86,6 @@ export function useNickname() {
 }
 
 export function useEmail() {
-  // @가 포함되고, 도메인이 포함되도록 설정.
   const auth = useAuth();
   const email = ref("");
   const state = ref("Unchecked");

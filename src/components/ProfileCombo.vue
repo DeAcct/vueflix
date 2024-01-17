@@ -4,16 +4,20 @@
       store.user ? store.user.nickname : "게스트"
     }}</span>
     <OptimizedMedia
-      :src="store.user?.profileImg"
-      :alt="`${store.user?.nickname} 프로필 사진`"
+      :src="store.user.profileImg"
+      :alt="`${store.user.nickname} 프로필 사진`"
       class="ProfileCombo__Profile"
+      v-if="store.user"
     />
+    <img :src="Aqua" v-else class="ProfileCombo__Profile" />
   </RouterLink>
 </template>
 
 <script setup>
 import { useAuth } from "../store/auth";
 import OptimizedMedia from "./OptimizedMedia.vue";
+
+import Aqua from "@/assets/aqua.svg";
 
 const store = useAuth();
 </script>
@@ -41,6 +45,7 @@ const store = useAuth();
     height: var(--profile-size);
     --aspect-ratio: 100%;
     --radius: 50%;
+    border-radius: 50%;
   }
 }
 </style>

@@ -12,7 +12,7 @@
     </i>
     <i class="InputBoolean__Checkbox" v-else>
       <IconBase>
-        <IconSelected v-if="outputState" />
+        <IconSelected v-if="modelValue" />
         <IconNotSelected v-else />
       </IconBase>
     </i>
@@ -39,6 +39,7 @@ const modelValue = defineModel();
 <style lang="scss" scoped>
 .InputBoolean {
   display: flex;
+
   &__Track {
     position: relative;
     display: flex;
@@ -58,11 +59,18 @@ const modelValue = defineModel();
     transition: transform 150ms ease-in-out;
     box-shadow: 0 0.2rem 0.4rem var(--toggle-shadow);
   }
+
+  &__Checkbox {
+    display: flex;
+  }
   &__Skell:checked ~ &__Track {
     background-color: hsl(var(--theme-500));
   }
   &__Skell:checked ~ &__Track &__Body {
     transform: translateX(1.6rem);
+  }
+  &__Skell:checked ~ &__Checkbox {
+    color: hsl(var(--theme-500));
   }
 }
 </style>

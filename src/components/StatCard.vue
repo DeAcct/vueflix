@@ -2,7 +2,7 @@
   <div class="StatCard">
     <div class="StatCard__Info">
       <h2 class="StatCard__Nickname" :class="{ 'loading-target': loading }">
-        {{ data?.nickname }}
+        {{ data?.nickname || "아직 로그인하지 않았어요" }}
       </h2>
       <p class="StatCard__Email" :class="{ 'loading-target': loading }">
         {{ data?.email }}
@@ -51,13 +51,19 @@ const loading = ref(true);
 watch(
   () => props.uid,
   async () => {
-    if (!props.uid) return;
+    if (!props.uid) {
+      loading.value = false;
+      return;
+    }
 
     const docRef = doc(db, "user", props.uid);
-    const user = (await getDoc(docRef)).data();
-    data.value = user;
+    const user = await getDoc(docRef);
+    if (!user.exists()) return;
+
+    data.value = user.data();
     loading.value = false;
-  }
+  },
+  { immediate: true }
 );
 </script>
 
@@ -88,6 +94,8 @@ watch(
     &.loading-target {
       width: 12rem;
       height: 2rem;
+      text-overflow: hidden;
+      color: transparent;
     }
   }
   &__Email {
@@ -97,6 +105,8 @@ watch(
     &.loading-target {
       width: 24rem;
       height: 2rem;
+      text-overflow: hidden;
+      color: transparent;
     }
   }
   &__Stat {
@@ -110,6 +120,7 @@ watch(
     &.loading-target {
       width: 8rem;
       height: 2rem;
+      text-overflow: hidden;
       color: transparent;
     }
   }

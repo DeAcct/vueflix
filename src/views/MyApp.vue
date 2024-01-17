@@ -1,6 +1,6 @@
 <template>
   <main class="MyApp">
-    <StatCard :uid="user?.uid" class="MyApp__Profile" />
+    <StatCard :uid="user?.uid" class="MyApp__Profile" v-if="user" />
     <section class="MyApp__Verify" v-if="!verified">
       <h2 class="MyApp__HelperTitle">아직 이메일이 인증되지 않았어요</h2>
       <p class="MyApp__HelperText">지금 인증하면 특별한 인증 뱃지를 드려요!</p>
@@ -164,7 +164,7 @@ async function sendEmail() {
   flex-direction: column;
   align-items: center;
   min-height: calc(var(--vh) * 100 * 1px);
-  padding: 6rem 0 9rem;
+  padding: 8rem 0 9rem;
   gap: 1.2rem;
 
   &__Profile {
