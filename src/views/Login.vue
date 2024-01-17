@@ -36,7 +36,7 @@
           type="checkbox"
           class="Login__SaveToggle"
         />
-        로그인 상태 유지
+        로그인 정보 저장
         <strong class="Login__SaveWarning">
           저도 몰랐어요, 아무데서나 저장한 나비효과를...
         </strong>
