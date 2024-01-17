@@ -76,6 +76,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
+          if (id.includes("@firebase")) {
+            return `vendor/@firebase/${
+              id.split("@firebase/")[1].split("/")[0]
+            }`;
+          }
           const module = id.split("node_modules/").pop().split("/")[0];
           return `vendor/${module}`;
         },
