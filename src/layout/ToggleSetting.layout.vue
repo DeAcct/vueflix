@@ -55,7 +55,7 @@ const props = defineProps({
 
   &__Toggle {
     display: flex;
-    width: 100%;
+    width: min(100%, 1080px);
     justify-content: space-between;
     align-items: center;
     padding: 2rem 3rem;
@@ -70,11 +70,11 @@ const props = defineProps({
   }
 
   &__Presentation {
-    width: 100%;
+    width: min(100%, 1080px);
   }
   &__Description {
     display: block;
-    width: 100%;
+    width: min(100%, 1080px);
     padding: 2rem 3rem;
     background-color: hsl(var(--bg-200));
     font-weight: 700;
@@ -84,7 +84,7 @@ const props = defineProps({
 }
 
 @media screen and (min-width: 1080px) {
-  .AppTheme {
+  .ToggleSetting {
     padding-top: 7.2rem;
     &__Heading {
       display: block;

@@ -49,11 +49,6 @@ export default defineConfig({
         ],
         shortcuts: [
           {
-            name: "태그검색",
-            url: "/tag-search",
-            description: "필터로 취향저격 애니찾기",
-          },
-          {
             name: "요일별 신작",
             url: "/daily",
             description: "이번 분기 애니 편성표",

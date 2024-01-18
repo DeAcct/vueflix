@@ -50,7 +50,7 @@
         <ArrowBtnWidget class="MyApp__Item" @click="onLoginButtonClick">
           <template v-slot:icon>
             <IconBase>
-              <IconAccount />
+              <IconLogin />
             </IconBase>
           </template>
           <template v-slot:text>{{
@@ -63,21 +63,24 @@
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
-import { useAuth } from "../store/auth";
 import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { getAuth, sendEmailVerification } from "firebase/auth";
+
+import { useAuth } from "@/store/auth";
 
 import ArrowBtnWidget from "@/components/ArrowBtnWidget.vue";
+import StatCard from "@/components/StatCard.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconAccount from "@/components/icons/IconAccount.vue";
 import IconCoupon from "@/components/icons/IconCoupon.vue";
 import IconCustomerService from "@/components/icons/IconCustomerService.vue";
+import IconLogin from "@/components/icons/IconLogin.vue";
 import IconMembership from "@/components/icons/IconMembership.vue";
 import IconPurchaseHistory from "@/components/icons/IconPurchaseHistory.vue";
 import IconSetting from "@/components/icons/IconSetting.vue";
-import StatCard from "@/components/StatCard.vue";
-import { getAuth, sendEmailVerification } from "firebase/auth";
+import IconTheme from "@/components/icons/IconTheme.vue";
 
 const viewModel = [
   [
@@ -102,7 +105,7 @@ const viewModel = [
   ],
   [
     {
-      icon: IconSetting,
+      icon: IconTheme,
       text: "테마",
       to: "/my/app-theme",
       requireLogin: false,
@@ -236,8 +239,8 @@ async function sendEmail() {
     &__Group {
       min-width: 0;
       width: auto;
-      flex-grow: 1;
-      flex-basis: 0;
+      flex-basis: 33.333%;
+      margin: unset;
     }
     &__Verify {
       width: min(calc(100% - 4rem), 1280px);

@@ -2,7 +2,6 @@
   <Transition name="slide-up">
     <div class="DialogSet" v-if="show">
       <slot name="content"></slot>
-      <!--button class="DialogSet__Action">플레이짤 업로드</button -->
 
       <div class="DialogSet__Control">
         <slot name="control"></slot>
