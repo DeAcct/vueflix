@@ -79,7 +79,6 @@ import IconCustomerService from "@/components/icons/IconCustomerService.vue";
 import IconLogin from "@/components/icons/IconLogin.vue";
 import IconMembership from "@/components/icons/IconMembership.vue";
 import IconPurchaseHistory from "@/components/icons/IconPurchaseHistory.vue";
-import IconSetting from "@/components/icons/IconSetting.vue";
 import IconTheme from "@/components/icons/IconTheme.vue";
 
 const viewModel = [
@@ -108,12 +107,6 @@ const viewModel = [
       icon: IconTheme,
       text: "테마",
       to: "/my/app-theme",
-      requireLogin: false,
-    },
-    {
-      icon: IconSetting,
-      text: "알림 설정",
-      to: "/my/notification",
       requireLogin: false,
     },
     {

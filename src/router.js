@@ -95,19 +95,6 @@ const routes = [
     },
   },
   {
-    path: "/my/notification",
-    name: "notification",
-    component: () => import("@/views/Notification.vue"),
-    meta: {
-      title: "알림",
-      appBar: {
-        activityContent: "알림",
-        backButton: true,
-      },
-      bottomTabMenu: false,
-    },
-  },
-  {
     path: "/my/app-theme",
     name: "app-theme",
     component: () => import("@/views/Theme.vue"),

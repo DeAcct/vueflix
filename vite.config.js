@@ -18,7 +18,16 @@ export default defineConfig({
     VueDevTools(),
     VitePWA({
       includeAssets: ["favicon.svg", "robots.txt"],
+      injectRegister: null,
       registerType: "autoUpdate",
+      devOptions: {
+        enabled: true,
+        type: "module",
+        navigateFallback: "index.html",
+      },
+      workbox: {
+        sourcemap: true,
+      },
       manifest: {
         name: "뷰플릭스",
         short_name: "뷰플릭스",
