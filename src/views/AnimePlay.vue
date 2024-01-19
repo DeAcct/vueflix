@@ -93,26 +93,43 @@
                 :type="deviceInfo.isTouch ? 'arrow' : 'nobutton'"
                 :length="episodes.length"
                 :direction="deviceInfo.isTouch ? 'row' : 'column'"
+                class="AnimePlay__EpisodesCarousel"
               >
                 <ThumbnailSet
                   v-for="{ title, index, thumbnail } in episodes"
-                  :link="`/anime-play/${animeInfo.name}/${part}/${index}`"
-                  :direction="deviceInfo.isTouch ? 'column' : 'row'"
                   :key="`${title}-${part}-${index}`"
-                  :ani-title="animeInfo.name"
-                  :data="{
-                    thumbnail,
-                    part,
-                    index,
-                    title,
-                  }"
-                  type="episode"
-                  :watch-percent="getEpisodePercent(part, index)"
-                  :replace="{
-                    main: true,
-                    sub: true,
-                  }"
-                ></ThumbnailSet>
+                  class="AnimePlay__EpisodeItem"
+                >
+                  <template #image>
+                    <RouterLink
+                      :to="`/anime-play/${route.params.title}/${part}/${index}`"
+                      class="AnimePlay__Thumbnail"
+                      exact-active-class="AnimePlay__Thumbnail--Selected"
+                    >
+                      <OptimizedMedia
+                        class="AnimePlay__ThumbnailImage"
+                        :src="`${route.params.title}/${thumbnail}`"
+                        :alt="`${route.params.title} ${part} ${index} 미리보기 이미지`"
+                      />
+                      <ProgressCircle
+                        v-if="getEpisodePercent(part, index) !== '0%'"
+                        class="AnimePlay__WatchPercent"
+                        :percent="getEpisodePercent(part, index)"
+                      />
+                    </RouterLink>
+                  </template>
+                  <template #text>
+                    <RouterLink
+                      class="AnimePlay__TextLink"
+                      :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
+                    >
+                      <strong class="AnimePlay__PartIndex">
+                        {{ part }} {{ index }}
+                      </strong>
+                      <span class="AnimePlay__ThumbnailTitle">{{ title }}</span>
+                    </RouterLink>
+                  </template>
+                </ThumbnailSet>
               </VueflixCarousel>
             </template>
           </AccordionWidget>
@@ -137,11 +154,12 @@
     ></ToTop>
   </div>
 </template>
+
 <script setup>
 // 그리드 어리어를 활용한 2차원 레이아웃
 
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "@/utility/firebase";
 
@@ -157,7 +175,9 @@ import AccordionWidget from "@/components/AccordionWidget.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
-import ToTop from "../components/ToTop.vue";
+import ToTop from "@/components/ToTop.vue";
+import ProgressCircle from "@/components/ProgressCircle.vue";
+import OptimizedMedia from "@/components/OptimizedMedia.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
@@ -528,6 +548,32 @@ const { scrollBehavior } = useScroll();
     --accordion-sticky-top: 0;
     --accordion-direction: row;
   }
+  &__EpisodeItem {
+    --thumbnail-units: 33;
+    width: calc(var(--thumbnail-units) * 1px * var(--vw));
+    flex-direction: column;
+  }
+  &__Thumbnail {
+    width: calc(var(--thumbnail-units) * 1px * var(--vw));
+    position: relative;
+  }
+  &__TextLink {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  &__PartIndex {
+    font-size: 1.4rem;
+  }
+  &__ThumbnailTitle {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 1.4rem;
+    line-height: 1.3;
+  }
 
   &__Comments {
     z-index: 6;
@@ -559,15 +605,29 @@ const { scrollBehavior } = useScroll();
   opacity: 0;
 }
 
-@media (hover: hover) and (pointer: fine) {
+@media screen and (min-width: 768px) {
   .AnimePlay {
-    &__PartsAccordion {
-      --thumbnail-width: 15rem;
+    &__EpisodeItem {
+      --thumbnail-units: 20;
     }
   }
 }
 
-@media screen and (min-width: 1080px) {
+@media (hover: hover) and (pointer: fine) {
+  .AnimePlay {
+    &__EpisodeItem {
+      --thumbnail-units: 15;
+      width: 100%;
+      flex-direction: row;
+    }
+    &__TextLink {
+      flex-grow: 1;
+      width: 100%;
+    }
+  }
+}
+
+@media screen and (min-width: 1025px) {
   .AnimePlay {
     display: grid;
     padding: 9.2rem 2rem 2rem;

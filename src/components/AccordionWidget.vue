@@ -63,11 +63,9 @@ function toggle() {
       align-items: center;
       padding: 1.4rem 1.9rem;
       background-color: hsl(var(--bg-200) / 0.5);
+      font-size: 1.4rem;
+      font-weight: 700;
     }
-  }
-  &__PartTitle {
-    font-size: 1.3rem;
-    font-weight: 700;
   }
   &__OpenIcon {
     display: flex;
@@ -112,7 +110,7 @@ function toggle() {
   .AccordionWidget {
     &__PartTitle {
       width: 100%;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
     }
     &__OpenBtn {
       width: 100%;

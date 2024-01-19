@@ -13,9 +13,7 @@
             <ThumbnailSet
               v-for="{ aniTitle, part, index, time, thumbnail } in store.user
                 .recentWatched"
-              :is-loading="false"
               :key="aniTitle"
-              direction="row"
               class="AppHome__CurationItem"
             >
               <template #image>

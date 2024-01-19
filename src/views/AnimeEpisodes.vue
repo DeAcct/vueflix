@@ -88,6 +88,7 @@ const { getEpisodePercent } = useMaratonData();
   }
   &__Thumbnail {
     width: 30rem;
+    min-width: 0;
     position: relative;
   }
   &__WatchPercent {
@@ -105,8 +106,10 @@ const { getEpisodePercent } = useMaratonData();
   }
   &__TextLink {
     display: flex;
-    gap: 0.6rem;
     flex-direction: column;
+    gap: 0.6rem;
+    flex-grow: 1;
+    width: 100%;
   }
   &__PartIndex {
     font-size: 1.4rem;

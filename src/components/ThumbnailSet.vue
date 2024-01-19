@@ -1,9 +1,7 @@
 <template>
   <li class="ThumbnailSet">
     <slot name="image"></slot>
-    <div class="ThumbnailSet__Info">
-      <slot name="text"></slot>
-    </div>
+    <slot name="text"></slot>
   </li>
 </template>
 
@@ -14,13 +12,6 @@
   position: relative;
   gap: 0.8rem;
   border-radius: var(--global-radius);
-
-  &__Info {
-    display: flex;
-    min-width: 0;
-    height: auto;
-    width: 100%;
-  }
 }
 @media screen and (min-width: 768px) {
   .ThumbnailSet {

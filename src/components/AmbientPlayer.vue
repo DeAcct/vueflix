@@ -59,11 +59,11 @@
       <DialogSet :show="screenshotPreview.show" class="ScreenshotDialog">
         <template #content>
           <Transition name="new-screenshot">
-            <OptimizedMedia
+            <img
               :src="screenshotPreview.imgSrc"
               :key="screenshotPreview.imgSrc"
               class="ScreenshotDialog__Preview"
-            ></OptimizedMedia>
+            />
           </Transition>
         </template>
         <template #control>
@@ -75,12 +75,14 @@
               <IconTrash />
             </IconBase>
           </button>
-          <button class="ScreenshotDialog__Action" @click="download">
-            다운로드
-          </button>
-          <button class="ScreenshotDialog__Action" @click="share">
-            다른 앱으로 공유
-          </button>
+          <div class="ScreenshotDialog__TextButtons">
+            <button class="ScreenshotDialog__Action" @click="download">
+              다운로드
+            </button>
+            <button class="ScreenshotDialog__Action" @click="share">
+              다른 앱으로 공유
+            </button>
+          </div>
         </template>
       </DialogSet>
     </Teleport>
@@ -98,7 +100,6 @@ import { useVideoScreenshot } from "@/composables/screenshot";
 import DialogSet from "./DialogSet.vue";
 import GestureArea from "./GestureArea.vue";
 import LoadingSpinner from "./LoadingSpinner.vue";
-import OptimizedMedia from "./OptimizedMedia.vue";
 import VideoControlBar from "./VideoControlBar.vue";
 
 import IconBase from "./IconBase.vue";
@@ -325,6 +326,7 @@ function takeScreenshot() {
   const { downloadURL } = useVideoScreenshot($video);
   screenshotPreview.value.imgSrc = downloadURL.value;
   screenshotPreview.value.show = true;
+  console.log(screenshotPreview.value);
   $video.value.style.transform = "scale(0.95)";
   setTimeout(() => {
     $video.value.style.transform = "scale(1)";
@@ -453,23 +455,27 @@ async function share() {
     height: 3.6rem;
     margin-right: auto;
   }
+  &__TextButtons {
+    display: flex;
+    border-radius: var(--global-radius);
+    overflow: hidden;
+  }
   &__Action {
     background-color: hsl(var(--bg-300));
     padding: 0 1.2rem;
-    &:nth-child(2) {
-      // 다운로드 버튼
-      border-radius: var(--global-radius) 0 0 var(--global-radius);
+    & + & {
+      border-left: 1px solid hsl(var(--bg-200));
     }
-    &:last-of-type {
-      // 다른 앱으로 공유 버튼
-      border-radius: 0 var(--global-radius) var(--global-radius) 0;
-    }
+  }
+
+  &__Preview {
+    border-radius: var(--global-radius);
   }
 }
 
 .player-alert-enter-active,
 .player-alert-leave-active {
-  transition: transform 150ms ease-in-out, opacity 150ms ease-in-out;
+  transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
 }
 
 .player-alert-enter-from {
@@ -484,7 +490,7 @@ async function share() {
 
 .new-screenshot-enter-active,
 .new-screenshot-leave-active {
-  transition: all 0.3s ease-out;
+  transition: all 300ms ease-out;
 }
 
 .new-screenshot-enter-from {
