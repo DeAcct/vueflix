@@ -90,11 +90,12 @@ export const useAuth = defineStore("auth", () => {
         email: email.value,
         profileImg: profileImg.value,
         // 사용기록
-        recentWatched: [],
+        watch: {
+          recent: [],
+          maraton: [],
+        },
         wannaSee: [],
-        reviews: 0,
         reaction: [],
-        maratonWatch: [],
         purchased: [],
         membership: {
           initDate: new Date(),
@@ -145,7 +146,6 @@ export const useAuth = defineStore("auth", () => {
   async function logout() {
     await signOut(auth);
     user.value = null;
-    localStorage.setItem("user", JSON.stringify(null));
   }
 
   return {

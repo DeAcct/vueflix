@@ -18,21 +18,13 @@ export default defineConfig({
     VueDevTools(),
     VitePWA({
       includeAssets: ["favicon.svg", "robots.txt"],
-      injectRegister: null,
       registerType: "autoUpdate",
-      devOptions: {
-        enabled: true,
-        type: "module",
-        navigateFallback: "index.html",
-      },
-      workbox: {
-        sourcemap: true,
-      },
       manifest: {
         name: "뷰플릭스",
         short_name: "뷰플릭스",
-        description: "My Awesome App description",
-        theme_color: "#ffffff",
+        description:
+          "당당하게 애니 볼 땐, 뷰플릭스! 고전 명작부터 이번 분기 화제작까지 모든 애니를 고화질로 스트리밍할 수 있는 곳은 이곳 뿐.",
+        theme_color: "#d62929",
         icons: [
           {
             src: "icon-192x192.png",

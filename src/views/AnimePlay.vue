@@ -9,7 +9,6 @@
       <AmbientPlayer
         class="AnimePlay__Video"
         @toggle-theater="toggleTheater"
-        @save-point="savePoint"
         @time-update="updateTime"
         :src="videoSrc"
         :time="time"
@@ -112,9 +111,15 @@
                         :alt="`${route.params.title} ${part} ${index} 미리보기 이미지`"
                       />
                       <ProgressCircle
-                        v-if="getEpisodePercent(part, index) !== '0%'"
+                        v-if="
+                          getEpisodeProgress(route.params.title, part, index)
+                            .percent !== '0%'
+                        "
                         class="AnimePlay__WatchPercent"
-                        :percent="getEpisodePercent(part, index)"
+                        :percent="
+                          getEpisodeProgress(route.params.title, part, index)
+                            .percent
+                        "
                       />
                     </RouterLink>
                   </template>
@@ -159,16 +164,14 @@
 // 그리드 어리어를 활용한 2차원 레이아웃
 
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
-import { doc, getDoc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { db } from "@/utility/firebase";
 
-import { onMounted, ref, computed, inject, reactive } from "vue";
+import { onMounted, onUnmounted, ref, computed, inject, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuth } from "@/store/auth";
 
 import { useMaratonData } from "@/composables/maraton";
 import { useScroll } from "@/composables/scroll";
+import { useEpisode } from "@/composables/episode";
 
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
 import AccordionWidget from "@/components/AccordionWidget.vue";
@@ -181,228 +184,6 @@ import OptimizedMedia from "@/components/OptimizedMedia.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
-
-// 저작권 문제가 있어
-// 동영상은 하나로 돌려쓰고 있음
-const storage = getStorage();
-const videoSrc = ref("");
-
-const router = useRouter();
-router.afterEach(async () => {
-  await getVideoUrl();
-});
-const route = useRoute();
-
-const auth = useAuth();
-const user = computed(() => auth.user);
-
-const recentWatched = computed(() => user.value?.recentWatched);
-const maratonWatch = computed(() => user.value?.maratonWatch);
-async function savePoint(time) {
-  // if (!session) {
-  //   return;
-  // }
-  // const newData = {
-  //   aniTitle: route.params.title,
-  //   title: nowEpisode.value.title,
-  //   thumbnail: nowEpisode.value.thumbnail,
-  //   part: route.params.part,
-  //   index: route.params.index,
-  //   time,
-  //   watchedPoint: new Date(),
-  //   maratonMax: episodeCounter.value,
-  // };
-  // store.commit("auth/updateRecentWatched", newData);
-  // store.commit("auth/updateMaratonWatch", newData);
-  // await setDoc(
-  //   doc(db, "user", session.uid),
-  //   { recentWatched: recentWatched.value, maratonWatch: maratonWatch.value },
-  //   { merge: true }
-  // );
-  console.log(maraton);
-}
-router.beforeEach(() => {
-  if (!$player.value) {
-    return;
-  }
-  savePoint({
-    current: $player.value.$video.currentTime,
-    max: $player.value.$video.duration,
-  });
-});
-
-const { maraton, getEpisodePercent } = useMaratonData();
-const TRIAL_TIME_LIMIT = 60;
-const time = ref(0);
-const $player = ref(null);
-const showLimitAlert = ref(false);
-function updateTime(e) {
-  showLimitAlert.value = e > TRIAL_TIME_LIMIT && !user.value;
-  if (showLimitAlert.value) {
-    $player.value.$video.pause();
-  }
-}
-function findTimeLog() {
-  if (!maratonWatch.value) {
-    return 0;
-  }
-  const target = maratonWatch.value.find(
-    (anime) => anime.aniTitle === route.params.title
-  );
-  // 현재 애니가 정주행 목록에 존재하지 않으면(처음 보는 애니면) 시작시간을 0으로
-  if (!target) {
-    return 0;
-  }
-  const log = target.list.find(
-    (log) => log.part === route.params.part && log.index === route.params.index
-  );
-  return log ? log.time.current : 0;
-}
-const animeInfo = ref({});
-async function getVideoUrl() {
-  if (import.meta.env.DEV) {
-    // 개발 시 임시로 사용할 동영상(요청량 절약)
-    const TestAnime = new URL("../assets/TestAnime2.webm", import.meta.url)
-      .href;
-    videoSrc.value = TestAnime;
-    return;
-  }
-  // videoSrc.value = await getDownloadURL(fireRef(storage, `${animationName}/${part}/${index}`.webm"));
-  videoSrc.value = await getDownloadURL(fireRef(storage, "TestAnime2.webm"));
-}
-async function getAnimeData() {
-  const data = (await getDoc(doc(db, "anime", route.params.title))).data();
-  return data;
-}
-onMounted(async () => {
-  await getVideoUrl();
-  const query = route.query;
-
-  animeInfo.value = await getAnimeData();
-  $player.value.$video.currentTime = Number(query.time) || findTimeLog();
-});
-function onRequestTeleport(e) {
-  $player.value.$video.currentTime = e;
-}
-router.beforeEach(async () => {
-  if (!$player.value?.$video) {
-    return;
-  }
-  $player.value.$video.currentTime = findTimeLog();
-});
-
-const isInteracting = ref(false);
-function setInteract(e) {
-  isInteracting.value = e;
-}
-
-const deviceInfo = inject("device-info");
-const session = getAuth().currentUser;
-
-const nowEpisode = computed(() => {
-  if (!animeInfo.value.parts) {
-    return undefined;
-  }
-  const currentPart = animeInfo.value.parts.find(
-    ({ part }) => part === route.params.part
-  ).episodes;
-  return currentPart.find(({ index }) => route.params.index === index);
-});
-
-const episodeCounter = computed(() => {
-  if (!animeInfo.value.parts) {
-    return 0;
-  }
-  return animeInfo.value.parts.reduce(
-    (acc, cur) => acc + cur.episodes.length,
-    0
-  );
-});
-
-const nextEpisode = computed(() => {
-  if (!animeInfo.value.parts) {
-    return undefined;
-  }
-  const lastEpisode = animeInfo.value.parts
-    .find(({ part }) => part === route.params.part)
-    .episodes.at(-1);
-  const lastPart = animeInfo.value.parts.at(-1);
-
-  // 현재 에피소드로 초기화한 후 작업
-  let nextPart = animeInfo.value.parts.findIndex(
-    ({ part }) => part === route.params.part
-  );
-  let nextIndex = animeInfo.value.parts[nextPart].episodes.findIndex(
-    ({ index }) => route.params.index === index
-  );
-
-  if (
-    lastPart.part === route.params.part &&
-    lastEpisode.index === route.params.index
-  ) {
-    return "다음 화 없음";
-  }
-  if (lastEpisode.index === route.params.index) {
-    nextIndex = 0;
-    nextPart++;
-  } else {
-    nextIndex++;
-  }
-
-  const { part, episodes } = animeInfo.value.parts[nextPart];
-  return {
-    part,
-    ...episodes[nextIndex],
-  };
-});
-
-const prevEpisode = computed(() => {
-  if (!animeInfo.value.parts) {
-    return undefined;
-  }
-  const firstEpisode = animeInfo.value.parts
-    .find(({ part }) => part === route.params.part)
-    .episodes.at(0);
-  const firstPart = animeInfo.value.parts.at(0);
-
-  // 현재 에피소드로 초기화한 후 작업
-  let prevPart = animeInfo.value.parts.findIndex(
-    ({ part }) => part === route.params.part
-  );
-  let prevIndex = animeInfo.value.parts[prevPart].episodes.findIndex(
-    ({ index }) => route.params.index === index
-  );
-
-  if (
-    firstPart.part === route.params.part &&
-    firstEpisode.index === route.params.index
-  ) {
-    return "이전 화 없음";
-  }
-  if (firstEpisode.index === route.params.index) {
-    prevIndex = animeInfo.value.parts.find(
-      ({ part }) => part === route.params.part
-    ).episodes.length;
-    prevPart--;
-  } else {
-    prevIndex--;
-  }
-
-  const { part, episodes } = animeInfo.value.parts[prevPart];
-  return {
-    part,
-    ...episodes[prevIndex],
-  };
-});
-
-async function openSystemShare() {
-  const shareData = {
-    title: `${route.params.title} ${route.params.part} ${route.params.index}`,
-    text: "애니를 당당하게 즐기세요!",
-    url: window.location.href,
-  };
-  await navigator.share(shareData);
-}
 
 const mode = ref("normal");
 const area = reactive({
@@ -427,6 +208,114 @@ function toggleTheater() {
   area.partsTop = "0px";
   area.title = "2 / 1 / 3 / 2";
   area.comments = "3 / 1 / 4 / 2";
+}
+// 저작권 문제가 있어
+// 동영상은 하나로 돌려쓰고 있음
+const storage = getStorage();
+const videoSrc = ref("");
+
+const router = useRouter();
+const route = useRoute();
+
+const auth = useAuth();
+const user = computed(() => auth.user);
+
+const { getEpisodeProgress, updateMaraton } = useMaratonData(
+  route.params.title
+);
+
+const TRIAL_TIME_LIMIT = 60;
+const time = ref(0);
+const $player = ref(null);
+const showLimitAlert = ref(false);
+function updateTime(e) {
+  showLimitAlert.value = e > TRIAL_TIME_LIMIT && !user.value;
+  if (showLimitAlert.value) {
+    $player.value.$video.pause();
+  }
+}
+
+const {
+  animeInfo,
+  getAnimeData,
+  getThumbnail,
+  nowEpisode,
+  nextEpisode,
+  prevEpisode,
+  episodeCounter,
+} = useEpisode({
+  aniTitle: route.params.title,
+  part: route.params.part,
+  index: route.params.index,
+});
+
+async function getVideoUrl() {
+  if (import.meta.env.DEV) {
+    // 개발 시 임시로 사용할 동영상(요청량 절약)
+    const TestAnime = new URL("../assets/TestAnime2.webm", import.meta.url)
+      .href;
+    videoSrc.value = TestAnime;
+    return;
+  }
+  // videoSrc.value = await getDownloadURL(fireRef(storage, `${animationName}/${part}/${index}`.webm"));
+  videoSrc.value = await getDownloadURL(fireRef(storage, "TestAnime2.webm"));
+}
+
+onMounted(async () => {
+  await getVideoUrl();
+  const query = route.query;
+  // 마라톤(시청기록)보다 쿼리스트링을 우선시한다.
+  // 쿼리스트링은 공유 URL을 통해 접근한 것을 대응한 것이다.
+  if (query.time) {
+    $player.value.$video.currentTime = Number(query.time);
+    return;
+  }
+  $player.value.$video.currentTime = getEpisodeProgress(
+    route.params.title,
+    route.params.part,
+    route.params.index
+  ).current;
+});
+const saveAndCleanUp = router.afterEach(async (to, from) => {
+  if (to.path === from.path) {
+    return;
+  }
+  if (to.name === "anime-play") {
+    await getAnimeData();
+  }
+  await updateMaraton({
+    part: from.params.part,
+    index: from.params.index,
+    aniTitle: from.params.title,
+    progress: {
+      current: $player.value.$video.currentTime,
+      max: $player.value.$video.duration,
+    },
+    thumbnail: nowEpisode.value.thumbnail,
+    title: nowEpisode.value.title,
+  });
+});
+onUnmounted(async () => {
+  saveAndCleanUp();
+});
+function onRequestTeleport(e) {
+  $player.value.$video.currentTime = e;
+}
+
+const isInteracting = ref(false);
+function setInteract(e) {
+  isInteracting.value = e;
+}
+
+const deviceInfo = inject("device-info");
+
+async function openSystemShare() {
+  const shareData = {
+    title: `${route.params.title} ${route.params.part} ${route.params.index}`,
+    text: "애니를 당당하게 즐기세요!",
+    url: window.location.href,
+  };
+  await navigator.share(shareData);
 }
 
 const { scrollBehavior } = useScroll();
@@ -556,6 +445,16 @@ const { scrollBehavior } = useScroll();
   &__Thumbnail {
     width: calc(var(--thumbnail-units) * 1px * var(--vw));
     position: relative;
+    overflow: hidden;
+    border-radius: var(--global-radius);
+  }
+  &__WatchPercent {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    padding: 0.8rem;
+    background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
   }
   &__TextLink {
     display: flex;
@@ -711,6 +610,10 @@ const { scrollBehavior } = useScroll();
       gap: 1.2rem;
       position: absolute;
       --accordion-direction: column;
+    }
+    &__Thumbnail {
+      width: 25rem;
+      position: relative;
     }
 
     &__Comments {

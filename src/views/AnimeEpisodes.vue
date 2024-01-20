@@ -25,9 +25,14 @@
                   :alt="`${animeInfo.name} ${part} ${index} 미리보기 이미지`"
                 />
                 <ProgressCircle
-                  v-if="getEpisodePercent(part, index) !== '0%'"
+                  v-if="
+                    getEpisodeProgress(route.params.title, part, index)
+                      .percent !== '0%'
+                  "
                   class="AnimeEpisodes__WatchPercent"
-                  :percent="getEpisodePercent(part, index)"
+                  :percent="
+                    getEpisodeProgress(route.params.title, part, index).percent
+                  "
                 />
               </RouterLink>
             </template>
@@ -68,7 +73,7 @@ onMounted(() => {
   document.title = `${route.params.title} 다시보기`;
 });
 
-const { getEpisodePercent } = useMaratonData();
+const { getEpisodeProgress } = useMaratonData(route.params.title);
 </script>
 
 <style lang="scss" scoped>

@@ -150,19 +150,23 @@ const continueData = computed(() => {
       text: "1화 1분 미리보기",
     };
   }
-  const last = user.value.recentWatched.find(
+  const currentAnime = user.value.maraton.find(
     (anime) => anime.aniTitle === route.params.title
   );
 
-  if (last) {
+  if (!currentAnime) {
     return {
-      link: `/anime-play/${route.params.title}/${last.part}/${last.index}`,
-      text: `${last.part} ${last.index}부터 이어보기`,
+      link: `/anime-play/${route.params.title}/1기/1화`,
+      text: "정주행 시작",
     };
   }
+  const latestUpdate = currentAnime.lastUpdate.toDate().getTime();
+  const latestWatch = currentAnime.episodes.find(
+    (log) => log.time.toDate().getTime() === latestUpdate
+  );
   return {
-    link: `/anime-play/${route.params.title}/1기/1화`,
-    text: "정주행 시작",
+    link: `/anime-play/${route.params.title}/${latestWatch.part}/${latestWatch.index}`,
+    text: `${latestWatch.part} ${latestWatch.index}부터 이어보기`,
   };
 });
 

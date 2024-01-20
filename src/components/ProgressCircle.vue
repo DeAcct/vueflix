@@ -30,7 +30,6 @@ const { $body, trackLength, bodyLength } = usePercentToSVGRound(props.percent);
 
 <style lang="scss" scoped>
 .ProgressCircle {
-  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;

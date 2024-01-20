@@ -3,16 +3,15 @@
     <main>
       <BannerSlide />
       <div class="AppHome__Curator">
-        <div class="AppHome__Item" v-if="store.user?.recentWatched.length">
+        <div class="AppHome__Item" v-if="lastSix.length">
           <h2 class="AppHome__Title inner">최근 본 애니</h2>
           <VueflixCarousel
-            :length="store.user?.recentWatched.length"
+            :length="lastSix.length"
             class="AppHome__Carousel"
             type="arrow"
           >
             <ThumbnailSet
-              v-for="{ aniTitle, part, index, time, thumbnail } in store.user
-                .recentWatched"
+              v-for="{ aniTitle, part, index, progress, thumbnail } in lastSix"
               :key="aniTitle"
               class="AppHome__CurationItem"
             >
@@ -28,7 +27,7 @@
                   />
                   <ProgressCircle
                     class="AppHome__WatchPercent"
-                    :percent="`${(time.current / time.max) * 100}%`"
+                    :percent="`${(progress.current / progress.max) * 100}%`"
                   />
                 </RouterLink>
               </template>
@@ -40,10 +39,11 @@
                   <span class="AppHome__AniTitle">
                     {{ aniTitle }}
                   </span>
-                  <strong class="AppHome__PartIndex">
-                    {{ part }} {{ index }}
-                  </strong>
-                  <span class="AppHome__Episode">{{ title }}</span>
+                  <p class="AppHome__Episode">
+                    <strong class="AppHome__PartIndex">
+                      {{ part }} {{ index }}
+                    </strong>
+                  </p>
                 </RouterLink>
               </template>
             </ThumbnailSet>
@@ -151,6 +151,7 @@ import { getDocs, collection, doc, getDoc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useAuth } from "../store/auth";
+import { useMaratonData } from "../composables/maraton";
 
 const now = new Date();
 const selectedDay = ref(DAYS.map(({ key }) => key)[now.getDay()]);
@@ -213,6 +214,8 @@ const store = useAuth();
 function escaper(str) {
   return str.replaceAll(/:/g, "_").replaceAll(/\?/g, "");
 }
+
+const { lastSix } = useMaratonData();
 </script>
 
 <style lang="scss" scoped>
@@ -275,11 +278,13 @@ function escaper(str) {
     text-overflow: ellipsis;
     overflow: hidden;
     width: 100%;
-    min-height: calc(1.4rem * 1.5 * 2);
     --episode-title-width: 20ch;
     font-size: 1.4rem;
     line-height: 1.5;
     font-weight: 600;
+  }
+  &__PartIndex {
+    font-size: 1.4rem;
   }
 }
 @media screen and (min-width: 768px) {
