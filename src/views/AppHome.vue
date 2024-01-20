@@ -3,15 +3,17 @@
     <main>
       <BannerSlide />
       <div class="AppHome__Curator">
-        <div class="AppHome__Item" v-if="lastSix.length">
+        <div class="AppHome__Item" v-if="latest(6).length">
           <h2 class="AppHome__Title inner">최근 본 애니</h2>
           <VueflixCarousel
-            :length="lastSix.length"
+            :length="latest(6).length"
             class="AppHome__Carousel"
             type="arrow"
           >
             <ThumbnailSet
-              v-for="{ aniTitle, part, index, progress, thumbnail } in lastSix"
+              v-for="{ aniTitle, part, index, progress, thumbnail } in latest(
+                6
+              )"
               :key="aniTitle"
               class="AppHome__CurationItem"
             >
@@ -51,11 +53,12 @@
         </div>
         <div class="AppHome__Item">
           <h2 class="AppHome__Title inner">요일별 신작</h2>
-          <DaySelector
+          <MultiSelector
             class="AppHome__DaySelector"
-            :selected="selectedDay"
-            @day-change="onDayChange"
-          ></DaySelector>
+            v-model="selectedDay"
+            @update:model-value="onDayChange"
+            :data="DAYS"
+          ></MultiSelector>
           <VueflixCarousel
             :length="selectedDailyAnime.length"
             class="AppHome__Carousel"
@@ -139,11 +142,11 @@
 import { DAYS } from "@/enums/Days";
 
 import BannerSlide from "@/components/BannerSlide.vue";
-import DaySelector from "@/components/DaySelector.vue";
+import MultiSelector from "@/components/MultiSelector.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ProgressCircle from "@/components/ProgressCircle.vue";
-import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
+import VueflixCarousel from "@/components/VueflixCarousel.vue";
 
 import Cookies from "js-cookie";
 
@@ -154,10 +157,10 @@ import { useAuth } from "../store/auth";
 import { useMaratonData } from "../composables/maraton";
 
 const now = new Date();
-const selectedDay = ref(DAYS.map(({ key }) => key)[now.getDay()]);
+const selectedDay = ref(now.getDay());
 const selectedDailyAnime = ref([]);
 async function getSelectedDayList() {
-  const docReference = doc(db, "daily", selectedDay.value);
+  const docReference = doc(db, "daily", DAYS[selectedDay.value].key);
   const docSnap = await getDoc(docReference);
   selectedDailyAnime.value = docSnap.data().data;
 }
@@ -165,7 +168,10 @@ onMounted(async () => {
   await getSelectedDayList();
 });
 function onDayChange(e) {
-  selectedDay.value = e;
+  console.log(selectedDay.value);
+  selectedDay.value = DAYS.map(({ key }) => key).findIndex(
+    (item) => item === e
+  );
 }
 watch(selectedDay, async () => {
   await getSelectedDayList();
@@ -215,7 +221,7 @@ function escaper(str) {
   return str.replaceAll(/:/g, "_").replaceAll(/\?/g, "");
 }
 
-const { lastSix } = useMaratonData();
+const { latest } = useMaratonData();
 </script>
 
 <style lang="scss" scoped>
@@ -238,6 +244,8 @@ const { lastSix } = useMaratonData();
     width: calc(100% - var(--inner-padding) * 2);
     border-radius: 9999px;
     margin: 0 auto;
+    --item-width: 4rem;
+    --item-height: 4rem;
   }
   &__Carousel {
     margin-top: 1.6rem;

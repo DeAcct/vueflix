@@ -2,7 +2,7 @@
   <RouterView v-slot="{ Component }">
     <VueflixHeader v-if="route.meta.appBar" :is-touch-device="device.isTouch" />
     <BottomTabMenu v-if="route.meta.bottomTabMenu && device.isMobile" />
-    <Transition :name="route.meta.transition || 'fade'">
+    <Transition :name="route.meta.transition || 'app-fade'">
       <component :is="Component"></component>
     </Transition>
   </RouterView>
@@ -64,3 +64,14 @@ onUnmounted(() => {
   });
 });
 </script>
+
+<style lang="scss" scoped>
+.app-fade-enter-active,
+.app-fade-leave-active {
+  transition: opacity 75ms ease-in-out;
+}
+.app-fade-enter-from,
+.app-fade-leave-to {
+  opacity: 0;
+}
+</style>

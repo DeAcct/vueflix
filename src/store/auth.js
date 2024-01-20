@@ -95,8 +95,9 @@ export const useAuth = defineStore("auth", () => {
           maraton: [],
         },
         wannaSee: [],
-        reaction: [],
         purchased: [],
+        notInterested: [],
+        reaction: [],
         membership: {
           initDate: new Date(),
         },

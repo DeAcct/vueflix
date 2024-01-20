@@ -25,9 +25,14 @@
         {{ activity }}
       </template>
     </h1>
-    <SearchBar
-      class="VueflixHeader__SearchBar VueflixHeader__SearchBar--PCOnly"
-    />
+    <ul class="VueflixHeader__GNB">
+      <li v-for="{ text, to } in gnbItems" :key="text">
+        <RouterLink class="VueflixHeader__GNBLink" :to>
+          {{ text }}
+        </RouterLink>
+      </li>
+    </ul>
+
     <div class="VueflixHeader__Actions">
       <button
         class="VueflixHeader__Action"
@@ -40,11 +45,9 @@
       </button>
 
       <div class="right">
-        <RouterLink to="/notification" class="VueflixHeader__Action">
-          <IconBase>
-            <IconNotification></IconNotification>
-          </IconBase>
-        </RouterLink>
+        <SearchBar
+          class="VueflixHeader__SearchBar VueflixHeader__SearchBar--PCOnly"
+        />
         <button
           type="button"
           class="VueflixHeader__Action VueflixHeader__Action--MobileOnly"
@@ -84,7 +87,6 @@ import { useRoute, useRouter } from "vue-router";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconClose from "./icons/IconClose.vue";
-import IconNotification from "./icons/IconNotification.vue";
 import IconSearch from "./icons/IconSearch.vue";
 import SearchBar from "./SearchBar.vue";
 import VueflixLogo from "./VueflixLogo.vue";
@@ -104,6 +106,17 @@ watch(
     handleScroll();
   }
 );
+
+const gnbItems = [
+  {
+    text: "보관함",
+    to: "/basket",
+  },
+  {
+    text: "칵테일",
+    to: "/cocktail",
+  },
+];
 
 const scrollPercent = ref(0);
 function handleScroll() {
@@ -143,7 +156,7 @@ function toggleSearchMode() {
   position: fixed;
   top: 0;
   z-index: 100;
-  height: 6rem;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   border-bottom: 1px solid hsl(var(--bg-200) / v-bind(scrollPercent));
@@ -157,7 +170,8 @@ function toggleSearchMode() {
     left: 50%;
     transform: translateX(-50%);
     &--Logo {
-      width: 6.5rem;
+      width: 7rem;
+      flex-shrink: 0;
     }
   }
 
@@ -225,6 +239,9 @@ function toggleSearchMode() {
   &--Fill {
     --icon-color: inherit;
   }
+  &__GNB {
+    display: none;
+  }
 }
 @media screen and (min-width: 769px) {
   .VueflixHeader {
@@ -250,13 +267,13 @@ function toggleSearchMode() {
 
 @media screen and (min-width: 1080px) {
   .VueflixHeader {
-    height: 7.2rem;
     background-color: hsl(var(--bg-100));
     color: inherit;
+    gap: 4rem;
     &__Actions {
       width: 100%;
       .right {
-        gap: 4px;
+        gap: 1.6rem;
       }
     }
     &__Activity {
@@ -277,6 +294,13 @@ function toggleSearchMode() {
         display: none;
       }
     }
+    &__GNB {
+      display: flex;
+      gap: 1.6rem;
+    }
+    &__GNBLink {
+      font-size: 1.6rem;
+    }
     &__SearchCombo {
       display: none;
     }
@@ -295,11 +319,8 @@ function toggleSearchMode() {
       &--PCOnly {
         display: flex;
         gap: 0.8rem;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
         flex-grow: 0;
-        width: 50rem;
+        width: 30rem;
         height: 4.6rem;
         padding: 0 1.2rem;
         background-color: hsl(var(--bg-200));

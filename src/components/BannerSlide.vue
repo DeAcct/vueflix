@@ -160,7 +160,7 @@ function onLeft({ detail }) {
 
 @media screen and (min-width: 1080px) {
   .BannerSlide {
-    margin-top: 7.2rem;
+    margin-top: var(--header-height);
   }
 }
 </style>

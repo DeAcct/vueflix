@@ -70,6 +70,18 @@ const routes = [
     },
   },
   {
+    path: "/cocktail",
+    name: "cocktail",
+    component: () => import("@/views/Cocktail.vue"),
+    meta: {
+      title: "칵테일",
+      appBar: {
+        activityContent: "칵테일",
+      },
+      bottomTabMenu: true,
+    },
+  },
+  {
     path: "/my",
     name: "my",
     component: () => import("@/views/MyApp.vue"),

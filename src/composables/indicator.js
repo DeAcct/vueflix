@@ -21,6 +21,7 @@ export function useIndicatorAnimation(index) {
   const selector = ref(null);
   const items = ref([]);
   function move(i) {
+    if (!items.value) return;
     const {
       x: toX,
       y: toY,
@@ -36,14 +37,15 @@ export function useIndicatorAnimation(index) {
       .getPropertyValue("padding-Top")
       .split("px");
 
-    to.x = toX - bodyX - paddingLeft;
-    to.y = toY - bodyY - paddingTop;
+    to.x = toX - bodyX;
+    to.y = toY - bodyY;
 
     to.width = toWidth;
     to.height = toHeight;
   }
   onMounted(() => {
     move(index);
+    console.log(to.x);
   });
   useResizeObserver(selector, () => {
     move(index);

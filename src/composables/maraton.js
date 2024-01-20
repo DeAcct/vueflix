@@ -126,12 +126,12 @@ export function useMaratonData() {
     await auth.syncUser();
   }
 
-  const lastSix = computed(() => {
+  function latest(number = "all") {
     if (!user.value) {
       return [];
     }
 
-    // 최근 시청한 6개의 에피소드를 불러온다.
+    // 최근 시청한 에피소드를 불러온다.
     // 정렬
     const sortLatest = maraton.value.toSorted((a, b) => {
       const prev = a.lastUpdate.toDate().getTime();
@@ -149,8 +149,11 @@ export function useMaratonData() {
         ),
       };
     });
-    return flatten;
-  });
+    if (number === "all") {
+      return flatten;
+    }
+    return flatten.slice(-1 * number);
+  }
 
-  return { maraton, getEpisodeProgress, updateMaraton, clearMaraton, lastSix };
+  return { maraton, getEpisodeProgress, updateMaraton, clearMaraton, latest };
 }

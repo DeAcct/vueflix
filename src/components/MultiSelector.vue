@@ -1,29 +1,28 @@
 <template>
-  <div class="DaySelector" ref="$DaySelector">
+  <div class="MultiSelector" ref="$MultiSeletor">
     <button
-      v-for="({ key, text }, index) in DAYS"
+      v-for="({ key, text }, index) in data"
       :key="key"
       :class="[
-        'DaySelector__Item',
-        { 'DaySelector__Item--Active': key === selected },
+        'MultiSelector__Item',
+        { 'MultiSelector__Item--Active': index === selected },
       ]"
       @click="
         () => {
           indicatorMove(index);
-          emits('day-change', key);
+          selected = key;
         }
       "
       @focus="indicatorMove(index)"
-      ref="$DayItems"
+      ref="$Items"
     >
       {{ text }}
     </button>
-    <div class="DaySelector__Indicator"></div>
+    <div class="MultiSelector__Indicator"></div>
   </div>
 </template>
 
 <script setup>
-import { DAYS } from "@/enums/Days";
 import { useIndicatorAnimation } from "@/composables/indicator";
 
 // defineProps는 setup() 밖으로 호이스팅(선언이 상단으로 끌어올려짐) 되므로 외부 상수/변수를 참조할 수 없다.
@@ -32,27 +31,23 @@ const props = defineProps({
   type: {
     type: String,
   },
-  selected: {
-    type: String,
-    validator(value) {
-      return DAYS.map(({ key }) => key).includes(value);
-    },
+  data: {
+    type: Array,
   },
 });
 
-const emits = defineEmits(["day-change"]);
+const selected = defineModel();
 
-const currentDayIndex = DAYS.findIndex((item) => props.selected === item.key);
 const {
-  selector: $DaySelector,
-  items: $DayItems,
-  to: indicatorPosition,
+  selector: $MultiSeletor,
+  items: $Items,
+  to,
   move: indicatorMove,
-} = useIndicatorAnimation(currentDayIndex);
+} = useIndicatorAnimation(selected.value);
 </script>
 
 <style lang="scss" scoped>
-.DaySelector {
+.MultiSelector {
   display: flex;
   justify-content: space-between;
   background-color: hsl(var(--bg-200));
@@ -61,8 +56,8 @@ const {
   overflow: hidden;
   &__Item {
     z-index: 2;
-    width: 4rem;
-    height: 4rem;
+    width: var(--item-width);
+    height: var(--item-height);
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 4rem;
@@ -82,12 +77,13 @@ const {
 
   &__Indicator {
     position: absolute;
+    left: 0;
     z-index: 1;
-    width: 4rem;
-    height: 4rem;
+    width: calc(v-bind("to.width") * 1px);
+    height: calc(v-bind("to.height") * 1px);
     background-color: hsl(var(--theme-500) / 0.2);
-    border-radius: 50%;
-    transform: translateX(calc(v-bind("indicatorPosition.x") * 1px));
+    border-radius: 9999px;
+    transform: translateX(calc(v-bind("to.x") * 1px));
     transition: transform 150ms ease-out;
   }
 }

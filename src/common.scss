@@ -81,6 +81,7 @@ svg {
 :root,
 ::after,
 ::before {
+  --header-height: 6rem;
   --inner-padding: 2rem;
   --bottom-tab-height: 4.8rem;
   --bottom-tab-safe-margin: 1.2rem;
@@ -201,6 +202,7 @@ summary {
 @media screen and (min-width: 1080px) {
   :root {
     --inner-padding: 5rem;
+    --header-height: 7.2rem;
   }
   .btn .text {
     font-size: 1.7rem;

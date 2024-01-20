@@ -41,7 +41,7 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 .ToggleSetting {
-  padding: 6rem 0 2rem;
+  padding: var(--header-height) 0 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -85,7 +85,6 @@ const props = defineProps({
 
 @media screen and (min-width: 1080px) {
   .ToggleSetting {
-    padding-top: 7.2rem;
     &__Heading {
       display: block;
     }
