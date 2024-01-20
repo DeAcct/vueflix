@@ -1,6 +1,6 @@
 <template>
   <component :is="component" class="AnimeItemHead">
-    <h1 class="blind">뷰플릭스</h1>
+    <h1 class="blind">데레</h1>
     <div class="AnimeItemHead__Navigation">
       <div class="wrap">
         <div class="col-left">
@@ -125,7 +125,7 @@ const { wannaSee, toggleWannaSee } = useWannaSee(route.params.title);
 
 async function openSystemShare() {
   const shareData = {
-    title: `뷰플릭스에서 ${route.params.title} 다시보기`,
+    title: `데레에서 ${route.params.title} 다시보기`,
     url: window.location.href,
   };
   await navigator.share(shareData);

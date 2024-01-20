@@ -18,7 +18,7 @@
     >
       <template v-if="activity === 'Logo' || !isTouchDevice">
         <RouterLink to="/">
-          <VueflixLogo>뷰플릭스</VueflixLogo>
+          <VueflixLogo>데레</VueflixLogo>
         </RouterLink>
       </template>
       <template v-else>

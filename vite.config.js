@@ -20,10 +20,10 @@ export default defineConfig({
       includeAssets: ["favicon.svg", "robots.txt"],
       registerType: "autoUpdate",
       manifest: {
-        name: "뷰플릭스",
-        short_name: "뷰플릭스",
+        name: "데레",
+        short_name: "데레",
         description:
-          "당당하게 애니 볼 땐, 뷰플릭스! 고전 명작부터 이번 분기 화제작까지 모든 애니를 고화질로 스트리밍할 수 있는 곳은 이곳 뿐.",
+          "당당하게 애니 볼 땐, 데레! 고전 명작부터 이번 분기 화제작까지 모든 애니를 고화질로 스트리밍할 수 있는 곳은 이곳 뿐.",
         theme_color: "#d62929",
         icons: [
           {

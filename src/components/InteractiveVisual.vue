@@ -2,7 +2,7 @@
   <div class="InteractiveVisual">
     <div class="InteractiveVisual__Body" ref="$interactive">
       <p class="InteractiveVisual__Bubble InteractiveVisual__Bubble--Question">
-        와... 뷰플릭스 볼 거 엄청 많다
+        와... 데레 볼 거 엄청 많다
       </p>
       <p class="InteractiveVisual__Bubble InteractiveVisual__Bubble--Loading">
         <span

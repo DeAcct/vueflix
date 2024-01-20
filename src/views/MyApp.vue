@@ -85,7 +85,7 @@ const viewModel = [
   [
     {
       icon: IconMembership,
-      text: "뷰플릭스 멤버십",
+      text: "데레 멤버십",
       to: "/my/membership",
       requireLogin: true,
     },

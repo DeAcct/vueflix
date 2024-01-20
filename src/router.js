@@ -8,7 +8,7 @@ const routes = [
     name: "home",
     component: () => import("@/views/AppHome.vue"),
     meta: {
-      title: "뷰플릭스 - 합법적 애니 스트리밍",
+      title: "데레 - 애니에 빠지다",
       appBar: {
         activityContent: "Logo",
       },
@@ -86,7 +86,7 @@ const routes = [
     name: "my",
     component: () => import("@/views/MyApp.vue"),
     meta: {
-      title: "내 뷰플릭스",
+      title: "내 데레라이프",
       appBar: {
         activityContent: "MY",
       },
@@ -139,7 +139,7 @@ const routes = [
     name: "auth",
     component: () => import("@/layout/Auth.layout.vue"),
     meta: {
-      title: "뷰플릭스에 어서오세요!",
+      title: "데레에 어서오세요!",
       appBar: {
         activityContent: "Logo",
         backButton: true,
