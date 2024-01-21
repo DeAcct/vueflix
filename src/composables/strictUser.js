@@ -3,7 +3,7 @@ import { useAuth } from "@/store/auth";
 import { useRandomNickname } from "@/utility/randomNickname";
 
 const FORBIDDEN_WORD = [
-  // 사칭 가능성이 높은 단어
+  // 사칭
   "운영",
   "스태프",
   "스탭",
@@ -30,7 +30,6 @@ const FORBIDDEN_WORD = [
   "나치",
   "nazi",
   "하켄크로이츠",
-  "haakenkreuz",
   // 비속어
   "씨발",
   "시발",

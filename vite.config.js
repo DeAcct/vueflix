@@ -19,6 +19,9 @@ export default defineConfig({
     VitePWA({
       includeAssets: ["favicon.svg", "robots.txt"],
       registerType: "autoUpdate",
+      devOptions: {
+        enabled: true,
+      },
       manifest: {
         name: "데레",
         short_name: "데레",

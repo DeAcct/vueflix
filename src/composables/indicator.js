@@ -45,7 +45,6 @@ export function useIndicatorAnimation(index) {
   }
   onMounted(() => {
     move(index);
-    console.log(to.x);
   });
   useResizeObserver(selector, () => {
     move(index);

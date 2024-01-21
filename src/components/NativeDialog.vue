@@ -19,16 +19,31 @@ defineExpose({
 
 <style lang="scss" scoped>
 .NativeDialog {
-  &__Body {
+  @starting-style {
+    &[open]::backdrop {
+      opacity: 0;
+    }
+  }
+  &[open]::backdrop {
+    background-color: hsl(0 0% 0% / 0.3);
+    transition: opacity 150ms ease-out, display 150ms ease-out allow-discrete,
+      overay 150ms ease-out allow-discrete;
+  }
+  &[open] &__Body {
     display: flex;
     flex-direction: column;
     position: fixed;
-    bottom: 0;
+    inset: var(--dialog-pc-inset, auto);
+    translate: var(--dialog-pc-translate, -50% -50%);
     background-color: hsl(var(--bg-100));
-    border-radius: calc(var(--global-radius) * 2) calc(var(--global-radius) * 2)
-      0 0;
-    width: 100%;
-    padding: var(--inner-padding);
+    border-radius: var(--dialog-border-radius);
+    width: min(var(--dialog-max-width), 100%);
+    padding: var(--dialog-padding, var(--inner-padding));
+    transition: translate 150ms ease-out, display 150ms ease-out allow-discrete,
+      overay 150ms ease-out allow-discrete;
+    @starting-style {
+      translate: var(--dialog-starting-translate, 0 100%);
+    }
   }
 }
 </style>

@@ -21,3 +21,6 @@ package-lock.json
 *.xd
 
 TestAnime*
+
+dist
+dev-dist

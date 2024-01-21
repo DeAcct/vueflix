@@ -1,160 +1,213 @@
 <template>
-  <div class="AppHome">
-    <main>
-      <BannerSlide />
-      <div class="AppHome__Curator">
-        <div class="AppHome__Item" v-if="latest(6).length">
-          <h2 class="AppHome__Title inner">최근 본 애니</h2>
-          <VueflixCarousel
-            :length="latest(6).length"
-            class="AppHome__Carousel"
-            type="arrow"
+  <main class="AppHome">
+    <BannerSlide />
+    <div class="AppHome__Curator">
+      <div class="AppHome__Item" v-if="latest(6).length">
+        <h2 class="AppHome__Title inner">최근 본 애니</h2>
+        <VueflixCarousel
+          :length="latest(6).length"
+          class="AppHome__Carousel"
+          type="arrow"
+        >
+          <ThumbnailSet
+            v-for="{ aniTitle, part, index, progress, thumbnail } in latest(6)"
+            :key="aniTitle"
+            class="AppHome__CurationItem"
           >
-            <ThumbnailSet
-              v-for="{ aniTitle, part, index, progress, thumbnail } in latest(
-                6
-              )"
-              :key="aniTitle"
-              class="AppHome__CurationItem"
-            >
-              <template #image>
-                <RouterLink
-                  :to="`/anime-play/${aniTitle}/${part}/${index}`"
-                  class="AppHome__Image"
-                  exact-active-class="AppHome__Image--Selected"
-                >
-                  <OptimizedMedia
-                    :src="`${aniTitle}/${thumbnail}`"
-                    :alt="`${aniTitle} ${part} ${index} 이어보기`"
-                  />
-                  <ProgressCircle
-                    class="AppHome__WatchPercent"
-                    :percent="`${(progress.current / progress.max) * 100}%`"
-                  />
-                </RouterLink>
-              </template>
-              <template #text>
-                <RouterLink
-                  class="AppHome__TextLink"
-                  :to="`/anime/${aniTitle}/episodes`"
-                >
-                  <span class="AppHome__AniTitle">
-                    {{ aniTitle }}
-                  </span>
-                  <p class="AppHome__Episode">
-                    <strong class="AppHome__PartIndex">
-                      {{ part }} {{ index }}
-                    </strong>
-                  </p>
-                </RouterLink>
-              </template>
-            </ThumbnailSet>
-          </VueflixCarousel>
-        </div>
-        <div class="AppHome__Item">
-          <h2 class="AppHome__Title inner">요일별 신작</h2>
-          <MultiSelector
-            class="AppHome__DaySelector"
-            v-model="selectedDay"
-            @update:model-value="onDayChange"
-            :data="DAYS"
-          ></MultiSelector>
-          <VueflixCarousel
-            :length="selectedDailyAnime.length"
-            class="AppHome__Carousel"
-            type="arrow"
-          >
-            <ThumbnailSet
-              v-for="anime in selectedDailyAnime"
-              :key="`${selectedDay}-${anime}`"
-              class="AppHome__CurationItem"
-            >
-              <template #image>
-                <RouterLink
-                  :to="`/anime/${anime}/episodes`"
-                  class="AppHome__Image"
-                  exact-active-class="AppHome__Image--Selected"
-                >
-                  <OptimizedMedia
-                    :src="`${escaper(anime)}/${escaper(anime)}.webp`"
-                    :alt="`${anime} 포스터`"
-                  />
-                </RouterLink>
-              </template>
-              <template #text>
-                <RouterLink
-                  :to="`/anime/${anime}/episodes`"
-                  class="AppHome__TextLink"
-                >
-                  <span class="AppHome__AniTitle">
-                    {{ anime }}
-                  </span>
-                </RouterLink>
-              </template>
-            </ThumbnailSet>
-          </VueflixCarousel>
-        </div>
-        <div class="AppHome__Item" v-for="recommended in recommendedAnime">
-          <h2 class="AppHome__Title inner">
-            {{ recommended.subject }}
-          </h2>
-          <VueflixCarousel
-            :length="recommended.list.length"
-            class="AppHome__Carousel"
-            type="arrow"
-          >
-            <ThumbnailSet
-              v-for="anime in recommended.list"
-              class="AppHome__CurationItem"
-              :key="`${recommended.subject}-${anime}`"
-            >
-              <template #image>
-                <RouterLink
-                  :to="`/anime/${anime}/episodes`"
-                  class="AppHome__Image"
-                  exact-active-class="AppHome__Image--Selected"
-                >
-                  <OptimizedMedia
-                    :src="`${escaper(anime)}/${escaper(anime)}.webp`"
-                    :alt="`${anime} 포스터`"
-                  />
-                </RouterLink>
-              </template>
-              <template #text>
-                <RouterLink
-                  :to="`/anime/${anime}/episodes`"
-                  class="AppHome__TextLink"
-                >
-                  <span class="AppHome__AniTitle">
-                    {{ anime }}
-                  </span>
-                </RouterLink>
-              </template>
-            </ThumbnailSet>
-          </VueflixCarousel>
-        </div>
+            <template #image>
+              <RouterLink
+                :to="`/anime-play/${aniTitle}/${part}/${index}`"
+                class="AppHome__Image"
+                exact-active-class="AppHome__Image--Selected"
+              >
+                <OptimizedMedia
+                  :src="`${aniTitle}/${thumbnail}`"
+                  :alt="`${aniTitle} ${part} ${index} 이어보기`"
+                />
+                <ProgressCircle
+                  class="AppHome__WatchPercent"
+                  :percent="`${(progress.current / progress.max) * 100}%`"
+                />
+              </RouterLink>
+            </template>
+            <template #text>
+              <RouterLink
+                class="AppHome__TextLink"
+                :to="`/anime/${aniTitle}/episodes`"
+              >
+                <span class="AppHome__AniTitle">
+                  {{ aniTitle }}
+                </span>
+                <p class="AppHome__Episode">
+                  <strong class="AppHome__PartIndex">
+                    {{ part }} {{ index }}
+                  </strong>
+                </p>
+              </RouterLink>
+            </template>
+          </ThumbnailSet>
+        </VueflixCarousel>
       </div>
-    </main>
-  </div>
+      <div class="AppHome__Item">
+        <h2 class="AppHome__Title inner">요일별 신작</h2>
+        <MultiSelector
+          class="AppHome__DaySelector"
+          v-model="selectedDay"
+          @update:model-value="onDayChange"
+          :data="DAYS"
+        ></MultiSelector>
+        <VueflixCarousel
+          :length="selectedDailyAnime.length"
+          class="AppHome__Carousel"
+          type="arrow"
+        >
+          <ThumbnailSet
+            v-for="anime in selectedDailyAnime"
+            :key="`${selectedDay}-${anime}`"
+            class="AppHome__CurationItem"
+          >
+            <template #image>
+              <RouterLink
+                :to="`/anime/${anime}/episodes`"
+                class="AppHome__Image"
+                exact-active-class="AppHome__Image--Selected"
+              >
+                <OptimizedMedia
+                  :src="`${escaper(anime)}/${escaper(anime)}.webp`"
+                  :alt="`${anime} 포스터`"
+                />
+              </RouterLink>
+            </template>
+            <template #text>
+              <RouterLink
+                :to="`/anime/${anime}/episodes`"
+                class="AppHome__TextLink"
+              >
+                <span class="AppHome__AniTitle">
+                  {{ anime }}
+                </span>
+              </RouterLink>
+            </template>
+          </ThumbnailSet>
+        </VueflixCarousel>
+      </div>
+      <div class="AppHome__Item" v-for="recommended in recommendedAnime">
+        <h2 class="AppHome__Title inner">
+          {{ recommended.subject }}
+        </h2>
+        <VueflixCarousel
+          :length="recommended.list.length"
+          class="AppHome__Carousel"
+          type="arrow"
+        >
+          <ThumbnailSet
+            v-for="anime in recommended.list"
+            class="AppHome__CurationItem"
+            :key="`${recommended.subject}-${anime}`"
+          >
+            <template #image>
+              <RouterLink
+                :to="`/anime/${anime}/episodes`"
+                class="AppHome__Image"
+                exact-active-class="AppHome__Image--Selected"
+              >
+                <OptimizedMedia
+                  :src="`${escaper(anime)}/${escaper(anime)}.webp`"
+                  :alt="`${anime} 포스터`"
+                />
+              </RouterLink>
+            </template>
+            <template #text>
+              <RouterLink
+                :to="`/anime/${anime}/episodes`"
+                class="AppHome__TextLink"
+              >
+                <span class="AppHome__AniTitle">
+                  {{ anime }}
+                </span>
+              </RouterLink>
+            </template>
+          </ThumbnailSet>
+        </VueflixCarousel>
+      </div>
+    </div>
+    <NativeDialog ref="$installModal" class="PWAModal">
+      <template #title>
+        <strong class="PWAModal__Title">
+          홈 화면에서 만남을 추구하면 안 되는 걸까?
+        </strong>
+      </template>
+      <template #content>
+        <p class="PWAModal__Introduce">
+          홈 화면에서 데레에 빠르게 접근할 수 있어요.
+          <i class="PWAModal__HowTo">
+            <template v-if="isDeviceIOS">
+              애플 기기를 사용하시네요! 하단의
+              <IconBase class="PWAModal__IOSIcon">
+                <IconIOSInstall />
+              </IconBase>
+              에서 홈 화면에 추가해보세요.
+            </template>
+            <template v-else>바로가기 아이콘을 추가할까요?</template>
+          </i>
+        </p>
+      </template>
+      <template #control>
+        <div class="PWAModal__Control">
+          <label class="PWAModal__Postpone">
+            <InputBoolean
+              v-model="hideModal"
+              type="checkbox"
+              class="PWAModal__Checkbox"
+            />
+            30일 동안 보지 않음
+          </label>
+          <VueflixBtn
+            type="submit"
+            component="button"
+            @click="postpone"
+            class="PWAModal__Button PWAModal__Button--Dismiss"
+          >
+            <template #text>닫기</template>
+          </VueflixBtn>
+          <VueflixBtn
+            type="submit"
+            component="button"
+            @click="install"
+            class="PWAModal__Button PWAModal__Button--Install"
+            v-if="!isDeviceIOS"
+          >
+            <template #text>홈 화면에 추가</template>
+          </VueflixBtn>
+        </div>
+      </template>
+    </NativeDialog>
+  </main>
 </template>
 
 <script setup>
+import { onMounted, onUnmounted, ref, watch } from "vue";
+import { getDocs, collection, doc, getDoc } from "firebase/firestore";
+import { db } from "@/utility/firebase";
+
 import { DAYS } from "@/enums/Days";
+import { useMaratonData } from "@/composables/maraton";
+import { usePWA } from "@/composables/pwa";
+
+// import Cookies from "js-cookie";
 
 import BannerSlide from "@/components/BannerSlide.vue";
+import InputBoolean from "@/components/InputBoolean.vue";
 import MultiSelector from "@/components/MultiSelector.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ProgressCircle from "@/components/ProgressCircle.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
+import VueflixBtn from "@/components/VueflixBtn.vue";
+import NativeDialog from "@/components/NativeDialog.vue";
 
-import Cookies from "js-cookie";
-
-import { getDocs, collection, doc, getDoc } from "firebase/firestore";
-import { db } from "@/utility/firebase";
-import { onMounted, onUnmounted, ref, watch } from "vue";
-import { useAuth } from "../store/auth";
-import { useMaratonData } from "../composables/maraton";
+import IconBase from "@/components/IconBase.vue";
+import IconIOSInstall from "@/components/icons/IconIOSInstall.vue";
 
 const now = new Date();
 const selectedDay = ref(now.getDay());
@@ -168,7 +221,6 @@ onMounted(async () => {
   await getSelectedDayList();
 });
 function onDayChange(e) {
-  console.log(selectedDay.value);
   selectedDay.value = DAYS.map(({ key }) => key).findIndex(
     (item) => item === e
   );
@@ -177,25 +229,6 @@ watch(selectedDay, async () => {
   await getSelectedDayList();
 });
 
-const isModalOpened = ref(false);
-onMounted(() => {
-  window.addEventListener("beforeinstallprompt", (e) => {
-    if (Cookies.get("add-to-home-screen") === undefined) {
-      isModalOpened.value = e;
-    }
-  });
-  window.addEventListener("appinstalled", () => {
-    isModalOpened.value = null;
-  });
-});
-async function PWAdismiss() {
-  Cookies.set("add-to-home-screen", null, { expires: 15 });
-  isModalOpened.value = null;
-}
-async function PWAinstall() {
-  isModalOpened.prompt();
-}
-
 const recommendedAnime = ref({});
 onMounted(async () => {
   const qSnapshot = await getDocs(collection(db, "recommend"));
@@ -203,22 +236,16 @@ onMounted(async () => {
   recommendedAnime.value = data;
 });
 
-onUnmounted(async () => {
-  window.removeEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    if (Cookies.get("remove-to-home-screen") === undefined) {
-      isModalOpened.value = e;
-    }
-  });
-  window.removeEventListener("appinstalled", () => {
-    isModalOpened.value = null;
-  });
-});
-
-const store = useAuth();
+const {
+  $root: $installModal,
+  postpone,
+  install,
+  hideModal,
+  isDeviceIOS,
+} = usePWA();
 
 function escaper(str) {
-  return str.replaceAll(/:/g, "_").replaceAll(/\?/g, "");
+  return str.replaceAll(/:|\./g, "_").replaceAll(/\?/g, "");
 }
 
 const { latest } = useMaratonData();
@@ -295,6 +322,65 @@ const { latest } = useMaratonData();
     font-size: 1.4rem;
   }
 }
+
+.PWAModal {
+  --dialog-max-width: 50rem;
+  --dialog-pc-translate: 0;
+  --dialog-pc-inset: auto auto 0 auto;
+  --dialog-starting-translate: 0 100%;
+  --dialog-border-radius: calc(var(--global-radius) * 2)
+    calc(var(--global-radius) * 2) 0 0;
+  &__Title {
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+    text-wrap: pretty;
+    line-height: 1.3;
+  }
+  &__Introduce {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    line-height: 1.3;
+    text-wrap: pretty;
+  }
+  &__HowTo {
+    display: inline-block;
+    font-weight: 700;
+    line-height: 1.3;
+    gap: 0.4rem;
+  }
+  &__IOSIcon {
+    vertical-align: text-bottom;
+    width: 2rem;
+    height: 2rem;
+  }
+  &__Control {
+    display: flex;
+  }
+  &__Postpone {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-right: auto;
+  }
+  &__Button {
+    border-radius: var(--global-radius);
+    font-size: 1.4rem;
+    box-shadow: none;
+    &--Install {
+      background-color: hsl(var(--theme-500));
+      color: #fff;
+    }
+  }
+}
+@media (display-mode: standalone) {
+  .PWAModal {
+    display: none;
+  }
+}
 @media screen and (min-width: 768px) {
   .AppHome {
     &__Curator {
@@ -326,6 +412,13 @@ const { latest } = useMaratonData();
     &__CurationItem {
       width: var(--thumbnail-width, 28vw);
     }
+  }
+  .PWAModal {
+    --dialog-pc-inset: 50% auto auto 50%;
+    --dialog-pc-translate: -50% -50%;
+    --dialog-starting-translate: -50% 3rem;
+    --dialog-border-radius: calc(var(--global-radius) * 2);
+    --dialog-padding: 3rem;
   }
 }
 @media screen and (min-width: 1920px) {

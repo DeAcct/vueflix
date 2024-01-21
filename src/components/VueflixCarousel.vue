@@ -126,7 +126,7 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
     display: flex;
     flex-direction: v-bind("direction");
     gap: var(--carousel-gap, 1rem);
-    width: 100%;
+    width: fit-content;
     padding: 0 var(--carousel-padding, var(--inner-padding));
     overflow: var(--carousel-overflow);
 
