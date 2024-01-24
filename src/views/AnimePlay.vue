@@ -238,7 +238,6 @@ function updateTime(e) {
 const {
   animeInfo,
   getAnimeData,
-  getThumbnail,
   nowEpisode,
   nextEpisode,
   prevEpisode,

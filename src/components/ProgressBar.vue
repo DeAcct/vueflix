@@ -33,13 +33,12 @@ const props = defineProps({
         calc(
           v-bind("props.progress.current") / v-bind("props.progress.max") * 100%
         ),
-      hsl(var(--bg-100) / 0.5)
+      var(--progress-bg-color, hsl(var(--bg-100) / 0.5))
         calc(
           v-bind("props.progress.current") / v-bind("props.progress.max") * 100%
         )
     );
     backdrop-filter: blur(10px);
-    cursor: pointer;
   }
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -50,7 +49,6 @@ const props = defineProps({
     box-shadow: 1px 1px 3px hsl(var(--text-900) / 0.5);
     margin-top: -0.6rem;
     border-radius: 9999px;
-    cursor: w-resize;
   }
 }
 
@@ -64,7 +62,7 @@ const props = defineProps({
             v-bind("props.progress.current") / v-bind("props.progress.max") *
               100%
           ),
-        hsl(var(--bg-100) / 0.5)
+        var(--progress-bg-color, hsl(var(--bg-100) / 0.5))
           calc(
             v-bind("props.progress.current") / v-bind("props.progress.max") *
               100%

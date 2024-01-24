@@ -16,11 +16,11 @@
       <div class="KeywordReviews__Chart">
         <template v-if="sharedAll > 0">
           <LinearChart :data="sharedKeyword" class="sub-widget">
-            <template v-slot:summary
-              >다른 덕후들이 볼 때
+            <template v-slot:summary>
+              다른 덕후들이 볼 때
               <strong>{{ sharedMax }}</strong>
-              이(가) 강한 작품이에요</template
-            >
+              이(가) 강한 작품이에요
+            </template>
           </LinearChart>
         </template>
         <template v-else>

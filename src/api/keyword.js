@@ -38,8 +38,10 @@ export function useKeyword(aniTitle) {
 
   async function setSharedSide({ target, method }) {
     const animeUpdateObj = {};
-    animeUpdateObj[`keywordReview.${target}.value`] = increment(method);
-    await updateDoc(doc(db, "anime", aniTitle), animeUpdateObj);
+    // animeUpdateObj[`keywordReview.${target}.value`] = increment(method);
+    await updateDoc(doc(db, "anime", aniTitle), {
+      ["keywordReview." + target + ".value"]: increment(method),
+    });
   }
 
   async function setUserSide() {

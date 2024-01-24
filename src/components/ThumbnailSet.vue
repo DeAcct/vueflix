@@ -1,9 +1,17 @@
 <template>
-  <li class="ThumbnailSet">
+  <component :is="component" class="ThumbnailSet">
     <slot name="image"></slot>
     <slot name="text"></slot>
-  </li>
+  </component>
 </template>
+
+<script setup>
+const props = defineProps({
+  component: {
+    default: "li",
+  },
+});
+</script>
 
 <style lang="scss" scoped>
 .ThumbnailSet {

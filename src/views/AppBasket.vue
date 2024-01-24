@@ -2,28 +2,6 @@
   <main class="Basket">
     <template v-if="user">
       <div class="Basket__ButtonGroup inner">
-        <!-- <div class="Basket__Tabs">
-          <button
-            @click="changeSelected"
-            class="Basket__Button"
-            v-for="tabItem in tabItems"
-            :key="tabItem.type"
-            :data-key="tabItem.type"
-            ref="items"
-          >
-            <span
-              :class="[
-                'Basket__ActiveHolder',
-                {
-                  'Basket__ActiveHolder--Active': selectedTab === tabItem.type,
-                },
-              ]"
-            >
-              {{ tabItem.text }}
-            </span>
-          </button>
-          <span class="Basket__Selector" ref="selector"></span>
-        </div> -->
         <MultiSelector
           class="Basket__Tabs"
           v-model="selectedTab"
@@ -174,7 +152,7 @@ const selectedList = computed(() => {
     position: sticky;
     z-index: 10;
     top: var(--header-height);
-    width: min(100%, 1240px);
+    width: min(100%, 124rem);
     margin: 0 auto;
     border-bottom: 1px solid hsl(var(--bg-200));
     background-color: hsl(var(--bg-100));
@@ -184,7 +162,7 @@ const selectedList = computed(() => {
   &__Tabs {
     display: flex;
     margin: 0 auto;
-    --item-width: calc(20 * 1px * var(--vw));
+    --item-width: calc(35 * 1px * var(--vw));
     --item-height: 4.8rem;
     border-radius: 9999px;
     background-color: transparent;
@@ -196,6 +174,7 @@ const selectedList = computed(() => {
     &--Remove {
       margin-left: auto;
       width: 4.8rem;
+      flex-shrink: 0;
       align-items: center;
     }
   }

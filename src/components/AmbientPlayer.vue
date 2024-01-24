@@ -25,6 +25,7 @@
         :progress="progress"
         :is-playing="playing"
         :next-episode="nextEpisode"
+        @play-setting="onChangePlaySetting"
         @change-play-progress="onChangePlayProgress"
         @change-volume="onVolumeChange"
         @prev-sec="moveBeforeFiveSec"
@@ -167,6 +168,21 @@ useEventListener(window, "keydown", (e) => {
   }
   keyBinding[e.key]();
 });
+
+const playSetting = ref({
+  quality: "1080p",
+  speed: 1.0,
+});
+function onChangePlaySetting(e) {
+  playSetting.value = { ...playSetting.value, ...e };
+  $video.value.playbackRate = playSetting.value.speed;
+}
+// watch(
+//   () => playSetting.value.quality,
+//   () => {
+//     $video.value.src = `${props.meta.title}/${playSetting.value.quality}.mp4`
+//   }
+// );
 
 const isLoading = ref(true);
 function onLoadedVideo() {
@@ -326,7 +342,6 @@ function takeScreenshot() {
   const { downloadURL } = useVideoScreenshot($video);
   screenshotPreview.value.imgSrc = downloadURL.value;
   screenshotPreview.value.show = true;
-  console.log(screenshotPreview.value);
   $video.value.style.transform = "scale(0.95)";
   setTimeout(() => {
     $video.value.style.transform = "scale(1)";

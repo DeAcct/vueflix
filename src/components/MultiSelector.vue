@@ -24,13 +24,7 @@
 
 <script setup>
 import { useIndicatorAnimation } from "@/composables/indicator";
-
-// defineProps는 setup() 밖으로 호이스팅(선언이 상단으로 끌어올려짐) 되므로 외부 상수/변수를 참조할 수 없다.
-// 다만 import 되었거나 script 블록에서 선언된 경우 참조할 수 있다.
 const props = defineProps({
-  type: {
-    type: String,
-  },
   data: {
     type: Array,
   },
@@ -61,7 +55,7 @@ const {
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 4rem;
-    border-radius: 9999px;
+    border-radius: var(--indicator-radius, 9999px);
     transition: color 150ms ease-out;
     border: 2px solid transparent;
     display: flex;
@@ -78,13 +72,14 @@ const {
   &__Indicator {
     position: absolute;
     left: 0;
+    top: 0;
     z-index: 1;
     width: calc(v-bind("to.width") * 1px);
     height: calc(v-bind("to.height") * 1px);
     background-color: hsl(var(--theme-500) / 0.2);
-    border-radius: 9999px;
-    transform: translateX(calc(v-bind("to.x") * 1px));
-    transition: transform 150ms ease-out;
+    border-radius: var(--indicator-radius, 9999px);
+    translate: calc(v-bind("to.x") * 1px) calc(v-bind("to.y") * 1px);
+    transition: translate 150ms ease-out;
   }
 }
 </style>

@@ -48,11 +48,9 @@ const props = defineProps({
 
   &__Content {
     opacity: 0;
-    width: 0;
-    height: 0;
-    overflow: hidden;
+    pointer-events: none;
     position: absolute;
-    white-space: nowrap;
+    cursor: inherit;
   }
   &--column &__Content {
     bottom: 6rem;
@@ -63,22 +61,22 @@ const props = defineProps({
     align-self: center;
   }
   &:not(:focus-visible) &__Content {
-    width: 0;
-    height: 0;
     opacity: 0;
+  }
+  &--AlwaysShow:focus-within &__Content {
+    pointer-events: all;
+    opacity: 1;
   }
 }
 
 @media (hover: hover) and (pointer: fine) {
   .ToolTip {
-    &--AlwaysShow &__Content,
     &:hover &__Content {
-      width: auto;
-      height: auto;
+      pointer-events: all;
       opacity: 1;
     }
     &--row:hover &__Content {
-      width: 100%;
+      pointer-events: all;
       height: auto;
     }
   }

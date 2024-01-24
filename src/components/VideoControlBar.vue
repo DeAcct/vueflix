@@ -52,7 +52,7 @@
             </template>
           </ToolTip>
         </div>
-        <ToolTip direction="row" class="VideoControlBar__ControlItem">
+        <ToolTip class="VideoControlBar__ControlItem">
           <template #content>
             <div
               class="VideoControlBar__ToolTipContent VideoControlBar__ToolTipContent--Volume"
@@ -82,23 +82,31 @@
           <template #content>
             <div class="VideoControlBar__ToolTipContent">
               <p class="VideoControlBar__ToolTipText">다음화</p>
-              <ThumbnailSet
-                :link="`/anime-play/${route.params.title}/${nextEpisode.part}/${nextEpisode.index}`"
-                :key="`${route.params.title}-${nextEpisode.part}-${nextEpisode.index}`"
-                :ani-title="route.params.title"
-                :data="{
-                  thumbnail: nextEpisode.thumbnail,
-                  part: nextEpisode.part,
-                  index: nextEpisode.index,
-                  title: nextEpisode.title,
-                }"
-                type="episode"
-                watch-percent="0%"
-                :replace="{
-                  main: true,
-                  sub: true,
-                }"
-              />
+              <ThumbnailSet component="div" class="VideoControlBar__Next">
+                <template #image>
+                  <RouterLink
+                    class="VideoControlBar__NextThumbnail"
+                    :to="`/anime-play/${route.params.title}/${nextEpisode.part}/${nextEpisode.index}`"
+                  >
+                    <OptimizedMedia
+                      :src="`${route.params.title}/${nextEpisode.thumbnail}`"
+                      :alt="`${route.params.title} ${nextEpisode.part} ${nextEpisode.index} 미리보기 이미지`"
+                    >
+                    </OptimizedMedia>
+                  </RouterLink>
+                </template>
+                <template #text>
+                  <RouterLink
+                    :to="`/anime-play/${route.params.title}/${nextEpisode.part}/${nextEpisode.index}`"
+                    class="VideoControlBar__ToolTipText VideoControlBar__ToolTipText--Next"
+                  >
+                    <strong
+                      >{{ nextEpisode.part }} {{ nextEpisode.index }}</strong
+                    >
+                    <span>{{ nextEpisode.title }}</span>
+                  </RouterLink>
+                </template>
+              </ThumbnailSet>
             </div>
           </template>
           <template #trigger>
@@ -129,9 +137,27 @@
       </div>
 
       <div class="VideoControlBar__HowWatch">
+        <ToolTip direction="row-reverse" align="flex-end" show>
+          <template #content>
+            <VideoSetting
+              class="VideoControlBar__ToolTipContent VideoControlBar__ToolTipContent--PlaySetting"
+              @update:selected="changeSetting"
+              :data="settingModel"
+            />
+          </template>
+          <template #trigger>
+            <button class="VideoControlBar__Button">
+              <IconBase>
+                <IconSetting />
+              </IconBase>
+            </button>
+          </template>
+        </ToolTip>
         <ToolTip v-if="!isFull && !deviceInfo.isMobile" align="flex-end">
           <template #content>
-            <div class="VideoControlBar__ToolTipContent">영화관 모드</div>
+            <div class="VideoControlBar__ToolTipContent">
+              {{ isTheater ? "일반 모드" : "영화관 모드" }}
+            </div>
           </template>
           <template #trigger>
             <button class="VideoControlBar__Button" @click="toggleTheater">
@@ -177,29 +203,63 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, inject } from "vue";
-import { useEventListener } from "@vueuse/core";
+import { ref, computed, watch, inject, reactive } from "vue";
 import { useRoute } from "vue-router";
+import { useEventListener } from "@vueuse/core";
 
 import ProgressBar from "./ProgressBar.vue";
 import ToolTip from "./ToolTip.vue";
 import ThumbnailSet from "./ThumbnailSet.vue";
+import VideoSetting from "./VideoSetting.vue";
+import OptimizedMedia from "./OptimizedMedia.vue";
 
 import IconBase from "./IconBase.vue";
-import IconPlay from "./icons/IconPlay.vue";
-import IconNextEpisode from "./icons/IconNextEpisode.vue";
-import IconPause from "./icons/IconPause.vue";
+import IconExpand from "./icons/IconExpand.vue";
 import IconFullScreenOff from "./icons/IconFullScreenOff.vue";
 import IconFullScreenOn from "./icons/IconFullScreenOn.vue";
-import IconPIP from "./icons/IconPIP.vue";
 import IconMuteOn from "./icons/IconMuteOn.vue";
 import IconMuteOff from "./icons/IconMuteOff.vue";
-import IconExpand from "./icons/IconExpand.vue";
-import IconShirink from "./icons/IconShirink.vue";
-import IconPrevFiveSec from "./icons/IconPrevFiveSec.vue";
+import IconNextEpisode from "./icons/IconNextEpisode.vue";
 import IconNextFiveSec from "./icons/IconNextFiveSec.vue";
+import IconPause from "./icons/IconPause.vue";
+import IconPIP from "./icons/IconPIP.vue";
+import IconPlay from "./icons/IconPlay.vue";
+import IconPrevFiveSec from "./icons/IconPrevFiveSec.vue";
+import IconSetting from "./icons/IconSetting.vue";
+import IconShirink from "./icons/IconShirink.vue";
 
 const deviceInfo = inject("device-info");
+
+const settingModel = [
+  {
+    title: "영상 화질",
+    key: "quality",
+    items: [
+      { text: "1080p", key: "1080p" },
+      { text: "720p", key: "720p" },
+      { text: "480p", key: "480p" },
+    ],
+  },
+  {
+    title: "재생 속도",
+    key: "speed",
+    items: [
+      { text: "x 0.5", key: 0.5 },
+      { text: "x 1.0", key: 1.0 },
+      { text: "x 1.2", key: 1.2 },
+      { text: "x 1.5", key: 1.5 },
+      { text: "x 2.0", key: 2.0 },
+    ],
+  },
+];
+const playSetting = ref({
+  quality: "1080p",
+  speed: 1.0,
+});
+function changeSetting(e) {
+  playSetting.value = { ...playSetting.value, ...e };
+  emits("play-setting", playSetting.value);
+}
 
 const emits = defineEmits([
   "play-toggle",
@@ -210,6 +270,7 @@ const emits = defineEmits([
   "change-volume",
   "prev-sec",
   "next-sec",
+  "play-setting",
 ]);
 
 const props = defineProps({
@@ -220,7 +281,6 @@ const props = defineProps({
     type: Boolean,
   },
   nextEpisode: {
-    type: [Object, String],
     validator(value) {
       return (
         value === "다음 화 없음" ||
@@ -345,28 +405,53 @@ function onVolumeChange(e) {
   }
 
   &__ToolTipContent {
-    padding: 1rem;
+    padding: 1.6rem;
     background-color: hsl(var(--bg-100));
     border-radius: calc(var(--global-radius) + 1rem);
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     --thumbnail-width: 20rem;
     &--Volume {
-      background-color: transparent;
+      rotate: -90deg;
+      margin-bottom: -1.5rem;
+      cursor: s-resize;
+    }
+    &--PlaySetting {
+      gap: 1.2rem;
+      flex-direction: row;
+      margin-right: 3.6rem;
     }
   }
   &__ToolTipText {
     font-size: 1.5rem;
     font-weight: 700;
     padding: 0.5rem;
+    &--Next {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
   }
   &__VolumeSlide {
     width: 7.2rem;
+    cursor: s-resize;
+    --progress-bg-color: hsl(var(--bg-300));
   }
   &__Time {
     display: none;
+  }
+  &__Next {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  &__NextThumbnail {
+    width: min(30rem, 20vw);
+  }
+
+  &__SettingItem {
+    display: flex;
   }
 
   &__HowWatch {

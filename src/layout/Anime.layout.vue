@@ -16,7 +16,8 @@
           v-for="({ name, tabName }, index) in children"
           v-slot="{ isActive, href, navigate }"
           custom
-          ><h3>
+        >
+          <h3>
             <a
               v-bind="$attrs"
               :href="href"
@@ -36,8 +37,8 @@
             >
               {{ tabName }}
             </a>
-          </h3></RouterLink
-        >
+          </h3>
+        </RouterLink>
         <div class="AnimeLayout__TabIndicator"></div>
       </div>
       <RouterView v-slot="{ Component }">
@@ -224,7 +225,7 @@ const {
     background-color: hsl(var(--theme-500));
     position: absolute;
     bottom: 0;
-    transform: translateX(calc(v-bind("indicatorTo.x") * 1px));
+    transform: translateX(calc(v-bind("indicatorTo.x") * 1px - 2rem));
     transition: 150ms ease-out;
   }
   &__Counter {
