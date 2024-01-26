@@ -55,9 +55,11 @@
 </template>
 
 <script setup>
-import { inject, onMounted } from "vue";
+import { inject } from "vue";
 import { useRoute } from "vue-router";
+
 import { useMaratonData } from "@/composables/maraton";
+import { useHead } from "../composables/head";
 
 import AccordionWidget from "@/components/AccordionWidget.vue";
 import Thumbnailset from "@/components/ThumbnailSet.vue";
@@ -69,9 +71,7 @@ const animeInfo = inject("anime-info");
 const emit = defineEmits(["open-login-modal"]);
 const route = useRoute();
 
-onMounted(() => {
-  document.title = `${route.params.title} 다시보기`;
-});
+useHead({ title: route.params.title });
 
 const { getEpisodeProgress } = useMaratonData(route.params.title);
 </script>

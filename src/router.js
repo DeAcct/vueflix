@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, useRouter } from "vue-router";
 import { useAuth } from "./store/auth";
 import { computed } from "vue";
 
@@ -119,21 +119,6 @@ const routes = [
       bottomTabMenu: false,
     },
   },
-  // {
-  //   path: "/my/account-setting",
-  //   name: "account-setting",
-  //   component: () => import("@/views/AccountSetting.vue"),
-  //   meta: {
-  //     title: "계정 설정",
-  //     appBar: {
-  //       activityContent: "계정 설정",
-  //       backButton: true,
-  //     },
-  //     bottomTabMenu: false,
-  //   },
-  // },
-  // {
-
   {
     path: "/auth",
     name: "auth",
@@ -188,4 +173,11 @@ const routes = [
 export const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to) => {
+  if (!to.meta) {
+    return;
+  }
+  document.title = to?.meta.title || import.meta.env.VITE_KR_NAME;
 });

@@ -1,26 +1,22 @@
 <template>
-  <RouterView v-slot="{ Component }">
+  <RouterView v-slot="{ Component, route }">
     <VueflixHeader v-if="route.meta.appBar" :is-touch-device="device.isTouch" />
     <BottomTabMenu v-if="route.meta.bottomTabMenu && device.isMobile" />
-    <Transition :name="route.meta.transition || 'app-fade'">
+    <Transition :name="route.meta.transition || `root-move-${direction}`">
       <component :is="Component"></component>
     </Transition>
   </RouterView>
 </template>
 
 <script setup>
-import { useRoute } from "vue-router";
 import { onMounted, onUnmounted, provide, reactive } from "vue";
+
+import { useTheme } from "./store/theme";
+import { useRootTransition } from "@/composables/transition";
+import { useHead } from "@/composables/head";
 
 import VueflixHeader from "@/components/VueflixHeader.vue";
 import BottomTabMenu from "@/components/BottomTabMenu.vue";
-import { useTheme } from "./store/theme";
-
-const route = useRoute();
-
-function changeTitle() {
-  document.title = route.meta.title || import.meta.env.VITE_KR_NAME;
-}
 
 const pointerDeviceQuery = window.matchMedia(
   "(hover: hover) and (pointer: fine)"
@@ -48,7 +44,6 @@ provide("device-info", device);
 
 const theme = useTheme();
 onMounted(() => {
-  changeTitle();
   setDeviceInfo();
   setViewPort();
   window.addEventListener("resize", () => {
@@ -63,15 +58,25 @@ onUnmounted(() => {
     setViewPort();
   });
 });
+
+const direction = useRootTransition();
 </script>
 
 <style lang="scss" scoped>
-.app-fade-enter-active,
-.app-fade-leave-active {
-  transition: opacity 75ms ease-in-out;
+.root-move-left-enter-active,
+.root-move-left-leave-active,
+.root-move-right-enter-active,
+.root-move-right-leave-active {
+  transition: opacity 150ms ease-in-out, translate 75ms ease-in-out;
 }
-.app-fade-enter-from,
-.app-fade-leave-to {
+.root-move-left-enter-from,
+.root-move-right-leave-to {
   opacity: 0;
+  translate: -1rem 0;
+}
+.root-move-right-enter-from,
+.root-move-left-leave-to {
+  opacity: 0;
+  translate: 1rem 0;
 }
 </style>

@@ -1,11 +1,18 @@
 <template>
   <component :is="component" class="ReactionItem">
-    <div class="ReactionItem__MetaData">
+    <button type="button" class="ReactionItem__OpenMetaButton">
+      <OptimizedMedia
+        :src="meta.profileImg"
+        class="ReactionItem__ProfileImg"
+        @click="show"
+      />
+    </button>
+    <div class="ReactionItem__MetaText">
       <strong class="ReactionItem__Author">
-        <slot name="author"></slot>
+        {{ self ? "나" : meta.nickname }}
       </strong>
-      <p class="ReactionItem__Date">{{ formattedDate }}</p>
       <p class="ReactionItem__Edited">
+        {{ formattedDate }}
         <slot name="edited"></slot>
       </p>
     </div>
@@ -60,16 +67,40 @@
         </button>
       </div>
     </div>
+    <NativeDialog ref="$root" class="ReactionItem__MetaModal">
+      <template #content>
+        <StatCard :uid="props.reactionData.uid" class="ReactionItem__Data" />
+      </template>
+      <template #control>
+        <VueflixBtn
+          component="button"
+          class="ReactionItem__CloseBtn"
+          @click="close"
+          type="button"
+        >
+          <template #text> 닫기 </template>
+        </VueflixBtn>
+      </template>
+    </NativeDialog>
   </component>
 </template>
 
 <script setup>
-import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 import { ref, computed } from "vue";
-import { useFormatDate } from "@/composables/formatter";
+
+import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
+
+import { useAuth } from "@/store/auth";
 import { Update, Delete } from "@/api/reaction";
+import { useUserMeta } from "@/api/userMeta";
+import { useFormatDate } from "@/composables/formatter";
+import { useModal } from "@/composables/modal";
+
+import NativeDialog from "./NativeDialog.vue";
+import OptimizedMedia from "./OptimizedMedia.vue";
+import StatCard from "./StatCard.vue";
+import VueflixBtn from "./VueflixBtn.vue";
 import UpdownReaction from "./UpdownReaction.vue";
-import { useAuth } from "../store/auth";
 
 const placeholder = computed(
   () =>
@@ -101,6 +132,9 @@ const props = defineProps({
 });
 const self = computed(() => props.user?.uid === props.reactionData.uid);
 const { date: formattedDate } = useFormatDate(props.reactionData.time.toDate());
+const meta = useUserMeta(props.reactionData.uid);
+
+const { $root, show, close } = useModal();
 
 const editValue = ref(temporalRemoveTimeFlag());
 function temporalRemoveTimeFlag() {
@@ -149,22 +183,36 @@ async function deleteTrigger() {
 <style lang="scss" scoped>
 .ReactionItem {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
   padding: 2rem;
 
   &__MetaData {
     display: flex;
     align-items: center;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.8rem;
+  }
+  &__MetaText {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+  }
+  &__OpenMetaButton {
+    width: 3.6rem;
+    height: 3.6rem;
+    display: flex;
+    margin-right: 1.2rem;
+  }
+  &__ProfileImg {
+    width: 100%;
+    --aspect-ratio: 100%;
+    --radius: 50%;
   }
   &__Author {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     margin-right: 0.6rem;
-  }
-  &__Date {
-    font-size: 1.2rem;
-    font-weight: 300;
-    margin-right: 0.4rem;
+    margin-bottom: 0.6rem;
   }
   &__Edited {
     font-size: 1.2rem;
@@ -172,7 +220,7 @@ async function deleteTrigger() {
   }
 
   &__Content {
-    margin-bottom: 1.2rem;
+    margin: 1.2rem 0;
     position: relative;
     width: 100%;
     max-width: 80ch;
@@ -218,6 +266,7 @@ async function deleteTrigger() {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    flex-grow: 1;
   }
   &__Subreactions {
     display: flex;
@@ -262,6 +311,22 @@ async function deleteTrigger() {
     margin-top: 1rem;
     width: 100%;
   }
+  &__MetaModal {
+    --dialog-inset: auto auto 0 auto;
+    --dialog-translate: 0;
+    --dialog-padding: 2rem;
+    --dialog-max-width: 100%;
+    --dialog-border-radius: calc(var(--global-radius) * 2)
+      calc(var(--global-radius) * 2) 0 0;
+  }
+  &__Data {
+    padding: 0;
+  }
+  &__CloseBtn {
+    margin-top: 0.8rem;
+    margin-left: auto;
+    box-shadow: none !important;
+  }
 }
 
 .down-fade-enter-active,
@@ -277,9 +342,6 @@ async function deleteTrigger() {
 
 @media screen and (min-width: 1080px) {
   .ReactionItem {
-    &__MetaData {
-      margin-bottom: 0.8rem;
-    }
     &__Author {
       font-size: 1.6rem;
       margin-right: 0.8rem;

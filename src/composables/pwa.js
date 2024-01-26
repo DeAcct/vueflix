@@ -1,18 +1,21 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import { useBrowserStorage } from "./browserStorage";
 import dayjs from "dayjs";
+import { useModal } from "./modal";
 
 export function usePWA() {
   const hideModal = ref(false);
   const isDeviceIOS =
     /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
 
-  const $root = ref(null);
+  // const $root = ref(null);
   const {
     data: postponed,
     setData,
     clearData,
   } = useBrowserStorage("postpone-to");
+
+  const { $root, show, close } = useModal();
 
   let deferredPrompt;
   function showModal(e) {
@@ -21,9 +24,9 @@ export function usePWA() {
     if (dayjs().isBefore(endDate)) {
       return;
     }
-    $root.value.dialogRoot.showModal();
-    document.documentElement.style.overflow = "hidden";
     deferredPrompt = e;
+
+    show();
   }
   function postpone() {
     if (hideModal.value) {
@@ -32,11 +35,6 @@ export function usePWA() {
       setData(endDate.toJSON());
     }
     close();
-  }
-
-  function close() {
-    document.documentElement.style.overflow = "auto";
-    $root.value.dialogRoot.close();
   }
 
   async function install() {
@@ -50,13 +48,14 @@ export function usePWA() {
 
   onMounted(() => {
     if (isDeviceIOS) {
-      $root.value.dialogRoot.showModal();
+      show();
       return;
     }
     window.addEventListener("beforeinstallprompt", showModal);
   });
   onUnmounted(() => {
     if (isDeviceIOS) {
+      close();
       return;
     }
     window.removeEventListener("beforeinstallprompt", showModal);

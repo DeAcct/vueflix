@@ -172,6 +172,7 @@ import { useAuth } from "@/store/auth";
 import { useMaratonData } from "@/composables/maraton";
 import { useScroll } from "@/composables/scroll";
 import { useEpisode } from "@/composables/episode";
+import { useHead } from "@/composables/head";
 
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
 import AccordionWidget from "@/components/AccordionWidget.vue";
@@ -216,6 +217,13 @@ const videoSrc = ref("");
 
 const router = useRouter();
 const route = useRoute();
+useHead({
+  title: `${route.params.title} ${route.params.part} ${route.params.index} 다시보기`,
+  meta: {
+    description: `놓친 애니는 역시 데레에서!`,
+    "og:description": `놓친 애니는 역시 데레에서!`,
+  },
+});
 
 const auth = useAuth();
 const user = computed(() => auth.user);

@@ -325,8 +325,8 @@ const { latest } = useMaratonData();
 
 .PWAModal {
   --dialog-max-width: 50rem;
-  --dialog-pc-translate: 0;
-  --dialog-pc-inset: auto auto 0 auto;
+  --dialog-translate: 0;
+  --dialog-inset: auto auto 0 auto;
   --dialog-starting-translate: 0 100%;
   --dialog-border-radius: calc(var(--global-radius) * 2)
     calc(var(--global-radius) * 2) 0 0;
@@ -414,8 +414,8 @@ const { latest } = useMaratonData();
     }
   }
   .PWAModal {
-    --dialog-pc-inset: 50% auto auto 50%;
-    --dialog-pc-translate: -50% -50%;
+    --dialog-inset: 50% auto auto 50%;
+    --dialog-translate: -50% -50%;
     --dialog-starting-translate: -50% 3rem;
     --dialog-border-radius: calc(var(--global-radius) * 2);
     --dialog-padding: 3rem;

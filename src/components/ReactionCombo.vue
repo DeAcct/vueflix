@@ -38,9 +38,6 @@
           @interact="setInteract"
           class="ReactionCombo__Item"
         >
-          <template #author>{{
-            reaction.uid === user?.uid ? "나" : reaction.author
-          }}</template>
           <template #content>
             <ReactionParser
               :content="reaction.content"

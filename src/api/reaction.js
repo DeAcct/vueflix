@@ -43,7 +43,6 @@ export async function Create({ content, parent, type }) {
   const newItem = {
     uid: user.value.uid,
     parent,
-    author: user.value.nickname,
     content: formattedContent,
     updown: 0,
     time: new Date(),

@@ -177,12 +177,6 @@ function onChangePlaySetting(e) {
   playSetting.value = { ...playSetting.value, ...e };
   $video.value.playbackRate = playSetting.value.speed;
 }
-// watch(
-//   () => playSetting.value.quality,
-//   () => {
-//     $video.value.src = `${props.meta.title}/${playSetting.value.quality}.mp4`
-//   }
-// );
 
 const isLoading = ref(true);
 function onLoadedVideo() {

@@ -1,5 +1,6 @@
 <template>
   <dialog class="NativeDialog" ref="dialogRoot">
+    <button class="NativeDialog__Close" @click="close"></button>
     <form method="dialog" class="NativeDialog__Body">
       <slot name="title"></slot>
       <slot name="content"></slot>
@@ -19,6 +20,10 @@ defineExpose({
 
 <style lang="scss" scoped>
 .NativeDialog {
+  &__Close {
+    touch-action: none;
+  }
+
   @starting-style {
     &[open]::backdrop {
       opacity: 0;
@@ -33,8 +38,9 @@ defineExpose({
     display: flex;
     flex-direction: column;
     position: fixed;
-    inset: var(--dialog-pc-inset, auto);
-    translate: var(--dialog-pc-translate, -50% -50%);
+    z-index: 2;
+    inset: var(--dialog-inset, auto);
+    translate: var(--dialog-translate, -50% -50%);
     background-color: hsl(var(--bg-100));
     border-radius: var(--dialog-border-radius);
     width: min(var(--dialog-max-width), 100%);
@@ -44,6 +50,14 @@ defineExpose({
     @starting-style {
       translate: var(--dialog-starting-translate, 0 100%);
     }
+  }
+
+  &[open] &__Close {
+    touch-action: auto;
+    position: fixed;
+    z-index: 1;
+    width: calc(100 * 1px * var(--vw));
+    height: calc(100 * 1px * var(--vh));
   }
 }
 </style>

@@ -252,13 +252,8 @@ const settingModel = [
     ],
   },
 ];
-const playSetting = ref({
-  quality: "1080p",
-  speed: 1.0,
-});
 function changeSetting(e) {
-  playSetting.value = { ...playSetting.value, ...e };
-  emits("play-setting", playSetting.value);
+  emits("play-setting", e);
 }
 
 const emits = defineEmits([
