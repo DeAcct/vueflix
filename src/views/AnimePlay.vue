@@ -462,6 +462,9 @@ const { scrollBehavior } = useScroll();
     display: flex;
     padding: 0.8rem;
     background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
+    color: #fff;
+    font-size: 1.2rem;
+    align-items: flex-end;
   }
   &__TextLink {
     display: flex;

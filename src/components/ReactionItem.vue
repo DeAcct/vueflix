@@ -352,6 +352,11 @@ async function deleteTrigger() {
     &__Content {
       font-size: 1.5rem;
     }
+    &__MetaModal {
+      --dialog-inset: 50% auto auto 50%;
+      --dialog-translate: -50% -50%;
+      --dialog-max-width: 50rem;
+    }
     .row-top {
       margin-bottom: 0.5rem;
     }
