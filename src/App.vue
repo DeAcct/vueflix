@@ -2,7 +2,7 @@
   <RouterView v-slot="{ Component, route }">
     <VueflixHeader v-if="route.meta.appBar" :is-touch-device="device.isTouch" />
     <BottomTabMenu v-if="route.meta.bottomTabMenu && device.isMobile" />
-    <Transition :name="route.meta.transition || `root-move-${direction}`">
+    <Transition :name="route.meta.transition || 'root-move'">
       <component :is="Component"></component>
     </Transition>
   </RouterView>
@@ -59,24 +59,16 @@ onUnmounted(() => {
   });
 });
 
-const direction = useRootTransition();
+// const direction = useRootTransition();
 </script>
 
 <style lang="scss" scoped>
-.root-move-left-enter-active,
-.root-move-left-leave-active,
-.root-move-right-enter-active,
-.root-move-right-leave-active {
-  transition: opacity 150ms ease-in-out, translate 75ms ease-in-out;
+.root-move-enter-active,
+.root-move-leave-active {
+  transition: opacity 150ms ease-in-out;
 }
-.root-move-left-enter-from,
-.root-move-right-leave-to {
-  opacity: 0;
-  translate: -1rem 0;
-}
-.root-move-right-enter-from,
+.root-move-enter-from,
 .root-move-left-leave-to {
   opacity: 0;
-  translate: 1rem 0;
 }
 </style>
