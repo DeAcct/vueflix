@@ -65,14 +65,14 @@
         :icon="true"
         type="button"
         class="Login__Button Login__Button--Google"
-        @click="googleContinue"
+        @click="googleLogin"
       >
         <template #icon>
           <IconBase>
             <IconGoogle />
           </IconBase>
         </template>
-        <template #text>Google 계정으로 계속하기</template>
+        <template #text>Google 로그인</template>
       </VueflixBtn>
     </div>
   </div>
@@ -99,10 +99,9 @@ import IconGoogle from "@/components/icons/IconGoogle.vue";
 
 const router = useRouter();
 
-const isLoginWaiting = ref(false);
-async function googleContinue() {}
-
 const auth = useAuth();
+
+const isLoginWaiting = ref(false);
 async function signIn() {
   isLoginWaiting.value = true;
   await auth.signInEmailUser(email, password);
@@ -113,6 +112,9 @@ async function signIn() {
   }
   isLoginWaiting.value = false;
   router.back();
+}
+async function googleLogin() {
+  await auth.signInOAuthGoogle();
 }
 
 const email = ref("");

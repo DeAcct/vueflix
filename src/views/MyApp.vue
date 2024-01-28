@@ -1,11 +1,34 @@
 <template>
   <main class="MyApp">
     <StatCard :uid="user?.uid" class="MyApp__Profile" v-if="user" />
-    <section class="MyApp__Verify" v-if="!verified">
-      <h2 class="MyApp__HelperTitle">아직 이메일이 인증되지 않았어요</h2>
-      <p class="MyApp__HelperText">지금 인증하면 특별한 인증 뱃지를 드려요!</p>
-      <button class="MyApp__SendEmail" @click="sendEmail">인증하기</button>
-    </section>
+    <RecommendCard v-if="showVerify()">
+      <template #title>이메일을 인증해주세요</template>
+      <template #text>
+        이메일 인증을 하면 더 많은 서비스를 이용할 수 있어요!
+      </template>
+      <template #cta>
+        <button class="MyApp__Button" @click="emailVerifyPostpone">
+          30일동안 보지 않기
+        </button>
+        <button class="MyApp__Button" @click="sendEmail">인증하기</button>
+      </template>
+    </RecommendCard>
+    <!-- <RecommendCard>
+      <template #title>소셜 로그인을 연결해보세요</template>
+      <template #text>
+        소셜 로그인을 연결하면 쉽게 로그인할 수 있어요!
+      </template>
+      <template #content>
+        <button class="MyApp__Button" @click="connectSocialLogin">
+          Google 연결하기
+        </button>
+      </template>
+      <template #cta>
+        <button class="MyApp__Button" @click="connectSocialPostpone">
+          30일 동안 보지 않기
+        </button>
+      </template>
+    </RecommendCard> -->
     <section class="MyApp__FlexWrap">
       <template v-for="unit in viewModel">
         <section
@@ -69,6 +92,8 @@ import { getAuth, sendEmailVerification } from "firebase/auth";
 
 import { useAuth } from "@/store/auth";
 
+import { usePostpone } from "@/composables/postpone";
+
 import ArrowBtnWidget from "@/components/ArrowBtnWidget.vue";
 import StatCard from "@/components/StatCard.vue";
 
@@ -80,6 +105,7 @@ import IconLogin from "@/components/icons/IconLogin.vue";
 import IconMembership from "@/components/icons/IconMembership.vue";
 import IconPurchaseHistory from "@/components/icons/IconPurchaseHistory.vue";
 import IconTheme from "@/components/icons/IconTheme.vue";
+import RecommendCard from "../components/RecommendCard.vue";
 
 const viewModel = [
   [
@@ -124,21 +150,21 @@ const user = computed(() => store.user);
 
 async function onLoginButtonClick() {
   if (!store.user) {
-    login();
+    router.push("auth");
     return;
   }
   store.logout();
 }
-function login() {
-  router.push("auth");
-}
 
-const verified = () => {
+// const { postponed, setExpire, isExpired } = usePostpone("email-verify");
+const emailVerify = usePostpone("email-verify");
+const showVerify = () => {
   const auth = getAuth();
+  console.log(auth.currentUser?.emailVerified);
   if (!auth.currentUser) {
-    return null;
+    return false;
   }
-  return auth.currentUser.emailVerified;
+  return !auth.currentUser.emailVerified && emailVerify.isExpired();
 };
 async function sendEmail() {
   const auth = getAuth();
@@ -152,6 +178,18 @@ async function sendEmail() {
     console.error("Failed to send email verification:", error);
   }
 }
+function emailVerifyPostpone() {
+  emailVerify.setExpire(30);
+}
+
+// const social = usePostpone("social-connect");
+// const showSocial = () => {};
+// async function connectSocialLogin() {
+//   await store.connectOAuthGoogle();
+// }
+// function connectSocialPostpone() {
+//   social.setExpire(30);
+// }
 </script>
 
 <style lang="scss" scoped>
@@ -171,6 +209,16 @@ async function sendEmail() {
     }
   }
 
+  &__Button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    flex-basis: 0;
+    height: 100%;
+    font-size: 1.4rem;
+  }
+
   &__FlexWrap {
     display: flex;
     flex-direction: column;
@@ -184,28 +232,7 @@ async function sendEmail() {
     border-radius: var(--global-radius);
     margin: 0 auto;
   }
-  &__Verify {
-    display: flex;
-    flex-direction: column;
-    width: calc(100% - 4rem);
-    border: 1px solid hsl(var(--bg-200));
-    padding: var(--inner-padding);
-    border-radius: var(--global-radius);
-  }
-  &__HelperTitle {
-    font-size: 1.8rem;
-    margin-bottom: 0.8rem;
-  }
-  &__HelperText {
-    font-size: 1.6rem;
-    margin-bottom: 2rem;
-  }
-  &__SendEmail {
-    margin: 0 calc(var(--inner-padding) * -1) calc(var(--inner-padding) * -1);
-    height: 4.8rem;
-    background-color: hsl(var(--bg-200));
-    font-size: 1.4rem;
-  }
+
   &__Item {
     width: 100%;
     height: 6rem;
@@ -234,19 +261,6 @@ async function sendEmail() {
       width: auto;
       flex-basis: 33.333%;
       margin: unset;
-    }
-    &__Verify {
-      width: min(calc(100% - 4rem), 1280px);
-      padding: 4rem;
-    }
-    &__HelperText {
-      margin-bottom: 4rem;
-    }
-    &__Item {
-      padding: 0 4rem;
-    }
-    &__SendEmail {
-      margin: 0 -4rem -4rem;
     }
   }
 }

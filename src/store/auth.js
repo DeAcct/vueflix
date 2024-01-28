@@ -11,10 +11,12 @@ import {
 import {
   getAuth,
   signOut,
+  linkWithPopup,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   onAuthStateChanged,
+  signInWithPopup,
 } from "firebase/auth";
 import { db } from "../utility/firebase";
 import { ref, computed } from "vue";
@@ -113,8 +115,6 @@ export const useAuth = defineStore("auth", () => {
     }
   }
 
-  async function sendVerification() {}
-
   // 이메일 중복체크
   async function checkEmailDuplicate(email) {
     const userRef = collection(db, "user");
@@ -127,21 +127,26 @@ export const useAuth = defineStore("auth", () => {
   // 이메일-패스워드 로그인
   async function signInEmailUser(email, password) {
     const auth = getAuth();
-    console.log(auth, email.value);
     try {
       const credential = await signInWithEmailAndPassword(
         auth,
         email.value,
         password.value
       );
-      console.log(credential);
     } catch (e) {
       console.log(e.code, e.message);
     }
   }
 
+  const gProvider = new GoogleAuthProvider();
   async function signInOAuthGoogle() {
-    const provider = new GoogleAuthProvider();
+    const auth = getAuth();
+    await signInWithPopup(auth, gProvider);
+  }
+
+  async function connectOAuthGoogle() {
+    const auth = getAuth();
+    await linkWithPopup(auth.currentUser, gProvider);
   }
 
   async function logout() {
@@ -155,10 +160,10 @@ export const useAuth = defineStore("auth", () => {
     uid,
     syncUser,
     createEmailUser,
-    sendVerification,
     checkEmailDuplicate,
     signInEmailUser,
     signInOAuthGoogle,
+    connectOAuthGoogle,
     logout,
   };
 });
