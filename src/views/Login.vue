@@ -5,7 +5,7 @@
         <template #label>이메일</template>
       </TextInput>
       <TextInput
-        type="password"
+        :type="seek ? 'text' : 'password'"
         class="Login__Input"
         v-model="password"
         autocomplete="on"
@@ -19,6 +19,7 @@
             @mouseup="toggleSeek"
             @touchstart.passive="toggleSeek"
             @touchend.passive="toggleSeek"
+            icon
             class="Login__Button Login__Button--OtherAction"
           >
             <template #icon>
@@ -62,10 +63,10 @@
     <div class="Login__OAuth">
       <VueflixBtn
         component="button"
-        :icon="true"
+        icon
         type="button"
         class="Login__Button Login__Button--Google"
-        @click="googleLogin"
+        @click="OAuthLogin('Google')"
       >
         <template #icon>
           <IconBase>
@@ -73,6 +74,20 @@
           </IconBase>
         </template>
         <template #text>Google 로그인</template>
+      </VueflixBtn>
+      <VueflixBtn
+        component="button"
+        icon
+        type="button"
+        class="Login__Button Login__Button--Facebook"
+        @click="OAuthLogin('Facebook')"
+      >
+        <template #icon>
+          <IconBase>
+            <IconFacebook />
+          </IconBase>
+        </template>
+        <template #text>Facebook 로그인</template>
       </VueflixBtn>
     </div>
   </div>
@@ -96,6 +111,7 @@ import IconBase from "@/components/IconBase.vue";
 import IconSeekOff from "@/components/icons/IconSeekOff.vue";
 import IconSeekOn from "@/components/icons/IconSeekOn.vue";
 import IconGoogle from "@/components/icons/IconGoogle.vue";
+import IconFacebook from "@/components/icons/IconFacebook.vue";
 
 const router = useRouter();
 
@@ -104,8 +120,8 @@ const auth = useAuth();
 const isLoginWaiting = ref(false);
 async function signIn() {
   isLoginWaiting.value = true;
-  await auth.signInEmailUser(email, password);
   try {
+    await auth.signInEmailUser(email, password);
     saveData(email, password);
   } catch (e) {
     console.error(e);
@@ -113,8 +129,8 @@ async function signIn() {
   isLoginWaiting.value = false;
   router.back();
 }
-async function googleLogin() {
-  await auth.signInOAuthGoogle();
+async function OAuthLogin(id) {
+  await auth.signInOAuth(id);
 }
 
 const email = ref("");
@@ -177,33 +193,50 @@ const { isLoginSave, data, saveData } = useLoginSave();
 
   &__OAuth {
     padding: 2rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
   }
   &__Button {
     display: flex;
     width: 100%;
     background-color: #fff;
     height: 4.8rem;
-    box-shadow: none;
     border-radius: calc(var(--global-radius) * 2);
     color: var(--google-login-text);
     font-size: 1.4rem;
+    box-shadow: none;
     &--Login {
       background-color: hsl(var(--theme-500));
       color: #fff;
     }
+    &--SignUp {
+      background-color: hsl(var(--bg-200));
+      color: hsl(var(--text-800));
+    }
     &--Google {
+      color: hsl(var(--text-800));
       justify-content: space-between;
+      background-color: hsl(var(--bg-200));
+    }
+    &--Facebook {
+      justify-content: space-between;
+      background-color: #1977f3;
+      color: #fff;
     }
     &--OtherAction {
       width: 4rem;
       height: 4rem;
       padding: 0;
+      box-shadow: none;
+      background-color: transparent;
+      color: #fff;
     }
   }
   &__ButtonList {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 1.2rem;
   }
 }
 

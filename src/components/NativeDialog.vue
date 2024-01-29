@@ -1,6 +1,5 @@
 <template>
   <dialog class="NativeDialog" ref="dialogRoot">
-    <button class="NativeDialog__Close" @click="close"></button>
     <form method="dialog" class="NativeDialog__Body">
       <slot name="title"></slot>
       <slot name="content"></slot>

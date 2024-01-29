@@ -17,6 +17,9 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
+  FacebookAuthProvider,
+  unlink,
+  EmailAuthProvider,
 } from "firebase/auth";
 import { db } from "../utility/firebase";
 import { ref, computed } from "vue";
@@ -40,6 +43,7 @@ export const useAuth = defineStore("auth", () => {
     return user.value.wannaSee;
   });
 
+  // 로그인 상태가 변할 때마다 유저를 반영
   async function syncUser() {
     const auth = getAuth();
     if (!auth.currentUser) {
@@ -138,20 +142,27 @@ export const useAuth = defineStore("auth", () => {
     }
   }
 
-  const gProvider = new GoogleAuthProvider();
-  async function signInOAuthGoogle() {
+  const providers = {
+    Email: { provider: new EmailAuthProvider(), id: "password" },
+    Google: { provider: new GoogleAuthProvider(), id: "google.com" },
+    Facebook: { provider: new FacebookAuthProvider(), id: "facebook.com" },
+  };
+  async function signInOAuth(key) {
     const auth = getAuth();
-    await signInWithPopup(auth, gProvider);
+    await signInWithPopup(auth, providers[key].provider);
   }
 
-  async function connectOAuthGoogle() {
+  async function connectOAuth(key) {
     const auth = getAuth();
-    await linkWithPopup(auth.currentUser, gProvider);
+    await linkWithPopup(auth.currentUser, providers[key].provider);
+  }
+  async function disconnectOAuth(key) {
+    const auth = getAuth();
+    await unlink(auth.currentUser, providers[key].id);
   }
 
   async function logout() {
     await signOut(auth);
-    user.value = null;
   }
 
   return {
@@ -162,8 +173,9 @@ export const useAuth = defineStore("auth", () => {
     createEmailUser,
     checkEmailDuplicate,
     signInEmailUser,
-    signInOAuthGoogle,
-    connectOAuthGoogle,
+    signInOAuth,
+    connectOAuth,
+    disconnectOAuth,
     logout,
   };
 });

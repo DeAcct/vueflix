@@ -13,56 +13,21 @@
         <button class="MyApp__Button" @click="sendEmail">인증하기</button>
       </template>
     </RecommendCard>
-    <!-- <RecommendCard>
-      <template #title>소셜 로그인을 연결해보세요</template>
-      <template #text>
-        소셜 로그인을 연결하면 쉽게 로그인할 수 있어요!
-      </template>
-      <template #content>
-        <button class="MyApp__Button" @click="connectSocialLogin">
-          Google 연결하기
-        </button>
-      </template>
-      <template #cta>
-        <button class="MyApp__Button" @click="connectSocialPostpone">
-          30일 동안 보지 않기
-        </button>
-      </template>
-    </RecommendCard> -->
     <section class="MyApp__FlexWrap">
-      <template v-for="unit in viewModel">
-        <section
-          class="MyApp__Group"
-          v-if="
-            unit.reduce(
-              (acc, now) => acc && (!now.requireLogin || store.user),
-              true
-            )
-          "
-        >
-          <template
-            v-for="{ icon, text, to, requireLogin } in unit"
-            :key="text"
-          >
-            <template v-if="!requireLogin || user">
-              <ArrowBtnWidget
-                class="MyApp__Item"
-                :component="to ? 'RouterLink' : 'button'"
-                :to="to || null"
-              >
-                <template v-slot:icon>
-                  <IconBase>
-                    <component :is="icon" />
-                  </IconBase>
-                </template>
-                <template v-slot:text>{{ text }}</template>
-              </ArrowBtnWidget>
-            </template>
-          </template>
-        </section>
-      </template>
       <section class="MyApp__Group">
-        <ArrowBtnWidget class="MyApp__Item" component="RouterLink" to="#none">
+        <div class="MyApp__Item MyApp__Item--Social" v-if="user">
+          <strong class="MyApp__ConnectedTitle">이메일 및 소셜 로그인</strong>
+          <p class="MyApp__SubText">
+            각 버튼을 눌러 연결하거나 연결을 해제할 수 있어요
+          </p>
+          <OAuthGroup class="MyApp__OAuthGroup" />
+        </div>
+        <ArrowBtnWidget
+          class="MyApp__Item"
+          component="RouterLink"
+          to="#none"
+          v-if="user"
+        >
           <template v-slot:icon>
             <IconBase>
               <IconAccount />
@@ -81,6 +46,24 @@
           }}</template>
         </ArrowBtnWidget>
       </section>
+      <template v-for="{ items, requireLogin } in viewModel">
+        <section class="MyApp__Group" v-if="user || !requireLogin">
+          <template v-for="{ icon, text, to } in items" :key="text">
+            <ArrowBtnWidget
+              class="MyApp__Item"
+              :component="to ? 'RouterLink' : 'button'"
+              :to="to || null"
+            >
+              <template v-slot:icon>
+                <IconBase>
+                  <component :is="icon" />
+                </IconBase>
+              </template>
+              <template v-slot:text>{{ text }}</template>
+            </ArrowBtnWidget>
+          </template>
+        </section>
+      </template>
     </section>
   </main>
 </template>
@@ -95,6 +78,8 @@ import { useAuth } from "@/store/auth";
 import { usePostpone } from "@/composables/postpone";
 
 import ArrowBtnWidget from "@/components/ArrowBtnWidget.vue";
+import OAuthGroup from "@/components/OAuthGroup.vue";
+import RecommendCard from "@/components/RecommendCard.vue";
 import StatCard from "@/components/StatCard.vue";
 
 import IconBase from "@/components/IconBase.vue";
@@ -105,43 +90,43 @@ import IconLogin from "@/components/icons/IconLogin.vue";
 import IconMembership from "@/components/icons/IconMembership.vue";
 import IconPurchaseHistory from "@/components/icons/IconPurchaseHistory.vue";
 import IconTheme from "@/components/icons/IconTheme.vue";
-import RecommendCard from "../components/RecommendCard.vue";
 
 const viewModel = [
-  [
-    {
-      icon: IconMembership,
-      text: "데레 멤버십",
-      to: "/my/membership",
-      requireLogin: true,
-    },
-    {
-      icon: IconCoupon,
-      text: "쿠폰 등록",
-      to: "#none",
-      requireLogin: true,
-    },
-    {
-      icon: IconPurchaseHistory,
-      text: "결제 내역",
-      to: "#none",
-      requireLogin: true,
-    },
-  ],
-  [
-    {
-      icon: IconTheme,
-      text: "테마",
-      to: "/my/app-theme",
-      requireLogin: false,
-    },
-    {
-      icon: IconCustomerService,
-      text: "고객센터",
-      to: "#none",
-      requireLogin: false,
-    },
-  ],
+  {
+    items: [
+      {
+        icon: IconMembership,
+        text: "데레 멤버십",
+        to: "/my/membership",
+      },
+      {
+        icon: IconCoupon,
+        text: "쿠폰 등록",
+        to: "#none",
+      },
+      {
+        icon: IconPurchaseHistory,
+        text: "결제 내역",
+        to: "#none",
+      },
+    ],
+    requireLogin: true,
+  },
+  {
+    items: [
+      {
+        icon: IconTheme,
+        text: "테마",
+        to: "/my/app-theme",
+      },
+      {
+        icon: IconCustomerService,
+        text: "고객센터",
+        to: "#none",
+      },
+    ],
+    requireLogin: false,
+  },
 ];
 
 const router = useRouter();
@@ -160,7 +145,6 @@ async function onLoginButtonClick() {
 const emailVerify = usePostpone("email-verify");
 const showVerify = () => {
   const auth = getAuth();
-  console.log(auth.currentUser?.emailVerified);
   if (!auth.currentUser) {
     return false;
   }
@@ -182,6 +166,11 @@ function emailVerifyPostpone() {
   emailVerify.setExpire(30);
 }
 
+// async function unlinkOAuth() {
+//   const auth = getAuth();
+//   await unlink(auth.currentUser, "google.com");
+//   console.log(auth.currentUser.providerData);
+// }
 // const social = usePostpone("social-connect");
 // const showSocial = () => {};
 // async function connectSocialLogin() {
@@ -238,6 +227,25 @@ function emailVerifyPostpone() {
     height: 6rem;
     padding: 0 var(--inner-padding);
     font-size: 1.4rem;
+    &--Social {
+      height: auto;
+      padding: {
+        top: 2rem;
+        bottom: 2rem;
+      }
+      display: flex;
+      flex-wrap: wrap;
+      border-bottom: 1px solid hsl(var(--bg-200));
+    }
+  }
+  &__OAuthGroup {
+    width: 100%;
+  }
+  &__ConnectedTitle {
+    margin-bottom: 0.8rem;
+  }
+  &__SubText {
+    margin-bottom: 1.6rem;
   }
 }
 

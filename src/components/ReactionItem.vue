@@ -69,7 +69,7 @@
     </div>
     <NativeDialog ref="$root" class="ReactionItem__MetaModal">
       <template #content>
-        <StatCard :uid="props.reactionData.uid" class="ReactionItem__Data" />
+        <StatCard :uid="reactionData.uid" class="ReactionItem__Data" />
       </template>
       <template #control>
         <VueflixBtn
