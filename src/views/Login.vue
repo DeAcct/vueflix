@@ -46,7 +46,7 @@
         <VueflixBtn
           type="button"
           component="button"
-          @click="signIn"
+          @click="login('Email')"
           class="Login__Button Login__Button--Login"
         >
           <template #text>로그인</template>
@@ -62,32 +62,24 @@
     </form>
     <div class="Login__OAuth">
       <VueflixBtn
+        v-for="{ name, icon } in oAuthServices"
         component="button"
         icon
         type="button"
-        class="Login__Button Login__Button--Google"
-        @click="OAuthLogin('Google')"
+        class="Login__Button"
+        :class="`Login__Button--${name}`"
+        @click="login(name)"
+        :key="name"
       >
         <template #icon>
           <IconBase>
-            <IconGoogle />
+            <component :is="icon" />
           </IconBase>
         </template>
-        <template #text>Google 로그인</template>
-      </VueflixBtn>
-      <VueflixBtn
-        component="button"
-        icon
-        type="button"
-        class="Login__Button Login__Button--Facebook"
-        @click="OAuthLogin('Facebook')"
-      >
-        <template #icon>
-          <IconBase>
-            <IconFacebook />
-          </IconBase>
+        <template #text>
+          {{ recentMethod === name ? "최근에 로그인했던" : "" }}
+          {{ name }}로 계속하기
         </template>
-        <template #text>Facebook 로그인</template>
       </VueflixBtn>
     </div>
   </div>
@@ -100,8 +92,10 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuth } from "../store/auth";
+
 import { usePassword } from "@/composables/strictUser";
 import { useLoginSave } from "@/composables/loginSave";
+import { useBrowserStorage } from "@/composables/browserStorage";
 
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import TextInput from "@/components/TextInput.vue";
@@ -116,21 +110,35 @@ import IconFacebook from "@/components/icons/IconFacebook.vue";
 const router = useRouter();
 
 const auth = useAuth();
+const oAuthServices = [
+  { name: "Google", icon: IconGoogle },
+  { name: "Facebook", icon: IconFacebook },
+];
+
+const { data: recentMethod, setData: setRecentLogin } =
+  useBrowserStorage("recent-method");
+const { isLoginSave, data, saveData } = useLoginSave();
 
 const isLoginWaiting = ref(false);
-async function signIn() {
+async function login(type = "Email") {
   isLoginWaiting.value = true;
-  try {
-    await auth.signInEmailUser(email, password);
-    saveData(email, password);
-  } catch (e) {
-    console.error(e);
+  if (type !== "Email") {
+    await OAuthLogin(type);
+  } else {
+    try {
+      await auth.signInEmailUser(email, password);
+      saveData(email, password);
+    } catch (e) {
+      console.error(e);
+    }
   }
   isLoginWaiting.value = false;
+  setRecentLogin(type);
   router.back();
 }
 async function OAuthLogin(id) {
-  await auth.signInOAuth(id);
+  await auth.continueOAuth(id);
+  router.back();
 }
 
 const email = ref("");
@@ -142,8 +150,6 @@ onMounted(() => {
     password.value = data.value.password;
   }
 });
-
-const { isLoginSave, data, saveData } = useLoginSave();
 </script>
 
 <style lang="scss" scoped>
@@ -232,6 +238,12 @@ const { isLoginSave, data, saveData } = useLoginSave();
       background-color: transparent;
       color: #fff;
     }
+  }
+
+  &__RecentMethod {
+    position: absolute;
+    top: 50%;
+    right: -6rem;
   }
   &__ButtonList {
     display: flex;

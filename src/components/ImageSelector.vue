@@ -1,6 +1,6 @@
 <template>
   <ul class="ImageSelector">
-    <li class="ImageSelector__Item" v-for="(src, index) in srcList" :key="src">
+    <li class="ImageSelector__Item" v-for="src in srcList" :key="src">
       <label class="ImageSelector__TouchArea">
         <input
           :type="multiple ? 'checkbox' : 'radio'"

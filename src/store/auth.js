@@ -21,8 +21,9 @@ import {
   unlink,
   EmailAuthProvider,
 } from "firebase/auth";
-import { db } from "../utility/firebase";
-import { ref, computed } from "vue";
+import { ref as fireRef, uploadBytes } from "firebase/storage";
+import { db, storage } from "@/utility/firebase";
+import { ref, computed, unref } from "vue";
 
 export const useAuth = defineStore("auth", () => {
   // 세션스토리지에 로그인 기록이 남아있다면 유지
@@ -52,13 +53,19 @@ export const useAuth = defineStore("auth", () => {
     }
 
     const userRef = collection(db, "user");
-    const q = query(userRef, where("email", "==", auth.currentUser.email));
-    const dataFromEmail = (await getDocs(q)).docs;
-    if (!dataFromEmail) {
-      user.value = null;
+    const q = query(userRef, where("uid", "==", auth.currentUser.uid));
+    const dataFromUID = (await getDocs(q)).docs;
+
+    if (dataFromUID.length !== 0) {
+      user.value = dataFromUID[0].data();
       return;
     }
-    user.value = dataFromEmail[0].data();
+    await createUser({
+      profileImg: auth.currentUser.photoURL,
+      nickname: auth.currentUser.displayName,
+      email: auth.currentUser.email,
+      type: "oauth",
+    });
   }
   onAuthStateChanged(auth, async () => {
     await syncUser(auth);
@@ -70,7 +77,13 @@ export const useAuth = defineStore("auth", () => {
   }
 
   // 이메일-패스워드 회원가입
-  async function createEmailUser({ profileImg, nickname, email, password }) {
+  async function createUser({
+    profileImg,
+    nickname,
+    email,
+    password,
+    type = "email",
+  }) {
     try {
       // 중복 체크
       const isDuplicated = await checkEmailDuplicate(email);
@@ -78,12 +91,22 @@ export const useAuth = defineStore("auth", () => {
         throw new Error("이미 존재하는 이메일입니다.");
       }
 
-      // 계정 생성
-      const credential = await createUserWithEmailAndPassword(
-        auth,
-        email.value,
-        password.value
-      );
+      let profile;
+      if (type === "email") {
+        // 계정 생성(OAuth가 아닌 경우)
+        await createUserWithEmailAndPassword(auth, email.value, password.value);
+        profile = unref(profileImg);
+      } else {
+        const res = await fetch(profileImg);
+        const data = await res.blob();
+        const extension = data.type.split("/")[1];
+        const fileRef = fireRef(
+          storage,
+          `user/${auth.currentUser.uid}/${auth.currentUser.uid}.${extension}`
+        );
+        await uploadBytes(fileRef, data);
+        profile = `user/${auth.currentUser.uid}/${auth.currentUser.uid}.${extension}`;
+      }
 
       // 사용자 정보 저장
       // uid 생성
@@ -92,9 +115,9 @@ export const useAuth = defineStore("auth", () => {
       const user = {
         // 개인식별정보
         uid: auth.currentUser.uid,
-        nickname: nickname.value,
-        email: email.value,
-        profileImg: profileImg.value,
+        nickname: unref(nickname),
+        email: unref(email),
+        profileImg: profile,
         // 사용기록
         watch: {
           recent: [],
@@ -112,8 +135,6 @@ export const useAuth = defineStore("auth", () => {
       //기본정보 업로드
       await setDoc(userRef, user);
       user.value = user;
-
-      // const user = credential.user;
     } catch (e) {
       console.log(e.code, e.message);
     }
@@ -122,7 +143,7 @@ export const useAuth = defineStore("auth", () => {
   // 이메일 중복체크
   async function checkEmailDuplicate(email) {
     const userRef = collection(db, "user");
-    const q = query(userRef, where("email", "==", email.value));
+    const q = query(userRef, where("email", "==", unref(email)));
 
     const users = await getDocs(q);
     return users.docs.length !== 0;
@@ -134,7 +155,7 @@ export const useAuth = defineStore("auth", () => {
     try {
       const credential = await signInWithEmailAndPassword(
         auth,
-        email.value,
+        unref(email),
         password.value
       );
     } catch (e) {
@@ -147,7 +168,7 @@ export const useAuth = defineStore("auth", () => {
     Google: { provider: new GoogleAuthProvider(), id: "google.com" },
     Facebook: { provider: new FacebookAuthProvider(), id: "facebook.com" },
   };
-  async function signInOAuth(key) {
+  async function continueOAuth(key) {
     const auth = getAuth();
     await signInWithPopup(auth, providers[key].provider);
   }
@@ -170,10 +191,10 @@ export const useAuth = defineStore("auth", () => {
     wannaSee,
     uid,
     syncUser,
-    createEmailUser,
+    createUser,
     checkEmailDuplicate,
     signInEmailUser,
-    signInOAuth,
+    continueOAuth,
     connectOAuth,
     disconnectOAuth,
     logout,

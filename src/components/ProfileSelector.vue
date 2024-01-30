@@ -41,6 +41,7 @@
         class="blind"
         ref="$fileOpenBtn"
         @change="fileChange"
+        accept=".gif, .jpg, .jpeg, .png, .webp"
       />
     </div>
   </div>
@@ -90,6 +91,9 @@ function fileToActualImg(target) {
 }
 
 function setProfileAsLocalImage() {
+  if (!preview.value.src) {
+    return;
+  }
   profileImg.value = { type: "custom", name: preview.value.originFile.name };
 }
 

@@ -134,7 +134,7 @@ async function signUp() {
     return;
   }
 
-  await auth.createEmailUser({ email, password, nickname, profileImg });
+  await auth.createUser({ email, password, nickname, profileImg });
   router.go(-2);
 }
 </script>
