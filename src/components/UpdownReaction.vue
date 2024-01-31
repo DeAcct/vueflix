@@ -10,7 +10,6 @@
       </IconBase>
       <span class="blind">좋아요</span>
     </button>
-    <p class="UpdownReaction__CounterClip">{{ updown }}</p>
     <button
       class="UpdownReaction__Button UpdownReaction__Button--Down"
       @click="change(-1)"
@@ -21,11 +20,16 @@
       </IconBase>
       <span class="blind">싫어요</span>
     </button>
+    <div class="UpdownReaction__CounterClip">
+      <Transition :name="`counter-${animateDirection}`">
+        <p class="UpdownReaction__Number" :key="updown">{{ updown }}</p>
+      </Transition>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, computed } from "vue";
+import { onMounted, computed, ref } from "vue";
 import { useUpdown } from "@/api/updown";
 import { useAuth } from "@/store/auth";
 
@@ -52,8 +56,10 @@ onMounted(async () => {
   await Read();
 });
 
+const animateDirection = ref("up");
 async function change(number) {
   await Update({ action: number });
+  animateDirection.value = number > 0 ? "up" : "down";
   await Read();
 }
 
@@ -65,8 +71,8 @@ const user = computed(() => auth.user);
 .UpdownReaction {
   display: flex;
   align-items: center;
-
   gap: 0.8rem;
+
   &__Button {
     color: hsl(var(--bg-800));
     transform: rotate(-90deg);
@@ -85,6 +91,29 @@ const user = computed(() => auth.user);
   }
   &__CounterClip {
     overflow: hidden;
+    height: var(--updown-font-size);
   }
+  &__Number {
+    font-variant-numeric: tabular-nums;
+    font-size: var(--updown-font-size);
+  }
+}
+
+.counter-up-enter-active,
+.counter-up-leave-active,
+.counter-down-enter-active,
+.counter-down-leave-active {
+  transition: translate 150ms ease, opacity 150ms ease;
+}
+
+.counter-up-enter-from,
+.counter-down-leave-to {
+  translate: 0 100%;
+  opacity: 0;
+}
+.counter-up-leave-to,
+.counter-down-enter-from {
+  translate: 0 -100%;
+  opacity: 0;
 }
 </style>

@@ -107,6 +107,8 @@ export const useAuth = defineStore("auth", () => {
         await uploadBytes(fileRef, data);
         profile = `user/${auth.currentUser.uid}/${auth.currentUser.uid}.${extension}`;
       }
+      // todo
+      // 계정을 이미 가지고 있는 사용자가 한 번도 사용한 적 없는 서비스로 로그인한 경우
 
       // 사용자 정보 저장
       // uid 생성
@@ -119,10 +121,7 @@ export const useAuth = defineStore("auth", () => {
         email: unref(email),
         profileImg: profile,
         // 사용기록
-        watch: {
-          recent: [],
-          maraton: [],
-        },
+        maraton: [],
         wannaSee: [],
         purchased: [],
         notInterested: [],

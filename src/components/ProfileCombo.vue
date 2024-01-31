@@ -1,5 +1,5 @@
 <template>
-  <RouterLink class="ProfileCombo">
+  <component :is="component" class="ProfileCombo">
     <span class="ProfileCombo__UserName">{{
       store.user ? store.user.nickname : "게스트"
     }}</span>
@@ -10,7 +10,7 @@
       v-if="store.user"
     />
     <img :src="Aqua" v-else class="ProfileCombo__Profile" />
-  </RouterLink>
+  </component>
 </template>
 
 <script setup>
@@ -20,6 +20,13 @@ import OptimizedMedia from "./OptimizedMedia.vue";
 import Aqua from "@/assets/aqua.svg";
 
 const store = useAuth();
+
+const props = defineProps({
+  component: {
+    type: String,
+    default: "RouterLink",
+  },
+});
 </script>
 
 <style lang="scss" scoped>

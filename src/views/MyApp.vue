@@ -33,7 +33,7 @@
               <IconAccount />
             </IconBase>
           </template>
-          <template v-slot:text>내 정보 수정</template>
+          <template v-slot:text>내 정보</template>
         </ArrowBtnWidget>
         <ArrowBtnWidget class="MyApp__Item" @click="onLoginButtonClick">
           <template v-slot:icon>

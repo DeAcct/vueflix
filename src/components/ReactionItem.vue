@@ -1,15 +1,21 @@
 <template>
   <component :is="component" class="ReactionItem">
-    <button type="button" class="ReactionItem__OpenMetaButton">
+    <button
+      type="button"
+      class="ReactionItem__OpenMetaButton"
+      :disabled="!meta"
+      @click="show"
+    >
       <OptimizedMedia
         :src="meta.profileImg"
         class="ReactionItem__ProfileImg"
-        @click="show"
+        v-if="meta"
       />
+      <img :src="Aqua" class="ReactionItem__ProfileImg" v-else />
     </button>
     <div class="ReactionItem__MetaText">
       <strong class="ReactionItem__Author">
-        {{ self ? "나" : meta.nickname }}
+        {{ self ? "나" : meta?.nickname || "탈퇴한 사용자" }}
       </strong>
       <p class="ReactionItem__Edited">
         {{ formattedDate }}
@@ -101,6 +107,7 @@ import OptimizedMedia from "./OptimizedMedia.vue";
 import StatCard from "./StatCard.vue";
 import VueflixBtn from "./VueflixBtn.vue";
 import UpdownReaction from "./UpdownReaction.vue";
+import Aqua from "@/assets/aqua.svg";
 
 const placeholder = computed(
   () =>
@@ -203,6 +210,8 @@ async function deleteTrigger() {
     height: 3.6rem;
     display: flex;
     margin-right: 1.2rem;
+    border-radius: 50%;
+    overflow: hidden;
   }
   &__ProfileImg {
     width: 100%;
@@ -261,6 +270,9 @@ async function deleteTrigger() {
       color: hsl(var(--bg-700));
     }
   }
+  &__Updown {
+    --updown-font-size: 1.6rem;
+  }
 
   &__Actions {
     display: flex;
@@ -277,6 +289,8 @@ async function deleteTrigger() {
     overflow: hidden;
     gap: 0.2rem;
     align-self: flex-end;
+    border-radius: var(--global-radius);
+    overflow: hidden;
   }
   &__ActionItem {
     font-size: 1.5rem;
@@ -288,12 +302,6 @@ async function deleteTrigger() {
       hsl(var(--bg-900) / 0.2),
       hsl(var(--bg-900) / 0.025)
     );
-    &:first-child {
-      border-radius: var(--global-radius) 0 0 var(--global-radius);
-    }
-    &:last-child {
-      border-radius: 0 var(--global-radius) var(--global-radius) 0;
-    }
     &:disabled {
       background-color: hsl(var(--text-900) / 0.05);
       color: hsl(var(--text-300));
