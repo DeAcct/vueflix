@@ -1,7 +1,10 @@
 <template>
   <div class="AmbientPlayer">
     <div class="AmbientPlayer__FullscreenRoot" ref="$fullscreenRoot">
-      <LoadingSpinner :is-loading="isLoading" class="AmbientPlayer__Loading" />
+      <LoadAnimation
+        class="AmbientPlayer__Loading"
+        :class="isLoading && 'AmbientPlayer__Loading--Show'"
+      />
       <video
         ref="$video"
         :src="src"
@@ -100,7 +103,7 @@ import { useVideoScreenshot } from "@/composables/screenshot";
 
 import DialogSet from "./DialogSet.vue";
 import GestureArea from "./GestureArea.vue";
-import LoadingSpinner from "./LoadingSpinner.vue";
+import LoadAnimation from "./LoadAnimation.vue";
 import VideoControlBar from "./VideoControlBar.vue";
 
 import IconBase from "./IconBase.vue";
@@ -391,12 +394,16 @@ async function share() {
     background-color: #000;
   }
   &__Loading {
+    opacity: 0;
     width: 4.8rem;
-    height: 4.8rem;
     position: absolute;
     top: calc(50% - 2.4rem);
     left: calc(50% - 2.4rem);
     color: #fff;
+    transition: 150ms ease-out;
+    &--Show {
+      opacity: 1;
+    }
   }
   &__TakeScreenshot {
     position: absolute;

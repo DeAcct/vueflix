@@ -101,14 +101,13 @@ function setReviewData(e) {
 
 const auth = useAuth();
 const user = computed(() => auth.user);
-async function reviewTrigger() {
-  await Create({
+function reviewTrigger() {
+  emits("mutate", "create", {
     content: reviewData.value,
     parent: props.parent,
     user,
     type: props.type,
   });
-  emits("mutate");
   reviewData.value = "";
 }
 

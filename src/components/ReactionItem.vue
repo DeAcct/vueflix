@@ -97,7 +97,6 @@ import { ref, computed } from "vue";
 import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 
 import { useAuth } from "@/store/auth";
-import { Update, Delete } from "@/api/reaction";
 import { useUserMeta } from "@/api/userMeta";
 import { useFormatDate } from "@/composables/formatter";
 import { useModal } from "@/composables/modal";
@@ -171,19 +170,21 @@ async function updateReaction() {
   if (!editValue.value) {
     return;
   }
-  await Update({
+  mode.value = "show";
+  emits("mutate", "update", {
     id: props.reactionData._id,
     content: editValue.value,
     user,
     type: props.type,
   });
-  mode.value = "show";
-  emits("mutate");
   emits("interact", false);
 }
 async function deleteTrigger() {
-  await Delete({ id: props.reactionData._id, user });
-  emits("mutate");
+  // await Delete({ id: props.reactionData._id, user });
+  emits("mutate", "delete", {
+    id: props.reactionData._id,
+    user,
+  });
 }
 </script>
 
@@ -364,6 +365,8 @@ async function deleteTrigger() {
       --dialog-inset: 50% auto auto 50%;
       --dialog-translate: -50% -50%;
       --dialog-max-width: 50rem;
+      --dialog-starting-translate: -50% 3rem;
+      --dialog-border-radius: calc(var(--global-radius) * 2);
     }
     .row-top {
       margin-bottom: 0.5rem;

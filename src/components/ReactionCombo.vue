@@ -15,11 +15,6 @@
         :user="user"
         :type="type"
         :parent="parent"
-        v-if="
-          type === 'comment' ||
-          (type === 'review' &&
-            reactions.filter((review) => review.uid === user?.uid))
-        "
         @interact="setInteract"
       />
       <TransitionGroup
@@ -29,11 +24,12 @@
         :class="{ 'ReactionCombo__List--Exist ': reactions?.length !== 0 }"
       >
         <ReactionItem
-          v-for="reaction in reactions"
+          v-for="(reaction, index) in reactions"
           :key="reaction._id"
           :reaction-data="reaction"
           :user="user"
           :type="type"
+          :style="`--delay-amount:${index};`"
           @mutate="onMutate"
           @interact="setInteract"
           class="ReactionCombo__Item"
@@ -48,6 +44,37 @@
         </ReactionItem>
       </TransitionGroup>
     </div>
+    <NativeDialog ref="$root" class="CheckModal">
+      <template #title>
+        <strong class="CheckModal__Title">
+          정말 {{ currentModal.text }}하시겠습니까?
+        </strong>
+      </template>
+      <template #control>
+        <div class="CheckModal__Control">
+          <VueflixBtn
+            component="button"
+            type="button"
+            class="CheckModal__Button CheckModal__Button--Accent"
+            @click="applyMutate"
+            :icon="currentModal.isLoading"
+          >
+            <template #icon>
+              <LoadAnimation class="CheckModal__Loading" />
+            </template>
+            <template #text>{{ currentModal.text }}</template>
+          </VueflixBtn>
+          <VueflixBtn
+            component="button"
+            type="button"
+            class="CheckModal__Button"
+            @click="close"
+          >
+            <template #text>취소</template>
+          </VueflixBtn>
+        </div>
+      </template>
+    </NativeDialog>
   </section>
 </template>
 
@@ -57,11 +84,15 @@
 // 리뷰는 애니메이션에 작성하는 항목
 // 코멘트는 각 에피소드마다 작성하는 항목
 
-import { computed, watchEffect, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
-import { Read } from "@/api/reaction";
+import { Create, Read, Update, Delete } from "@/api/reaction";
 import { useAuth } from "@/store/auth";
+import { useModal } from "@/composables/modal";
 
+import LoadAnimation from "./LoadAnimation.vue";
+import NativeDialog from "./NativeDialog.vue";
+import VueflixBtn from "./VueflixBtn.vue";
 import WriteReaction from "./WriteReaction.vue";
 import ReactionItem from "./ReactionItem.vue";
 import ReactionParser from "./ReactionParser.vue";
@@ -95,25 +126,62 @@ function setInteract(e) {
   emits("interact", e);
 }
 
-// const store = useStore();
-// const user = computed(() => store.state.auth.user);
 const auth = useAuth();
 const user = computed(() => auth.user);
 const reactions = ref([]);
 
-watchEffect(async () => {
+const { $root, show, close } = useModal();
+onMounted(async () => {
   reactions.value = await Read({
     parent: props.parent,
     type: props.type,
   });
 });
-async function onMutate() {
+const methodMap = {
+  create: {
+    action: Create,
+    text: "등록",
+  },
+  update: {
+    action: Update,
+    text: "수정",
+  },
+  delete: {
+    action: Delete,
+    text: "삭제",
+  },
+};
+const currentModal = ref({
+  method: "",
+  text: "",
+  data: null,
+  isLoading: false,
+});
+function onMutate(method, data) {
+  // 일반적인 상황은 아니지만, 로그인하지 않은 상태에서 강제로 사용자가 댓글을 조작하는것을 방지
+  if (!user.value) {
+    return;
+  }
+  currentModal.value = {
+    method,
+    text: methodMap[method].text,
+    data,
+  };
+  show();
+}
+
+async function applyMutate() {
+  const { method, data } = currentModal.value;
+  currentModal.value.isLoading = true;
+  await methodMap[method].action(data);
   reactions.value = await Read({
     parent: props.parent,
     type: props.type,
-    user,
   });
+  currentModal.value.isLoading = false;
+  close();
 }
+
 function requestTeleport(e) {
   emits("request-teleport", e);
 }
@@ -172,22 +240,52 @@ function requestTeleport(e) {
   }
 }
 
-/* 움직이는 엘리먼트에 트랜지션 적용 */
+.CheckModal {
+  --dialog-inset: auto auto 0 0;
+  --dialog-translate: 0 0;
+  --dialog-max-width: 100%;
+  --dialog-border-radius: calc(var(--global-radius) * 2)
+    calc(var(--global-radius) * 2) 0 0;
+  &__Title {
+    margin-bottom: 1.2rem;
+    font-size: 1.6rem;
+  }
+  &__Important {
+    color: hsl(var(--theme-500));
+  }
+  &__Control {
+    display: flex;
+  }
+  &__Button {
+    flex-direction: row-reverse;
+    gap: 0.4rem;
+    box-shadow: none;
+    border-radius: var(--global-radius);
+    &:first-child {
+      background-color: hsl(var(--theme-500));
+      margin-left: auto;
+      color: #fff;
+    }
+  }
+  &__Loading {
+    width: 1.2rem;
+  }
+}
+
 .reaction-list-move,
 .reaction-list-enter-active,
 .reaction-list-leave-active {
   transition: all 0.5s ease;
+  transition-delay: calc(var(--delay-amount) * 100ms);
 }
 
 .reaction-list-enter-from,
 .reaction-list-leave-to {
   opacity: 0;
-  transform: translateX(30px);
+  translate: 3rem 0;
 }
 
-/* 이동 애니메이션을 올바르게 계산할 수 있도록
-   레이아웃 흐름에서 나머지 항목을 꺼내기. */
-.list-leave-active {
+.reaction-list-leave-active {
   position: absolute;
 }
 
@@ -196,6 +294,15 @@ function requestTeleport(e) {
     &__Title {
       font-size: 1.8rem;
     }
+  }
+
+  .CheckModal {
+    --dialog-inset: 50% auto auto 50%;
+    --dialog-translate: -50% -50%;
+    --dialog-starting-translate: -50% 3rem;
+    --dialog-max-width: 40rem;
+    --dialog-padding: 2rem;
+    --dialog-border-radius: calc(var(--global-radius) * 2);
   }
 }
 </style>

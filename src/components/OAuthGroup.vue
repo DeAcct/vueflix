@@ -19,15 +19,18 @@
     </template>
     <NativeDialog ref="$root" class="OAuthGroup__Modal">
       <template #title>
-        <strong class="OAuthGroup__ModalTitle" v-if="enabled.length > 1">
+        <strong
+          class="OAuthGroup__ModalTitle"
+          v-if="currentModal.enabled && enabled.length === 1"
+        >
+          최소 한 개의 로그인 수단을 남겨야 합니다.
+        </strong>
+        <strong class="OAuthGroup__ModalTitle" v-else>
           {{ currentModal.text }}을
           <strong class="OAuthGroup__Important">{{
             currentModal.enabled ? "연결 해제" : "연결"
           }}</strong
           >할까요?
-        </strong>
-        <strong class="OAuthGroup__ModalTitle" v-else>
-          최소 한 개의 로그인 수단을 남겨야 합니다.
         </strong>
       </template>
       <template #control>
@@ -37,7 +40,7 @@
             type="button"
             class="OAuthGroup__ModalButton OAuthGroup__ModalButton--Accent"
             @click="toggleOAuth"
-            v-if="enabled.length > 1"
+            v-if="!currentModal.enabled || enabled.length !== 1"
           >
             <template #text>
               {{ currentModal.enabled ? "연결 해제" : "연결" }}
@@ -47,11 +50,10 @@
             component="button"
             type="button"
             class="OAuthGroup__ModalButton"
-            :class="{ 'OAuthGroup__ModalButton--Accent': enabled.length === 1 }"
             @click="close"
           >
             <template #text>{{
-              enabled.length > 1 ? "취소" : "확인"
+              !currentModal.enabled || enabled.length !== 1 ? "취소" : "확인"
             }}</template>
           </VueflixBtn>
         </div>
@@ -189,10 +191,8 @@ async function toggleOAuth() {
     box-shadow: none;
     border-radius: var(--global-radius);
     &:first-child {
-      margin-left: auto;
-    }
-    &--Accent {
       background-color: hsl(var(--theme-500));
+      margin-left: auto;
       color: #fff;
     }
   }
