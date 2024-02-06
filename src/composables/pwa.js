@@ -11,7 +11,7 @@ export function usePWA() {
     /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
 
   const { $root, show, close } = useModal();
-  const { postponed, setExpire, isExpired } = usePostpone("pwa");
+  const { postponed, setExpire, isExpired, clear } = usePostpone("pwa");
 
   let deferredPrompt;
   function showModal(e) {
@@ -32,7 +32,7 @@ export function usePWA() {
   }
 
   async function install() {
-    clearData();
+    clear();
     const { outcome } = await deferredPrompt.prompt();
     if (outcome === "accepted") {
       deferredPrompt = null;
@@ -56,4 +56,14 @@ export function usePWA() {
   });
 
   return { $root, hideModal, postpone, install, isDeviceIOS };
+}
+
+export function useRandomPWAPromotionCopy() {
+  const copyList = [
+    "청춘 돼지는 느린 덕질의 꿈을 꾸지 않는다.",
+    "홈 화면에서 만남을 추구하면 안 되는 걸까?",
+    "느린 건 싫으니까 빠른 덕질에 올인하려고 합니다...?",
+    "빠른 덕질의 테제, 신화가 되어라!",
+  ];
+  return copyList[Math.floor(Math.random() * copyList.length)];
 }

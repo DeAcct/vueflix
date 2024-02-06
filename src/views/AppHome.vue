@@ -134,21 +134,21 @@
     <NativeDialog ref="$installModal" class="PWAModal">
       <template #title>
         <strong class="PWAModal__Title">
-          홈 화면에서 만남을 추구하면 안 되는 걸까?
+          {{ useRandomPWAPromotionCopy() }}
         </strong>
       </template>
       <template #content>
         <p class="PWAModal__Introduce">
-          홈 화면에서 데레에 빠르게 접근할 수 있어요.
+          나에게 딱 맞게 설계된 앱을 사용할 수 있어요!
           <i class="PWAModal__HowTo">
             <template v-if="isDeviceIOS">
               애플 기기를 사용하시네요! 하단의
               <IconBase class="PWAModal__IOSIcon">
                 <IconIOSInstall />
               </IconBase>
-              에서 홈 화면에 추가해보세요.
+              을 누르면 앱을 설치할 수 있어요!
             </template>
-            <template v-else>바로가기 아이콘을 추가할까요?</template>
+            <template v-else>앱을 설치해보실래요?</template>
           </i>
         </p>
       </template>
@@ -177,7 +177,7 @@
             class="PWAModal__Button PWAModal__Button--Install"
             v-if="!isDeviceIOS"
           >
-            <template #text>홈 화면에 추가</template>
+            <template #text>앱 설치</template>
           </VueflixBtn>
         </div>
       </template>
@@ -186,15 +186,13 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { onMounted, ref, watch, inject } from "vue";
 import { getDocs, collection, doc, getDoc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 
 import { DAYS } from "@/enums/Days";
 import { useMaratonData } from "@/composables/maraton";
-import { usePWA } from "@/composables/pwa";
-
-// import Cookies from "js-cookie";
+import { usePWA, useRandomPWAPromotionCopy } from "@/composables/pwa";
 
 import BannerSlide from "@/components/BannerSlide.vue";
 import InputBoolean from "@/components/InputBoolean.vue";
@@ -208,6 +206,8 @@ import NativeDialog from "@/components/NativeDialog.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconIOSInstall from "@/components/icons/IconIOSInstall.vue";
+
+const device = inject("device-info");
 
 const now = new Date();
 const selectedDay = ref(now.getDay());
@@ -341,14 +341,15 @@ const { latest } = useMaratonData();
     flex-direction: column;
     font-size: 1.6rem;
     margin-bottom: 2rem;
-    line-height: 1.3;
+    line-height: 1.5;
     text-wrap: pretty;
   }
   &__HowTo {
     display: inline-block;
     font-weight: 700;
-    line-height: 1.3;
+    line-height: 1.5;
     gap: 0.4rem;
+    color: hsl(var(--theme-500));
   }
   &__IOSIcon {
     vertical-align: text-bottom;

@@ -3,7 +3,7 @@ import { useBrowserStorage } from "./browserStorage";
 import dayjs from "dayjs";
 
 export function usePostpone(id) {
-  const { data: postponed, setData, clearData } = useBrowserStorage(id);
+  const { data: postponed, setData, clearData: clear } = useBrowserStorage(id);
 
   function setExpire(day = 30) {
     const startDate = dayjs();
@@ -21,5 +21,5 @@ export function usePostpone(id) {
     console.log(endDate);
     return dayjs().isAfter(endDate);
   }
-  return { postponed, setExpire, isExpired };
+  return { postponed, setExpire, isExpired, clear };
 }
