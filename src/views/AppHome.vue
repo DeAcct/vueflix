@@ -186,7 +186,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch, inject } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { getDocs, collection, doc, getDoc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 
@@ -206,8 +206,6 @@ import NativeDialog from "@/components/NativeDialog.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconIOSInstall from "@/components/icons/IconIOSInstall.vue";
-
-const device = inject("device-info");
 
 const now = new Date();
 const selectedDay = ref(now.getDay());

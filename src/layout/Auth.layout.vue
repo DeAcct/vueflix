@@ -40,7 +40,8 @@ import InteractiveVisual from "@/components/InteractiveVisual.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
 import { useAuth } from "@/store/auth";
-import { watch } from "vue";
+import { onMounted, watch } from "vue";
+import { getAuth } from "firebase/auth";
 
 const route = useRoute();
 const router = useRouter();
@@ -61,6 +62,14 @@ const aniList = [
   "소녀혁명 우테나",
   "신세기 에반게리온",
 ];
+
+onMounted(() => {
+  // 이미 로그인한 상태라면 잘못된 접근이다.
+  const auth = getAuth();
+  if (auth.currentUser) {
+    router.back();
+  }
+});
 </script>
 
 <style lang="scss" scoped>

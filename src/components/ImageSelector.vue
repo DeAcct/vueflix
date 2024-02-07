@@ -44,6 +44,7 @@ const selected = defineModel();
   &__Preview {
     width: var(--preview-size);
     height: var(--preview-size);
+    --aspect-ratio: 100%;
     border: 2px solid hsl(var(--bg-100));
     border-radius: 9999px;
     overflow: hidden;

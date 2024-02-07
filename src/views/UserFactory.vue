@@ -1,44 +1,44 @@
 <template>
-  <form class="SignUp">
-    <ProfileSelector v-model="profileImg" class="SignUp__ProfileImage" />
-    <TextInput type="text" class="SignUp__Input" v-model="nickname">
+  <form class="UserFactory">
+    <ProfileSelector v-model="profileImg" class="UserFactory__ProfileImage" />
+    <TextInput type="text" class="UserFactory__Input" v-model="nickname">
       <template #label>닉네임</template>
       <template #etc-action>
         <VueflixBtn
           type="button"
           component="button"
           @click="generateRandomNickname"
-          class="SignUp__Button SignUp__Button--OtherAction"
+          class="UserFactory__Button UserFactory__Button--OtherAction"
         >
           <template #text>랜덤 닉네임 생성</template>
         </VueflixBtn>
       </template>
       <template #message>
         <span
-          :class="`SignUp__Message--${nicknameState.code}`"
-          class="SignUp__Message"
+          :class="`UserFactory__Message--${nicknameState.code}`"
+          class="UserFactory__Message"
           v-if="nicknameState.code !== 'Unchecked'"
         >
           {{ nicknameState.message }}
         </span>
       </template>
     </TextInput>
-    <TextInput type="email" class="SignUp__Input" v-model="email">
+    <TextInput type="email" class="UserFactory__Input" v-model="email">
       <template #label>이메일</template>
       <template #etc-action>
         <VueflixBtn
           type="button"
           component="button"
           @click="checkDuplicate"
-          class="SignUp__Button SignUp__Button--OtherAction"
+          class="UserFactory__Button UserFactory__Button--OtherAction"
         >
           <template #text>중복 확인</template>
         </VueflixBtn>
       </template>
       <template #message>
         <span
-          :class="`SignUp__Message--${emailState.code}`"
-          class="SignUp__Message"
+          :class="`UserFactory__Message--${emailState.code}`"
+          class="UserFactory__Message"
           v-if="emailState !== 'Unchecked'"
         >
           {{ emailState.message }}
@@ -47,7 +47,7 @@
     </TextInput>
     <TextInput
       :type="seek ? 'text' : 'password'"
-      class="SignUp__Input"
+      class="UserFactory__Input"
       v-model="password"
       autocomplete="off"
     >
@@ -60,7 +60,7 @@
           @mouseup="toggleSeek"
           @touchstart.passive="toggleSeek"
           @touchend.passive="toggleSeek"
-          class="SignUp__Button SignUp__Button--Seek"
+          class="UserFactory__Button UserFactory__Button--Seek"
           icon
         >
           <template #icon>
@@ -73,8 +73,8 @@
       </template>
       <template #message>
         <span
-          :class="`SignUp__Message--${passwordState.code}`"
-          class="SignUp__Message"
+          :class="`UserFactory__Message--${passwordState.code}`"
+          class="UserFactory__Message"
           v-if="passwordState.code !== 'Unchecked'"
         >
           {{ passwordState.message }}
@@ -84,17 +84,17 @@
 
     <VueflixBtn
       type="button"
-      class="SignUp__Button SignUp__Button--SignUp"
+      class="UserFactory__Button UserFactory__Button--SignUp"
       component="button"
-      @click="signUp"
+      @click="actionByType"
     >
-      <template #text>회원가입</template>
+      <template #text>{{ submitText || "회원가입" }}</template>
     </VueflixBtn>
   </form>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useNickname, useEmail, usePassword } from "@/composables/strictUser";
 import { useAuth } from "@/store/auth";
@@ -107,8 +107,16 @@ import IconSeekOn from "@/components/icons/IconSeekOn.vue";
 
 import ProfileSelector from "@/components/ProfileSelector.vue";
 
+const props = defineProps({
+  injectData: Object,
+  submitText: String,
+  type: {
+    type: String,
+    default: "sign-up",
+    validator: (value) => ["sign-up", "edit"].includes(value),
+  },
+});
 const profileImg = ref("");
-
 const {
   nickname,
   state: nicknameState,
@@ -116,6 +124,16 @@ const {
 } = useNickname();
 const { email, state: emailState, checkDuplicate } = useEmail();
 const { password, state: passwordState, seek, toggleSeek } = usePassword();
+watch(
+  () => props.injectData,
+  (data) => {
+    if (!data) return;
+    profileImg.value = data.profileImg;
+    nickname.value = data.nickname;
+    email.value = data.email;
+  },
+  { immediate: true }
+);
 
 const router = useRouter();
 const auth = useAuth();
@@ -125,22 +143,24 @@ const isCompleted = computed(() => {
     (prev, item) => item.value.code === "Valid" && prev,
     true
   );
-  console.log(image, texts);
   return image && texts;
 });
-async function signUp() {
+async function actionByType() {
   console.log(isCompleted.value);
-  if (!isCompleted.value) {
+  if (!isCompleted.value && props.type === "sign-up") {
     return;
   }
-
-  await auth.createUser({ email, password, nickname, profileImg });
+  if (props.type === "sign-up") {
+    await auth.createUser({ email, password, nickname, profileImg });
+  } else {
+    // await auth.editUser({ email, password, nickname, profileImg });
+  }
   router.go(-2);
 }
 </script>
 
 <style lang="scss" scoped>
-.SignUp {
+.UserFactory {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -207,7 +227,7 @@ async function signUp() {
 }
 
 @media screen and (min-width: 1080px) {
-  .SignUp {
+  .UserFactory {
     &__ButtonList {
       width: 37.5rem;
       height: 4rem;
@@ -225,6 +245,9 @@ async function signUp() {
     &__Back {
       width: 4rem;
       background-color: hsl(var(--bg-200));
+    }
+    &__Button--SignUp {
+      width: 37.5rem;
     }
   }
 }

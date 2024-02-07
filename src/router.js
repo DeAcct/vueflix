@@ -94,6 +94,19 @@ const routes = [
     },
   },
   {
+    path: "/my/profile",
+    name: "profile",
+    component: () => import("@/views/Profile.vue"),
+    meta: {
+      title: "내 정보",
+      appBar: {
+        activityContent: "내 정보",
+        backButton: true,
+      },
+      bottomTabMenu: false,
+    },
+  },
+  {
     path: "/my/membership",
     name: "membership",
     component: () => import("@/views/VueflixMembership.vue"),
@@ -145,7 +158,7 @@ const routes = [
       {
         path: "sign-up",
         name: "sign-up",
-        component: () => import("@/views/SignUp.vue"),
+        component: () => import("@/views/UserFactory.vue"),
         meta: {
           title: "회원가입",
           bottomTabMenu: false,

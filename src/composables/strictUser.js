@@ -49,8 +49,8 @@ const FORBIDDEN_WORD = [
   "nigger",
 ];
 
-export function useNickname() {
-  const nickname = ref("");
+export function useNickname(initial) {
+  const nickname = ref(initial || "");
   const state = computed(() => {
     if (!nickname.value) {
       return { code: "Unchecked" };
@@ -84,9 +84,9 @@ export function useNickname() {
   return { nickname, state, generateRandomNickname };
 }
 
-export function useEmail() {
+export function useEmail(initial) {
   const auth = useAuth();
-  const email = ref("");
+  const email = ref(initial || "");
   const state = ref("Unchecked");
 
   async function checkDuplicate() {
@@ -108,9 +108,9 @@ export function useEmail() {
 
 const EASY_KEYWORDS = ["qwer", "1234", "vueflix", "asdf", "zxcv"];
 
-export function usePassword() {
+export function usePassword(initial) {
   // 8글자 이상, 너무 뻔한 키워드는 금지단어로 설정.
-  const password = ref("");
+  const password = ref(initial || "");
   const seek = ref(false);
   const state = computed(() => {
     if (!password.value) {

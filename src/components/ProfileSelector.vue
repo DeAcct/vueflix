@@ -24,7 +24,7 @@
         class="ProfileSelector__PreviewHolder"
         :class="{
           'ProfileSelector__PreviewHolder--Selected':
-            profileImg.type === 'custom',
+            profileImg?.type === 'custom',
         }"
         type="button"
         @click="setProfileAsLocalImage"
@@ -48,9 +48,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
+import { ref as fireRef, getDownloadURL } from "firebase/storage";
+import { storage } from "@/utility/firebase";
 
-import ImageSelector from "../components/ImageSelector.vue";
+import { useAuth } from "@/store/auth";
+
+import ImageSelector from "@/components/ImageSelector.vue";
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import IconScreenshot from "@/components/icons/IconScreenshot.vue";
 import IconBase from "./IconBase.vue";
@@ -96,6 +100,18 @@ function setProfileAsLocalImage() {
   }
   profileImg.value = { type: "custom", name: preview.value.originFile.name };
 }
+
+const auth = useAuth();
+const user = computed(() => auth.user);
+watch(user, async () => {
+  if (!user.value) {
+    return;
+  }
+  profileImg.value = user.value.profileImg;
+  const imgRef = fireRef(storage, user.value.profileImg.name);
+  const actualURL = await getDownloadURL(imgRef);
+  preview.value.src = actualURL;
+});
 
 const preview = ref({ src: "", originFile: null });
 const profileImg = defineModel();

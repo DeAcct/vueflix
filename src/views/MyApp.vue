@@ -25,7 +25,7 @@
         <ArrowBtnWidget
           class="MyApp__Item"
           component="RouterLink"
-          to="#none"
+          to="/my/profile"
           v-if="user"
         >
           <template v-slot:icon>
@@ -165,20 +165,6 @@ async function sendEmail() {
 function emailVerifyPostpone() {
   emailVerify.setExpire(30);
 }
-
-// async function unlinkOAuth() {
-//   const auth = getAuth();
-//   await unlink(auth.currentUser, "google.com");
-//   console.log(auth.currentUser.providerData);
-// }
-// const social = usePostpone("social-connect");
-// const showSocial = () => {};
-// async function connectSocialLogin() {
-//   await store.connectOAuthGoogle();
-// }
-// function connectSocialPostpone() {
-//   social.setExpire(30);
-// }
 </script>
 
 <style lang="scss" scoped>

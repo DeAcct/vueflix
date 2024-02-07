@@ -4,7 +4,7 @@
       store.user ? store.user.nickname : "게스트"
     }}</span>
     <OptimizedMedia
-      :src="store.user.profileImg"
+      :src="store.profileImg.name"
       :alt="`${store.user.nickname} 프로필 사진`"
       class="ProfileCombo__Profile"
       v-if="store.user"

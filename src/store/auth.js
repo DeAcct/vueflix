@@ -44,6 +44,13 @@ export const useAuth = defineStore("auth", () => {
     return user.value.wannaSee;
   });
 
+  const profileImg = computed(() => {
+    if (!user.value) {
+      return "";
+    }
+    return user.value.profileImg;
+  });
+
   // 로그인 상태가 변할 때마다 유저를 반영
   async function syncUser() {
     const auth = getAuth();
@@ -105,10 +112,33 @@ export const useAuth = defineStore("auth", () => {
           `user/${auth.currentUser.uid}/${auth.currentUser.uid}.${extension}`
         );
         await uploadBytes(fileRef, data);
-        profile = `user/${auth.currentUser.uid}/${auth.currentUser.uid}.${extension}`;
+        profile = {
+          type: "custom",
+          name: `user/${auth.currentUser.uid}/${auth.currentUser.uid}.${extension}`,
+        };
       }
+      // feat
+      // "혹시 잘못된 계정으로 로그인했나요?" 대화상자 제공
+
+      // firebase 특성상 소셜 로그인 시행시 자동으로 계정이 생성된다.
+      // 사용자가 잘못 로그인해도 알 방법이 없다.
+
+      // case 1
+      // "어? 왜 내 정보가 없지? 혹시 잘못 로그인했나?"
+      // 사용기록이 없는 상태에서 회원탈퇴가 시행됨
+
+      // case 2
+      // 로컬스토리지에 다른 계정으로 접속한 기록이 있는데 새로운 로그인 수단으로 로그인.
+
+      // case 3
+      // 잘못된 계정으로 이미 사용기록이 생성된 경우
+
       // todo
-      // 계정을 이미 가지고 있는 사용자가 한 번도 사용한 적 없는 서비스로 로그인한 경우
+      // 데이터 이관 기능 제공
+      // 1. 사용기록을 로컬스토리지에 임시 저장
+      // 2. 회원 탈퇴 시행
+      // 3. 다른 계정으로 사용자가 로그인
+      // 4. 사용기록을 병합
 
       // 사용자 정보 저장
       // uid 생성
@@ -189,6 +219,7 @@ export const useAuth = defineStore("auth", () => {
     user,
     wannaSee,
     uid,
+    profileImg,
     syncUser,
     createUser,
     checkEmailDuplicate,
