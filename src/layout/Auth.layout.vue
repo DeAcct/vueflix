@@ -120,6 +120,7 @@ onMounted(() => {
 
   &__Hero {
     width: 100%;
+    height: 12rem;
   }
 }
 
@@ -133,8 +134,6 @@ onMounted(() => {
 
 @media screen and (min-width: 1080px) {
   .Auth {
-    justify-content: space-between;
-
     &__Logo {
       display: none;
     }

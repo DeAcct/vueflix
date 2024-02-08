@@ -82,6 +82,28 @@
         </template>
       </VueflixBtn>
     </div>
+    <NativeDialog ref="$root" class="LoginAlert">
+      <template #title>
+        <strong class="LoginAlert__Title">
+          {{ triedService.text }}(으)로 로그인할 수 없었어요
+        </strong>
+      </template>
+      <template #content>
+        <p class="LoginAlert__Text">다른 방법으로 로그인해보세요.</p>
+      </template>
+      <template #control>
+        <div class="LoginAlert__Control">
+          <VueflixBtn
+            type="button"
+            component="button"
+            @click="close"
+            class="LoginAlert__Button"
+          >
+            <template #text>닫기</template>
+          </VueflixBtn>
+        </div>
+      </template>
+    </NativeDialog>
   </div>
 </template>
 
@@ -96,10 +118,14 @@ import { useAuth } from "../store/auth";
 import { usePassword } from "@/composables/strictUser";
 import { useLoginSave } from "@/composables/loginSave";
 import { useBrowserStorage } from "@/composables/browserStorage";
+import { useModal } from "@/composables/modal";
 
+import { providers } from "@/enums/OAuthProvider";
+
+import InputBoolean from "@/components/InputBoolean.vue";
+import NativeDialog from "@/components/NativeDialog.vue";
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import TextInput from "@/components/TextInput.vue";
-import InputBoolean from "@/components/InputBoolean.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconSeekOff from "@/components/icons/IconSeekOff.vue";
@@ -119,26 +145,36 @@ const { data: recentMethod, setData: setRecentLogin } =
   useBrowserStorage("recent-method");
 const { isLoginSave, data, saveData } = useLoginSave();
 
+const errorMap = {
+  "auth/account-exists-with-different-credential": showAlert,
+};
 const isLoginWaiting = ref(false);
 async function login(type = "Email") {
   isLoginWaiting.value = true;
   if (type !== "Email") {
-    await OAuthLogin(type);
-  } else {
     try {
-      await auth.signInEmailUser(email, password);
-      saveData(email, password);
+      await auth.continueOAuth(type);
     } catch (e) {
-      console.error(e);
+      const error = e.code;
+      if (errorMap[error]) {
+        errorMap[error](type);
+      }
+      return;
     }
+  } else {
+    await auth.signInEmailUser(email, password);
+    saveData(email, password);
   }
   isLoginWaiting.value = false;
   setRecentLogin(type);
   router.back();
 }
-async function OAuthLogin(id) {
-  await auth.continueOAuth(id);
-  router.back();
+
+const triedService = ref("");
+const { $root, show, close } = useModal();
+function showAlert(serviceName) {
+  triedService.value = providers[serviceName];
+  show();
 }
 
 const email = ref("");
@@ -252,9 +288,52 @@ onMounted(() => {
   }
 }
 
+.LoginAlert {
+  --dialog-inset: auto auto 0 0;
+  --dialog-translate: 0 0;
+  --dialog-max-width: 100%;
+  --dialog-border-radius: calc(var(--global-radius) * 2)
+    calc(var(--global-radius) * 2) 0 0;
+  &__Title {
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+  }
+  &__Text {
+    font-size: 1.6rem;
+    line-height: 1.3;
+    text-wrap: pretty;
+    margin-bottom: 1.2rem;
+  }
+  &__Important {
+    display: block;
+    line-height: 1.3;
+    color: hsl(var(--theme-500));
+    font-weight: 700;
+  }
+  &__Control {
+    display: flex;
+  }
+  &__Button {
+    margin-left: auto;
+    box-shadow: none;
+    border-radius: var(--global-radius);
+    background-color: hsl(var(--theme-500));
+    color: #fff;
+  }
+}
+
 @media screen and (min-width: 1080px) {
   .Login {
     justify-content: center;
+  }
+
+  .LoginAlert {
+    --dialog-inset: 50% auto auto 50%;
+    --dialog-translate: -50% -50%;
+    --dialog-starting-translate: -50% 3rem;
+    --dialog-max-width: 40rem;
+    --dialog-padding: 2rem;
+    --dialog-border-radius: calc(var(--global-radius) * 2);
   }
 }
 

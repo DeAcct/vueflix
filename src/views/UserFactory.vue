@@ -1,7 +1,12 @@
 <template>
   <form class="UserFactory">
     <ProfileSelector v-model="profileImg" class="UserFactory__ProfileImage" />
-    <TextInput type="text" class="UserFactory__Input" v-model="nickname">
+    <TextInput
+      type="text"
+      class="UserFactory__Input"
+      v-model="nickname"
+      v-if="!hide.includes('nickname')"
+    >
       <template #label>닉네임</template>
       <template #etc-action>
         <VueflixBtn
@@ -23,7 +28,12 @@
         </span>
       </template>
     </TextInput>
-    <TextInput type="email" class="UserFactory__Input" v-model="email">
+    <TextInput
+      type="email"
+      class="UserFactory__Input"
+      v-model="email"
+      v-if="!hide.includes('email')"
+    >
       <template #label>이메일</template>
       <template #etc-action>
         <VueflixBtn
@@ -50,6 +60,7 @@
       class="UserFactory__Input"
       v-model="password"
       autocomplete="off"
+      v-if="!hide.includes('password')"
     >
       <template #label>패스워드</template>
       <template #etc-action>
@@ -114,6 +125,10 @@ const props = defineProps({
     type: String,
     default: "sign-up",
     validator: (value) => ["sign-up", "edit"].includes(value),
+  },
+  hide: {
+    type: Array,
+    default: "",
   },
 });
 const profileImg = ref("");

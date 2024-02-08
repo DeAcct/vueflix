@@ -1,3 +1,4 @@
+import { ref, computed, unref } from "vue";
 import { defineStore } from "pinia";
 import {
   collection,
@@ -7,6 +8,8 @@ import {
   setDoc,
   doc,
   onSnapshot,
+  deleteDoc,
+  getDoc,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -14,16 +17,16 @@ import {
   linkWithPopup,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
-  FacebookAuthProvider,
   unlink,
-  EmailAuthProvider,
+  reauthenticateWithPopup,
+  deleteUser,
 } from "firebase/auth";
 import { ref as fireRef, uploadBytes } from "firebase/storage";
 import { db, storage } from "@/utility/firebase";
-import { ref, computed, unref } from "vue";
+import { providers } from "@/enums/OAuthProvider";
+import { useBrowserStorage } from "@/composables/browserStorage";
 
 export const useAuth = defineStore("auth", () => {
   // 세션스토리지에 로그인 기록이 남아있다면 유지
@@ -53,26 +56,22 @@ export const useAuth = defineStore("auth", () => {
 
   // 로그인 상태가 변할 때마다 유저를 반영
   async function syncUser() {
+    console.log("syncUser");
     const auth = getAuth();
     if (!auth.currentUser) {
       user.value = null;
       return;
     }
 
-    const userRef = collection(db, "user");
-    const q = query(userRef, where("uid", "==", auth.currentUser.uid));
-    const dataFromUID = (await getDocs(q)).docs;
-
-    if (dataFromUID.length !== 0) {
-      user.value = dataFromUID[0].data();
+    const data = await getData(auth.currentUser.uid);
+    if (data.exists()) {
+      user.value = data.data();
       return;
     }
-    await createUser({
-      profileImg: auth.currentUser.photoURL,
-      nickname: auth.currentUser.displayName,
-      email: auth.currentUser.email,
-      type: "oauth",
-    });
+  }
+  async function getData(uid) {
+    const data = await getDoc(doc(db, "user", uid));
+    return data;
   }
   onAuthStateChanged(auth, async () => {
     await syncUser(auth);
@@ -117,28 +116,6 @@ export const useAuth = defineStore("auth", () => {
           name: `user/${auth.currentUser.uid}/${auth.currentUser.uid}.${extension}`,
         };
       }
-      // feat
-      // "혹시 잘못된 계정으로 로그인했나요?" 대화상자 제공
-
-      // firebase 특성상 소셜 로그인 시행시 자동으로 계정이 생성된다.
-      // 사용자가 잘못 로그인해도 알 방법이 없다.
-
-      // case 1
-      // "어? 왜 내 정보가 없지? 혹시 잘못 로그인했나?"
-      // 사용기록이 없는 상태에서 회원탈퇴가 시행됨
-
-      // case 2
-      // 로컬스토리지에 다른 계정으로 접속한 기록이 있는데 새로운 로그인 수단으로 로그인.
-
-      // case 3
-      // 잘못된 계정으로 이미 사용기록이 생성된 경우
-
-      // todo
-      // 데이터 이관 기능 제공
-      // 1. 사용기록을 로컬스토리지에 임시 저장
-      // 2. 회원 탈퇴 시행
-      // 3. 다른 계정으로 사용자가 로그인
-      // 4. 사용기록을 병합
 
       // 사용자 정보 저장
       // uid 생성
@@ -192,16 +169,24 @@ export const useAuth = defineStore("auth", () => {
     }
   }
 
-  const providers = {
-    Email: { provider: new EmailAuthProvider(), id: "password" },
-    Google: { provider: new GoogleAuthProvider(), id: "google.com" },
-    Facebook: { provider: new FacebookAuthProvider(), id: "facebook.com" },
-  };
   async function continueOAuth(key) {
     const auth = getAuth();
     await signInWithPopup(auth, providers[key].provider);
+    const data = await getData(auth.currentUser.uid);
+    if (data.exists()) {
+      return;
+    }
+    await createUser({
+      profileImg: auth.currentUser.photoURL,
+      nickname: auth.currentUser.displayName,
+      email: auth.currentUser.email,
+      type: "oauth",
+    });
+    await syncUser();
   }
 
+  // todo:
+  // OAuth만을 위한 메서드가 아닌 email도 연동할 수 있는 범용적 메서드로 수정
   async function connectOAuth(key) {
     const auth = getAuth();
     await linkWithPopup(auth.currentUser, providers[key].provider);
@@ -213,6 +198,23 @@ export const useAuth = defineStore("auth", () => {
 
   async function logout() {
     await signOut(auth);
+  }
+
+  const { clearData } = useBrowserStorage("recent-method");
+  async function goodbyeUser() {
+    const auth = getAuth();
+    await reAuth();
+    await deleteDoc(doc(db, "user", auth.currentUser.uid));
+    await deleteUser(auth.currentUser);
+    clearData();
+  }
+  async function reAuth() {
+    const auth = getAuth();
+    const currentUserProviders = auth.currentUser.providerData.map(
+      (provider) => provider.providerId
+    );
+    const firstProvider = providers.findById(currentUserProviders[0]);
+    await reauthenticateWithPopup(auth.currentUser, firstProvider.provider);
   }
 
   return {
@@ -228,5 +230,6 @@ export const useAuth = defineStore("auth", () => {
     connectOAuth,
     disconnectOAuth,
     logout,
+    goodbyeUser,
   };
 });
