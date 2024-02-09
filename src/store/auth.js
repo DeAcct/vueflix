@@ -10,6 +10,7 @@ import {
   onSnapshot,
   deleteDoc,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -22,10 +23,12 @@ import {
   unlink,
   reauthenticateWithPopup,
   deleteUser,
+  linkWithCredential,
+  EmailAuthProvider,
 } from "firebase/auth";
-import { ref as fireRef, uploadBytes } from "firebase/storage";
+import { deleteObject, ref as fireRef, uploadBytes } from "firebase/storage";
 import { db, storage } from "@/utility/firebase";
-import { providers } from "@/enums/OAuthProvider";
+import { PROVIDERS, findProviderById } from "@/enums/OAuthProvider";
 import { useBrowserStorage } from "@/composables/browserStorage";
 
 export const useAuth = defineStore("auth", () => {
@@ -56,7 +59,6 @@ export const useAuth = defineStore("auth", () => {
 
   // 로그인 상태가 변할 때마다 유저를 반영
   async function syncUser() {
-    console.log("syncUser");
     const auth = getAuth();
     if (!auth.currentUser) {
       user.value = null;
@@ -145,6 +147,27 @@ export const useAuth = defineStore("auth", () => {
       console.log(e.code, e.message);
     }
   }
+  async function editUser({ nickname, profileImg }) {
+    const { type, file } = unref(profileImg);
+    await updateDoc(doc(db, "user", auth.currentUser.uid), {
+      nickname: unref(nickname),
+      profileImg: {
+        type,
+        name:
+          type === "custom"
+            ? `user/${auth.currentUser.uid}/${file.name}`
+            : file,
+      },
+    });
+    if (type === "custom") {
+      const fileRef = fireRef(
+        storage,
+        `user/${auth.currentUser.uid}/${file.name}`
+      );
+      await uploadBytes(fileRef, file);
+    }
+    await syncUser();
+  }
 
   // 이메일 중복체크
   async function checkEmailDuplicate(email) {
@@ -171,7 +194,7 @@ export const useAuth = defineStore("auth", () => {
 
   async function continueOAuth(key) {
     const auth = getAuth();
-    await signInWithPopup(auth, providers[key].provider);
+    await signInWithPopup(auth, PROVIDERS[key].provider);
     const data = await getData(auth.currentUser.uid);
     if (data.exists()) {
       return;
@@ -185,15 +208,22 @@ export const useAuth = defineStore("auth", () => {
     await syncUser();
   }
 
-  // todo:
-  // OAuth만을 위한 메서드가 아닌 email도 연동할 수 있는 범용적 메서드로 수정
-  async function connectOAuth(key) {
+  async function connectAuth({ key = "Email", email, password }) {
     const auth = getAuth();
-    await linkWithPopup(auth.currentUser, providers[key].provider);
+    if (key === "Email") {
+      console.log(unref(email), unref(password));
+      const credential = EmailAuthProvider.credential(
+        unref(email),
+        unref(password)
+      );
+      await linkWithCredential(auth.currentUser, credential);
+    }
+    const provider = PROVIDERS[key].provider;
+    await linkWithPopup(auth.currentUser, provider);
   }
-  async function disconnectOAuth(key) {
+  async function disconnectAuth(key) {
     const auth = getAuth();
-    await unlink(auth.currentUser, providers[key].id);
+    await unlink(auth.currentUser, PROVIDERS[key].id);
   }
 
   async function logout() {
@@ -204,6 +234,15 @@ export const useAuth = defineStore("auth", () => {
   async function goodbyeUser() {
     const auth = getAuth();
     await reAuth();
+    console.log(user.value.profileImg.name);
+    // if (user.value.profileImg.type === "custom") {
+    //   await deleteObject(storage, user.value.profileImg.name);
+    // } else {
+    //   await deleteObject(
+    //     storage,
+    //     `user/${auth.currentUser.uid}/${user.value.profileImg.name}`
+    //   );
+    // }
     await deleteDoc(doc(db, "user", auth.currentUser.uid));
     await deleteUser(auth.currentUser);
     clearData();
@@ -213,7 +252,7 @@ export const useAuth = defineStore("auth", () => {
     const currentUserProviders = auth.currentUser.providerData.map(
       (provider) => provider.providerId
     );
-    const firstProvider = providers.findById(currentUserProviders[0]);
+    const firstProvider = findProviderById(currentUserProviders[0]);
     await reauthenticateWithPopup(auth.currentUser, firstProvider.provider);
   }
 
@@ -224,11 +263,12 @@ export const useAuth = defineStore("auth", () => {
     profileImg,
     syncUser,
     createUser,
+    editUser,
     checkEmailDuplicate,
     signInEmailUser,
     continueOAuth,
-    connectOAuth,
-    disconnectOAuth,
+    connectAuth,
+    disconnectAuth,
     logout,
     goodbyeUser,
   };

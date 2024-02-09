@@ -18,7 +18,6 @@ export function usePostpone(id) {
     }
     const endDate = dayjs(postponed.value);
     // 미룬 날짜보다 현재 날짜가 더 앞서 있는지(지났는지)
-    console.log(endDate);
     return dayjs().isAfter(endDate);
   }
   return { postponed, setExpire, isExpired, clear };

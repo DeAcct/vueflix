@@ -22,7 +22,7 @@ export function useHead({ title, meta }) {
       before = { title: document.title };
       document.title = title;
 
-      /** @type Array<HTMLMetaElement> */
+      /** @type {Array<HTMLMetaElement>} */
       const titleMeta = document.querySelectorAll([
         "meta[name='title']",
         "meta[property='og:title']",
@@ -36,7 +36,7 @@ export function useHead({ title, meta }) {
       before[metaName] = document.querySelector(
         `meta[name="${metaName}"]`
       )?.content;
-      /** @type HTMLMetaElement */
+      /** @type {HTMLMetaElement} */
       const targetMeta =
         document.querySelector(`meta[name="${metaName}"]`) ||
         document.querySelector(`meta[property="${metaName}"]`);
@@ -50,7 +50,7 @@ export function useHead({ title, meta }) {
       document.title = before.title;
     }
     for (const metaName in meta) {
-      /** @type HTMLMetaElement */
+      /** @type {HTMLMetaElement} */
       const targetMeta =
         document.querySelector(`meta[name="${metaName}"]`) ||
         document.querySelector(`meta[property="${metaName}"]`);

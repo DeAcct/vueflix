@@ -112,7 +112,6 @@
 // import { doc, setDoc, getDoc } from "firebase/firestore";
 // import { db } from "@/utility/firebase";
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import { useAuth } from "../store/auth";
 
 import { usePassword } from "@/composables/strictUser";
@@ -120,7 +119,7 @@ import { useLoginSave } from "@/composables/loginSave";
 import { useBrowserStorage } from "@/composables/browserStorage";
 import { useModal } from "@/composables/modal";
 
-import { providers } from "@/enums/OAuthProvider";
+import { PROVIDERS } from "@/enums/OAuthProvider";
 
 import InputBoolean from "@/components/InputBoolean.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
@@ -132,8 +131,6 @@ import IconSeekOff from "@/components/icons/IconSeekOff.vue";
 import IconSeekOn from "@/components/icons/IconSeekOn.vue";
 import IconGoogle from "@/components/icons/IconGoogle.vue";
 import IconFacebook from "@/components/icons/IconFacebook.vue";
-
-const router = useRouter();
 
 const auth = useAuth();
 const oAuthServices = [
@@ -167,13 +164,12 @@ async function login(type = "Email") {
   }
   isLoginWaiting.value = false;
   setRecentLogin(type);
-  router.back();
 }
 
 const triedService = ref("");
 const { $root, show, close } = useModal();
 function showAlert(serviceName) {
-  triedService.value = providers[serviceName];
+  triedService.value = PROVIDERS[serviceName];
   show();
 }
 

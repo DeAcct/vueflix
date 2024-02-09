@@ -17,7 +17,7 @@
         @click="openFileModal"
       >
         <template #text>{{
-          preview.src ? "사진 다시 고르기" : "내 사진 가져오기"
+          preview ? "사진 다시 고르기" : "내 사진 가져오기"
         }}</template>
       </VueflixBtn>
       <button
@@ -30,10 +30,10 @@
         @click="setProfileAsLocalImage"
       >
         <Transition name="preview-fade">
-          <IconBase v-if="!preview.src">
+          <IconBase v-if="!preview">
             <IconScreenshot />
           </IconBase>
-          <img v-else :src="preview.src" class="ProfileSelector__Preview" />
+          <img v-else :src="preview" class="ProfileSelector__Preview" />
         </Transition>
       </button>
       <input
@@ -76,9 +76,8 @@ async function fileChange(e) {
     return;
   }
   const [file] = e.target.files;
-  preview.value.originFile = file;
-  setProfileAsLocalImage();
-  preview.value.src = await fileToActualImg(file);
+  profileImg.value = { type: "custom", file };
+  preview.value = await fileToActualImg(file);
 }
 
 function fileToActualImg(target) {
@@ -95,25 +94,26 @@ function fileToActualImg(target) {
 }
 
 function setProfileAsLocalImage() {
-  if (!preview.value.src) {
-    return;
-  }
-  profileImg.value = { type: "custom", name: preview.value.originFile.name };
+  profileImg.value = { type: "custom", name: preview };
 }
 
 const auth = useAuth();
 const user = computed(() => auth.user);
-watch(user, async () => {
-  if (!user.value) {
-    return;
-  }
-  profileImg.value = user.value.profileImg;
-  const imgRef = fireRef(storage, user.value.profileImg.name);
-  const actualURL = await getDownloadURL(imgRef);
-  preview.value.src = actualURL;
-});
+watch(
+  user,
+  async () => {
+    if (!user.value) {
+      return;
+    }
+    profileImg.value = user.value.profileImg;
+    const imgRef = fireRef(storage, user.value.profileImg.name);
+    const actualURL = await getDownloadURL(imgRef);
+    preview.value = actualURL;
+  },
+  { immediate: true }
+);
 
-const preview = ref({ src: "", originFile: null });
+const preview = ref("");
 const profileImg = defineModel();
 </script>
 

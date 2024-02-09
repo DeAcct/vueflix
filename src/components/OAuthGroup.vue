@@ -1,10 +1,10 @@
 <template>
   <div class="OAuthGroup">
-    <template v-for="{ key, text, icon } in PROVIDERS" :key="`social-${key}`">
+    <template v-for="({ text, icon }, key) in PROVIDERS" :key="`social-${key}`">
       <button
         class="OAuthGroup__Item"
         :class="`OAuthGroup__Item--${key}`"
-        @click="showModal({ text, key })"
+        @click="showModal({ service: text, key })"
       >
         <IconBase>
           <component :is="icon" />
@@ -17,28 +17,55 @@
         </strong>
       </button>
     </template>
-    <NativeDialog ref="$root" class="OAuthGroup__Modal">
+    <NativeDialog ref="$root" class="OAuthGroupModal">
       <template #title>
         <strong
-          class="OAuthGroup__ModalTitle"
+          class="OAuthGroupModal__Title"
           v-if="currentModal.enabled && enabled.length === 1"
         >
           최소 한 개의 로그인 수단을 남겨야 합니다.
         </strong>
-        <strong class="OAuthGroup__ModalTitle" v-else>
-          {{ currentModal.text }}을
-          <strong class="OAuthGroup__Important">{{
+        <strong class="OAuthGroupModal__Title" v-else>
+          {{ currentModal.service }}을
+          <strong class="OAuthGroupModal__Important">{{
             currentModal.enabled ? "연결 해제" : "연결"
           }}</strong
           >할까요?
         </strong>
       </template>
-      <template #control>
-        <div class="OAuthGroup__ModalControl">
+      <template
+        #content
+        v-if="currentModal.key === 'Email' && !currentModal.enabled"
+      >
+        <div class="OAuthGroupModal__Content">
+          <p class="OAuthGroupModal__Text">
+            현재 등록된 이메일({{ auth.user.email }})로 로그인할 때 사용할
+            비밀번호를 입력해 주세요.
+          </p>
+          <UserFactory
+            :hide="['nickname', 'profile']"
+            submit-text="연결"
+            type="connect"
+          />
+          <VueflixBtn
+            type="button"
+            component="button"
+            @click="close"
+            class="OAuthGroupModal__Button OAuthGroupModal__Button--Wide"
+          >
+            <template #text>취소</template>
+          </VueflixBtn>
+        </div>
+      </template>
+      <template
+        #control
+        v-if="currentModal.key !== 'Email' || currentModal.enabled"
+      >
+        <div class="OAuthGroupModal__Control">
           <VueflixBtn
             component="button"
             type="button"
-            class="OAuthGroup__ModalButton OAuthGroup__ModalButton--Accent"
+            class="OAuthGroupModal__Button OAuthGroupModal__Button--Accent"
             @click="toggleOAuth"
             v-if="!currentModal.enabled || enabled.length !== 1"
           >
@@ -49,7 +76,7 @@
           <VueflixBtn
             component="button"
             type="button"
-            class="OAuthGroup__ModalButton"
+            class="OAuthGroupModal__Button"
             @click="close"
           >
             <template #text>{{
@@ -66,22 +93,16 @@
 import { ref, onMounted } from "vue";
 import { getAuth } from "firebase/auth";
 
+import { PROVIDERS, connectedToKey } from "../enums/OAuthProvider";
+
 import { useModal } from "@/composables/modal";
 import { useAuth } from "@/store/auth";
 
 import NativeDialog from "@/components/NativeDialog.vue";
 import VueflixBtn from "@/components/VueflixBtn.vue";
+import UserFactory from "@/views/UserFactory.vue";
 
 import IconBase from "@/components/IconBase.vue";
-import IconEmail from "@/components/icons/IconEmail.vue";
-import IconFacebook from "@/components/icons/IconFacebook.vue";
-import IconGoogle from "@/components/icons/IconGoogle.vue";
-
-const PROVIDERS = [
-  { key: "Email", text: "이메일", icon: IconEmail },
-  { key: "Google", text: "구글", icon: IconGoogle },
-  { key: "Facebook", text: "페이스북", icon: IconFacebook },
-];
 
 const enabled = ref([]);
 function setEnabled() {
@@ -90,40 +111,30 @@ function setEnabled() {
     enabled.value = [];
     return;
   }
-  const data = auth.currentUser.providerData.map((item) => {
-    switch (item.providerId) {
-      case "password":
-        return "Email";
-      case "google.com":
-        return "Google";
-      case "facebook.com":
-        return "Facebook";
-      default:
-        return "Unknown";
-    }
-  });
-  enabled.value = data;
+  enabled.value = connectedToKey(auth.currentUser.providerData);
 }
 onMounted(() => {
   setEnabled();
 });
 
 const { $root, show, close } = useModal();
-const currentModal = ref({ text: "", key: "", enabled: false });
+/** @type {import("vue").Ref<{service:string, key:"Email" | "Google" | "Facebook"}>} */
+const currentModal = ref({ service: "", key: "", enabled: false });
 function showModal(changeTo) {
   currentModal.value = {
     ...changeTo,
     enabled: enabled.value.includes(changeTo.key),
   };
+  console.log(currentModal.value.enabled);
   show();
 }
 
 const auth = useAuth();
 async function toggleOAuth() {
   if (currentModal.value.enabled) {
-    await auth.disconnectOAuth(currentModal.value.key);
+    await auth.disconnectAuth(currentModal.value.key);
   } else {
-    await auth.connectOAuth(currentModal.value.key);
+    await auth.connectAuth({ key: currentModal.value.key });
   }
   setEnabled();
   close();
@@ -169,45 +180,57 @@ async function toggleOAuth() {
   &__Text {
     color: inherit;
   }
-
-  &__Modal {
+  &Modal {
     --dialog-inset: auto auto 0 0;
     --dialog-translate: 0 0;
     --dialog-max-width: 100%;
     --dialog-border-radius: calc(var(--global-radius) * 2)
       calc(var(--global-radius) * 2) 0 0;
-  }
-  &__ModalTitle {
-    margin-bottom: 1.2rem;
-    font-size: 1.6rem;
-  }
-  &__Important {
-    color: hsl(var(--theme-500));
-  }
-  &__ModalControl {
-    display: flex;
-  }
-  &__ModalButton {
-    box-shadow: none;
-    border-radius: var(--global-radius);
-    &:first-child {
-      background-color: hsl(var(--theme-500));
-      margin-left: auto;
-      color: #fff;
+    &__Title {
+      margin-bottom: 1.6rem;
+      font-size: 2rem;
+      width: 37.5rem;
+    }
+    &__Content {
+      display: flex;
+      flex-direction: column;
+      width: 37.5rem;
+    }
+    &__Text {
+      margin-bottom: 1.4rem;
+      font-size: 1.6rem;
+      line-height: 1.3;
+      text-wrap: pretty;
+    }
+    &__Important {
+      color: hsl(var(--theme-500));
+    }
+    &__Control {
+      display: flex;
+      flex-direction: column;
+    }
+    &__Button {
+      box-shadow: none;
+      border-radius: calc(var(--global-radius) * 2);
+      width: 100%;
+      height: 4.8rem;
+      &:first-child {
+        background-color: hsl(var(--theme-500));
+        margin-left: auto;
+        color: #fff;
+      }
     }
   }
 }
 
 @media screen and (min-width: 1080px) {
-  .OAuthGroup {
-    &__Modal {
-      --dialog-inset: 50% auto auto 50%;
-      --dialog-translate: -50% -50%;
-      --dialog-starting-translate: -50% 3rem;
-      --dialog-max-width: 40rem;
-      --dialog-padding: 2rem;
-      --dialog-border-radius: calc(var(--global-radius) * 2);
-    }
+  .OAuthGroupModal {
+    --dialog-inset: 50% auto auto 50%;
+    --dialog-translate: -50% -50%;
+    --dialog-starting-translate: -50% 3rem;
+    --dialog-max-width: auto;
+    --dialog-padding: 2rem;
+    --dialog-border-radius: calc(var(--global-radius) * 2);
   }
 }
 </style>

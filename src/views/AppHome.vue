@@ -165,19 +165,19 @@
           <VueflixBtn
             type="submit"
             component="button"
-            @click="postpone"
-            class="PWAModal__Button PWAModal__Button--Dismiss"
-          >
-            <template #text>닫기</template>
-          </VueflixBtn>
-          <VueflixBtn
-            type="submit"
-            component="button"
             @click="install"
             class="PWAModal__Button PWAModal__Button--Install"
             v-if="!isDeviceIOS"
           >
             <template #text>앱 설치</template>
+          </VueflixBtn>
+          <VueflixBtn
+            type="submit"
+            component="button"
+            @click="postpone"
+            class="PWAModal__Button PWAModal__Button--Dismiss"
+          >
+            <template #text>닫기</template>
           </VueflixBtn>
         </div>
       </template>

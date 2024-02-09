@@ -1,6 +1,10 @@
 <template>
   <form class="UserFactory">
-    <ProfileSelector v-model="profileImg" class="UserFactory__ProfileImage" />
+    <ProfileSelector
+      v-model="profileImg"
+      class="UserFactory__ProfileImage"
+      v-if="!hide.includes('profile')"
+    />
     <TextInput
       type="text"
       class="UserFactory__Input"
@@ -124,7 +128,7 @@ const props = defineProps({
   type: {
     type: String,
     default: "sign-up",
-    validator: (value) => ["sign-up", "edit"].includes(value),
+    validator: (value) => ["sign-up", "edit", "connect"].includes(value),
   },
   hide: {
     type: Array,
@@ -155,22 +159,24 @@ const auth = useAuth();
 const isCompleted = computed(() => {
   const image = profileImg.value;
   const texts = [nicknameState, emailState, passwordState].reduce(
-    (prev, item) => item.value.code === "Valid" && prev,
+    (prev, item) =>
+      (item.value.code === "Valid" && prev) || props.hide.includes(item.name),
     true
   );
   return image && texts;
 });
+const actionMap = {
+  "sign-up": auth.createUser,
+  edit: auth.editUser,
+  connect: auth.connectAuth,
+};
 async function actionByType() {
-  console.log(isCompleted.value);
   if (!isCompleted.value && props.type === "sign-up") {
     return;
   }
-  if (props.type === "sign-up") {
-    await auth.createUser({ email, password, nickname, profileImg });
-  } else {
-    // await auth.editUser({ email, password, nickname, profileImg });
-  }
-  router.go(-2);
+  console.log(profileImg);
+  await actionMap[props.type]({ email, password, nickname, profileImg });
+  if (props.type === "sign-up") router.go(-2);
 }
 </script>
 
