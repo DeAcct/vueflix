@@ -102,7 +102,11 @@
       class="UserFactory__Button UserFactory__Button--SignUp"
       component="button"
       @click="actionByType"
+      :icon="isLoading"
     >
+      <template #icon>
+        <LoadingAnimation class="UserFactory__Loading" />
+      </template>
       <template #text>{{ submitText || "회원가입" }}</template>
     </VueflixBtn>
   </form>
@@ -116,11 +120,12 @@ import { useAuth } from "@/store/auth";
 
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import TextInput from "@/components/TextInput.vue";
+import ProfileSelector from "@/components/ProfileSelector.vue";
+import LoadingAnimation from "@/components/LoadAnimation.vue";
+
 import IconBase from "@/components/IconBase.vue";
 import IconSeekOff from "@/components/icons/IconSeekOff.vue";
 import IconSeekOn from "@/components/icons/IconSeekOn.vue";
-
-import ProfileSelector from "@/components/ProfileSelector.vue";
 
 const props = defineProps({
   injectData: Object,
@@ -170,12 +175,16 @@ const actionMap = {
   edit: auth.editUser,
   connect: auth.connectAuth,
 };
+const isLoading = ref(false);
+const emit = defineEmits(["action-complete"]);
 async function actionByType() {
   if (!isCompleted.value && props.type === "sign-up") {
     return;
   }
-  console.log(profileImg);
+  isLoading.value = true;
   await actionMap[props.type]({ email, password, nickname, profileImg });
+  isLoading.value = false;
+  emit("action-complete");
   if (props.type === "sign-up") router.go(-2);
 }
 </script>
@@ -215,7 +224,7 @@ async function actionByType() {
   &__Button {
     display: flex;
     width: 100%;
-    background-color: #fff;
+    background-color: transparent;
     box-shadow: none;
     border-radius: calc(var(--global-radius) * 2);
     color: var(--google-login-text);
@@ -224,6 +233,8 @@ async function actionByType() {
 
     &--SignUp {
       width: 100%;
+      gap: 1rem;
+      flex-direction: row-reverse;
       flex-grow: 1;
       background-color: hsl(var(--theme-500));
       color: #fff;
@@ -244,6 +255,9 @@ async function actionByType() {
       height: 2.4rem;
       padding: 0;
     }
+  }
+  &__Loading {
+    width: 1.6rem;
   }
 }
 

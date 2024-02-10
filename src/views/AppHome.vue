@@ -322,7 +322,7 @@ const { latest } = useMaratonData();
 }
 
 .PWAModal {
-  --dialog-max-width: 50rem;
+  --dialog-max-width: 100%;
   --dialog-translate: 0;
   --dialog-inset: auto auto 0 auto;
   --dialog-starting-translate: 0 100%;
@@ -418,6 +418,7 @@ const { latest } = useMaratonData();
     --dialog-starting-translate: -50% 3rem;
     --dialog-border-radius: calc(var(--global-radius) * 2);
     --dialog-padding: 3rem;
+    --dialog-max-width: auto;
   }
 }
 @media screen and (min-width: 1920px) {

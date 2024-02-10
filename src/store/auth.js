@@ -26,7 +26,12 @@ import {
   linkWithCredential,
   EmailAuthProvider,
 } from "firebase/auth";
-import { deleteObject, ref as fireRef, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  ref as fireStorageRef,
+  listAll,
+  uploadBytes,
+} from "firebase/storage";
 import { db, storage } from "@/utility/firebase";
 import { PROVIDERS, findProviderById } from "@/enums/OAuthProvider";
 import { useBrowserStorage } from "@/composables/browserStorage";
@@ -108,7 +113,7 @@ export const useAuth = defineStore("auth", () => {
         const res = await fetch(profileImg);
         const data = await res.blob();
         const extension = data.type.split("/")[1];
-        const fileRef = fireRef(
+        const fileRef = fireStorageRef(
           storage,
           `user/${auth.currentUser.uid}/${auth.currentUser.uid}.${extension}`
         );
@@ -160,7 +165,8 @@ export const useAuth = defineStore("auth", () => {
       },
     });
     if (type === "custom") {
-      const fileRef = fireRef(
+      await clearProfileImages();
+      const fileRef = fireStorageRef(
         storage,
         `user/${auth.currentUser.uid}/${file.name}`
       );
@@ -194,7 +200,7 @@ export const useAuth = defineStore("auth", () => {
 
   async function continueOAuth(key) {
     const auth = getAuth();
-    await signInWithPopup(auth, PROVIDERS[key].provider);
+    await signInWithPopup(auth, new PROVIDERS[key].provider());
     const data = await getData(auth.currentUser.uid);
     if (data.exists()) {
       return;
@@ -218,7 +224,7 @@ export const useAuth = defineStore("auth", () => {
       );
       await linkWithCredential(auth.currentUser, credential);
     }
-    const provider = PROVIDERS[key].provider;
+    const provider = new PROVIDERS[key].provider();
     await linkWithPopup(auth.currentUser, provider);
   }
   async function disconnectAuth(key) {
@@ -230,19 +236,19 @@ export const useAuth = defineStore("auth", () => {
     await signOut(auth);
   }
 
+  async function clearProfileImages() {
+    const dir = fireStorageRef(storage, `user/${user.value.uid}`);
+    const files = await listAll(dir);
+    await Promise.all(files.items.map((item) => deleteObject(item)));
+  }
+
   const { clearData } = useBrowserStorage("recent-method");
   async function goodbyeUser() {
     const auth = getAuth();
     await reAuth();
-    console.log(user.value.profileImg.name);
-    // if (user.value.profileImg.type === "custom") {
-    //   await deleteObject(storage, user.value.profileImg.name);
-    // } else {
-    //   await deleteObject(
-    //     storage,
-    //     `user/${auth.currentUser.uid}/${user.value.profileImg.name}`
-    //   );
-    // }
+    if (user.value.profileImg.type === "custom") {
+      await clearProfileImages();
+    }
     await deleteDoc(doc(db, "user", auth.currentUser.uid));
     await deleteUser(auth.currentUser);
     clearData();
@@ -253,7 +259,14 @@ export const useAuth = defineStore("auth", () => {
       (provider) => provider.providerId
     );
     const firstProvider = findProviderById(currentUserProviders[0]);
-    await reauthenticateWithPopup(auth.currentUser, firstProvider.provider);
+    await reauthenticateWithPopup(
+      auth.currentUser,
+      new firstProvider.provider()
+    );
+  }
+  async function removeProfileImg() {
+    const fileList = await listAll(dir);
+    return fileList.map((item) => deleteObject(item));
   }
 
   return {

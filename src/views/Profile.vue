@@ -3,6 +3,7 @@
     <section class="Profile__Item">
       <h2 class="Profile__Title">정보 수정</h2>
       <UserFactory
+        @action-complete="onComplete"
         :inject-data="injectData"
         submit-text="수정"
         type="edit"
@@ -19,13 +20,13 @@
           class="Profile__Button"
           type="button"
           component="button"
-          @click="show"
+          @click="exitModal.show"
         >
           <template #text>회원 탈퇴</template>
         </VueflixBtn>
       </div>
     </section>
-    <NativeDialog ref="$root" class="ProfileAlert">
+    <NativeDialog :ref="exitModal.$root" class="ProfileAlert">
       <template #title>
         <strong class="ProfileAlert__Title"> {{ alertData.title }} </strong>
       </template>
@@ -51,19 +52,24 @@
         </div>
       </template>
     </NativeDialog>
+    <AutoPop ref="completePop">
+      <template #text> 내 정보를 수정했어요! </template>
+    </AutoPop>
   </main>
 </template>
 
 <script setup>
 import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { useAuth } from "@/store/auth";
 import { getAuth } from "firebase/auth";
-import { useModal } from "@/composables/modal";
 
-import VueflixBtn from "@/components/VueflixBtn.vue";
+import { useAuth } from "@/store/auth";
+import { useOveray, useAutoPop } from "@/composables/overay";
+
+import AutoPop from "@/components/AutoPop.vue";
+import NativeDialog from "@/components/NativeDialog.vue";
 import UserFactory from "@/views/UserFactory.vue";
-import NativeDialog from "../components/NativeDialog.vue";
+import VueflixBtn from "@/components/VueflixBtn.vue";
 
 const injectData = ref({
   profileImg: "",
@@ -91,7 +97,7 @@ watch(
   { immediate: true }
 );
 
-const { $root, show, close } = useModal();
+const exitModal = useOveray();
 const alertData = ref({
   title: "o(TヘTo)",
   text: "데레와 헤어질 결심을 하셨나요?",
@@ -102,14 +108,14 @@ const alertData = ref({
       text: "탈퇴",
     },
     {
-      action: close,
+      action: exitModal.close,
       text: "취소",
     },
   ],
 });
 async function deleteUser() {
   await store.goodbyeUser();
-  close();
+  exitModal.close();
   alertData.value = {
     title: "탈퇴 완료",
     text: "다음에 또 만날 수 있었으면 좋겠어요.",
@@ -120,13 +126,18 @@ async function deleteUser() {
       },
     ],
   };
-  show();
+  exitModal.show();
 }
 
 const router = useRouter();
 function backToHome() {
-  close();
+  exitModal.close();
   router.push("/");
+}
+
+const completePop = ref();
+function onComplete() {
+  completePop.value.show();
 }
 </script>
 
@@ -135,7 +146,8 @@ function backToHome() {
   display: flex;
   flex-direction: column;
   gap: 3rem;
-  margin-top: calc(var(--header-height) + 2rem);
+  margin-top: var(--header-height);
+  padding-top: 2rem;
   margin-bottom: 8rem;
   &__Item {
     display: flex;

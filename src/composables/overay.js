@@ -1,7 +1,8 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import dayjs from "dayjs";
+import { useEventListener } from "@vueuse/core";
 
-export function useModal() {
+export function useOveray() {
   const $root = ref(null);
 
   function show(e) {
@@ -15,4 +16,18 @@ export function useModal() {
   }
 
   return { $root, show, close };
+}
+
+export function useAutoPop(time = 1000) {
+  const visible = ref(false);
+  function show() {
+    visible.value = true;
+    setTimeout(() => {
+      close();
+    }, time);
+  }
+  function close() {
+    visible.value = false;
+  }
+  return { visible, show, close };
 }

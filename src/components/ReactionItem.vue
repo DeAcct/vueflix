@@ -99,7 +99,7 @@ import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 import { useAuth } from "@/store/auth";
 import { useUserMeta } from "@/api/userMeta";
 import { useFormatDate } from "@/composables/formatter";
-import { useModal } from "@/composables/modal";
+import { useOveray } from "@/composables/overay";
 
 import NativeDialog from "./NativeDialog.vue";
 import OptimizedMedia from "./OptimizedMedia.vue";
@@ -140,7 +140,7 @@ const self = computed(() => props.user?.uid === props.reactionData.uid);
 const { date: formattedDate } = useFormatDate(props.reactionData.time.toDate());
 const meta = useUserMeta(props.reactionData.uid);
 
-const { $root, show, close } = useModal();
+const { $root, show, close } = useOveray();
 
 const editValue = ref(temporalRemoveTimeFlag());
 function temporalRemoveTimeFlag() {

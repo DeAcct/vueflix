@@ -20,14 +20,12 @@
           preview ? "사진 다시 고르기" : "내 사진 가져오기"
         }}</template>
       </VueflixBtn>
-      <button
+      <div
         class="ProfileSelector__PreviewHolder"
         :class="{
           'ProfileSelector__PreviewHolder--Selected':
             profileImg?.type === 'custom',
         }"
-        type="button"
-        @click="setProfileAsLocalImage"
       >
         <Transition name="preview-fade">
           <IconBase v-if="!preview">
@@ -35,7 +33,7 @@
           </IconBase>
           <img v-else :src="preview" class="ProfileSelector__Preview" />
         </Transition>
-      </button>
+      </div>
       <input
         type="file"
         class="blind"
@@ -93,12 +91,9 @@ function fileToActualImg(target) {
   });
 }
 
-function setProfileAsLocalImage() {
-  profileImg.value = { type: "custom", name: preview };
-}
-
 const auth = useAuth();
 const user = computed(() => auth.user);
+const profileImg = defineModel();
 watch(
   user,
   async () => {
@@ -114,7 +109,6 @@ watch(
 );
 
 const preview = ref("");
-const profileImg = defineModel();
 </script>
 
 <style lang="scss" scoped>

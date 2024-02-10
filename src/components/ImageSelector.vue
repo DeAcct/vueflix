@@ -6,7 +6,7 @@
           :type="multiple ? 'checkbox' : 'radio'"
           v-model="selected"
           class="ImageSelector__RealInput blind"
-          :value="{ name: src, type: 'default' }"
+          :value="{ file: src, type: 'default' }"
           :name
         />
         <OptimizedMedia :src class="ImageSelector__Preview" />

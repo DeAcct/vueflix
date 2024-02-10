@@ -88,7 +88,7 @@ import { computed, onMounted, ref } from "vue";
 
 import { Create, Read, Update, Delete } from "@/api/reaction";
 import { useAuth } from "@/store/auth";
-import { useModal } from "@/composables/modal";
+import { useOveray } from "@/composables/overay";
 
 import LoadAnimation from "./LoadAnimation.vue";
 import NativeDialog from "./NativeDialog.vue";
@@ -130,7 +130,7 @@ const auth = useAuth();
 const user = computed(() => auth.user);
 const reactions = ref([]);
 
-const { $root, show, close } = useModal();
+const { $root, show, close } = useOveray();
 onMounted(async () => {
   reactions.value = await Read({
     parent: props.parent,

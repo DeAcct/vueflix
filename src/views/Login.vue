@@ -117,7 +117,7 @@ import { useAuth } from "../store/auth";
 import { usePassword } from "@/composables/strictUser";
 import { useLoginSave } from "@/composables/loginSave";
 import { useBrowserStorage } from "@/composables/browserStorage";
-import { useModal } from "@/composables/modal";
+import { useOveray } from "@/composables/overay";
 
 import { PROVIDERS } from "@/enums/OAuthProvider";
 
@@ -167,7 +167,7 @@ async function login(type = "Email") {
 }
 
 const triedService = ref("");
-const { $root, show, close } = useModal();
+const { $root, show, close } = useOveray();
 function showAlert(serviceName) {
   triedService.value = PROVIDERS[serviceName];
   show();

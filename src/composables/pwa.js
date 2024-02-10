@@ -1,6 +1,6 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import { useBrowserStorage } from "./browserStorage";
-import { useModal } from "./modal";
+import { useOveray } from "./overay";
 import { usePostpone } from "./postpone";
 
 export function usePWA() {
@@ -10,7 +10,7 @@ export function usePWA() {
   const isDeviceIOS =
     /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
 
-  const { $root, show, close } = useModal();
+  const { $root, show, close } = useOveray();
   const { postponed, setExpire, isExpired, clear } = usePostpone("pwa");
 
   let deferredPrompt;

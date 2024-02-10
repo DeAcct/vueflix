@@ -10,19 +10,19 @@ import IconFacebook from "@/components/icons/IconFacebook.vue";
 
 export const PROVIDERS = {
   Email: {
-    provider: new EmailAuthProvider(),
+    provider: EmailAuthProvider,
     id: "password",
     text: "이메일",
     icon: IconEmail,
   },
   Google: {
-    provider: new GoogleAuthProvider(),
+    provider: GoogleAuthProvider,
     id: "google.com",
     text: "구글",
     icon: IconGoogle,
   },
   Facebook: {
-    provider: new FacebookAuthProvider(),
+    provider: FacebookAuthProvider,
     id: "facebook.com",
     text: "페이스북",
     icon: IconFacebook,

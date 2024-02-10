@@ -39,8 +39,7 @@
       >
         <div class="OAuthGroupModal__Content">
           <p class="OAuthGroupModal__Text">
-            현재 등록된 이메일({{ auth.user.email }})로 로그인할 때 사용할
-            비밀번호를 입력해 주세요.
+            연결할 이메일과 비밀번호를 입력해주세요.
           </p>
           <UserFactory
             :hide="['nickname', 'profile']"
@@ -95,7 +94,7 @@ import { getAuth } from "firebase/auth";
 
 import { PROVIDERS, connectedToKey } from "../enums/OAuthProvider";
 
-import { useModal } from "@/composables/modal";
+import { useOveray } from "@/composables/overay";
 import { useAuth } from "@/store/auth";
 
 import NativeDialog from "@/components/NativeDialog.vue";
@@ -117,7 +116,7 @@ onMounted(() => {
   setEnabled();
 });
 
-const { $root, show, close } = useModal();
+const { $root, show, close } = useOveray();
 /** @type {import("vue").Ref<{service:string, key:"Email" | "Google" | "Facebook"}>} */
 const currentModal = ref({ service: "", key: "", enabled: false });
 function showModal(changeTo) {
@@ -197,7 +196,7 @@ async function toggleOAuth() {
       width: 37.5rem;
     }
     &__Text {
-      margin-bottom: 1.4rem;
+      margin-bottom: 1.8rem;
       font-size: 1.6rem;
       line-height: 1.3;
       text-wrap: pretty;
