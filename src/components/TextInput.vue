@@ -68,7 +68,8 @@ function onInput(e) {
     height: var(--input-height);
   }
   &__Input {
-    flex: 1;
+    flex-grow: 1;
+    min-width: 0;
     font-size: 1.5rem;
     font-weight: 500;
     background-color: hsl(var(--bg-100));

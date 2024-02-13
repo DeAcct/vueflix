@@ -188,12 +188,12 @@ async function toggleOAuth() {
     &__Title {
       margin-bottom: 1.6rem;
       font-size: 2rem;
-      width: 37.5rem;
+      width: 100%;
     }
     &__Content {
       display: flex;
       flex-direction: column;
-      width: 37.5rem;
+      width: 100%;
     }
     &__Text {
       margin-bottom: 1.8rem;
@@ -227,7 +227,7 @@ async function toggleOAuth() {
     --dialog-inset: 50% auto auto 50%;
     --dialog-translate: -50% -50%;
     --dialog-starting-translate: -50% 3rem;
-    --dialog-max-width: auto;
+    --dialog-max-width: fit-content;
     --dialog-padding: 2rem;
     --dialog-border-radius: calc(var(--global-radius) * 2);
   }

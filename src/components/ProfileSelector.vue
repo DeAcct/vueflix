@@ -124,17 +124,16 @@ const preview = ref("");
     width: 100%;
   }
   &__DefaultSelector {
-    --preview-size: 4.8rem;
+    width: 100%;
+    justify-content: space-between;
+    min-width: 0;
+    --preview-size: 3.6rem;
   }
   &__Defaults {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     margin-bottom: 1.4rem;
-  }
-  &__ProfileImage {
-    width: 4.8rem;
-    height: 4.8rem;
   }
   &__OpenSelector {
     font-size: 1.4rem;
@@ -159,8 +158,8 @@ const preview = ref("");
     align-items: center;
     justify-content: center;
     font-size: 3rem;
-    width: 4.8rem;
-    height: 4.8rem;
+    width: 3.6rem;
+    height: 3.6rem;
     border: 2px solid hsl(var(--bg-100));
     border-radius: 50%;
     background-color: hsl(var(--bg-200));
@@ -184,5 +183,18 @@ const preview = ref("");
 .preview-fade-enter-from,
 .preview-fade-leave-to {
   opacity: 0;
+}
+
+@media screen and (min-width: 375px) {
+  .ProfileSelector {
+    &__DefaultSelector {
+      min-width: 0;
+      --preview-size: 4.8rem;
+    }
+    &__PreviewHolder {
+      width: 4.8rem;
+      height: 4.8rem;
+    }
+  }
 }
 </style>

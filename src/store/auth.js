@@ -148,8 +148,8 @@ export const useAuth = defineStore("auth", () => {
       //기본정보 업로드
       await setDoc(userRef, user);
       user.value = user;
-    } catch (e) {
-      console.log(e.code, e.message);
+    } catch (error) {
+      return { code: error.code, message: error.message };
     }
   }
   async function editUser({ nickname, profileImg }) {
@@ -185,17 +185,16 @@ export const useAuth = defineStore("auth", () => {
   }
 
   // 이메일-패스워드 로그인
-  async function signInEmailUser(email, password) {
+  async function continueUser({ key, email, password }) {
     const auth = getAuth();
-    try {
-      const credential = await signInWithEmailAndPassword(
-        auth,
-        unref(email),
-        password.value
-      );
-    } catch (e) {
-      console.log(e.code, e.message);
+    if (key === "Email") {
+      try {
+        await signInWithEmailAndPassword(auth, email.value, password.value);
+      } catch (error) {
+        return { code: error.code, message: error.message };
+      }
     }
+    await continueOAuth(key);
   }
 
   async function continueOAuth(key) {
@@ -205,12 +204,16 @@ export const useAuth = defineStore("auth", () => {
     if (data.exists()) {
       return;
     }
-    await createUser({
-      profileImg: auth.currentUser.photoURL,
-      nickname: auth.currentUser.displayName,
-      email: auth.currentUser.email,
-      type: "oauth",
-    });
+    try {
+      await createUser({
+        profileImg: auth.currentUser.photoURL,
+        nickname: auth.currentUser.displayName,
+        email: auth.currentUser.email,
+        type: "oauth",
+      });
+    } catch (error) {
+      return { code: error.code, message: error.message };
+    }
     await syncUser();
   }
 
@@ -278,7 +281,7 @@ export const useAuth = defineStore("auth", () => {
     createUser,
     editUser,
     checkEmailDuplicate,
-    signInEmailUser,
+    continueUser,
     continueOAuth,
     connectAuth,
     disconnectAuth,

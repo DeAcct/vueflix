@@ -85,21 +85,22 @@
     <NativeDialog ref="$root" class="LoginAlert">
       <template #title>
         <strong class="LoginAlert__Title">
-          {{ triedService.text }}(으)로 로그인할 수 없었어요
+          {{ currentModal.title }}
         </strong>
       </template>
       <template #content>
-        <p class="LoginAlert__Text">다른 방법으로 로그인해보세요.</p>
+        <p class="LoginAlert__Text">{{ currentModal.text }}</p>
       </template>
       <template #control>
         <div class="LoginAlert__Control">
           <VueflixBtn
             type="button"
             component="button"
-            @click="close"
             class="LoginAlert__Button"
+            v-for="{ action, text } in currentModal.buttons"
+            @click="action"
           >
-            <template #text>닫기</template>
+            <template #text>{{ text }}</template>
           </VueflixBtn>
         </div>
       </template>
@@ -142,36 +143,48 @@ const { data: recentMethod, setData: setRecentLogin } =
   useBrowserStorage("recent-method");
 const { isLoginSave, data, saveData } = useLoginSave();
 
-const errorMap = {
-  "auth/account-exists-with-different-credential": showAlert,
-};
 const isLoginWaiting = ref(false);
-async function login(type = "Email") {
+const currentModal = ref({ title: "", text: "", buttons: [] });
+async function login(key = "Email") {
   isLoginWaiting.value = true;
-  if (type !== "Email") {
-    try {
-      await auth.continueOAuth(type);
-    } catch (e) {
-      const error = e.code;
-      if (errorMap[error]) {
-        errorMap[error](type);
-      }
-      return;
-    }
-  } else {
-    await auth.signInEmailUser(email, password);
-    saveData(email, password);
+  const result = await auth.continueUser({ key, email, password });
+  if (result.code) {
+    showAlert(result.code);
+    return;
   }
   isLoginWaiting.value = false;
-  setRecentLogin(type);
+  setRecentLogin(key);
+  // if (type !== "Email") {
+  //   const result = await auth.continueOAuth(type);
+  //   if (result.error) {
+  //     showAlert(result.error);
+  //     return;
+  //   }
+  // } else {
+  //   await auth.signInEmailUser(email, password);
+  //   saveData(email, password);
+  // }
+  // isLoginWaiting.value = false;
+  // setRecentLogin(type);
 }
 
-const triedService = ref("");
 const { $root, show, close } = useOveray();
-function showAlert(serviceName) {
-  triedService.value = PROVIDERS[serviceName];
+function showAlert(errorCode) {
+  currentModal.value = errorMap[errorCode];
   show();
 }
+const errorMap = {
+  "auth/account-exists-with-different-credential": {
+    title: "이미 가입된 계정",
+    text: "이미 가입된 계정이 있습니다. 다른 방법으로 로그인해주세요.",
+    buttons: [{ action: close, text: "확인" }],
+  },
+  "auth/user-not-found": {
+    title: "계정을 찾을 수 없음",
+    text: "입력하신 계정을 찾을 수 없습니다. 다시 확인해주세요.",
+    buttons: [{ action: close, text: "확인" }],
+  },
+};
 
 const email = ref("");
 const { password, seek, toggleSeek } = usePassword();
