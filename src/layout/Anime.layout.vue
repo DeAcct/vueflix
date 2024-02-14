@@ -85,6 +85,7 @@ import AnimeItemHead from "@/components/AnimeItemHead.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
 import ToTop from "@/components/ToTop.vue";
 import { useIndicatorAnimation } from "@/composables/indicator";
+import { useMaratonData } from "../composables/maraton";
 
 // const store = useStore();
 const router = useRouter();
@@ -129,11 +130,10 @@ onMounted(async () => {
   }
 });
 
+const { clearMaratonByTitle } = useMaratonData();
 async function removeWatchHistory() {
-  store.commit("auth/clearMaraton", route.params.title);
-  await setDoc(doc(db, "user", user.value.uid), {
-    ...user.value,
-  });
+  // store.commit("auth/clearMaraton", route.params.title);
+  await clearMaratonByTitle(route.params.title);
 }
 
 function handleInterest() {

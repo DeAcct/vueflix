@@ -134,7 +134,7 @@
     <NativeDialog ref="$installModal" class="PWAModal">
       <template #title>
         <strong class="PWAModal__Title">
-          {{ useRandomPWAPromotionCopy() }}
+          {{ pwaCopy }}
         </strong>
       </template>
       <template #content>
@@ -232,8 +232,10 @@ onMounted(async () => {
   const qSnapshot = await getDocs(collection(db, "recommend"));
   const data = qSnapshot.docs.map((doc) => doc.data());
   recommendedAnime.value = data;
+  pwaCopy.value = useRandomPWAPromotionCopy();
 });
 
+const pwaCopy = ref("");
 const {
   $root: $installModal,
   postpone,

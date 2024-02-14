@@ -2,11 +2,11 @@ import { ref, onMounted, reactive } from "vue";
 import { useResizeObserver } from "@vueuse/core";
 
 /**
- * 초기 인덱스값을 받아 탭메뉴 루트요소, , 탭메뉴의 인디케이터 위치, 인디케이터가 이동하게 하는 함수를 반환하는 함수입니다.
+ * 초기 인덱스값을 받아 탭메뉴 루트요소, 탭메뉴의 인디케이터 위치, 인디케이터가 이동하게 하는 함수를 반환하는 함수입니다.
  * @param {number} index 이 인덱스의 요소로 초기화됩니다.
  * @returns {{
- *   selector:import("vue").Ref<Element>,
- *   items:import("vue").Ref<Array<Element>>,
+ *   selector:import("vue").Ref<Element|null>,
+ *   items:import("vue").Ref<Array<Element|null>>,
  *   to:{x: number, y: number, width: number, toHeight: number},
  *   move: (i:number)=>void
  * }}

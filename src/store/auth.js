@@ -282,7 +282,6 @@ export const useAuth = defineStore("auth", () => {
     editUser,
     checkEmailDuplicate,
     continueUser,
-    continueOAuth,
     connectAuth,
     disconnectAuth,
     logout,

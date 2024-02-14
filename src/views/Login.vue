@@ -154,18 +154,6 @@ async function login(key = "Email") {
   }
   isLoginWaiting.value = false;
   setRecentLogin(key);
-  // if (type !== "Email") {
-  //   const result = await auth.continueOAuth(type);
-  //   if (result.error) {
-  //     showAlert(result.error);
-  //     return;
-  //   }
-  // } else {
-  //   await auth.signInEmailUser(email, password);
-  //   saveData(email, password);
-  // }
-  // isLoginWaiting.value = false;
-  // setRecentLogin(type);
 }
 
 const { $root, show, close } = useOveray();

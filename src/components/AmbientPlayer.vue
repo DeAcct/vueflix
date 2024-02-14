@@ -394,13 +394,12 @@ async function share() {
     background-color: #000;
   }
   &__Loading {
-    opacity: 0;
-    width: 4.8rem;
     position: absolute;
-    top: calc(50% - 2.4rem);
+    opacity: 0;
+    display: block;
+    width: 4.8rem;
     left: calc(50% - 2.4rem);
     color: #fff;
-    transition: 150ms ease-out;
     &--Show {
       opacity: 1;
     }

@@ -1,73 +1,97 @@
 <template>
   <main class="Basket">
     <template v-if="user">
-      <div class="Basket__ButtonGroup inner">
-        <MultiSelector
-          class="Basket__Tabs"
-          v-model="selectedTab"
-          @update:model-value="changeSelected"
-          :data="tabItems"
-        ></MultiSelector>
-        <button class="Basket__Button Basket__Button--Remove">
-          <IconBase>
-            <IconRemove></IconRemove>
-          </IconBase>
-        </button>
+      <div class="Basket__ActionGroup">
+        <div class="Basket__Actions inner">
+          <MultiSelector
+            class="Basket__Tabs"
+            v-model="selectedTab"
+            @update:model-value="changeSelected"
+            :data="tabItems"
+          />
+          <button
+            class="Basket__Button Basket__Button--Toggle"
+            @click="toggleEditmode"
+            :disabled="selectedList.length === 0"
+          >
+            <IconBase>
+              <IconRemove></IconRemove>
+            </IconBase>
+          </button>
+        </div>
+        <EditBar
+          :editmode
+          :toggle="toggleEditmode"
+          :remove="remove"
+          :all="all"
+          class="inner"
+        />
       </div>
-      <TransitionGroup tag="ul" class="Basket__List">
-        <ThumbnailSet
-          v-for="{
-            aniTitle,
-            part,
-            index,
-            progress,
-            thumbnail,
-            title,
-          } in selectedList"
-          :key="`${aniTitle}-${selectedTab}`"
-          class="Basket__Item"
-        >
-          <template #image>
-            <RouterLink
-              :to="`/anime-play/${aniTitle}/${part}/${index}`"
-              class="Basket__Image"
-              exact-active-class="Basket__Image--Selected"
-            >
-              <OptimizedMedia
-                :src="
-                  tabItems[selectedTab].thumbnailParser(aniTitle, thumbnail)
-                "
-                :alt="`${aniTitle} ${part} ${index} 이어보기`"
-              />
-              <ProgressCircle
-                v-if="selectedTab === 0"
-                class="Basket__WatchPercent"
-                :percent="`${(progress.current / progress.max) * 100}%`"
-              />
-            </RouterLink>
-          </template>
-          <template #text>
-            <RouterLink
-              class="Basket__TextLink"
-              :to="`/anime/${aniTitle}/episodes`"
-            >
-              <span class="Basket__AniTitle">
-                {{ aniTitle }}
-              </span>
-              <p class="Basket__Episode">
-                <strong class="Basket__PartIndex">
-                  {{ part }} {{ index }}
-                </strong>
-                {{ title }}
-              </p>
-            </RouterLink>
-          </template>
-        </ThumbnailSet>
-      </TransitionGroup>
+      <template v-if="selectedList.length > 0">
+        <TransitionGroup tag="ul" class="Basket__List">
+          <ThumbnailSet
+            v-for="{
+              aniTitle,
+              part,
+              index,
+              progress,
+              thumbnail,
+              title,
+            } in selectedList"
+            :key="`${aniTitle}-${selectedTab}`"
+            class="Basket__Item"
+          >
+            <template #image>
+              <RouterLink
+                :to="`/anime-play/${aniTitle}/${part}/${index}`"
+                class="Basket__Image"
+                exact-active-class="Basket__Image--Selected"
+              >
+                <OptimizedMedia
+                  :src="
+                    tabItems[selectedTab].thumbnailParser(aniTitle, thumbnail)
+                  "
+                  :alt="`${aniTitle} ${part} ${index} 이어보기`"
+                />
+                <ProgressCircle
+                  v-if="selectedTab === 0"
+                  class="Basket__WatchPercent"
+                  :percent="`${(progress.current / progress.max) * 100}%`"
+                />
+              </RouterLink>
+            </template>
+            <template #text>
+              <RouterLink
+                class="Basket__TextLink"
+                :to="`/anime/${aniTitle}/episodes`"
+              >
+                <span class="Basket__AniTitle">
+                  {{ aniTitle }}
+                </span>
+                <p class="Basket__Episode">
+                  <strong class="Basket__PartIndex">
+                    {{ part }} {{ index }}
+                  </strong>
+                  {{ title }}
+                </p>
+              </RouterLink>
+            </template>
+          </ThumbnailSet>
+        </TransitionGroup>
+      </template>
+      <template v-else>
+        <div class="Basket__Alert inner">
+          <img :src="aqua" class="Basket__Easter" />
+          <p class="Basket__Info">
+            <strong class="Basket__Info">아직 아무것도 없네요</strong>
+            원하는 애니메이션을 찾아보세요!
+          </p>
+        </div>
+      </template>
     </template>
     <template v-else>
-      <div class="Basket__RequireLogin inner">
-        <strong class="Basket__LoginTitle">
+      <div class="Basket__Alert inner">
+        <strong class="Basket__Info">
           여기서 지금까지의 덕질을 저장해 보세요!
         </strong>
         <RouterLink to="/auth" class="Basket__LoginButton">
@@ -88,6 +112,9 @@ import { computed, ref } from "vue";
 import { useAuth } from "@/store/auth";
 import { useMaratonData } from "@/composables/maraton";
 
+import aqua from "@/assets/aqua.svg";
+
+import EditBar from "@/components/EditBar.vue";
 import MultiSelector from "@/components/MultiSelector.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ProgressCircle from "@/components/ProgressCircle.vue";
@@ -132,7 +159,7 @@ const wannaSee = computed(() => user.value.wannaSee);
 const selectedList = computed(() => {
   switch (selectedTab.value) {
     case 0:
-      return latest();
+      return latest(6);
     case 1:
       return wannaSee.value;
     case 2:
@@ -141,43 +168,69 @@ const selectedList = computed(() => {
       return user.value.notInterested;
   }
 });
+
+const editmode = ref({
+  on: false,
+  selected: [],
+});
+function toggleEditmode() {
+  editmode.value.on = !editmode.value.on;
+}
+const { removeMaraton } = useMaratonData();
+async function remove() {
+  await removeMaraton(editmode.value.selected);
+}
+async function all() {
+  await removeMaraton("all");
+}
 </script>
 
 <style lang="scss" scoped>
 .Basket {
   padding: var(--header-height) 0;
-  &__ButtonGroup {
+
+  &__ActionGroup {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
     position: sticky;
     z-index: 10;
     top: var(--header-height);
     width: min(100%, 124rem);
     margin: 0 auto;
-    border-bottom: 1px solid hsl(var(--bg-200));
     background-color: hsl(var(--bg-100));
-    gap: 4rem;
-    height: 7.2rem;
+    border-bottom: 1px solid hsl(var(--bg-200));
+  }
+  &__Actions {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   &__Tabs {
+    width: 30rem;
     display: flex;
-    margin: 0 auto;
-    --item-width: calc(35 * 1px * var(--vw));
+    --item-width: 25%;
     --item-height: 4.8rem;
     border-radius: 9999px;
     background-color: transparent;
+    padding: 0.6rem 0;
   }
   &__Button {
     height: 4.8rem;
     display: flex;
     justify-content: center;
-    &--Remove {
-      margin-left: auto;
+    &--Toggle {
       width: 4.8rem;
       flex-shrink: 0;
       align-items: center;
+      padding: 0;
+      &:disabled {
+        cursor: not-allowed;
+        color: hsl(var(--text-200));
+      }
     }
   }
+
   &__List {
     margin-top: 1.5rem;
     width: 100%;
@@ -212,7 +265,7 @@ const selectedList = computed(() => {
     gap: 0.8rem;
   }
 
-  &__RequireLogin {
+  &__Alert {
     display: flex;
     height: calc(var(--vh) * 100px - 8rem);
     flex-direction: column;
@@ -220,8 +273,17 @@ const selectedList = computed(() => {
     justify-content: center;
     gap: 2rem;
   }
+  &__Easter {
+    width: 4.8rem;
+    border-radius: var(--global-radius);
+    margin-top: -7rem;
+  }
 
-  &__LoginTitle {
+  &__Info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
     font-size: 1.7rem;
   }
   &__LoginButton {
@@ -240,17 +302,17 @@ const selectedList = computed(() => {
 }
 .basket-move-enter-from,
 .basket-move-leave-to {
-  transform: translateX(20px);
+  translate: 2rem 0;
   opacity: 0;
 }
 
 @media screen and (min-width: 769px) {
   .Basket {
     &__Tabs {
+      width: 50rem;
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      --item-width: 12rem;
     }
     &__List {
       grid: auto-flow / repeat(3, 1fr);
@@ -260,7 +322,7 @@ const selectedList = computed(() => {
 
 @media screen and (min-width: 1240px) {
   .Basket {
-    &__ButtonGroup {
+    &__ActionGroup {
       border: none;
     }
     &__button {

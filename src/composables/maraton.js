@@ -116,12 +116,31 @@ export function useMaratonData() {
     await auth.syncUser();
   }
 
-  async function clearMaraton(title) {
+  async function clearMaratonByTitle(title) {
+    if (!user.value) {
+      return;
+    }
+    const myDoc = doc(db, "user", user.value.uid);
     const maraton = user.value.maraton.filter(
       (item) => item.aniTitle !== title
     );
     await updateDoc(myDoc, {
       maraton,
+    });
+    await auth.syncUser();
+  }
+
+  async function removeMaraton(target = "all") {
+    if (!user.value) {
+      return;
+    }
+    const myDoc = doc(db, "user", user.value.uid);
+    const result =
+      target === "all"
+        ? []
+        : maraton.value.filter((item) => !target.includes(item.aniTitle));
+    await updateDoc(myDoc, {
+      maraton: result,
     });
     await auth.syncUser();
   }
@@ -152,8 +171,16 @@ export function useMaratonData() {
     if (number === "all") {
       return flatten;
     }
+    // 제공된 숫자 * -1 => 뒤에서부터 제공된 숫자만큼 잘라낸다
     return flatten.slice(-1 * number);
   }
 
-  return { maraton, getEpisodeProgress, updateMaraton, clearMaraton, latest };
+  return {
+    maraton,
+    getEpisodeProgress,
+    updateMaraton,
+    clearMaratonByTitle,
+    removeMaraton,
+    latest,
+  };
 }
