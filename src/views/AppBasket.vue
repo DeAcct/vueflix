@@ -24,11 +24,11 @@
           :toggle="toggleEditmode"
           :remove="remove"
           :all="all"
-          class="inner"
+          class="inner Basket__EditBar"
         />
       </div>
       <template v-if="selectedList.length > 0">
-        <TransitionGroup tag="ul" class="Basket__List">
+        <TransitionGroup tag="ul" class="Basket__List" name="basket-move">
           <ThumbnailSet
             v-for="{
               aniTitle,
@@ -40,12 +40,20 @@
             } in selectedList"
             :key="`${aniTitle}-${selectedTab}`"
             class="Basket__Item"
+            :class="{
+              'Basket__Item--Selected': editmode.selected.has(aniTitle),
+            }"
+            @click="editmode.on && itemToggle(aniTitle)"
           >
             <template #image>
               <RouterLink
-                :to="`/anime-play/${aniTitle}/${part}/${index}`"
+                :to="
+                  editmode.on
+                    ? '#none'
+                    : `/anime-play/${aniTitle}/${part}/${index}`
+                "
                 class="Basket__Image"
-                exact-active-class="Basket__Image--Selected"
+                :replace="editmode.on"
               >
                 <OptimizedMedia
                   :src="
@@ -63,7 +71,8 @@
             <template #text>
               <RouterLink
                 class="Basket__TextLink"
-                :to="`/anime/${aniTitle}/episodes`"
+                :to="editmode.on ? '#none' : `/anime/${aniTitle}/episodes`"
+                :replace="editmode.on"
               >
                 <span class="Basket__AniTitle">
                   {{ aniTitle }}
@@ -81,7 +90,12 @@
       </template>
       <template v-else>
         <div class="Basket__Alert inner">
-          <img :src="aqua" class="Basket__Easter" />
+          <img
+            :src="aqua"
+            class="Basket__Easter"
+            alt="서럽게 우는 코노스바 아쿠아"
+            fetchpriority="low"
+          />
           <p class="Basket__Info">
             <strong class="Basket__Info">아직 아무것도 없네요</strong>
             원하는 애니메이션을 찾아보세요!
@@ -148,20 +162,20 @@ const tabItems = [
 const selectedTab = ref(0);
 function changeSelected(e) {
   selectedTab.value = tabItems.findIndex((item) => item.key === e);
+  editmode.value.on = false;
+  editmode.value.selected.clear();
 }
 
 const auth = useAuth();
 const user = computed(() => auth.user);
-// const basketList = computed(() => user.value[selectedTab.value]);
 const { latest } = useMaratonData();
-const wannaSee = computed(() => user.value.wannaSee);
 
 const selectedList = computed(() => {
   switch (selectedTab.value) {
     case 0:
       return latest(6);
     case 1:
-      return wannaSee.value;
+      return user.value.wannaSee;
     case 2:
       return user.value.purchased;
     case 3:
@@ -171,17 +185,39 @@ const selectedList = computed(() => {
 
 const editmode = ref({
   on: false,
-  selected: [],
+  selected: new Set(),
 });
 function toggleEditmode() {
   editmode.value.on = !editmode.value.on;
+  if (!editmode.value.on) {
+    editmode.value.selected.clear();
+  }
 }
 const { removeMaraton } = useMaratonData();
 async function remove() {
+  if (selectedTab !== 0) {
+    // selectedTab이 '최근 본' 이 아닌 경우는 미구현
+    // 구현 예정.
+    return;
+  }
   await removeMaraton(editmode.value.selected);
+  toggleEditmode();
 }
 async function all() {
+  if (selectedTab !== 0) {
+    // selectedTab이 '최근 본' 이 아닌 경우는 미구현
+    // 구현 예정.
+    return;
+  }
   await removeMaraton("all");
+  toggleEditmode();
+}
+function itemToggle(aniTitle) {
+  if (editmode.value.selected.has(aniTitle)) {
+    editmode.value.selected.delete(aniTitle);
+  } else {
+    editmode.value.selected.add(aniTitle);
+  }
 }
 </script>
 
@@ -230,19 +266,29 @@ async function all() {
       }
     }
   }
+  &__EditBar {
+    width: min(100%, 124rem);
+  }
 
   &__List {
     margin-top: 1.5rem;
-    width: 100%;
+    width: min(100%, 124rem);
     display: grid;
     grid: auto-flow / 1fr;
     gap: 1.5rem 1rem;
     padding: 0 2rem;
   }
   &__Item {
-    min-height: 25.5rem;
     width: calc(var(--thumbnail-units) * 1px * var(--vw));
     flex-direction: column;
+    border: 2px solid transparent;
+    transition: 150ms ease-out;
+    &--Selected {
+      padding: 2rem;
+      border-color: hsl(var(--theme-500));
+      border-radius: calc(var(--global-radius) + 2rem);
+      background-color: hsl(var(--theme-100));
+    }
   }
   &__Image {
     position: relative;
@@ -263,6 +309,10 @@ async function all() {
     flex-direction: column;
     font-size: 1.4rem;
     gap: 0.8rem;
+  }
+  &__Episode {
+    line-height: 1.3;
+    text-wrap: pretty;
   }
 
   &__Alert {
@@ -300,22 +350,38 @@ async function all() {
 .basket-move-leave-active {
   transition: all 150ms ease-out;
 }
+.basket-move-leave-active {
+  display: none;
+}
 .basket-move-enter-from,
 .basket-move-leave-to {
   translate: 2rem 0;
   opacity: 0;
+  translate: 0 -1rem 0;
 }
 
 @media screen and (min-width: 769px) {
   .Basket {
+    &__Actions {
+      padding: 0;
+    }
     &__Tabs {
       width: 50rem;
-      position: absolute;
       left: 50%;
       transform: translateX(-50%);
     }
+    &__EditBar {
+      border-radius: 9999px;
+      padding-right: 0.8rem;
+    }
     &__List {
-      grid: auto-flow / repeat(3, 1fr);
+      --grid-repeat: 3;
+      grid: auto-flow / repeat(var(--grid-repeat), 1fr);
+      margin: 2rem auto;
+      padding: 0;
+    }
+    &__WatchPercent {
+      font-size: 1.4rem;
     }
   }
 }
@@ -333,9 +399,16 @@ async function all() {
     }
     &__List {
       gap: 3rem 1.5rem;
-      grid: auto-flow / repeat(4, 1fr);
+      --grid-repeat: 4;
       --thumbnail-bottom: 0.7rem;
     }
   }
 }
+// @media screen and (min-width: 1440px) {
+//   .Basket {
+//     &__List {
+//       --grid-repeat: 5;
+//     }
+//   }
+// }
 </style>

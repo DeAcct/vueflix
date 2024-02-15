@@ -29,7 +29,7 @@ const props = defineProps({
     type: String,
     default: "toggle",
     validator(value) {
-      return ["checkbox", "toggle"].includes(value);
+      return ["checkbox", "toggle", "presentation"].includes(value);
     },
   },
 });

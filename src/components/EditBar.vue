@@ -1,7 +1,7 @@
 <template>
   <Transition name="show-editmode">
     <div v-if="editmode.on" class="EditBar">
-      <strong>{{ editmode.selected.length }}개 선택됨</strong>
+      <strong>{{ editmode.selected.size }}개 선택됨</strong>
       <VueflixBtn
         type="button"
         component="button"

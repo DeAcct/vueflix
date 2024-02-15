@@ -76,7 +76,7 @@
         </ToolTip>
         <ToolTip
           class="VideoControlBar__ControlItem"
-          v-if="nextEpisode !== undefined && nextEpisode !== '다음화 없음'"
+          v-if="nextEpisode !== '다음 화 없음' && nextEpisode"
           align="flex-start"
         >
           <template #content>

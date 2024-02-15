@@ -121,11 +121,9 @@ export function useMaratonData() {
       return;
     }
     const myDoc = doc(db, "user", user.value.uid);
-    const maraton = user.value.maraton.filter(
-      (item) => item.aniTitle !== title
-    );
+    const result = user.value.maraton.filter((item) => item.aniTitle !== title);
     await updateDoc(myDoc, {
-      maraton,
+      maraton: result,
     });
     await auth.syncUser();
   }
@@ -135,10 +133,14 @@ export function useMaratonData() {
       return;
     }
     const myDoc = doc(db, "user", user.value.uid);
-    const result =
-      target === "all"
-        ? []
-        : maraton.value.filter((item) => !target.includes(item.aniTitle));
+    let result;
+    if (target === "all") {
+      result = [];
+    } else {
+      result = maraton.value.filter(
+        (item) => ![...target].includes(item.aniTitle)
+      );
+    }
     await updateDoc(myDoc, {
       maraton: result,
     });
