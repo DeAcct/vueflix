@@ -6,7 +6,7 @@ const routes = [
   {
     path: "/",
     name: "home",
-    component: () => import("@/views/AppHome.vue"),
+    component: () => import("@/views/Home.vue"),
     meta: {
       title: "데레 - 애니에 빠지다",
       appBar: {
@@ -22,13 +22,12 @@ const routes = [
     meta: {
       bottomTabMenu: false,
     },
-
     children: [
       {
         path: "episodes",
         name: "episodes",
         tabName: "에피소드",
-        component: () => import("@/views/AnimeEpisodes.vue"),
+        component: () => import("@/views/Episodes.vue"),
         meta: {
           bottomTabMenu: false,
         },
@@ -38,7 +37,7 @@ const routes = [
         path: "reviews",
         name: "reviews",
         tabName: "사용자 평",
-        component: () => import("@/views/AnimeReviews.vue"),
+        component: () => import("@/views/Reviews.vue"),
         meta: {
           bottomTabMenu: false,
         },
@@ -60,7 +59,7 @@ const routes = [
   {
     path: "/basket",
     name: "basket",
-    component: () => import("@/views/AppBasket.vue"),
+    component: () => import("@/views/Basket.vue"),
     meta: {
       title: "보관함",
       appBar: {
@@ -169,7 +168,7 @@ const routes = [
   {
     path: "/isekai-404",
     name: "isekai-404",
-    component: () => import("@/views/AppIsekai.vue"),
+    component: () => import("@/views/Isekai.vue"),
     meta: {
       appBar: {
         activityContent: "Logo",

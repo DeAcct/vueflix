@@ -59,22 +59,19 @@
       height="9"
       aria-hidden="true"
     ></canvas>
-    <Teleport to="#Overay">
-      <DialogSet :show="screenshotPreview.show" class="ScreenshotDialog">
-        <template #content>
-          <Transition name="new-screenshot">
-            <img
-              :src="screenshotPreview.imgSrc"
-              :key="screenshotPreview.imgSrc"
-              class="ScreenshotDialog__Preview"
-            />
-          </Transition>
-        </template>
-        <template #control>
-          <button
-            class="ScreenshotDialog__Delete"
-            @click="closeScreenshotPreview"
-          >
+    <NativeDialog ref="$root" class="ScreenshotDialog">
+      <template #content>
+        <Transition name="new-screenshot">
+          <img
+            :src="screenshotSrc"
+            :key="screenshotSrc"
+            class="ScreenshotDialog__Preview"
+          />
+        </Transition>
+      </template>
+      <template #control>
+        <div class="ScreenshotDialog__Actions">
+          <button class="ScreenshotDialog__Delete" @click="close">
             <IconBase>
               <IconTrash />
             </IconBase>
@@ -87,9 +84,9 @@
               다른 앱으로 공유
             </button>
           </div>
-        </template>
-      </DialogSet>
-    </Teleport>
+        </div>
+      </template>
+    </NativeDialog>
   </div>
 </template>
 
@@ -97,11 +94,12 @@
 import { reactive, ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useEventListener } from "@vueuse/core";
+
 import useAmbient from "@/composables/ambient";
 import { useSecToFormat } from "@/composables/formatter";
 import { useVideoScreenshot } from "@/composables/screenshot";
+import { useOveray } from "@/composables/overay";
 
-import DialogSet from "./DialogSet.vue";
 import GestureArea from "./GestureArea.vue";
 import LoadAnimation from "./LoadAnimation.vue";
 import VideoControlBar from "./VideoControlBar.vue";
@@ -109,6 +107,7 @@ import VideoControlBar from "./VideoControlBar.vue";
 import IconBase from "./IconBase.vue";
 import IconScreenshot from "./icons/IconScreenshot.vue";
 import IconTrash from "./icons/IconTrash.vue";
+import NativeDialog from "./NativeDialog.vue";
 
 const props = defineProps({
   src: {
@@ -329,16 +328,14 @@ function goToAnimeList() {
   router.push(`/anime/${route.params.title}/episodes`);
 }
 
+const { $root, show, close } = useOveray();
 const screenshotAlert = ref(false);
-const screenshotPreview = ref({
-  show: false,
-  imgSrc: "",
-});
+const screenshotSrc = ref("");
 function takeScreenshot() {
   screenshotAlert.value = true;
   const { downloadURL } = useVideoScreenshot($video);
-  screenshotPreview.value.imgSrc = downloadURL.value;
-  screenshotPreview.value.show = true;
+  screenshotSrc.value = downloadURL.value;
+  show();
   $video.value.style.transform = "scale(0.95)";
   setTimeout(() => {
     $video.value.style.transform = "scale(1)";
@@ -347,22 +344,20 @@ function takeScreenshot() {
     screenshotAlert.value = false;
   }, 1200);
 }
-function closeScreenshotPreview() {
-  screenshotPreview.value.show = false;
-}
 
 function download() {
   const temporalAnchor = document.createElement("a");
-  temporalAnchor.href = screenshotPreview.value.imgSrc;
+  temporalAnchor.href = screenshotSrc.value;
   temporalAnchor.download = `${route.params.title} ${route.params.part} ${route.params.index} 스크린샷`;
   temporalAnchor.click();
+  temporalAnchor.remove();
 }
 
 async function share() {
   if (!("canShare" in navigator)) {
     return;
   }
-  const blob = await (await fetch(screenshotPreview.value.imgSrc)).blob();
+  const blob = await (await fetch(screenshotSrc.value)).blob();
   const file = new File(
     [blob],
     `${route.params.title} ${route.params.part} ${route.params.index} 스크린샷.png`,
@@ -417,7 +412,7 @@ async function share() {
     justify-content: center;
     align-items: center;
     padding: 0.8rem;
-    background-color: hsl(0 0 0% / 0.5);
+    background-color: hsl(0 0% 0% / 0.5);
     backdrop-filter: blur(10px);
     border-radius: 50%;
     color: #fff;
@@ -430,7 +425,7 @@ async function share() {
     position: absolute;
     top: 0;
     right: 4.6rem;
-    background-color: hsl(0 0 0% / 0.5);
+    background-color: hsl(0 0% 0% / 0.5);
     backdrop-filter: blur(10px);
     border-radius: 9999px;
     padding: 0.8rem 1.2rem;
@@ -465,15 +460,24 @@ async function share() {
 }
 
 .ScreenshotDialog {
+  --dialog-inset: auto auto 0 0;
+  --dialog-translate: 0 0;
+  --dialog-max-width: 100%;
+  --dialog-border-radius: calc(var(--global-radius) * 2)
+    calc(var(--global-radius) * 2) 0 0;
+  --dialog-shadow: 0 0 1.6rem 0.2rem hsl(var(--bg-900) / 0.15);
+
+  &__Preview {
+    border-radius: var(--global-radius);
+    margin-bottom: 0.8rem;
+  }
+  &__Actions {
+    display: flex;
+  }
   &__Delete {
     width: 3.6rem;
     height: 3.6rem;
     margin-right: auto;
-  }
-  &__TextButtons {
-    display: flex;
-    border-radius: var(--global-radius);
-    overflow: hidden;
   }
   &__Action {
     background-color: hsl(var(--bg-300));
@@ -482,9 +486,10 @@ async function share() {
       border-left: 1px solid hsl(var(--bg-200));
     }
   }
-
-  &__Preview {
+  &__TextButtons {
     border-radius: var(--global-radius);
+    overflow: hidden;
+    display: flex;
   }
 }
 
@@ -524,6 +529,14 @@ async function share() {
     &__Effect {
       filter: blur(100px);
     }
+  }
+  .ScreenshotDialog {
+    --dialog-inset: auto max(calc((100 * 1px * var(--vw) - 1920px) / 2), 2rem) 0
+      auto;
+    --dialog-translate: 0 0;
+    --dialog-starting-translate: 0 3rem;
+    --dialog-max-width: 40rem;
+    --dialog-padding: 2rem;
   }
 }
 </style>

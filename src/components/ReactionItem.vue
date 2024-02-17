@@ -1,26 +1,28 @@
 <template>
   <component :is="component" class="ReactionItem">
-    <button
-      type="button"
-      class="ReactionItem__OpenMetaButton"
-      :disabled="!meta"
-      @click="show"
-    >
-      <OptimizedMedia
-        :src="meta.profileImg"
-        class="ReactionItem__ProfileImg"
-        v-if="meta"
-      />
-      <img :src="Aqua" class="ReactionItem__ProfileImg" v-else />
-    </button>
-    <div class="ReactionItem__MetaText">
-      <strong class="ReactionItem__Author">
-        {{ self ? "나" : meta?.nickname || "탈퇴한 사용자" }}
-      </strong>
-      <p class="ReactionItem__Edited">
-        {{ formattedDate }}
-        <slot name="edited"></slot>
-      </p>
+    <div class="ReactionItem__Meta">
+      <button
+        type="button"
+        class="ReactionItem__OpenMetaButton"
+        :disabled="!meta"
+        @click="show"
+      >
+        <OptimizedMedia
+          :src="meta.profileImg.name"
+          class="ReactionItem__ProfileImg"
+          v-if="meta?.profileImg"
+        />
+        <img :src="Aqua" class="ReactionItem__ProfileImg" v-else />
+      </button>
+      <div class="ReactionItem__MetaText">
+        <strong class="ReactionItem__Author">
+          {{ self ? "나" : meta?.nickname || "탈퇴한 사용자" }}
+        </strong>
+        <p class="ReactionItem__Edited">
+          {{ formattedDate }}
+          <slot name="edited"></slot>
+        </p>
+      </div>
     </div>
     <div class="ReactionItem__Content">
       <Transition name="down-fade">
@@ -191,20 +193,24 @@ async function deleteTrigger() {
 <style lang="scss" scoped>
 .ReactionItem {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: space-between;
   padding: 2rem;
 
-  &__MetaData {
+  // &__MetaData {
+  //   display: flex;
+  //   align-items: center;
+  // }
+  &__Meta {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     margin-bottom: 0.8rem;
   }
   &__MetaText {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    flex-grow: 1;
+    gap: 0.6rem;
   }
   &__OpenMetaButton {
     width: 3.6rem;
@@ -222,7 +228,6 @@ async function deleteTrigger() {
   &__Author {
     font-size: 1.6rem;
     margin-right: 0.6rem;
-    margin-bottom: 0.6rem;
   }
   &__Edited {
     font-size: 1.2rem;

@@ -187,28 +187,24 @@ import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
 
 const mode = ref("normal");
-const area = reactive({
-  video: "1 / 1 / 2 / 2",
-  parts: "1 / 2 / 2 / 3",
-  partsTop: "0px",
-  title: "2 / 1 / 3 / 2",
-  comments: "3 / 1 / 4 / 2",
+const area = computed(() => {
+  if (mode.value === "normal") {
+    return {
+      video: "1 / 1 / 2 / 2",
+      parts: "1 / 2 / 2 / 3",
+      title: "2 / 1 / 3 / 2",
+      comments: "3 / 1 / 4 / 2",
+    };
+  }
+  return {
+    video: "1 / 1 / 2 / 3",
+    parts: "2 / 2 / 4 / 3",
+    title: "2 / 1 / 3 / 2",
+    comments: "3 / 1 / 4 / 2",
+  };
 });
 function toggleTheater() {
-  if (mode.value === "normal") {
-    mode.value = "theater";
-    area.video = "1 / 1 / 2 / 3";
-    area.parts = "2 / 2 / 4 / 3";
-    area.title = "2 / 1 / 3 / 2";
-    area.comments = "3 / 1 / 4 / 2";
-    return;
-  }
-  mode.value = "normal";
-  area.video = "1 / 1 / 2 / 2";
-  area.parts = "1 / 2 / 2 / 3";
-  area.partsTop = "0px";
-  area.title = "2 / 1 / 3 / 2";
-  area.comments = "3 / 1 / 4 / 2";
+  mode.value = mode.value === "normal" ? "theater" : "normal";
 }
 // 저작권 문제가 있어
 // 동영상은 하나로 돌려쓰고 있음
@@ -220,8 +216,8 @@ const route = useRoute();
 useHead({
   title: `${route.params.title} ${route.params.part} ${route.params.index} 다시보기`,
   meta: {
-    description: `놓친 애니는 역시 데레에서!`,
-    "og:description": `놓친 애니는 역시 데레에서!`,
+    description: `놓친 ${route.params.title}는 역시 데레에서!`,
+    "og:description": `놓친 ${route.params.title}는 역시 데레에서!`,
   },
 });
 

@@ -1,5 +1,9 @@
 import { onMounted, onUnmounted } from "vue";
 
+const _query = (name) =>
+  document.querySelector(`meta[name="${name}"]`) ||
+  document.querySelector(`meta[property="${name}"]`);
+
 /**
  * 브라우저의 head부분을 원하는대로 변경합니다.
  * @param {{
@@ -8,7 +12,6 @@ import { onMounted, onUnmounted } from "vue";
  *    description?:string,
  *    keywords?:string,
  *    "og:site_name"?:string,
- *    "og:title"?:string,
  *    "og:description"?:string,
  *    "og:image"?:string,
  *    "og:url"?:string,
@@ -16,8 +19,10 @@ import { onMounted, onUnmounted } from "vue";
  * }} param 바꿀 제목 및 메타데이터
  */
 export function useHead({ title, meta }) {
+  // 작업을 진행하기 전 head를 저장하는 변수
   let before = {};
-  function apply() {
+
+  function change() {
     if (title) {
       before = { title: document.title };
       document.title = title;
@@ -33,14 +38,9 @@ export function useHead({ title, meta }) {
     }
 
     for (const metaName in meta) {
-      before[metaName] = document.querySelector(
-        `meta[name="${metaName}"]`
-      )?.content;
+      const targetMeta = _query(metaName);
+      before[metaName] = targetMeta?.content;
       /** @type {HTMLMetaElement} */
-      const targetMeta =
-        document.querySelector(`meta[name="${metaName}"]`) ||
-        document.querySelector(`meta[property="${metaName}"]`);
-      console.log(targetMeta);
       targetMeta.content = meta[metaName];
     }
   }
@@ -51,12 +51,10 @@ export function useHead({ title, meta }) {
     }
     for (const metaName in meta) {
       /** @type {HTMLMetaElement} */
-      const targetMeta =
-        document.querySelector(`meta[name="${metaName}"]`) ||
-        document.querySelector(`meta[property="${metaName}"]`);
+      const targetMeta = _query(metaName);
       targetMeta.content = before[metaName];
     }
   }
-  onMounted(() => apply());
+  onMounted(() => change());
   onUnmounted(() => revert());
 }

@@ -134,12 +134,12 @@ export const useAuth = defineStore("auth", () => {
         nickname: unref(nickname),
         email: unref(email),
         profileImg: profile,
-        // 사용기록
         maraton: [],
         wannaSee: [],
         purchased: [],
         notInterested: [],
         reaction: [],
+        keywordReview: [],
         membership: {
           initDate: new Date(),
         },

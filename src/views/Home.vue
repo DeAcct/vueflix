@@ -229,10 +229,10 @@ watch(selectedDay, async () => {
 
 const recommendedAnime = ref({});
 onMounted(async () => {
+  pwaCopy.value = useRandomPWAPromotionCopy();
   const qSnapshot = await getDocs(collection(db, "recommend"));
   const data = qSnapshot.docs.map((doc) => doc.data());
   recommendedAnime.value = data;
-  pwaCopy.value = useRandomPWAPromotionCopy();
 });
 
 const pwaCopy = ref("");

@@ -7,7 +7,7 @@
             class="Basket__Tabs"
             v-model="selectedTab"
             @update:model-value="changeSelected"
-            :data="tabItems"
+            :data="basket"
           />
           <button
             class="Basket__Button Basket__Button--Toggle"
@@ -47,17 +47,13 @@
           >
             <template #image>
               <RouterLink
-                :to="
-                  editmode.on
-                    ? '#none'
-                    : `/anime-play/${aniTitle}/${part}/${index}`
-                "
+                :to="link({ aniTitle, part, index }).picture"
                 class="Basket__Image"
                 :replace="editmode.on"
               >
                 <OptimizedMedia
                   :src="
-                    tabItems[selectedTab].thumbnailParser(aniTitle, thumbnail)
+                    basket[selectedTab].thumbnailParser(aniTitle, thumbnail)
                   "
                   :alt="`${aniTitle} ${part} ${index} 이어보기`"
                 />
@@ -71,7 +67,7 @@
             <template #text>
               <RouterLink
                 class="Basket__TextLink"
-                :to="editmode.on ? '#none' : `/anime/${aniTitle}/episodes`"
+                :to="link({ aniTitle, part, index }).text"
                 :replace="editmode.on"
               >
                 <span class="Basket__AniTitle">
@@ -121,7 +117,7 @@
 // unique한 키가 아닐 경우, 같은 아이템으로 인식하여 업데이트가 이루어지지 않는다.
 // 탭이 변경되었는데, 같은 인덱스에 같은 제목의 애니가 있을 경우 썸네일이 바뀌지 않는 오류가 있었다.
 
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 
 import { useAuth } from "@/store/auth";
 import { useMaratonData } from "@/composables/maraton";
@@ -137,38 +133,59 @@ import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
 
-const tabItems = [
+const { latest, removeMaraton } = useMaratonData();
+// 삭제 관련 로직 미구현
+const basket = [
   {
     text: "최근 본",
     key: "recent-watched",
     thumbnailParser: (aniTitle, thumbnail) => `${aniTitle}/${thumbnail}`,
+    remove: removeMaraton,
   },
   {
     text: "보고싶다",
     key: "wanna-see",
     thumbnailParser: (aniTitle) => `${aniTitle}/${aniTitle}.webp`,
+    remove: () => {},
   },
   {
     text: "구매한",
     key: "purchased",
     thumbnailParser: (aniTitle) => `${aniTitle}/${aniTitle}.webp`,
+    remove: () => {},
   },
   {
     text: "관심없음",
     key: "not-interested",
     thumbnailParser: (aniTitle) => `${aniTitle}/${aniTitle}.webp`,
+    remove: () => {},
   },
 ];
 const selectedTab = ref(0);
 function changeSelected(e) {
-  selectedTab.value = tabItems.findIndex((item) => item.key === e);
+  selectedTab.value = basket.findIndex((item) => item.key === e);
   editmode.value.on = false;
   editmode.value.selected.clear();
 }
 
+function link({ aniTitle, part, index }) {
+  if (editmode.value.on) {
+    return "#none";
+  }
+  if (selectedTab.value === 0) {
+    return {
+      picture: `/anime-play/${aniTitle}/${part}/${index}`,
+      text: `/anime/${aniTitle}/episodes`,
+    };
+  }
+  return {
+    picture: `/anime/${aniTitle}/episodes`,
+    text: `/anime/${aniTitle}/episodes`,
+  };
+}
+
 const auth = useAuth();
 const user = computed(() => auth.user);
-const { latest } = useMaratonData();
 
 const selectedList = computed(() => {
   switch (selectedTab.value) {
@@ -193,23 +210,12 @@ function toggleEditmode() {
     editmode.value.selected.clear();
   }
 }
-const { removeMaraton } = useMaratonData();
 async function remove() {
-  if (selectedTab !== 0) {
-    // selectedTab이 '최근 본' 이 아닌 경우는 미구현
-    // 구현 예정.
-    return;
-  }
-  await removeMaraton(editmode.value.selected);
+  await basket[selectedTab.value].remove(editmode.value.selected);
   toggleEditmode();
 }
 async function all() {
-  if (selectedTab !== 0) {
-    // selectedTab이 '최근 본' 이 아닌 경우는 미구현
-    // 구현 예정.
-    return;
-  }
-  await removeMaraton("all");
+  await basket[selectedTab.value].remove("all");
   toggleEditmode();
 }
 function itemToggle(aniTitle) {

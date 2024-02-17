@@ -11,7 +11,7 @@ export function useWannaSee(aniTitle) {
     if (!user.value) {
       return false;
     }
-    return !!user.value.wannaSee.find((item) => item.aniTitle === aniTitle);
+    return user.value.wannaSee.some((item) => item.aniTitle === aniTitle);
   });
 
   async function toggleWannaSee() {
