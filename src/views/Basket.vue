@@ -170,7 +170,10 @@ function changeSelected(e) {
 
 function link({ aniTitle, part, index }) {
   if (editmode.value.on) {
-    return "#none";
+    return {
+      picture: "#none",
+      text: "#none",
+    };
   }
   if (selectedTab.value === 0) {
     return {
