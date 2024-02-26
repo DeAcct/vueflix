@@ -27,6 +27,7 @@ defineExpose({ show, close });
   bottom: 2rem;
   left: 50%;
   translate: -50% 0;
+  justify-content: center;
 }
 
 .auto-pop-enter-active,

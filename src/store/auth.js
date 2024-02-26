@@ -153,18 +153,31 @@ export const useAuth = defineStore("auth", () => {
     }
   }
   async function editUser({ nickname, profileImg }) {
-    const { type, file } = unref(profileImg);
-    await updateDoc(doc(db, "user", auth.currentUser.uid), {
+    const { type, file, name } = unref(profileImg);
+    const before = user.value;
+    if (
+      before.nickname === unref(nickname) &&
+      before.profileImg.name === name &&
+      before.profileImg.type === type
+    ) {
+      return { code: "success", message: "수정사항이 없어요" };
+    }
+
+    let after = {};
+    after = {
       nickname: unref(nickname),
-      profileImg: {
+    };
+    if (file) {
+      after.profileImg = {
         type,
         name:
           type === "custom"
             ? `user/${auth.currentUser.uid}/${file.name}`
             : file,
-      },
-    });
-    if (type === "custom") {
+      };
+    }
+    await updateDoc(doc(db, "user", auth.currentUser.uid), after);
+    if (type === "custom" && file) {
       await clearProfileImages();
       const fileRef = fireStorageRef(
         storage,
@@ -173,6 +186,7 @@ export const useAuth = defineStore("auth", () => {
       await uploadBytes(fileRef, file);
     }
     await syncUser();
+    return { code: "success", message: "성공적으로 수정했어요" };
   }
 
   // 이메일 중복체크

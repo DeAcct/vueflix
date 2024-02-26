@@ -26,6 +26,16 @@
         </VueflixBtn>
       </div>
     </section>
+    <AutoPop
+      :ref="
+        (el) => {
+          completePop.root = el;
+        }
+      "
+      class="Profile__Pop"
+    >
+      <template #text>{{ completePop.message }}</template>
+    </AutoPop>
     <NativeDialog :ref="exitModal.$root" class="ProfileAlert">
       <template #title>
         <strong class="ProfileAlert__Title"> {{ alertData.title }} </strong>
@@ -52,9 +62,6 @@
         </div>
       </template>
     </NativeDialog>
-    <AutoPop ref="completePop">
-      <template #text> 내 정보를 수정했어요! </template>
-    </AutoPop>
   </main>
 </template>
 
@@ -64,7 +71,7 @@ import { useRouter } from "vue-router";
 import { getAuth } from "firebase/auth";
 
 import { useAuth } from "@/store/auth";
-import { useOveray, useAutoPop } from "@/composables/overay";
+import { useOveray } from "@/composables/overay";
 
 import AutoPop from "@/components/AutoPop.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
@@ -135,9 +142,13 @@ function backToHome() {
   router.push("/");
 }
 
-const completePop = ref();
-function onComplete() {
-  completePop.value.show();
+const completePop = ref({
+  root: null,
+  message: "",
+});
+function onComplete(e) {
+  completePop.value.message = e;
+  completePop.value.root.show();
 }
 </script>
 
@@ -227,6 +238,13 @@ function onComplete() {
 @media screen and (min-width: 1080px) {
   .Profile {
     gap: 6rem;
+    &__Pop {
+      position: static;
+      inset: auto;
+      translate: none;
+      width: 37.5rem;
+      margin: 0 auto;
+    }
     &__Item {
       width: 37.5rem;
     }

@@ -178,13 +178,15 @@ const actionMap = {
 const isLoading = ref(false);
 const emit = defineEmits(["action-complete"]);
 async function actionByType() {
-  if (!isCompleted.value && props.type === "sign-up") {
-    return;
-  }
   isLoading.value = true;
-  await actionMap[props.type]({ email, password, nickname, profileImg });
+  const { message } = await actionMap[props.type]({
+    email,
+    password,
+    nickname,
+    profileImg,
+  });
   isLoading.value = false;
-  emit("action-complete");
+  emit("action-complete", message);
   if (props.type === "sign-up") router.go(-2);
 }
 </script>
