@@ -191,7 +191,7 @@ import { getDocs, collection, doc, getDoc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 
 import { DAYS } from "@/enums/Days";
-import { useMaratonData } from "@/composables/maraton";
+import { useMaratonData } from "@/api/maraton";
 import { usePWA, useRandomPWAPromotionCopy } from "@/composables/pwa";
 
 import BannerSlide from "@/components/BannerSlide.vue";

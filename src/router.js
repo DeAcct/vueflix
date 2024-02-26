@@ -132,6 +132,32 @@ const routes = [
     },
   },
   {
+    path: "/my/reviews",
+    name: "my-reviews",
+    component: () => import("@/views/MyReviews.vue"),
+    meta: {
+      title: "내 리뷰",
+      appBar: {
+        activityContent: "내 리뷰",
+        backButton: true,
+      },
+      bottomTabMenu: false,
+    },
+  },
+  {
+    path: "/history/:uid",
+    name: "history",
+    component: () => import("@/views/History.vue"),
+    meta: {
+      title: "기록",
+      appBar: {
+        activityContent: "기록",
+        backButton: true,
+      },
+      bottomTabMenu: false,
+    },
+  },
+  {
     path: "/auth",
     name: "auth",
     component: () => import("@/layout/Auth.layout.vue"),

@@ -76,16 +76,17 @@ import {
   provide,
   readonly,
 } from "vue";
-
 import { useRouter, useRoute } from "vue-router";
-import { useScroll } from "@/composables/scroll";
+
 import { useAuth } from "@/store/auth";
+import { useScroll } from "@/composables/scroll";
+import { useIndicatorAnimation } from "@/composables/indicator";
+
+import { useMaratonData } from "@/api/maraton";
 
 import AnimeItemHead from "@/components/AnimeItemHead.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
 import ToTop from "@/components/ToTop.vue";
-import { useIndicatorAnimation } from "@/composables/indicator";
-import { useMaratonData } from "../composables/maraton";
 
 // const store = useStore();
 const router = useRouter();

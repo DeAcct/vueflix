@@ -169,7 +169,7 @@ import { onMounted, onUnmounted, ref, computed, inject, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuth } from "@/store/auth";
 
-import { useMaratonData } from "@/composables/maraton";
+import { useMaratonData } from "@/api/maraton";
 import { useScroll } from "@/composables/scroll";
 import { useEpisode } from "@/composables/episode";
 import { useHead } from "@/composables/head";

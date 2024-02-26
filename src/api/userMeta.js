@@ -16,3 +16,8 @@ export function useUserMeta(uid) {
   });
   return userMeta;
 }
+
+export async function getNickname(uid) {
+  const data = await getDoc(doc(db, "user", uid));
+  return data.data().nickname;
+}

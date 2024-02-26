@@ -58,8 +58,8 @@
 import { inject } from "vue";
 import { useRoute } from "vue-router";
 
-import { useMaratonData } from "@/composables/maraton";
-import { useHead } from "../composables/head";
+import { useMaratonData } from "@/api/maraton";
+import { useHead } from "@/composables/head";
 
 import AccordionWidget from "@/components/AccordionWidget.vue";
 import Thumbnailset from "@/components/ThumbnailSet.vue";

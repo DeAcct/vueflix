@@ -28,7 +28,11 @@
         />
       </div>
       <template v-if="selectedList.length > 0">
-        <TransitionGroup tag="ul" class="Basket__List" name="basket-move">
+        <TransitionGroup
+          tag="ul"
+          class="Basket__List"
+          :name="`basket-${editmode.on ? 'delete' : 'move'}`"
+        >
           <ThumbnailSet
             v-for="{
               aniTitle,
@@ -117,10 +121,11 @@
 // unique한 키가 아닐 경우, 같은 아이템으로 인식하여 업데이트가 이루어지지 않는다.
 // 탭이 변경되었는데, 같은 인덱스에 같은 제목의 애니가 있을 경우 썸네일이 바뀌지 않는 오류가 있었다.
 
-import { computed, ref, onMounted } from "vue";
+import { computed, ref } from "vue";
 
 import { useAuth } from "@/store/auth";
-import { useMaratonData } from "@/composables/maraton";
+import { useMaratonData } from "@/api/maraton";
+// import { useWannaSee } from "@/api/wannaSee";
 
 import aqua from "@/assets/aqua.svg";
 
@@ -134,6 +139,7 @@ import IconBase from "@/components/IconBase.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
 
 const { latest, removeMaraton } = useMaratonData();
+// const { removeWannaSee } = useWannaSee();
 // 삭제 관련 로직 미구현
 const basket = [
   {
@@ -142,12 +148,12 @@ const basket = [
     thumbnailParser: (aniTitle, thumbnail) => `${aniTitle}/${thumbnail}`,
     remove: removeMaraton,
   },
-  {
-    text: "보고싶다",
-    key: "wanna-see",
-    thumbnailParser: (aniTitle) => `${aniTitle}/${aniTitle}.webp`,
-    remove: () => {},
-  },
+  // {
+  //   text: "보고싶다",
+  //   key: "wanna-see",
+  //   thumbnailParser: (aniTitle) => `${aniTitle}/${aniTitle}.webp`,
+  //   remove: removeWannaSee,
+  // },
   {
     text: "구매한",
     key: "purchased",
@@ -195,10 +201,8 @@ const selectedList = computed(() => {
     case 0:
       return latest(6);
     case 1:
-      return user.value.wannaSee;
-    case 2:
       return user.value.purchased;
-    case 3:
+    case 2:
       return user.value.notInterested;
   }
 });
@@ -252,12 +256,13 @@ function itemToggle(aniTitle) {
     justify-content: space-between;
   }
   &__Tabs {
-    width: 30rem;
+    flex-grow: 1;
     display: flex;
     --item-width: 25%;
     --item-height: 4.8rem;
     border-radius: 9999px;
     background-color: transparent;
+    justify-content: flex-start;
     padding: 0.6rem 0;
   }
   &__Button {
@@ -265,8 +270,10 @@ function itemToggle(aniTitle) {
     display: flex;
     justify-content: center;
     &--Toggle {
-      width: 4.8rem;
-      flex-shrink: 0;
+      position: absolute;
+      right: var(--inner-padding);
+      width: 2.4rem;
+      height: 2.4rem;
       align-items: center;
       padding: 0;
       &:disabled {
@@ -355,29 +362,59 @@ function itemToggle(aniTitle) {
   }
 }
 
-.basket-move-enter-active,
-.basket-move-leave-active {
-  transition: all 150ms ease-out;
+.basket {
+  &-move {
+    &-enter-active,
+    &-leave-active {
+      transition: all 150ms ease-out;
+    }
+    &-leave-active {
+      display: none;
+    }
+    &-enter-from,
+    &-leave-to {
+      translate: 2rem 0;
+      opacity: 0;
+      translate: 0 -1rem 0;
+    }
+  }
+  &-delete {
+    &-leave-active {
+      transition: all 150ms ease-out;
+    }
+    &-leave-to {
+      scale: 0;
+      opacity: 0;
+    }
+  }
 }
-.basket-move-leave-active {
-  display: none;
-}
-.basket-move-enter-from,
-.basket-move-leave-to {
-  translate: 2rem 0;
-  opacity: 0;
-  translate: 0 -1rem 0;
-}
+// .basket-move-enter-active,
+// .basket-move-leave-active {
+//   transition: all 150ms ease-out;
+// }
+// .basket-move-leave-active {
+//   display: none;
+// }
+// .basket-move-enter-from,
+// .basket-move-leave-to {
+//   translate: 2rem 0;
+//   opacity: 0;
+//   translate: 0 -1rem 0;
+// }
 
 @media screen and (min-width: 769px) {
   .Basket {
     &__Actions {
       padding: 0;
     }
+    &__Button--Toggle {
+      right: 0;
+    }
     &__Tabs {
+      flex-grow: 0;
+      justify-content: space-between;
       width: 50rem;
-      left: 50%;
-      transform: translateX(-50%);
+      margin: 0 auto;
     }
     &__EditBar {
       border-radius: 9999px;
@@ -399,9 +436,6 @@ function itemToggle(aniTitle) {
   .Basket {
     &__ActionGroup {
       border: none;
-    }
-    &__button {
-      height: 5.6rem;
     }
     &__ActiveHolder {
       font-size: 1.7rem;

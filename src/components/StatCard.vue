@@ -7,16 +7,19 @@
       <p class="StatCard__Email" :class="{ 'loading-target': loading }">
         {{ data?.email }}
       </p>
-      <ul class="StatCard__Stat">
-        <li class="StatCard__StatItem" :class="{ 'loading-target': loading }">
+      <RouterLink class="StatCard__Stat" :to="`/history/${uid}`">
+        <div class="StatCard__StatItem" :class="{ 'loading-target': loading }">
           <h3 class="StatCard__StatName">보고싶다</h3>
           <p class="StatCard__StatValue">{{ data?.wannaSee.length }}개</p>
-        </li>
-        <li class="StatCard__StatItem" :class="{ 'loading-target': loading }">
+        </div>
+        <div class="StatCard__StatItem" :class="{ 'loading-target': loading }">
           <h3 class="StatCard__StatName">리뷰</h3>
           <p class="StatCard__StatValue">{{ data?.reaction.length }}개</p>
-        </li>
-      </ul>
+        </div>
+        <IconBase class="StatCard__Icon">
+          <IconArrowNext />
+        </IconBase>
+      </RouterLink>
     </div>
     <OptimizedMedia
       :src="data?.profileImg.name"
@@ -39,6 +42,8 @@ import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import { doc, getDoc } from "firebase/firestore";
 
 import { db } from "../utility/firebase";
+import IconBase from "./IconBase.vue";
+import IconArrowNext from "./icons/IconArrowNext.vue";
 
 const props = defineProps({
   uid: {
@@ -112,6 +117,7 @@ watch(
   &__Stat {
     display: flex;
     gap: 1.2rem;
+    align-items: center;
   }
   &__StatItem {
     display: flex;
@@ -133,6 +139,11 @@ watch(
     font-size: 1.6rem;
     font-weight: 700;
     color: inherit;
+  }
+  &__Icon {
+    width: 1.8rem;
+    height: 1.8rem;
+    margin-left: -0.6rem;
   }
   &__Level {
     width: 100%;

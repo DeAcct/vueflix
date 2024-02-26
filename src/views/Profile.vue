@@ -29,7 +29,7 @@
     <AutoPop
       :ref="
         (el) => {
-          completePop.root = el;
+          completePop.$root = el;
         }
       "
       class="Profile__Pop"
@@ -143,12 +143,12 @@ function backToHome() {
 }
 
 const completePop = ref({
-  root: null,
+  $root: null,
   message: "",
 });
 function onComplete(e) {
   completePop.value.message = e;
-  completePop.value.root.show();
+  completePop.value.$root.show();
 }
 </script>
 

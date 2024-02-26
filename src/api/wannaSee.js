@@ -1,7 +1,7 @@
 import { computed, ref } from "vue";
 import { useAuth } from "@/store/auth";
 import { db } from "@/utility/firebase";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 
 export function useWannaSee(aniTitle) {
   const auth = useAuth();
@@ -13,6 +13,12 @@ export function useWannaSee(aniTitle) {
     }
     return user.value.wannaSee.some((item) => item.aniTitle === aniTitle);
   });
+
+  async function getWannaSee(uid) {
+    const data = await getDoc(doc(db, "user", uid));
+    console.log(data.data());
+    return data.data().wannaSee;
+  }
 
   async function toggleWannaSee() {
     if (wannaSee.value) {
@@ -28,5 +34,20 @@ export function useWannaSee(aniTitle) {
     }
     await auth.syncUser();
   }
-  return { wannaSee, toggleWannaSee };
+
+  async function removeWannaSee(target = "all") {
+    let result;
+    if (target === "all") {
+      result = [];
+    } else {
+      result = user.value.wannaSee.filter(
+        (item) => ![...target].includes(item.aniTitle)
+      );
+    }
+    updateDoc(doc(db, "user", user.value.uid), {
+      wannaSee: result,
+    });
+    await auth.syncUser();
+  }
+  return { wannaSee, toggleWannaSee, removeWannaSee, getWannaSee };
 }
