@@ -33,6 +33,8 @@
           @mutate="onMutate"
           @interact="setInteract"
           class="ReactionCombo__Item"
+          actions
+          meta-modal
         >
           <template #content>
             <ReactionParser
@@ -199,6 +201,7 @@ function requestTeleport(e) {
     margin-bottom: 1.2rem;
     display: flex;
     gap: 0.4rem;
+    padding: 0 2rem;
   }
   &__description {
     font-size: 1.3rem;
@@ -209,25 +212,25 @@ function requestTeleport(e) {
     border-radius: var(--global-radius);
     width: 100%;
     margin: 0 auto;
+  }
+  &__Write {
     background: linear-gradient(
       150deg,
       hsl(var(--bg-900) / 0.2),
       hsl(var(--bg-900) / 0.025)
     );
-    padding: 1px;
-  }
-  &__Write {
     padding: 2rem;
     background-color: hsl(var(--bg-200) / 0.5);
-    border-radius: var(--global-radius) var(--global-radius) 0 0;
+    border-radius: var(--global-radius);
     &:last-child {
       border-radius: var(--global-radius);
     }
+    width: calc(var(--vw) * 100 * 1px - 4rem);
+    margin: 0 auto;
   }
   &__List {
     overflow: hidden;
     border-radius: 0 0 var(--global-radius) var(--global-radius);
-    background-color: hsl(var(--bg-200) / 0.5);
     &--Exist {
       margin-top: 1px;
     }
@@ -235,7 +238,7 @@ function requestTeleport(e) {
   &__Item {
     background-color: transparent;
     &:not(:last-child) {
-      border-bottom: 1px solid hsl(var(--bg-300));
+      border-bottom: 1px solid hsl(var(--bg-200));
     }
   }
 }

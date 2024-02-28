@@ -143,3 +143,27 @@ export async function Delete({ id }) {
   );
   await auth.syncUser();
 }
+
+/**
+ * uid를 기반으로 리액션(리뷰, 댓글)을 가져옵니다.
+ * @param {{
+ *  uid: string
+ * }} option 가져올 리액션의 uid를 받습니다.
+ * @returns {Promise<Array<{
+ *  _id:string,
+ *  content: Array<string|`<time>${string}`>
+ *  isEdited: boolean,
+ *  parent: string,
+ *  thumbs: number,
+ *  time: Date,
+ *  type: "comment" | "review",
+ *  uid: string,
+ * }>>}
+ */
+export async function ReadByUid(uid) {
+  const q = query(collection(db, "reaction"), where("uid", "==", uid));
+  const userReactions = (await getDocs(q)).docs.map((reaction) =>
+    reaction.data()
+  );
+  return userReactions;
+}

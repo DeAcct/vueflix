@@ -86,9 +86,7 @@ const user = computed(() => auth.user);
 
   &__Method--Review {
     font-size: 1.5rem;
-    --reaction-combo-title-padding: 0;
     --body-radius: var(--global-radius);
-    --reaction-body-width: 100%;
     --reaction-combo-border-gradient: linear-gradient(
       135deg,
       hsl(0 0% 100% / 0.2),
@@ -96,7 +94,6 @@ const user = computed(() => auth.user);
     );
     --recation-combo-bg: hsl(var(--bg-200) / 0.5);
     --reaction-combo-border-width: 1px;
-    padding: 0 2rem;
   }
 }
 </style>

@@ -482,7 +482,6 @@ const { scrollBehavior } = useScroll();
 
   &__Comments {
     z-index: 6;
-    padding: 0 2rem;
     font-size: 1.6rem;
     max-width: unset;
     width: 100%;

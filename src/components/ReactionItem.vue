@@ -1,11 +1,12 @@
 <template>
   <component :is="component" class="ReactionItem">
     <div class="ReactionItem__Meta">
-      <button
-        type="button"
+      <component
+        :is="metaModal ? 'button' : 'div'"
+        :type="metaModal ? button : undefined"
         class="ReactionItem__OpenMetaButton"
         :disabled="!meta"
-        @click="show"
+        @click="metaModal && show"
       >
         <OptimizedMedia
           :src="meta.profileImg.name"
@@ -13,7 +14,7 @@
           v-if="meta?.profileImg"
         />
         <img :src="Aqua" class="ReactionItem__ProfileImg" v-else />
-      </button>
+      </component>
       <div class="ReactionItem__MetaText">
         <strong class="ReactionItem__Author">
           {{ self ? "나" : meta?.nickname || "탈퇴한 사용자" }}
@@ -21,6 +22,7 @@
         <p class="ReactionItem__Edited">
           {{ formattedDate }}
           <slot name="edited"></slot>
+          <slot name="from"></slot>
         </p>
       </div>
     </div>
@@ -43,7 +45,7 @@
         </template>
       </Transition>
     </div>
-    <div class="ReactionItem__Actions">
+    <div class="ReactionItem__Actions" v-if="actions">
       <UpdownReaction
         :parent="reactionData._id"
         :writer="reactionData.uid"
@@ -75,7 +77,7 @@
         </button>
       </div>
     </div>
-    <NativeDialog ref="$root" class="ReactionItem__MetaModal">
+    <NativeDialog ref="$root" class="ReactionItem__MetaModal" v-if="metaModal">
       <template #content>
         <StatCard :uid="reactionData.uid" class="ReactionItem__Data" />
       </template>
@@ -112,8 +114,10 @@ import Aqua from "@/assets/aqua.svg";
 
 const placeholder = computed(
   () =>
-    `수정할 ${REACTION_ENUM_WITH_PARTICLE[props.type]} 입력해 주세요.${
-      props.type === "comment"
+    `수정할 ${
+      REACTION_ENUM_WITH_PARTICLE[props.reactionData.type]
+    } 입력해 주세요.${
+      props.reactionData.type === "comment"
         ? "\n시간:분:초 형식으로 작성하면 애니 시간을 첨부할 수 있어요!"
         : ""
     }`
@@ -130,12 +134,18 @@ const props = defineProps({
   user: {
     type: Object,
   },
-  type: {
-    type: String,
-    required: true,
-    validator(value) {
-      return ["comment", "review", "reply"].includes(value);
-    },
+  // type: {
+  //   type: String,
+  //   required: true,
+  //   validator(value) {
+  //     return ["comment", "review", "reply"].includes(value);
+  //   },
+  // },
+  actions: {
+    type: Boolean,
+  },
+  metaModal: {
+    type: Boolean,
   },
 });
 const self = computed(() => props.user?.uid === props.reactionData.uid);
@@ -177,7 +187,7 @@ async function updateReaction() {
     id: props.reactionData._id,
     content: editValue.value,
     user,
-    type: props.type,
+    type: props.reactionData.type,
   });
   emits("interact", false);
 }
@@ -240,6 +250,9 @@ async function deleteTrigger() {
     width: 100%;
     max-width: 80ch;
     font-size: 1.3rem;
+    &:last-of-type {
+      margin-bottom: 0;
+    }
   }
   &__Text {
     white-space: pre-line;

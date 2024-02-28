@@ -2,7 +2,7 @@
   <div class="MultiSelector" ref="$MultiSeletor">
     <button
       v-for="({ key, text }, index) in data"
-      :key="key"
+      :key
       :class="[
         'MultiSelector__Item',
         { 'MultiSelector__Item--Active': index === selected },
