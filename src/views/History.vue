@@ -6,33 +6,30 @@
       class="History__Selector"
       @update:model-value="onChange"
     />
-    <div class="History__List">
-      <Transition name="history-fade">
-        <HistoryGroup
-          :list="wannaSee"
-          :parser="useParser('anime')"
-          v-if="tab === 0"
-        ></HistoryGroup>
-        <div v-else>
-          <ReactionItem
-            v-for="reaction in reactions"
-            :user
-            :reaction-data="reaction"
-            component="RouterLink"
-            to="#none"
-            class="History__ReactionItem"
-          >
-            <template #from> | {{ reaction.parent }} </template>
-            <template #content>
-              <ReactionParser :content="reaction.content" />
-            </template>
-            <template #edited>{{
-              reaction.isEdited ? "(수정됨)" : ""
-            }}</template>
-          </ReactionItem>
-        </div>
-      </Transition>
-    </div>
+    <Transition name="history-fade">
+      <HistoryGroup
+        :list="wannaSee"
+        :parser="useParser('anime')"
+        v-if="tab === 0"
+        class="History__List"
+      ></HistoryGroup>
+      <div v-else class="History__List History__List--Reaction">
+        <ReactionItem
+          v-for="reaction in reactions"
+          :user
+          :reaction-data="reaction"
+          component="RouterLink"
+          to="#none"
+          class="History__ReactionItem"
+        >
+          <template #from> | {{ reaction.parent }} </template>
+          <template #content>
+            <ReactionParser :content="reaction.content" />
+          </template>
+          <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
+        </ReactionItem>
+      </div>
+    </Transition>
   </main>
 </template>
 
@@ -91,13 +88,16 @@ onMounted(async () => {
     --item-width: 50%;
     padding: {
       top: 1.5rem;
-      left: var(--inner-padding);
-      right: var(--inner-padding);
+      left: 2rem;
+      right: 2rem;
     }
     background-color: transparent;
+    margin: 0 auto;
+    width: min(100%, 124rem);
   }
   &__List {
-    margin-top: 1.5rem;
+    margin: 1.5rem auto 0;
+    width: min(100%, 124rem);
   }
   &__ReactionItem {
     & + & {
@@ -111,8 +111,6 @@ onMounted(async () => {
     &-enter-active,
     &-leave-active {
       transition: all 150ms ease-out;
-    }
-    &-leave-active {
       display: none;
     }
     &-enter-from,
@@ -120,6 +118,32 @@ onMounted(async () => {
       translate: 2rem 0;
       opacity: 0;
       translate: 0 -1rem 0;
+    }
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .History {
+    &__Selector {
+      padding: {
+        left: 0;
+        right: 0;
+      }
+      --item-width: 10rem;
+      justify-content: flex-start;
+    }
+    &__List--Reaction {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    &__ReactionItem {
+      width: calc((100% - 1.6rem) / 3);
+      background-color: hsl(var(--bg-200));
+      border-radius: var(--global-radius);
+      & + & {
+        border-top: none;
+      }
     }
   }
 }

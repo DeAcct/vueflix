@@ -2,7 +2,9 @@
   <RouterView v-slot="{ Component, route }">
     <VueflixHeader v-if="route.meta.appBar" :is-touch-device="device.isTouch" />
     <BottomTabMenu v-if="route.meta.bottomTabMenu && device.isMobile" />
-    <Transition :name="route.meta.transition || 'root-move'">
+    <Transition
+      :name="route.meta.transition || `root-move-${transition.direction}`"
+    >
       <component :is="Component"></component>
     </Transition>
   </RouterView>
@@ -13,7 +15,6 @@ import { onMounted, onUnmounted, provide, reactive } from "vue";
 
 import { useTheme } from "./store/theme";
 import { useRootTransition } from "@/composables/transition";
-import { useHead } from "@/composables/head";
 
 import VueflixHeader from "@/components/VueflixHeader.vue";
 import BottomTabMenu from "@/components/BottomTabMenu.vue";
@@ -59,16 +60,34 @@ onUnmounted(() => {
   });
 });
 
-// const direction = useRootTransition();
+const transition = useRootTransition();
 </script>
 
 <style lang="scss" scoped>
-.root-move-enter-active,
-.root-move-leave-active {
-  transition: opacity 150ms ease-in-out;
-}
-.root-move-enter-from,
-.root-move-left-leave-to {
-  opacity: 0;
+.root-move {
+  &-right {
+    &-enter-active,
+    &-leave-active {
+      transition: all calc(200ms * v-bind("transition.weight")) ease-out;
+      opacity: 0;
+    }
+    &-enter-from,
+    &-leave-to {
+      translate: -2rem 0;
+      opacity: 0;
+    }
+  }
+  &-left {
+    &-enter-active,
+    &-leave-active {
+      transition: all calc(200ms * v-bind("transition.weight")) ease-out;
+      opacity: 0;
+    }
+    &-enter-from,
+    &-leave-to {
+      translate: 2rem 0;
+      opacity: 0;
+    }
+  }
 }
 </style>
