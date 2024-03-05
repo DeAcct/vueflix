@@ -225,7 +225,6 @@ function requestTeleport(e) {
     &:last-child {
       border-radius: var(--global-radius);
     }
-    width: calc(var(--vw) * 100 * 1px - 4rem);
     margin: 0 auto;
   }
   &__List {

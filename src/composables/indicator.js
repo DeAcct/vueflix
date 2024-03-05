@@ -42,6 +42,7 @@ export function useIndicatorAnimation(index) {
 
     to.width = toWidth;
     to.height = toHeight;
+    console.log(to.x);
   }
   onMounted(() => {
     move(index);

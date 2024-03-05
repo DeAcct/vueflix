@@ -32,8 +32,10 @@
         @play-setting="onChangePlaySetting"
         @change-play-progress="onChangePlayProgress"
         @change-volume="onVolumeChange"
-        @prev-sec="moveBeforeFiveSec"
-        @next-sec="moveAfterFiveSec"
+        :sec-action="{
+          before: moveBeforeFiveSec,
+          after: moveAfterFiveSec,
+        }"
         :volume="volume"
         :meta="meta"
       >

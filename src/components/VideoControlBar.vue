@@ -18,40 +18,12 @@
           <template #trigger>
             <button class="VideoControlBar__Button" @click="togglePlay">
               <IconBase>
-                <IconPlay v-if="isPlaying" />
-                <IconPause v-else />
+                <component :is="isPlaying ? IconPlay : IconPause" />
               </IconBase>
             </button>
           </template>
         </ToolTip>
-        <div class="VideoControlBar__QuickMove">
-          <ToolTip class="VideoControlBar__ControlItem" align="flex-start">
-            <template #content
-              ><div class="VideoControlBar__ToolTipContent">
-                5초 앞으로
-              </div></template
-            >
-            <template #trigger>
-              <button class="VideoControlBar__Button" @click="prevSec">
-                <IconBase>
-                  <IconPrevFiveSec />
-                </IconBase>
-              </button>
-            </template>
-          </ToolTip>
-          <ToolTip class="VideoControlBar__ControlItem" align="flex-start">
-            <template #content>
-              <div class="VideoControlBar__ToolTipContent">5초 뒤로</div>
-            </template>
-            <template #trigger>
-              <button class="VideoControlBar__Button" @click="nextSec">
-                <IconBase>
-                  <IconNextFiveSec />
-                </IconBase>
-              </button>
-            </template>
-          </ToolTip>
-        </div>
+        <QuickTimeMove class="VideoControlBar__QuickTimeMove" :sec-action />
         <ToolTip class="VideoControlBar__ControlItem">
           <template #content>
             <div
@@ -62,14 +34,13 @@
                 class="VideoControlBar__VolumeSlide"
                 :progress="volume"
                 @input="onVolumeChange"
-              ></ProgressBar>
+              />
             </div>
           </template>
           <template #trigger>
             <button class="VideoControlBar__Button" @click="toggleMuted">
               <IconBase>
-                <IconMuteOn v-if="isMuted" />
-                <IconMuteOff v-else />
+                <component :is="isMuted ? IconMuteOn : IconMuteOff" />
               </IconBase>
             </button>
           </template>
@@ -136,7 +107,7 @@
         </p>
       </div>
 
-      <div class="VideoControlBar__HowWatch">
+      <div class="VideoControlBar__Watch">
         <ToolTip direction="row-reverse" align="flex-end" show>
           <template #content>
             <VideoSetting
@@ -156,14 +127,13 @@
         <ToolTip v-if="!isFull && !deviceInfo.isMobile" align="flex-end">
           <template #content>
             <div class="VideoControlBar__ToolTipContent">
-              {{ isTheater ? "일반 모드" : "영화관 모드" }}
+              {{ isTheater ? "일반" : "영화관" }} 모드
             </div>
           </template>
           <template #trigger>
             <button class="VideoControlBar__Button" @click="toggleTheater">
               <IconBase>
-                <IconShirink v-if="isTheater" />
-                <IconExpand v-else />
+                <component :is="isTheater ? IconShirink : IconExpand" />
               </IconBase>
             </button>
           </template>
@@ -191,8 +161,9 @@
           <template #trigger>
             <button class="VideoControlBar__Button" @click="toggleFullScreen">
               <IconBase>
-                <IconFullScreenOff v-if="isFull" />
-                <IconFullScreenOn v-else />
+                <component
+                  :is="isFull ? IconFullScreenOff : IconFullScreenOn"
+                />
               </IconBase>
             </button>
           </template>
@@ -203,15 +174,16 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, inject, reactive } from "vue";
+import { ref, computed, watch, inject } from "vue";
 import { useRoute } from "vue-router";
 import { useEventListener } from "@vueuse/core";
 
 import ProgressBar from "./ProgressBar.vue";
+import OptimizedMedia from "./OptimizedMedia.vue";
+import QuickTimeMove from "./QuickTimeMove.vue";
 import ToolTip from "./ToolTip.vue";
 import ThumbnailSet from "./ThumbnailSet.vue";
 import VideoSetting from "./VideoSetting.vue";
-import OptimizedMedia from "./OptimizedMedia.vue";
 
 import IconBase from "./IconBase.vue";
 import IconExpand from "./icons/IconExpand.vue";
@@ -220,11 +192,9 @@ import IconFullScreenOn from "./icons/IconFullScreenOn.vue";
 import IconMuteOn from "./icons/IconMuteOn.vue";
 import IconMuteOff from "./icons/IconMuteOff.vue";
 import IconNextEpisode from "./icons/IconNextEpisode.vue";
-import IconNextFiveSec from "./icons/IconNextFiveSec.vue";
 import IconPause from "./icons/IconPause.vue";
 import IconPIP from "./icons/IconPIP.vue";
 import IconPlay from "./icons/IconPlay.vue";
-import IconPrevFiveSec from "./icons/IconPrevFiveSec.vue";
 import IconSetting from "./icons/IconSetting.vue";
 import IconShirink from "./icons/IconShirink.vue";
 
@@ -263,8 +233,6 @@ const emits = defineEmits([
   "request-theater",
   "change-play-progress",
   "change-volume",
-  "prev-sec",
-  "next-sec",
   "play-setting",
 ]);
 
@@ -294,6 +262,9 @@ const props = defineProps({
   meta: {
     type: Object,
   },
+  secAction: {
+    type: Object,
+  },
 });
 
 const route = useRoute();
@@ -317,13 +288,6 @@ const isTheater = ref(false);
 function toggleTheater() {
   isTheater.value = !isTheater.value;
   emits("request-theater");
-}
-
-function prevSec() {
-  emits("prev-sec");
-}
-function nextSec() {
-  emits("next-sec");
 }
 
 const isFull = ref(document.fullscreenElement);
@@ -383,7 +347,7 @@ function onVolumeChange(e) {
     align-items: center;
     gap: 1.6rem;
   }
-  &__QuickMove {
+  &__QuickTimeMove {
     display: none;
   }
   &__Meta {
@@ -449,7 +413,7 @@ function onVolumeChange(e) {
     display: flex;
   }
 
-  &__HowWatch {
+  &__Watch {
     display: flex;
     align-items: center;
     margin-left: auto;
@@ -474,9 +438,8 @@ function onVolumeChange(e) {
 
 @media screen and (min-width: 1080px) {
   .VideoControlBar {
-    &__QuickMove {
+    &__QuickTimeMove {
       display: flex;
-      gap: 1.2rem;
     }
     &__Meta {
       display: flex;
@@ -495,3 +458,4 @@ function onVolumeChange(e) {
   }
 }
 </style>
+./QuickTimeMove.vue
