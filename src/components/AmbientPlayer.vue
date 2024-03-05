@@ -15,7 +15,8 @@
         @play="setPlaying"
         @pause="setPlaying"
         autoplay
-        muted
+        playsinline
+        x-webkit-airplay
       />
       <GestureArea
         class="AmbientPlayer__GestureArea"
@@ -282,6 +283,7 @@ const volume = reactive({
 function onVolumeChange(e) {
   volume.current = e.target.value;
   $video.value.volume = volume.current;
+  console.log($video.value.volume);
 }
 function volumeDown() {
   if (volume.current <= 0) {
@@ -377,8 +379,8 @@ async function share() {
   z-index: 1;
   display: flex;
   align-items: center;
-
   overflow: hidden;
+  border-radius: var(--global-radius);
 
   &__FullscreenRoot {
     position: relative;

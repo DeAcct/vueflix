@@ -3,7 +3,7 @@
     <div class="ReactionItem__Meta">
       <component
         :is="metaModal ? 'button' : 'div'"
-        :type="metaModal ? button : undefined"
+        :type="metaModal ? 'button' : undefined"
         class="ReactionItem__OpenMetaButton"
         :disabled="!meta"
         @click="metaModal && show"

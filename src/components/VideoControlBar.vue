@@ -465,6 +465,10 @@ function onVolumeChange(e) {
       font-weight: 500;
       color: #fff;
     }
+    &__Episode,
+    &__Title {
+      color: #fff;
+    }
   }
 }
 
