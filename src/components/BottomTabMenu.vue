@@ -40,6 +40,7 @@
 import IconBase from "./IconBase.vue";
 import IconHome from "./icons/IconHome.vue";
 import IconBasket from "./icons/IconBasket.vue";
+import IconCocktail from "./icons/IconCocktail.vue";
 import ToTop from "./ToTop.vue";
 
 import { useScroll } from "@/composables/scroll";
@@ -55,6 +56,11 @@ const items = [
     to: "basket",
     name: "보관함",
     icon: IconBasket,
+  },
+  {
+    to: "cocktail",
+    name: "칵테일",
+    icon: IconCocktail,
   },
 ];
 
@@ -102,6 +108,8 @@ const { scrollBehavior } = useScroll();
     }
   }
   &__Icon {
+    width: 2.4rem;
+    height: 2.4rem;
     color: var(--bottom-tab-active-color);
   }
   &__Profile {

@@ -182,6 +182,16 @@ summary {
 //   z-index: 1000;
 // }
 
+// page transition
+#app:has(
+    .root-move-right-enter-active,
+    .root-move-right-leave-active,
+    .root-move-left-enter-active,
+    .root-move-left-leave-active
+  ) {
+  overflow: hidden;
+}
+
 @keyframes loading-animation {
   from {
     background-position-x: 0%;
