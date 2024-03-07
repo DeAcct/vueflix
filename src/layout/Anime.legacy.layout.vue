@@ -2,20 +2,19 @@
   <div class="AnimeLayout">
     <AnimeItemHead
       :is-scroll="scrollBehavior !== 'top'"
-      :anime-info
       @require-login="openLoginModal"
       @remove-watch-history="removeWatchHistory"
       @handle-interest="handleInterest"
       class="AnimeLayout__Head"
     />
-    <AnimeMeta class="AnimeLayout__Meta" :anime-info></AnimeMeta>
+    <AnimeMeta class="AnimeLayout__Meta" :anime-info="animeInfo"></AnimeMeta>
     <main class="AnimeLayout__TabView">
       <div class="AnimeLayout__TabSelector inner" ref="$TabSelector">
         <RouterLink
+          :to="`./${name}`"
           replace
           v-for="({ name, tabName }, index) in children"
-          :to="{ query: { ...route.query, route: name } }"
-          v-slot="{ href, navigate }"
+          v-slot="{ isActive, href, navigate }"
           custom
         >
           <h3>
@@ -32,7 +31,7 @@
               @focus="indicatorMove(index)"
               ref="$Tab"
               :class="[
-                { 'AnimeLayout__Tab--Active': name === route.query.route },
+                { 'AnimeLayout__Tab--Active': isActive },
                 'AnimeLayout__Tab',
               ]"
             >
@@ -42,13 +41,12 @@
         </RouterLink>
         <div class="AnimeLayout__TabIndicator"></div>
       </div>
-      <!-- <RouterView v-slot="{ Component }">
+      <RouterView v-slot="{ Component }">
         <component
           :is="Component"
           @open-login-modal="openLoginModal"
         ></component>
-      </RouterView> -->
-      <Transition name="anime-layout"> </Transition>
+      </RouterView>
     </main>
     <ToTop
       :class="[
@@ -58,28 +56,75 @@
     />
   </div>
 </template>
-
 <script setup>
-import { useRoute } from "vue-router";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "@/utility/firebase";
+import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
+import {
+  onMounted,
+  onUnmounted,
+  computed,
+  ref,
+  reactive,
+  provide,
+  readonly,
+} from "vue";
+import { useRouter, useRoute } from "vue-router";
 
+import { useAuth } from "@/store/auth";
 import { useScroll } from "@/composables/scroll";
 import { useIndicatorAnimation } from "@/composables/indicator";
+
+import { useMaratonData } from "@/api/maraton";
 
 import AnimeItemHead from "@/components/AnimeItemHead.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
 import ToTop from "@/components/ToTop.vue";
 
-const props = defineProps({
-  animeInfo: Object,
-});
+// const store = useStore();
+const router = useRouter();
+const route = useRoute();
+
+const auth = useAuth();
+const user = computed(() => auth.user);
+async function getRawData() {
+  try {
+    const animeRef = collection(db, "anime");
+    const q = query(animeRef, where("name", "==", route.params.title));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.docs.length !== 0) {
+      const rawData = querySnapshot.docs[0].data();
+      return rawData;
+    }
+  } catch {
+    router.replace("/isekai-404");
+  }
+}
+const animeInfo = ref({});
+provide("anime-info", readonly(animeInfo));
 
 const { scrollBehavior } = useScroll();
 
-function openLoginModal(e) {
-  loginModal.text = e;
-  loginModal.open = true;
-}
+onMounted(async () => {
+  try {
+    const storage = getStorage();
+    const rawData = await getRawData();
+    const posterRef = fireRef(
+      storage,
+      `${route.params.title}/${rawData.poster}`
+    );
+    const posterURL = await getDownloadURL(posterRef);
+    animeInfo.value = {
+      ...rawData,
+      poster: posterURL,
+      posterOrigin: rawData.poster,
+    };
+  } catch {
+    router.replace("/isekai-404");
+  }
+});
 
+const { clearMaratonByTitle } = useMaratonData();
 async function removeWatchHistory() {
   // store.commit("auth/clearMaraton", route.params.title);
   await clearMaratonByTitle(route.params.title);
@@ -89,18 +134,25 @@ function handleInterest() {
   console.log("취향에 반영했어요");
 }
 
-const route = useRoute();
-const children = [
-  {
-    name: "episodes",
-    tabName: "에피소드",
-  },
-  {
-    name: "reviews",
-    tabName: "사용자 평",
-  },
-];
-const initIndex = children.findIndex(({ name }) => name === route.query.route);
+const loginModal = reactive({
+  text: "",
+  open: false,
+});
+function openLoginModal(e) {
+  loginModal.text = e;
+  loginModal.open = true;
+}
+
+const $app = ref(document.querySelector("#app"));
+onMounted(() => {
+  $app.value.style.backgroundColor = "var(--anime-layout-bg)";
+});
+onUnmounted(() => {
+  $app.value.style.backgroundColor = "hsl(var(--bg-100))";
+});
+
+const { children } = route.matched[0];
+const initIndex = children.findIndex((child) => child.name === route.name);
 const {
   selector: $TabSelector,
   items: $Tab,
@@ -161,7 +213,6 @@ const {
       color: hsl(var(--theme-500));
     }
   }
-
   &__TabIndicator {
     width: calc(v-bind("indicatorTo.width") * 1px);
     height: 0.2rem;
@@ -171,7 +222,6 @@ const {
     transform: translateX(calc(v-bind("indicatorTo.x") * 1px - 2rem));
     transition: 150ms ease-out;
   }
-
   &__Counter {
     color: inherit;
     font-size: 1.2rem;

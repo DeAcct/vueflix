@@ -22,7 +22,7 @@ import { useTheme } from "@/store/theme";
 import { useRootTransition } from "@/composables/transition";
 import { useAnimeModal } from "@/composables/overay";
 
-import AnimeLayout from "./layout/LabAnime.layout.vue";
+import AnimeLayout from "./layout/Anime.layout.vue";
 import BottomTabMenu from "@/components/BottomTabMenu.vue";
 import NativeDialog from "./components/NativeDialog.vue";
 import VueflixHeader from "@/components/VueflixHeader.vue";
