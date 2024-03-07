@@ -329,7 +329,8 @@ function requestPrevEpisode() {
 }
 
 function goToAnimeList() {
-  router.push(`/anime/${route.params.title}/episodes`);
+  // router.push(`/anime/${route.params.title}/episodes`);
+  router.push({ query: { modal: route.params.title, route: "episodes" } });
 }
 
 const { $root, show, close } = useOveray();

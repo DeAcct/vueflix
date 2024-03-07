@@ -1,6 +1,11 @@
 <template>
-  <component :is="component" class="AnimeItemHead">
+  <header class="AnimeItemHead">
     <h1 class="blind">데레</h1>
+    <OptimizedMedia
+      :src="`${animeInfo.name}/${animeInfo.poster}`"
+      :alt="`${animeInfo.name} 포스터`"
+      class="AnimeItemHead__BG"
+    />
     <div class="AnimeItemHead__Navigation">
       <div class="wrap">
         <div class="col-left">
@@ -35,7 +40,7 @@
       </div>
     </div>
     <div class="AnimeItemHead__AnimeInfo">
-      <div
+      <!-- <div
         :class="[
           'AnimeItemHead__Poster',
           'loading-target',
@@ -44,7 +49,12 @@
         v-if="!deviceInfo.isMobile"
       >
         <img :src="animeInfo.poster" :alt="`${animeInfo.name} 포스터`" />
-      </div>
+      </div> -->
+      <OptimizedMedia
+        :src="`${animeInfo.name}/${animeInfo.poster}`"
+        :alt="`${animeInfo.name} 포스터`"
+        class="AnimeItemHead__Poster"
+      />
       <div
         :class="[
           'col-right',
@@ -80,7 +90,7 @@
         ></AnimeActions>
       </div>
     </div>
-  </component>
+  </header>
 </template>
 
 <script setup>
@@ -89,14 +99,17 @@ import { useRouter, useRoute } from "vue-router";
 import { useAuth } from "@/store/auth";
 import { useWannaSee } from "@/api/wannaSee";
 
-import IconArrowPrev from "./icons/IconArrowPrev.vue";
+import AnimeActions from "./AnimeActions.vue";
+import OptimizedMedia from "./OptimizedMedia.vue";
+
 import IconBase from "./IconBase.vue";
+import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconShare from "./icons/IconShare.vue";
 import IconOverflow from "./icons/IconOverflow.vue";
-import AnimeActions from "./AnimeActions.vue";
 
 const props = defineProps({
   isScroll: Boolean,
+  animeInfo: Object,
 });
 
 const emit = defineEmits([
@@ -121,11 +134,11 @@ function goBack() {
 const auth = useAuth();
 const user = computed(() => auth.user);
 
-const { wannaSee, toggleWannaSee } = useWannaSee(route.params.title);
+const { wannaSee, toggleWannaSee } = useWannaSee(route.query.modal);
 
 async function openSystemShare() {
   const shareData = {
-    title: `데레에서 ${route.params.title} 다시보기`,
+    title: `데레에서 ${route.query.modal} 다시보기`,
     url: window.location.href,
   };
   await navigator.share(shareData);
@@ -139,24 +152,27 @@ function purchase() {
   }
 }
 
-const animeInfo = inject("anime-info");
-const bgURL = computed(() => `url(${animeInfo.value.poster})`);
+// const posterURL = usePoster({
+//   typeFor: "css",
+//   aniTitle: props.animeInfo.name,
+//   fileName: props.animeInfo.poster,
+// });
 const gradientPercent = computed(() => (!deviceInfo.isMobile ? "90%" : "80%"));
 
 const continueData = computed(() => {
   if (!user.value) {
     return {
-      link: `/anime-play/${route.params.title}/1기/1화`,
+      link: `/anime-play/${route.query.modal}/1기/1화`,
       text: "1화 1분 미리보기",
     };
   }
   const currentAnime = user.value.maraton.find(
-    (anime) => anime.aniTitle === route.params.title
+    (anime) => anime.aniTitle === route.query.modal
   );
 
   if (!currentAnime) {
     return {
-      link: `/anime-play/${route.params.title}/1기/1화`,
+      link: `/anime-play/${route.query.modal}/1기/1화`,
       text: "정주행 시작",
     };
   }
@@ -165,12 +181,12 @@ const continueData = computed(() => {
     (log) => log.time.toDate().getTime() === latestUpdate
   );
   return {
-    link: `/anime-play/${route.params.title}/${latestWatch.part}/${latestWatch.index}`,
+    link: `/anime-play/${route.query.modal}/${latestWatch.part}/${latestWatch.index}`,
     text: `${latestWatch.part} ${latestWatch.index}부터 이어보기`,
   };
 });
 
-const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
+// const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
 </script>
 
 <style lang="scss" scoped>
@@ -179,12 +195,12 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
   flex-direction: column;
   justify-content: flex-end;
   background: linear-gradient(
-      transparent,
-      var(--anime-layout-bg) v-bind(gradientPercent)
-    ),
-    v-bind(bgURL);
+    transparent,
+    var(--anime-layout-bg) v-bind(gradientPercent)
+  );
   background-position: center;
   background-size: cover;
+  position: relative;
   &__Navigation {
     position: fixed;
     z-index: 20;
@@ -240,6 +256,11 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
       transform: translateX(0);
     }
   }
+  &__BG {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
   &__AnimeInfo {
     display: flex;
     flex-direction: column;
@@ -283,25 +304,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
   }
 
   &__Poster {
-    width: 20rem;
-    height: calc(20rem / 5 * 7);
-    box-shadow: hsl(var(--box-shadow));
-    border-radius: var(--global-radius);
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      font-size: 0.1rem;
-      opacity: 0;
-      border-radius: var(--global-radius);
-      transition: opacity 150ms ease-out;
-    }
-    &--Loaded {
-      animation: none;
-      img {
-        opacity: 1;
-      }
-    }
+    display: none;
   }
   &__Title {
     color: inherit;
@@ -328,6 +331,10 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
       align-items: flex-end;
     }
     &__Poster {
+      display: block;
+      width: 20rem;
+      box-shadow: hsl(var(--box-shadow));
+      --aspect-ratio: calc(7 / 5 * 100 * 1%);
       flex-shrink: 0;
     }
   }
@@ -335,7 +342,7 @@ const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
 
 @media screen and (min-width: 1080px) {
   .AnimeItemHead {
-    padding: 0 calc((100% - 128rem) / 2) 1px; // 그라이언트 가림용 가상요소 대비를 위한 1px의 패딩
+    padding: 0 1rem 1px; // 그라이언트 가림용 가상요소 대비를 위한 1px의 패딩
     &__Navigation {
       width: 100%;
       .col-left {

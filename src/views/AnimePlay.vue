@@ -46,7 +46,10 @@
             { 'AnimePlay__AniTitle--Loaded': nowEpisode },
           ]"
         >
-          <RouterLink :to="`/anime/${route.params.title}/episodes`" replace>
+          <RouterLink
+            :to="{ query: { modal: route.params.title, route: 'episodes' } }"
+            replace
+          >
             {{ route.params.title }}
           </RouterLink>
         </h2>

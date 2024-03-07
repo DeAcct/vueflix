@@ -21,6 +21,7 @@ export function useIndicatorAnimation(index) {
   const selector = ref(null);
   const items = ref([]);
   function move(i) {
+    console.log(i);
     if (!items.value) return;
     const {
       x: toX,

@@ -76,15 +76,30 @@ export function useParser(type) {
       thumbnail: ({ aniTitle, thumbnail }) => `${aniTitle}/${thumbnail}`,
       link: ({ aniTitle, part, index }) => ({
         picture: `/anime-play/${aniTitle}/${part}/${index}`,
-        text: `/anime/${aniTitle}/episodes`,
+        text: {
+          query: {
+            modal: aniTitle,
+            route: "episodes",
+          },
+        },
       }),
     };
   }
   return {
     thumbnail: ({ aniTitle }) => `${aniTitle}/${aniTitle}.webp`,
     link: ({ aniTitle }) => ({
-      picture: `/anime/${aniTitle}/episodes`,
-      text: `/anime/${aniTitle}/episodes`,
+      picture: {
+        query: {
+          modal: aniTitle,
+          route: "episodes",
+        },
+      },
+      text: {
+        query: {
+          modal: aniTitle,
+          route: "episodes",
+        },
+      },
     }),
   };
 }

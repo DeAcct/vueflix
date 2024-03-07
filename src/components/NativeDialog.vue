@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 const dialogRoot = ref(null);
 defineExpose({
@@ -44,13 +44,16 @@ defineExpose({
     background-color: hsl(var(--bg-100));
     border-radius: var(--dialog-border-radius);
     width: min(var(--dialog-max-width), 100%);
+    height: minmax(var(--dialog-min-height, 0), var(--dialog-max-height, auto));
     padding: var(--dialog-padding, var(--inner-padding));
     box-shadow: var(--dialog-shadow, none);
 
     transition: translate 150ms ease-out, display 150ms ease-out allow-discrete,
-      overay 150ms ease-out allow-discrete;
+      overay 150ms ease-out allow-discrete, opacity 150ms ease-out;
+    opacity: 1;
     @starting-style {
       translate: var(--dialog-starting-translate, 0 100%);
+      opacity: var(--dialog-starting-opacity, 1);
     }
   }
 

@@ -1,6 +1,15 @@
 <template>
   <RouterLink
-    :to="slideData.name ? `/anime/${slideData.name}/episodes` : '#'"
+    :to="
+      slideData.name
+        ? {
+            query: {
+              modal: slideData.name,
+              route: 'episodes',
+            },
+          }
+        : '#'
+    "
     class="SlideContent"
   >
     <div

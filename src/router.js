@@ -15,35 +15,35 @@ const routes = [
       bottomTabMenu: true,
     },
   },
-  {
-    path: "/anime/:title",
-    name: "anime",
-    component: () => import("@/layout/Anime.layout.vue"),
-    meta: {
-      bottomTabMenu: false,
-    },
-    children: [
-      {
-        path: "episodes",
-        name: "episodes",
-        tabName: "에피소드",
-        component: () => import("@/views/Episodes.vue"),
-        meta: {
-          bottomTabMenu: false,
-        },
-        alias: ["/anime/:title/episodes", ""],
-      },
-      {
-        path: "reviews",
-        name: "reviews",
-        tabName: "사용자 평",
-        component: () => import("@/views/Reviews.vue"),
-        meta: {
-          bottomTabMenu: false,
-        },
-      },
-    ],
-  },
+  // {
+  //   path: "/anime/:title",
+  //   name: "anime",
+  //   component: () => import("@/layout/Anime.layout.vue"),
+  //   meta: {
+  //     bottomTabMenu: false,
+  //   },
+  //   children: [
+  //     {
+  //       path: "episodes",
+  //       name: "episodes",
+  //       tabName: "에피소드",
+  //       component: () => import("@/views/Episodes.vue"),
+  //       meta: {
+  //         bottomTabMenu: false,
+  //       },
+  //       alias: ["/anime/:title/episodes", ""],
+  //     },
+  //     {
+  //       path: "reviews",
+  //       name: "reviews",
+  //       tabName: "사용자 평",
+  //       component: () => import("@/views/Reviews.vue"),
+  //       meta: {
+  //         bottomTabMenu: false,
+  //       },
+  //     },
+  //   ],
+  // },
   {
     path: "/anime-play/:title/:part/:index",
     name: "anime-play",

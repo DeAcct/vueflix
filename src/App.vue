@@ -7,17 +7,25 @@
     >
       <component :is="Component"></component>
     </Transition>
+    <NativeDialog ref="$root" class="AnimeDialog" v-if="route.query?.modal">
+      <template #content>
+        <AnimeLayout :anime-info />
+      </template>
+    </NativeDialog>
   </RouterView>
 </template>
 
 <script setup>
 import { onMounted, onUnmounted, provide, reactive } from "vue";
 
-import { useTheme } from "./store/theme";
+import { useTheme } from "@/store/theme";
 import { useRootTransition } from "@/composables/transition";
+import { useAnimeModal } from "@/composables/overay";
 
-import VueflixHeader from "@/components/VueflixHeader.vue";
+import AnimeLayout from "./layout/LabAnime.layout.vue";
 import BottomTabMenu from "@/components/BottomTabMenu.vue";
+import NativeDialog from "./components/NativeDialog.vue";
+import VueflixHeader from "@/components/VueflixHeader.vue";
 
 const pointerDeviceQuery = window.matchMedia(
   "(hover: hover) and (pointer: fine)"
@@ -61,6 +69,8 @@ onUnmounted(() => {
 });
 
 const transition = useRootTransition();
+
+const { $root, animeInfo } = useAnimeModal();
 </script>
 
 <style lang="scss" scoped>
@@ -88,6 +98,28 @@ const transition = useRootTransition();
       translate: 2rem 0;
       opacity: 0;
     }
+  }
+}
+
+.AnimeDialog {
+  --dialog-inset: auto auto 0 0;
+  --dialog-translate: 0 0;
+  --dialog-max-width: 100%;
+  --dialog-border-radius: calc(var(--global-radius) * 2)
+    calc(var(--global-radius) * 2) 0 0;
+  --dialog-padding: 0;
+  --dialog-min-height: calc(var(--vh) * 100 * 1px);
+}
+
+@media screen and (min-width: 1080px) {
+  .AnimeDialog {
+    --dialog-max-width: 1080px;
+    --dialog-min-height: 0;
+    --dialog-max-height: 80vh;
+    --dialog-inset: 50% auto auto 50%;
+    --dialog-translate: -50% -50%;
+    --dialog-starting-translate: -50% calc(-50% + 3rem);
+    --dialog-starting-opacity: 0;
   }
 }
 </style>

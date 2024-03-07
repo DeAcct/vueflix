@@ -1,6 +1,7 @@
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { onMounted, onUnmounted, ref } from "vue";
-import dayjs from "dayjs";
-import { useEventListener } from "@vueuse/core";
+import { useRouter } from "vue-router";
+import { db } from "@/utility/firebase";
 
 export function useOveray() {
   const $root = ref(null);
@@ -30,4 +31,39 @@ export function useAutoPop(time = 1000) {
     visible.value = false;
   }
   return { visible, show, close };
+}
+
+export function useAnimeModal() {
+  const router = useRouter();
+  const animeInfo = ref({});
+  const { $root, show, close } = useOveray();
+
+  async function setAnimeView(to, from) {
+    console.log(to, from);
+    // 새로운 경로에 modal 정보가 포함되어 있고, 이전에는 없었으면
+    if (to.query.modal && !from.query.modal) {
+      const docRef = doc(db, "anime", to.query.modal);
+      await getAnimeData(docRef);
+      console.log(animeInfo.value);
+      show();
+    }
+    // 새로운 경로에 modal 정보가 없고, 이전에는 있었으면
+    else if (from.query.modal && !to.query.modal) {
+      close();
+    }
+    return true;
+  }
+
+  async function getAnimeData(docRef) {
+    const anime = await getDoc(docRef);
+    if (!anime.exists()) {
+      return router.push({ name: "isekai-404" });
+    }
+    animeInfo.value = anime.data();
+  }
+
+  const cleanup = router.afterEach(setAnimeView);
+  onUnmounted(() => cleanup());
+
+  return { $root, animeInfo };
 }

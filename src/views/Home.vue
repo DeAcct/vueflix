@@ -33,7 +33,12 @@
             <template #text>
               <RouterLink
                 class="AppHome__TextLink"
-                :to="`/anime/${aniTitle}/episodes`"
+                :to="{
+                  query: {
+                    modal: aniTitle,
+                    route: 'episodes',
+                  },
+                }"
               >
                 <span class="AppHome__AniTitle">
                   {{ aniTitle }}
@@ -68,7 +73,9 @@
           >
             <template #image>
               <RouterLink
-                :to="`/anime/${anime}/episodes`"
+                :to="{
+                  query: { modal: anime, route: 'episodes' },
+                }"
                 class="AppHome__Image"
                 exact-active-class="AppHome__Image--Selected"
               >
@@ -80,7 +87,9 @@
             </template>
             <template #text>
               <RouterLink
-                :to="`/anime/${anime}/episodes`"
+                :to="{
+                  query: { modal: anime, route: 'episodes' },
+                }"
                 class="AppHome__TextLink"
               >
                 <span class="AppHome__AniTitle">
@@ -107,7 +116,9 @@
           >
             <template #image>
               <RouterLink
-                :to="`/anime/${anime}/episodes`"
+                :to="{
+                  query: { modal: anime, route: 'episodes' },
+                }"
                 class="AppHome__Image"
                 exact-active-class="AppHome__Image--Selected"
               >
@@ -119,7 +130,9 @@
             </template>
             <template #text>
               <RouterLink
-                :to="`/anime/${anime}/episodes`"
+                :to="{
+                  query: { modal: anime, route: 'episodes' },
+                }"
                 class="AppHome__TextLink"
               >
                 <span class="AppHome__AniTitle">

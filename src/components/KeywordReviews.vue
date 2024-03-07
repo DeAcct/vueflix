@@ -54,7 +54,7 @@ const {
   sharedAll,
   sharedMax,
   setSharedKeywordData,
-} = useKeyword(route.params.title);
+} = useKeyword(route.query.modal);
 onMounted(async () => {
   await setSharedKeywordData();
 });
