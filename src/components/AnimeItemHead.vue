@@ -6,39 +6,6 @@
       :alt="`${animeInfo.name} 포스터`"
       class="AnimeItemHead__BG"
     />
-    <div class="AnimeItemHead__Navigation">
-      <div class="wrap">
-        <div class="col-left">
-          <a class="back" @click="goBack">
-            <icon-base icon-name="뒤로가기">
-              <icon-arrow-prev />
-            </icon-base>
-          </a>
-          <strong
-            :class="[
-              'AnimeItemHead__ScrollTitle',
-              { 'AnimeItemHead__ScrollTitle--Scrolled': isScroll },
-            ]"
-          >
-            {{ animeInfo.name }}
-          </strong>
-        </div>
-        <div class="col-right">
-          <button class="AnimeItemHead__ShareBtn" @click="openSystemShare">
-            <icon-base icon-name="공유">
-              <icon-share />
-            </icon-base>
-          </button>
-          <div class="AnimeItemHead__OverflowBtn">
-            <button class="icon" @click="actionSheetToggle">
-              <icon-base>
-                <icon-overflow />
-              </icon-base>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="AnimeItemHead__AnimeInfo">
       <!-- <div
         :class="[
@@ -102,13 +69,7 @@ import { useWannaSee } from "@/api/wannaSee";
 import AnimeActions from "./AnimeActions.vue";
 import OptimizedMedia from "./OptimizedMedia.vue";
 
-import IconBase from "./IconBase.vue";
-import IconArrowPrev from "./icons/IconArrowPrev.vue";
-import IconShare from "./icons/IconShare.vue";
-import IconOverflow from "./icons/IconOverflow.vue";
-
 const props = defineProps({
-  isScroll: Boolean,
   animeInfo: Object,
 });
 
@@ -123,26 +84,11 @@ const deviceInfo = inject("device-info");
 
 const route = useRoute();
 const router = useRouter();
-function goBack() {
-  if (window.history.state.back === null) {
-    router.push({ path: "/" });
-    return;
-  }
-  router.back();
-}
 
 const auth = useAuth();
 const user = computed(() => auth.user);
 
 const { wannaSee, toggleWannaSee } = useWannaSee(route.query.modal);
-
-async function openSystemShare() {
-  const shareData = {
-    title: `데레에서 ${route.query.modal} 다시보기`,
-    url: window.location.href,
-  };
-  await navigator.share(shareData);
-}
 
 function purchase() {
   if (user.value) {
@@ -201,61 +147,7 @@ const continueData = computed(() => {
   background-position: center;
   background-size: cover;
   position: relative;
-  &__Navigation {
-    position: fixed;
-    z-index: 20;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 2rem 0 6rem;
-    transition: 150ms ease-out;
-    background: linear-gradient(var(--anime-layout-bg), transparent);
-    .wrap {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 0 auto;
-      width: min(calc(100% - 4rem), 128rem);
-    }
-    .col-left {
-      display: flex;
-      flex-grow: 1;
-      align-items: center;
-      height: 2.4rem;
-    }
-    .col-right {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-  }
-  .back,
-  &__OverflowBtn,
-  &__ShareBtn {
-    color: var(--anime-layout-text);
-    width: 2.4rem;
-    height: 2.4rem;
-  }
 
-  &__ScrollTitle {
-    margin-left: 0.5rem;
-    font-size: 1.7rem;
-    height: 2.4rem;
-    color: var(--anime-layout-text);
-    opacity: 0;
-    transform: translateX(2rem);
-    transition: transform 150ms ease-out, opacity 150ms ease-out;
-    //말줄임표 처리
-    width: 60%;
-    line-height: 2.4rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    &--Scrolled {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
   &__BG {
     position: absolute;
     inset: 0;
@@ -342,7 +234,7 @@ const continueData = computed(() => {
 
 @media screen and (min-width: 1080px) {
   .AnimeItemHead {
-    padding: 0 1rem 1px; // 그라이언트 가림용 가상요소 대비를 위한 1px의 패딩
+    padding: 0 0 1px; // 그라이언트 가림용 가상요소 대비를 위한 1px의 패딩
     &__Navigation {
       width: 100%;
       .col-left {
@@ -392,14 +284,6 @@ const continueData = computed(() => {
     &__Title {
       font-size: 3.5rem;
       margin-bottom: 1.5rem;
-    }
-  }
-}
-
-@media screen and (min-width: 1300px) {
-  .AnimeItemHead {
-    &__AnimeInfo {
-      width: 100%;
     }
   }
 }

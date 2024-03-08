@@ -1,6 +1,6 @@
 <template>
   <dialog class="NativeDialog" ref="dialogRoot">
-    <form method="dialog" class="NativeDialog__Body">
+    <form method="dialog" class="NativeDialog__Body" ref="dialogBody">
       <slot name="title"></slot>
       <slot name="content"></slot>
       <slot name="control"></slot>
@@ -12,8 +12,10 @@
 import { ref } from "vue";
 
 const dialogRoot = ref(null);
+const dialogBody = ref(null);
 defineExpose({
   dialogRoot,
+  dialogBody,
 });
 </script>
 
@@ -41,12 +43,13 @@ defineExpose({
     z-index: 2;
     inset: var(--dialog-inset, auto);
     translate: var(--dialog-translate, -50% -50%);
-    background-color: hsl(var(--bg-100));
+    background-color: var(--dialog-bg, hsl(var(--bg-100)));
     border-radius: var(--dialog-border-radius);
     width: min(var(--dialog-max-width), 100%);
-    height: minmax(var(--dialog-min-height, 0), var(--dialog-max-height, auto));
     padding: var(--dialog-padding, var(--inner-padding));
     box-shadow: var(--dialog-shadow, none);
+    overflow: var(--dialog-overflow, auto);
+    height: var(--dialog-height, auto);
 
     transition: translate 150ms ease-out, display 150ms ease-out allow-discrete,
       overay 150ms ease-out allow-discrete, opacity 150ms ease-out;

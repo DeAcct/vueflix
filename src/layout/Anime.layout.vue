@@ -46,16 +46,16 @@
         <component
           :is="Component"
           @open-login-modal="openLoginModal"
+          ></component>
+        </RouterView> -->
+      <Transition name="anime-layout">
+        <component
+          :is="children[routeIndex].component"
+          :anime-info
+          @open-login-modal="openLoginModal"
         ></component>
-      </RouterView> -->
-      <Transition name="anime-layout"> </Transition>
+      </Transition>
     </main>
-    <ToTop
-      :class="[
-        'AnimeLayout__ToTop',
-        { 'AnimeLayout__ToTop--Show': scrollBehavior !== 'top' },
-      ]"
-    />
   </div>
 </template>
 
@@ -65,9 +65,11 @@ import { useRoute } from "vue-router";
 import { useScroll } from "@/composables/scroll";
 import { useIndicatorAnimation } from "@/composables/indicator";
 
+import Episodes from "@/views/Episodes.vue";
+import Reviews from "@/views/Reviews.vue";
+
 import AnimeItemHead from "@/components/AnimeItemHead.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
-import ToTop from "@/components/ToTop.vue";
 
 const props = defineProps({
   animeInfo: Object,
@@ -94,26 +96,28 @@ const children = [
   {
     name: "episodes",
     tabName: "에피소드",
+    component: Episodes,
   },
   {
     name: "reviews",
     tabName: "사용자 평",
+    component: Reviews,
   },
 ];
-const initIndex = children.findIndex(({ name }) => name === route.query.route);
+const routeIndex = children.findIndex(({ name }) => name === route.query.route);
 const {
   selector: $TabSelector,
   items: $Tab,
   to: indicatorTo,
   move: indicatorMove,
-} = useIndicatorAnimation(initIndex);
+} = useIndicatorAnimation(routeIndex);
 </script>
 
 <style lang="scss" scoped>
 .AnimeLayout {
   display: flex;
   flex-direction: column;
-  min-height: calc(var(--vh) * 1px * 100);
+  min-height: calc(var(--vh) * 1px * 90);
   &__Head {
     width: 100%;
     min-height: 55vh;
@@ -177,35 +181,15 @@ const {
     font-size: 1.2rem;
     font-weight: 500;
   }
-
-  &__ToTop {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    z-index: 100;
-    background-color: hsl(var(--theme-500));
-    transform: translate(-50%, 10rem);
-    transition: 150ms ease-out;
-    box-shadow: var(--box-shadow);
-    width: 4.8rem;
-    height: 4.8rem;
-
-    &--Show {
-      transform: translate(-50%, 0);
-    }
-  }
 }
 
 @media screen and (min-width: 1080px) {
   .AnimeLayout {
     display: grid;
     // 좌 - 우 공간너비 지정
-    grid-template-columns: calc((100% - 128rem - 4rem) / 2) auto 50rem calc(
-        (100% - 128rem - 4rem) / 2
-      );
+    grid-template-columns: 0 auto 35rem calc((100% - 128rem - 4rem) / 2);
     // 상 - 하 공간높이 지정
     grid-template-rows: 50vh auto;
-    grid-auto-rows: minmax(0px, auto);
     row-gap: 3.2rem;
     column-gap: 2rem;
     &__Head {
@@ -228,23 +212,16 @@ const {
       }
     }
     &__TabView {
-      height: 100%;
+      height: max(35rem, 100%);
       background-color: var(--anime-layout-episodes);
       box-shadow: none;
       grid-area: 2 / 2 / 3 / 3;
+      border-radius: calc(var(--global-radius) * 6);
     }
     &__TabSelector {
       padding: 0 2rem;
       a {
         font-size: 1.7rem;
-      }
-    }
-    &__ToTop {
-      left: auto;
-      right: max(calc((100% - 128rem) / 2), 2rem);
-      transform: translateY(10rem);
-      &--Show {
-        transform: none;
       }
     }
   }

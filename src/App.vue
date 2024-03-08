@@ -8,23 +8,41 @@
       <component :is="Component"></component>
     </Transition>
     <NativeDialog ref="$root" class="AnimeDialog" v-if="route.query?.modal">
+      <template #title>
+        <DialogNavigation class="AnimeDialog__Navigation" :scroll-state>
+          <template #activity-name>
+            {{ animeInfo.name }}
+          </template>
+        </DialogNavigation>
+      </template>
       <template #content>
         <AnimeLayout :anime-info />
+        <ToTop
+          :class="[
+            'AnimeDialog__ToTop',
+            { 'AnimeDialog__ToTop--Show': scrollState !== 'top' },
+          ]"
+        />
       </template>
     </NativeDialog>
   </RouterView>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, provide, reactive } from "vue";
+import { computed, onMounted, onUnmounted, provide, reactive } from "vue";
 
 import { useTheme } from "@/store/theme";
+
 import { useRootTransition } from "@/composables/transition";
 import { useAnimeModal } from "@/composables/overay";
+import { useScroll } from "./composables/scroll";
 
 import AnimeLayout from "./layout/Anime.layout.vue";
+
 import BottomTabMenu from "@/components/BottomTabMenu.vue";
+import DialogNavigation from "./components/DialogNavigation.vue";
 import NativeDialog from "./components/NativeDialog.vue";
+import ToTop from "@/components/ToTop.vue";
 import VueflixHeader from "@/components/VueflixHeader.vue";
 
 const pointerDeviceQuery = window.matchMedia(
@@ -71,6 +89,18 @@ onUnmounted(() => {
 const transition = useRootTransition();
 
 const { $root, animeInfo } = useAnimeModal();
+const $body = computed(() => $root.value?.dialogBody);
+const scrollState = useScroll($body);
+
+const padding = computed(() => {
+  if (scrollState.value === "top") {
+    return "2rem";
+  }
+  return "4rem";
+});
+// onMounted(() => {
+//   $body.value = $root.value?.dialogBody;
+// });
 </script>
 
 <style lang="scss" scoped>
@@ -105,21 +135,58 @@ const { $root, animeInfo } = useAnimeModal();
   --dialog-inset: auto auto 0 0;
   --dialog-translate: 0 0;
   --dialog-max-width: 100%;
-  --dialog-border-radius: calc(var(--global-radius) * 2)
-    calc(var(--global-radius) * 2) 0 0;
   --dialog-padding: 0;
-  --dialog-min-height: calc(var(--vh) * 100 * 1px);
+  --dialog-bg: var(--anime-layout-bg);
+  --dialog-overflow: scroll;
+  --dialog-height: calc(var(--vh) * 100 * 1px);
+  &__Navigation {
+    flex-shrink: 0;
+    position: sticky;
+    z-index: 20;
+    left: 0;
+    top: -1px;
+    margin-bottom: -12rem;
+
+    width: 100%;
+    height: 12rem;
+  }
+  &__ToTop {
+    position: sticky;
+    top: calc(var(--dialog-height) - 6.8rem);
+    left: 50%;
+    z-index: 100;
+    background-color: hsl(var(--theme-500));
+    translate: -50% 10rem;
+    transition: 150ms ease-out;
+    box-shadow: var(--box-shadow);
+    width: 4.8rem;
+    height: 4.8rem;
+    flex-shrink: 0;
+    opacity: 0;
+
+    &--Show {
+      opacity: 1;
+      translate: -50% 0;
+    }
+  }
 }
 
 @media screen and (min-width: 1080px) {
   .AnimeDialog {
     --dialog-max-width: 1080px;
-    --dialog-min-height: 0;
-    --dialog-max-height: 80vh;
+    --dialog-height: calc(var(--vh) * 100 * 1px - 2rem);
     --dialog-inset: 50% auto auto 50%;
     --dialog-translate: -50% -50%;
     --dialog-starting-translate: -50% calc(-50% + 3rem);
     --dialog-starting-opacity: 0;
+    --dialog-border-radius: var(--global-radius);
+    &__ToTop {
+      left: calc(100% - 8.8rem);
+      translate: 0 10rem;
+      &--Show {
+        translate: 0 0;
+      }
+    }
   }
 }
 </style>

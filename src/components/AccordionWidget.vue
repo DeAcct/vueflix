@@ -1,19 +1,17 @@
 <template>
   <section class="AccordionWidget">
-    <button class="AccordionWidget__PartTitle" @click="toggle">
-      <div class="border-wrap">
-        <slot name="title"></slot>
-        <i
-          :class="[
-            'AccordionWidget__OpenIcon',
-            { 'AccordionWidget__OpenIcon--WidgetOpened': isOpen },
-          ]"
-        >
-          <IconBase :icon-name="isOpen ? '닫기' : '열기'">
-            <IconArrowPrev />
-          </IconBase>
-        </i>
-      </div>
+    <button class="AccordionWidget__PartTitle" @click="toggle" type="button">
+      <slot name="title"></slot>
+      <i
+        :class="[
+          'AccordionWidget__OpenIcon',
+          { 'AccordionWidget__OpenIcon--WidgetOpened': isOpen },
+        ]"
+      >
+        <IconBase :icon-name="isOpen ? '닫기' : '열기'">
+          <IconArrowPrev />
+        </IconBase>
+      </i>
     </button>
     <div
       :class="[
@@ -49,23 +47,25 @@ function toggle() {
     z-index: 50;
     background: linear-gradient(
       150deg,
-      hsl(var(--bg-900) / 0.2),
-      hsl(var(--bg-900) / 0.025)
+      hsl(var(--bg-900) / 0.1),
+      hsl(var(--bg-900) / 0.05)
     );
     backdrop-filter: blur(10px);
     border-radius: var(--global-radius);
-    padding: 1px;
+    padding: 1.5rem 2rem;
     width: 100%;
-    .border-wrap {
-      display: flex;
-      justify-content: space-between;
-      border-radius: calc(var(--global-radius) - 1px);
-      align-items: center;
-      padding: 1.4rem 1.9rem;
-      background-color: hsl(var(--bg-200) / 0.5);
-      font-size: 1.4rem;
-      font-weight: 700;
-    }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    // .border-wrap {
+    //   display: flex;
+    //   justify-content: space-between;
+    //   border-radius: calc(var(--global-radius) - 1px);
+    //   align-items: center;
+    //   background-color: hsl(var(--bg-200) / 0.5);
+    // }
   }
   &__OpenIcon {
     display: flex;
@@ -111,6 +111,7 @@ function toggle() {
     &__PartTitle {
       width: 100%;
       font-size: 1.6rem;
+      margin: 0 auto;
     }
     &__OpenBtn {
       width: 100%;

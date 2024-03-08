@@ -66,7 +66,10 @@ import Thumbnailset from "@/components/ThumbnailSet.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ProgressCircle from "@/components/ProgressCircle.vue";
 
-const animeInfo = inject("anime-info");
+// const animeInfo = inject("anime-info");
+const props = defineProps({
+  animeInfo: Object,
+});
 
 const emit = defineEmits(["open-login-modal"]);
 const route = useRoute();
@@ -135,6 +138,7 @@ const { getEpisodeProgress } = useMaratonData(route.params.title);
     &__Accordion {
       --episode-gap: 1.2rem;
       --thumbnail-width: 23rem;
+      --accordion-sticky-top: 8rem;
     }
     &__Thumbnail {
       width: 40rem;
