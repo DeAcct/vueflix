@@ -25,6 +25,7 @@
       :src="data?.profileImg.name"
       :alt="`${data?.nickname} 프로필 사진`"
       class="StatCard__Image"
+      skelleton
     />
     <LevelRenderer
       :init-date="data?.membership?.initDate"

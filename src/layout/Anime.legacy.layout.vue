@@ -1,7 +1,7 @@
 <template>
   <div class="AnimeLayout">
     <AnimeItemHead
-      :is-scroll="scrollBehavior !== 'top'"
+      :is-scroll="scrollState !== 'top'"
       @require-login="openLoginModal"
       @remove-watch-history="removeWatchHistory"
       @handle-interest="handleInterest"
@@ -51,7 +51,7 @@
     <ToTop
       :class="[
         'AnimeLayout__ToTop',
-        { 'AnimeLayout__ToTop--Show': scrollBehavior !== 'top' },
+        { 'AnimeLayout__ToTop--Show': scrollState !== 'top' },
       ]"
     />
   </div>
@@ -103,7 +103,7 @@ async function getRawData() {
 const animeInfo = ref({});
 provide("anime-info", readonly(animeInfo));
 
-const { scrollBehavior } = useScroll();
+const { state: scrollState } = useScroll();
 
 onMounted(async () => {
   try {

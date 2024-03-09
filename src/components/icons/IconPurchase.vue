@@ -1,7 +1,8 @@
 <template>
   <polyline
     points="8 4 20 4 20 16"
-    :class="['back', { 'back--active': isActive }]"
+    class="Back"
+    :class="isActive && 'Back--Active'"
   />
   <rect x="4" y="8" width="12" height="12" />
   <path
@@ -22,9 +23,9 @@ path {
   fill: currentColor;
   stroke: transparent;
 }
-.back {
+.Back {
   transition: 150ms ease-out;
-  &--active {
+  &--Active {
     transform-origin: top right;
     transform: translate(-4px, 4px);
   }

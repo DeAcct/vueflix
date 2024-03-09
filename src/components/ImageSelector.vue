@@ -9,7 +9,7 @@
           :value="{ file: src, type: 'default' }"
           :name
         />
-        <OptimizedMedia :src class="ImageSelector__Preview" />
+        <OptimizedMedia :src class="ImageSelector__Preview" skelleton />
       </label>
     </li>
   </ul>

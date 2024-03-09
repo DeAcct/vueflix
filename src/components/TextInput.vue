@@ -10,10 +10,8 @@
       />
       <slot name="etc-action"></slot>
       <span
-        :class="[
-          'TextInput__Placeholder',
-          { 'TextInput__Placeholder--NotEmpty': inputValue?.length },
-        ]"
+        class="TextInput__Placeholder"
+        :class="inputValue?.length && 'TextInput__Placeholder--NotEmpty'"
       >
         <slot name="label"></slot>
       </span>

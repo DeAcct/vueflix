@@ -8,12 +8,10 @@
         </IconBase>
       </button>
       <strong
-        :class="[
-          'DialogNavigation__ActivityName',
-          {
-            'DialogNavigation__ActivityName--Scrolled': scrollState !== 'top',
-          },
-        ]"
+        class="DialogNavigation__ActivityName"
+        :class="
+          scrollState !== 'top' && 'DialogNavigation__ActivityName--Scroll'
+        "
       >
         <slot name="activity-name"></slot>
       </strong>
@@ -112,7 +110,7 @@ const padding = computed(() => {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    &--Scrolled {
+    &--Scroll {
       opacity: 1;
       translate: 0 0;
     }

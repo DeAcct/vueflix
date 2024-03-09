@@ -1,10 +1,8 @@
 <template>
   <div class="AnimePlay">
     <div
-      :class="[
-        'AnimePlay__Frame',
-        { 'AnimePlay__Frame--Theater': mode === 'theater' },
-      ]"
+      class="AnimePlay__Frame"
+      :class="mode === 'theater' && 'AnimePlay__Frame--Theater'"
     >
       <AmbientPlayer
         class="AnimePlay__Video"
@@ -40,11 +38,8 @@
     <section class="AnimePlay__TitleRenderer">
       <div class="AnimePlay__Titles">
         <h2
-          :class="[
-            'AnimePlay__AniTitle',
-            'loading-target',
-            { 'AnimePlay__AniTitle--Loaded': nowEpisode },
-          ]"
+          class="AnimePlay__AniTitle loading-target"
+          :class="nowEpisode && 'AnimePlay__AniTitle--Loaded'"
         >
           <RouterLink
             :to="{ query: { modal: route.params.title, route: 'episodes' } }"
@@ -54,11 +49,8 @@
           </RouterLink>
         </h2>
         <h3
-          :class="[
-            'AnimePlay__EpisodeTitle',
-            'loading-target',
-            { 'AnimePlay__EpisodeTitle--Loaded': nowEpisode },
-          ]"
+          class="AnimePlay__EpisodeTitle loading-target"
+          :class="nowEpisode && 'AnimePlay__EpisodeTitle--Loaded'"
         >
           {{ route.params.part }} {{ route.params.index }}
           {{ nowEpisode?.title }}
@@ -71,17 +63,15 @@
       </button>
     </section>
     <section
-      :class="[
-        'AnimePlay__Parts',
-        { 'AnimePlay__Parts--Theater': mode === 'theater' },
-      ]"
+      class="AnimePlay__Parts"
+      :class="mode === 'theater' && 'AnimePlay__Parts--Theater'"
     >
       <h3 class="AnimePlay__EpisodesCounter">
         {{ episodeCounter }}개의 에피소드
       </h3>
       <div class="AnimePlay__ScrollContainer">
         <div class="AnimePlay__Episodes">
-          <AccordionWidget
+          <AccordionGroup
             v-for="({ part, episodes }, iterateParts) in animeInfo.parts"
             :open="iterateParts === 0"
             :key="iterateParts"
@@ -112,6 +102,7 @@
                         class="AnimePlay__ThumbnailImage"
                         :src="`${route.params.title}/${thumbnail}`"
                         :alt="`${route.params.title} ${part} ${index} 미리보기 이미지`"
+                        skelleton
                       />
                       <ProgressCircle
                         v-if="
@@ -140,7 +131,7 @@
                 </ThumbnailSet>
               </VueflixCarousel>
             </template>
-          </AccordionWidget>
+          </AccordionGroup>
         </div>
       </div>
     </section>
@@ -155,10 +146,8 @@
       <template #title>댓글</template>
     </ReactionCombo>
     <ToTop
-      :class="[
-        'AnimePlay__ToTop',
-        { 'AnimePlay__ToTop--Show': scrollBehavior !== 'top' },
-      ]"
+      class="AnimePlay__ToTop"
+      :class="scrollState === 'top' && 'AnimePlay__ToTop--Show'"
     ></ToTop>
   </div>
 </template>
@@ -178,7 +167,7 @@ import { useEpisode } from "@/composables/episode";
 import { useHead } from "@/composables/head";
 
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
-import AccordionWidget from "@/components/AccordionWidget.vue";
+import AccordionGroup from "@/components/AccordionGroup.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
@@ -324,7 +313,7 @@ async function openSystemShare() {
   await navigator.share(shareData);
 }
 
-const { scrollBehavior } = useScroll();
+const { state: scrollState } = useScroll();
 </script>
 
 <style lang="scss" scoped>

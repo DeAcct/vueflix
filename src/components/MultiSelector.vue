@@ -3,10 +3,8 @@
     <button
       v-for="({ key, text }, index) in data"
       :key
-      :class="[
-        'MultiSelector__Item',
-        { 'MultiSelector__Item--Active': index === selected },
-      ]"
+      class="MultiSelector__Item"
+      :class="index === selected && 'MultiSelector__Item--Active'"
       @click="
         () => {
           indicatorMove(index);

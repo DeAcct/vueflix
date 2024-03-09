@@ -2,34 +2,34 @@
   <div class="GestureArea">
     <button
       @click="double('before')"
-      :class="[
-        'GestureArea__Item',
-        'GestureArea__Item--Before',
-        { 'GestureArea__Item--Interact': moveFiveSecInteraction === 'before' },
-      ]"
+      class="GestureArea__Item GestureArea__Item--Before"
+      :class="
+        moveFiveSecInteraction === 'before' && 'GestureArea__Item--Interact'
+      "
     >
       <Transition name="gesture-area-before">
         <IconBase
           v-if="moveFiveSecInteraction === 'before'"
           class="GestureArea__Icon"
-          ><IconPrevFiveSec
-        /></IconBase>
+        >
+          <IconPrevFiveSec />
+        </IconBase>
       </Transition>
     </button>
     <button
       @click="double('after')"
-      :class="[
-        'GestureArea__Item',
-        'GestureArea__Item--After',
-        { 'GestureArea__Item--Interact': moveFiveSecInteraction === 'after' },
-      ]"
+      class="GestureArea__Item GestureArea__Item--After"
+      :class="
+        moveFiveSecInteraction === 'after' && 'GestureArea__Item--Interact'
+      "
     >
       <Transition name="gesture-area-after">
         <IconBase
           v-if="moveFiveSecInteraction === 'after'"
           class="GestureArea__Icon"
-          ><IconNextFiveSec
-        /></IconBase>
+        >
+          <IconNextFiveSec />
+        </IconBase>
       </Transition>
     </button>
   </div>

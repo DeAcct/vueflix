@@ -1,7 +1,7 @@
 <template>
   <div class="AnimeLayout">
     <AnimeItemHead
-      :is-scroll="scrollBehavior !== 'top'"
+      :is-scroll="scrollState !== 'top'"
       :anime-info
       @require-login="openLoginModal"
       @remove-watch-history="removeWatchHistory"
@@ -31,10 +31,8 @@
               "
               @focus="indicatorMove(index)"
               ref="$Tab"
-              :class="[
-                { 'AnimeLayout__Tab--Active': name === route.query.route },
-                'AnimeLayout__Tab',
-              ]"
+              class="AnimeLayout__Tab"
+              :class="name === route.query.route && 'AnimeLayout__Tab--Active'"
             >
               {{ tabName }}
             </a>
@@ -75,7 +73,7 @@ const props = defineProps({
   animeInfo: Object,
 });
 
-const { scrollBehavior } = useScroll();
+const { state: scrollState } = useScroll();
 
 function openLoginModal(e) {
   loginModal.text = e;

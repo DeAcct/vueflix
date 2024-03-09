@@ -11,17 +11,15 @@
       <template #title>
         <DialogNavigation class="AnimeDialog__Navigation" :scroll-state>
           <template #activity-name>
-            {{ animeInfo.name }}
+            {{ animeInfo?.name }}
           </template>
         </DialogNavigation>
       </template>
       <template #content>
         <AnimeLayout :anime-info />
         <ToTop
-          :class="[
-            'AnimeDialog__ToTop',
-            { 'AnimeDialog__ToTop--Show': scrollState !== 'top' },
-          ]"
+          class="AnimeDialog__ToTop"
+          :class="scrollState === 'top' && 'AnimeDialog__ToTop--Show'"
         />
       </template>
     </NativeDialog>
@@ -90,14 +88,14 @@ const transition = useRootTransition();
 
 const { $root, animeInfo } = useAnimeModal();
 const $body = computed(() => $root.value?.dialogBody);
-const scrollState = useScroll($body);
+const { state: scrollState } = useScroll($body);
 
-const padding = computed(() => {
-  if (scrollState.value === "top") {
-    return "2rem";
-  }
-  return "4rem";
-});
+// const padding = computed(() => {
+//   if (state.value === "top") {
+//     return "2rem";
+//   }
+//   return "4rem";
+// });
 // onMounted(() => {
 //   $body.value = $root.value?.dialogBody;
 // });

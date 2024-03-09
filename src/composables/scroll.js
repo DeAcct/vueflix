@@ -3,34 +3,34 @@ import { computed, ref, unref } from "vue";
 
 // export function useScroll() {
 //   let lastScroll = 0;
-//   const scrollBehavior = ref("top");
-//   const scrollMax = document.body.offsetHeight - window.innerHeight;
+//   const state = ref("top");
+//   const max = document.body.offsetHeight - window.innerHeight;
 
 //   useEventListener(window, "scroll", () => {
 //     const current = window.scrollY;
 //     if (current === 0) {
-//       scrollBehavior.value = "top";
+//       state.value = "top";
 //       return;
 //     }
-//     if (current === scrollMax) {
-//       scrollBehavior.value = "bottom";
+//     if (current === max) {
+//       state.value = "bottom";
 //       return;
 //     }
 //     if (lastScroll < current) {
 //       // console.log("current is bigger");
-//       scrollBehavior.value = "down";
+//       state.value = "down";
 //     } else {
 //       // console.log("last was bigger");
-//       scrollBehavior.value = "up";
+//       state.value = "up";
 //     }
 //     lastScroll = current;
 //   });
-//   return { scrollBehavior };
+//   return { state };
 // }
 export function useScroll(target = window) {
-  let lastScroll = 0;
-  const scrollBehavior = ref("top");
-  const scrollMax = computed(() => {
+  let lastScroll = ref(0);
+  const state = ref("top");
+  const max = computed(() => {
     if (target === window) {
       return document.body.offsetHeight - window.innerHeight;
     }
@@ -43,21 +43,21 @@ export function useScroll(target = window) {
   useEventListener(target, "scroll", () => {
     const current = target === window ? target.scrollY : target.value.scrollTop;
     if (current === 0) {
-      scrollBehavior.value = "top";
+      state.value = "top";
       return;
     }
-    if (current === scrollMax.value) {
-      scrollBehavior.value = "bottom";
+    if (current === max.value) {
+      state.value = "bottom";
       return;
     }
-    if (lastScroll < current) {
+    if (lastScroll.value < current) {
       // console.log("current is bigger");
-      scrollBehavior.value = "down";
+      state.value = "down";
     } else {
       // console.log("last was bigger");
-      scrollBehavior.value = "up";
+      state.value = "up";
     }
-    lastScroll = current;
+    lastScroll.value = current;
   });
-  return scrollBehavior;
+  return { state, current: lastScroll, max };
 }

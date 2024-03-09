@@ -12,6 +12,7 @@
           :src="meta.profileImg.name"
           class="ReactionItem__ProfileImg"
           v-if="meta?.profileImg"
+          skelleton
         />
         <img :src="Aqua" class="ReactionItem__ProfileImg" v-else />
       </component>

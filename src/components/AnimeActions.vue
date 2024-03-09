@@ -14,37 +14,36 @@
         <span class="text">{{ continueData.text }}</span>
       </RouterLink>
     </div>
-    <div class="col-right">
-      <button
-        @click="wannaSeeToggle"
-        :class="['bg-less AnimeActions__WannaSee', { added: wannaSee }]"
-      >
-        <i class="icon">
-          <IconBase class="icon--added">
-            <IconWannaSeeAdded />
-          </IconBase>
-          <IconBase class="icon--not-added">
-            <IconWannaSeeAdd />
-          </IconBase>
-        </i>
-        <span class="text">보고싶다</span>
-      </button>
-      <button
-        class="bg-less AnimeActions__Purchase"
-        @mousedown="activeTrigger"
-        @mouseup="activeTrigger"
-        @touchstart.passive="activeTrigger"
-        @touchend="activeTrigger"
-        @click="purchase"
-      >
-        <i class="icon">
-          <IconBase>
-            <IconPurchase :is-active="isPurchaseActive" />
-          </IconBase>
-        </i>
-        <span class="text">소장하기</span>
-      </button>
-    </div>
+    <button
+      @click="wannaSeeToggle"
+      class="bg-less AnimeActions__WannaSee"
+      :class="wannaSee && 'AnimeActions__WannaSee--Checked'"
+    >
+      <i class="icon">
+        <IconBase class="icon--added">
+          <IconWannaSeeAdded />
+        </IconBase>
+        <IconBase class="icon--not-added">
+          <IconWannaSeeAdd />
+        </IconBase>
+      </i>
+      <span class="text">보고싶다</span>
+    </button>
+    <button
+      class="bg-less AnimeActions__Purchase"
+      @mousedown="activeTrigger"
+      @mouseup="activeTrigger"
+      @touchstart.passive="activeTrigger"
+      @touchend="activeTrigger"
+      @click="purchase"
+    >
+      <i class="icon">
+        <IconBase>
+          <IconPurchase :is-active="isPurchaseActive" />
+        </IconBase>
+      </i>
+      <span class="text">소장하기</span>
+    </button>
   </div>
 </template>
 
@@ -107,12 +106,12 @@ function activeTrigger() {
   justify-content: space-between;
   transition: 150ms ease-out;
 
-  .col-right {
-    width: auto;
-    height: auto;
-    display: flex;
-    gap: 1rem;
-  }
+  // .col-right {
+  //   width: auto;
+  //   height: auto;
+  //   display: flex;
+  //   gap: 1rem;
+  // }
   .bg-less {
     height: 4rem;
     display: flex;
@@ -170,6 +169,7 @@ function activeTrigger() {
   }
 
   &__WannaSee {
+    margin-left: auto;
     .icon {
       svg {
         position: absolute;
@@ -183,7 +183,7 @@ function activeTrigger() {
         transition-delay: 150ms;
       }
     }
-    &.added .icon {
+    &--Checked .icon {
       &--added {
         transition-delay: 150ms;
         stroke-dashoffset: 0;
@@ -196,6 +196,10 @@ function activeTrigger() {
       }
     }
   }
+
+  &__Purchase {
+    margin-left: 1rem;
+  }
 }
 
 @media screen and (min-width: 1080px) {
@@ -203,11 +207,6 @@ function activeTrigger() {
     padding: 0;
     &__Continue .text {
       font-size: 1.5rem;
-    }
-    .col-right {
-      flex: none;
-      width: auto;
-      flex-direction: row;
     }
   }
 }

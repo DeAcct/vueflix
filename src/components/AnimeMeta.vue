@@ -2,10 +2,8 @@
   <section class="AnimeMeta">
     <h2 class="blind">{{ animeInfo.aniTitle }} 관련 정보</h2>
     <p
-      :class="[
-        'AnimeMeta__Summary',
-        { 'AnimeMeta__Summary--Loaded': isLoaded },
-      ]"
+      class="AnimeMeta__Summary"
+      :class="isLoaded && 'AnimeMeta__Summary--Loaded'"
     >
       {{ animeInfo.summary }}
     </p>

@@ -1,7 +1,7 @@
 <template>
   <div class="AnimeEpisodes">
     <template v-if="animeInfo.parts">
-      <AccordionWidget
+      <AccordionGroup
         v-for="({ part, episodes }, iteratePart) in animeInfo.parts"
         :key="iteratePart"
         :open="iteratePart === 0"
@@ -23,6 +23,7 @@
                 <OptimizedMedia
                   :src="`${animeInfo.name}/${thumbnail}`"
                   :alt="`${animeInfo.name} ${part} ${index} 미리보기 이미지`"
+                  skelleton
                 />
                 <ProgressCircle
                   v-if="
@@ -49,19 +50,18 @@
             </template>
           </Thumbnailset>
         </template>
-      </AccordionWidget>
+      </AccordionGroup>
     </template>
   </div>
 </template>
 
 <script setup>
-import { inject } from "vue";
 import { useRoute } from "vue-router";
 
 import { useMaratonData } from "@/api/maraton";
 import { useHead } from "@/composables/head";
 
-import AccordionWidget from "@/components/AccordionWidget.vue";
+import AccordionGroup from "@/components/AccordionGroup.vue";
 import Thumbnailset from "@/components/ThumbnailSet.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ProgressCircle from "@/components/ProgressCircle.vue";

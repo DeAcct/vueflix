@@ -7,30 +7,18 @@
       class="AnimeItemHead__BG"
     />
     <div class="AnimeItemHead__AnimeInfo">
-      <!-- <div
-        :class="[
-          'AnimeItemHead__Poster',
-          'loading-target',
-          { 'AnimeItemHead__Poster--Loaded': animeInfo.poster },
-        ]"
-        v-if="!deviceInfo.isMobile"
-      >
-        <img :src="animeInfo.poster" :alt="`${animeInfo.name} 포스터`" />
-      </div> -->
       <OptimizedMedia
         :src="`${animeInfo.name}/${animeInfo.poster}`"
         :alt="`${animeInfo.name} 포스터`"
         class="AnimeItemHead__Poster"
+        skelleton
       />
       <div
-        :class="[
-          'col-right',
-          'loading-target',
-          {
-            'col-right--Loaded':
-              animeInfo.type && animeInfo.rating && animeInfo.name,
-          },
-        ]"
+        class="col-right"
+        :class="
+          (!animeInfo.type || !animeInfo.rating || !animeInfo.name) &&
+          'loading-target'
+        "
       >
         <div class="row-top">
           <h2 class="AnimeItemHead__Title">{{ animeInfo.name }}</h2>
@@ -152,6 +140,7 @@ const continueData = computed(() => {
     position: absolute;
     inset: 0;
     z-index: -1;
+    animation: none;
   }
   &__AnimeInfo {
     display: flex;
@@ -167,21 +156,12 @@ const continueData = computed(() => {
       height: 12rem;
       justify-content: space-between;
       align-items: center;
-      color: transparent;
       border-radius: var(--global-radius);
-      background-image: linear-gradient(
-        135deg,
-        rgb(255 255 255 / 0.3),
-        rgb(255 255 255 / 0.2)
-      );
 
-      &--Loaded {
-        width: 100%;
-        height: auto;
-        color: var(--anime-layout-text);
-        background: transparent;
-        animation: none;
+      &.loading-target {
+        color: transparent;
       }
+
       .row-top {
         color: inherit;
         transition: 150ms ease-out;

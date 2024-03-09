@@ -2,10 +2,8 @@
   <section class="KeywordReviews inner">
     <h3 class="KeywordReviews__Title">키워드</h3>
     <div
-      :class="[
-        'KeywordReviews__Interactive',
-        { 'KeywordReviews__Interactive--Centered': !user },
-      ]"
+      class="KeywordReviews__Interactive"
+      :class="!user && 'KeywordReviews__Interactive--Centered'"
     >
       <KeywordSelector
         v-if="user"
@@ -16,7 +14,7 @@
       <div class="KeywordReviews__Chart">
         <template v-if="sharedAll > 0">
           <LinearChart :data="sharedKeyword" class="sub-widget">
-            <template v-slot:summary>
+            <template #summary>
               다른 덕후들이 볼 때
               <strong>{{ sharedMax }}</strong>
               이(가) 강한 작품이에요

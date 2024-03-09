@@ -1,5 +1,5 @@
 <template>
-  <button class="ToTop" @click="toTop">
+  <button class="ToTop" @click="toTop" type="button">
     <i class="ToTop__Icon">
       <IconBase>
         <IconArrowPrev />

@@ -1,20 +1,14 @@
 <template>
   <header
-    :class="[
-      'VueflixHeader',
-      'inner',
-      { 'VueflixHeader--Fill': scrollPercent > 0 },
-    ]"
+    class="VueflixHeader inner"
+    :class="scrollPercent > 0 && 'VueflixHeader'"
   >
     <h1
-      :class="[
-        'VueflixHeader__Activity',
-        {
-          'VueflixHeader__Activity--Logo':
-            activity === 'Logo' || !isTouchDevice,
-        },
-        ,
-      ]"
+      class="VueflixHeader__Activity"
+      :class="
+        (activity === 'Logo' || !isTouchDevice) &&
+        'VueflixHeader__Activity--Logo'
+      "
     >
       <template v-if="activity === 'Logo' || !isTouchDevice">
         <RouterLink to="/">
@@ -61,11 +55,8 @@
       </div>
     </div>
     <div
-      :class="[
-        'VueflixHeader__SearchCombo',
-        'inner',
-        { 'VueflixHeader__SearchCombo--Open': searchMode },
-      ]"
+      class="VueflixHeader__SearchCombo"
+      :class="searchMode && 'VueflixHeader__SearchCombo--Open'"
     >
       <SearchBar
         class="VueflixHeader__SearchBar VueflixHeader__SearchBar--MobileOnly"

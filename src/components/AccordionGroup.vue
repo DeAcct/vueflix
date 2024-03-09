@@ -1,12 +1,10 @@
 <template>
-  <section class="AccordionWidget">
-    <button class="AccordionWidget__PartTitle" @click="toggle" type="button">
+  <section class="AccordionGroup">
+    <button class="AccordionGroup__PartTitle" @click="toggle" type="button">
       <slot name="title"></slot>
       <i
-        :class="[
-          'AccordionWidget__OpenIcon',
-          { 'AccordionWidget__OpenIcon--WidgetOpened': isOpen },
-        ]"
+        class="AccordionGroup__OpenIcon"
+        :class="isOpen && 'AccordionGroup__OpenIcon--WidgetOpened'"
       >
         <IconBase :icon-name="isOpen ? '닫기' : '열기'">
           <IconArrowPrev />
@@ -14,10 +12,8 @@
       </i>
     </button>
     <div
-      :class="[
-        'AccordionWidget__Body',
-        { 'AccordionWidget__Body--Opened': isOpen },
-      ]"
+      class="AccordionGroup__Body"
+      :class="isOpen && 'AccordionGroup__Body--Opened'"
     >
       <slot name="content"></slot>
     </div>
@@ -38,7 +34,7 @@ function toggle() {
 </script>
 
 <style lang="scss" scoped>
-.AccordionWidget {
+.AccordionGroup {
   border-radius: var(--global-radius);
   margin: 0 auto;
   &__PartTitle {
@@ -107,7 +103,7 @@ function toggle() {
 }
 
 @media screen and (min-width: 1080px) {
-  .AccordionWidget {
+  .AccordionGroup {
     &__PartTitle {
       width: 100%;
       font-size: 1.6rem;

@@ -1,10 +1,7 @@
 <template>
   <div
-    :class="[
-      'ToolTip',
-      `ToolTip--${direction}`,
-      { 'ToolTip--AlwaysShow': show },
-    ]"
+    class="ToolTip"
+    :class="[`ToolTip--${direction}`, show && 'ToolTip--AlwaysShow']"
   >
     <div class="ToolTip__Trigger">
       <slot name="trigger"></slot>

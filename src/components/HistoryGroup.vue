@@ -22,6 +22,7 @@
           <OptimizedMedia
             :src="parser.thumbnail({ aniTitle, thumbnail })"
             :alt="`${aniTitle} ${part} ${index} 이어보기`"
+            skelleton
           />
           <ProgressCircle
             v-if="progressBar"

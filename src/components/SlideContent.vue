@@ -13,10 +13,8 @@
     class="SlideContent"
   >
     <div
-      :class="[
-        'SlideContent__BackgroundHolder',
-        { 'SlideContent__BackgroundHolder--Loaded': loaded.bg },
-      ]"
+      class="SlideContent__BackgroundHolder"
+      :class="loaded.bg && 'SlideContent__BackgroundHolder--Loaded'"
     >
       <picture>
         <source media="(max-width: 767px)" :srcset="slideData.mWebpBg" />
@@ -36,10 +34,8 @@
         <img
           :src="slideData.logo"
           :alt="slideData.name"
-          :class="[
-            'SlideContent__AniLogo',
-            { 'SlideContent__AniLogo--Loaded': loaded.bg },
-          ]"
+          class="SlideContent__AniLogo"
+          :class="loaded.bg && 'SlideContent__AniLogo--Loaded'"
           @load="logoComplete"
           loading="lazy"
         />

@@ -39,12 +39,10 @@ export function useAnimeModal() {
   const { $root, show, close } = useOveray();
 
   async function setAnimeView(to, from) {
-    console.log(to, from);
     // 새로운 경로에 modal 정보가 포함되어 있고, 이전에는 없었으면
     if (to.query.modal && !from.query.modal) {
       const docRef = doc(db, "anime", to.query.modal);
       await getAnimeData(docRef);
-      console.log(animeInfo.value);
       show();
     }
     // 새로운 경로에 modal 정보가 없고, 이전에는 있었으면

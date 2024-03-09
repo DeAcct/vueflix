@@ -2,11 +2,8 @@
   <div class="ToggleSetting">
     <h2 class="ToggleSetting__Heading"><slot name="title"></slot></h2>
     <label
-      :class="[
-        'ToggleSetting__Toggle',
-        'inner',
-        { 'ToggleSetting__Toggle--Enabled': model },
-      ]"
+      class="ToggleSetting__Toggle inner"
+      :class="model && 'ToggleSetting__Toggle--Enabled'"
     >
       {{ model ? value[0] : value[1] }}
       <InputBoolean v-model="model" @update:modelValue="updateCallback" />

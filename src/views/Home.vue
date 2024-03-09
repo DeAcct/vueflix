@@ -23,6 +23,7 @@
                 <OptimizedMedia
                   :src="`${aniTitle}/${thumbnail}`"
                   :alt="`${aniTitle} ${part} ${index} 이어보기`"
+                  skelleton
                 />
                 <ProgressCircle
                   class="AppHome__WatchPercent"
@@ -82,6 +83,7 @@
                 <OptimizedMedia
                   :src="`${escaper(anime)}/${escaper(anime)}.webp`"
                   :alt="`${anime} 포스터`"
+                  skelleton
                 />
               </RouterLink>
             </template>
@@ -125,6 +127,7 @@
                 <OptimizedMedia
                   :src="`${escaper(anime)}/${escaper(anime)}.webp`"
                   :alt="`${anime} 포스터`"
+                  skelleton
                 />
               </RouterLink>
             </template>

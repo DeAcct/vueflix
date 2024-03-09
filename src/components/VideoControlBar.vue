@@ -62,6 +62,7 @@
                     <OptimizedMedia
                       :src="`${route.params.title}/${nextEpisode.thumbnail}`"
                       :alt="`${route.params.title} ${nextEpisode.part} ${nextEpisode.index} 미리보기 이미지`"
+                      skelleton
                     >
                     </OptimizedMedia>
                   </RouterLink>
@@ -82,10 +83,8 @@
           </template>
           <template #trigger>
             <RouterLink
-              :class="[
-                'VideoControlBar__Button',
-                { 'VideoControlBar__Button--Disabled': nextLink === '#' },
-              ]"
+              class="VideoControlBar__Button"
+              :class="nextLink === '#' && 'VideoControlBar__Button--Disabled'"
               :to="nextLink"
               replace
             >

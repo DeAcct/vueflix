@@ -1,11 +1,7 @@
 <template>
   <nav
-    :class="[
-      'BottomTabMenu',
-      {
-        'BottomTabMenu--Show': scrollBehavior !== 'down',
-      },
-    ]"
+    class="BottomTabMenu"
+    :class="scrollState === 'down' && 'BottomTabMenu--Show'"
   >
     <h2 class="blind">하단메뉴</h2>
     <div class="BottomTabMenu__Items">
@@ -32,7 +28,7 @@
       class="BottomTabMenu__Profile"
       exact-active-class="BottomTabMenu__Profile--Active"
     />
-    <ToTop class="BottomTabMenu__ToTop" v-if="scrollBehavior !== 'top'" />
+    <ToTop class="BottomTabMenu__ToTop" v-if="state !== 'top'" />
   </nav>
 </template>
 
@@ -64,7 +60,7 @@ const items = [
   },
 ];
 
-const { scrollBehavior } = useScroll();
+const { state: scrollState } = useScroll();
 </script>
 
 <style lang="scss" scoped>

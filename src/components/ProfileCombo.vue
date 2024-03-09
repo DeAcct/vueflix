@@ -8,6 +8,7 @@
       :alt="`${store.user.nickname} 프로필 사진`"
       class="ProfileCombo__Profile"
       v-if="store.user"
+      skelleton
     />
     <img :src="Aqua" v-else class="ProfileCombo__Profile" />
   </component>

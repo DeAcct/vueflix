@@ -1,14 +1,12 @@
 <template>
   <span class="OptimizedMedia">
-    <span class="OptimizedMedia__Wrap loading-target">
+    <span class="OptimizedMedia__Wrap" :class="skelleton && 'loading-target'">
       <component
         :is="type"
         :src="fileSrc"
         :alt="type === 'img' ? alt : undefined"
-        :class="[
-          'OptimizedMedia__Body',
-          { 'OptimizedMedia__Body--Loaded': isLoaded },
-        ]"
+        class="OptimizedMedia__Body"
+        :class="isLoaded && 'OptimizedMedia__Body--Loaded'"
         :poster
         @load="loadTrigger"
         loading="lazy"
@@ -38,6 +36,10 @@ const props = defineProps({
   },
   poster: {
     type: String,
+  },
+  skelleton: {
+    type: Boolean,
+    default: false,
   },
 });
 
