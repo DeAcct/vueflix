@@ -9,7 +9,7 @@
       class="AnimeLayout__Head"
     />
     <AnimeMeta class="AnimeLayout__Meta" :anime-info></AnimeMeta>
-    <main class="AnimeLayout__TabView">
+    <main class="AnimeLayout__Body">
       <div class="AnimeLayout__TabSelector inner" ref="$TabSelector">
         <RouterLink
           replace
@@ -51,6 +51,7 @@
           :is="children[routeIndex].component"
           :anime-info
           @open-login-modal="openLoginModal"
+          :key="children[routeIndex].name"
         ></component>
       </Transition>
     </main>
@@ -58,6 +59,7 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 import { useScroll } from "@/composables/scroll";
@@ -102,13 +104,15 @@ const children = [
     component: Reviews,
   },
 ];
-const routeIndex = children.findIndex(({ name }) => name === route.query.route);
+const routeIndex = computed(() =>
+  children.findIndex(({ name }) => name === route.query.route)
+);
 const {
   selector: $TabSelector,
   items: $Tab,
   to: indicatorTo,
   move: indicatorMove,
-} = useIndicatorAnimation(routeIndex);
+} = useIndicatorAnimation(routeIndex.value);
 </script>
 
 <style lang="scss" scoped>
@@ -136,7 +140,7 @@ const {
   &__Meta {
     margin-bottom: 2rem;
   }
-  &__TabView {
+  &__Body {
     border-radius: calc(var(--global-radius) * 6) calc(var(--global-radius) * 6)
       0 0;
     display: flex;
@@ -181,6 +185,15 @@ const {
   }
 }
 
+.anime-layout-enter-active,
+.anime-layout-leave-active {
+  transition: opacity 0.3s;
+}
+.anime-layout-enter-from,
+.anime-layout-leave-to {
+  opacity: 0;
+}
+
 @media screen and (min-width: 1080px) {
   .AnimeLayout {
     display: grid;
@@ -209,7 +222,7 @@ const {
         display: block;
       }
     }
-    &__TabView {
+    &__Body {
       height: max(35rem, 100%);
       background-color: var(--anime-layout-episodes);
       box-shadow: none;

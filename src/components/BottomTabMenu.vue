@@ -1,8 +1,5 @@
 <template>
-  <nav
-    class="BottomTabMenu"
-    :class="scrollState === 'down' && 'BottomTabMenu--Show'"
-  >
+  <nav class="BottomTabMenu">
     <h2 class="blind">하단메뉴</h2>
     <div class="BottomTabMenu__Items">
       <RouterLink
@@ -28,7 +25,7 @@
       class="BottomTabMenu__Profile"
       exact-active-class="BottomTabMenu__Profile--Active"
     />
-    <ToTop class="BottomTabMenu__ToTop" v-if="state !== 'top'" />
+    <ToTop class="BottomTabMenu__ToTop" v-if="scrollState !== 'top'" />
   </nav>
 </template>
 
@@ -72,14 +69,8 @@ const { state: scrollState } = useScroll();
   z-index: 100;
   bottom: var(--bottom-tab-safe-margin);
   left: 50%;
-  transform: translate(
-    -50%,
-    calc(var(--bottom-tab-safe-margin) + var(--bottom-tab-height))
-  );
+  transform: translate(-50%, 0);
   transition: 150ms ease-out;
-  &--Show {
-    transform: translate(-50%, 0);
-  }
 
   &__Items {
     display: flex;

@@ -48,52 +48,32 @@ const user = computed(() => auth.user);
   flex-direction: column;
   align-items: center;
   gap: 1.6rem;
-  overflow: hidden;
+  margin-top: 2rem;
 
   &__LoginRequired {
-    background-color: hsl(var(--bg-300));
+    background-color: hsl(var(--bg-200));
     position: relative;
     padding: {
       left: 2rem;
       right: 2rem;
     }
-    &::before,
-    &::after {
-      position: absolute;
-      bottom: calc(var(--global-radius) * -12);
-      content: "";
-      width: calc(var(--global-radius) * 12);
-      height: calc(var(--global-radius) * 12);
-      border-radius: 50%;
-      display: block;
-      background-color: hsl(var(--anime-layout-bg));
-    }
-    &::before {
-      left: 0;
-      box-shadow: calc(var(--global-radius) * -6)
-        calc(var(--global-radius) * -6) 0 hsl(var(--bg-300));
-    }
-    &::after {
-      right: 0;
-      box-shadow: calc(var(--global-radius) * 6) calc(var(--global-radius) * -6)
-        0 hsl(var(--bg-300));
-    }
+    width: calc(100% - 4rem);
+    border-radius: calc(var(--global-radius) * 6 - 2rem);
   }
 
-  &__LoginRequired + &__Method {
+  &__Method {
     margin-top: 0;
   }
 
   &__Method--Review {
     font-size: 1.5rem;
     --body-radius: var(--global-radius);
-    --reaction-combo-border-gradient: linear-gradient(
-      135deg,
-      hsl(0 0% 100% / 0.2),
-      transparent
-    );
+    background-color: transparent;
+    --reaction-combo-write-bg: hsl(var(--bg-200));
     --recation-combo-bg: hsl(var(--bg-200) / 0.5);
     --reaction-combo-border-width: 1px;
+    --reaction-combo-title-padding: 0;
+    width: calc(100% - 4rem);
   }
 }
 </style>

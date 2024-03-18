@@ -201,7 +201,7 @@ function requestTeleport(e) {
     margin-bottom: 1.2rem;
     display: flex;
     gap: 0.4rem;
-    padding: 0 2rem;
+    padding: 0 var(--reaction-combo-title-padding, 2rem);
   }
   &__description {
     font-size: 1.3rem;
@@ -214,13 +214,15 @@ function requestTeleport(e) {
     margin: 0 auto;
   }
   &__Write {
-    background: linear-gradient(
-      150deg,
-      hsl(var(--bg-900) / 0.2),
-      hsl(var(--bg-900) / 0.025)
+    background: var(
+      --reaction-combo-write-bg,
+      linear-gradient(
+        150deg,
+        hsl(var(--bg-900) / 0.2),
+        hsl(var(--bg-900) / 0.025)
+      )
     );
     padding: 2rem;
-    background-color: hsl(var(--bg-200) / 0.5);
     border-radius: var(--global-radius);
     &:last-child {
       border-radius: var(--global-radius);

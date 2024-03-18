@@ -19,7 +19,7 @@
         <AnimeLayout :anime-info />
         <ToTop
           class="AnimeDialog__ToTop"
-          :class="scrollState === 'top' && 'AnimeDialog__ToTop--Show'"
+          :class="scrollState !== 'top' && 'AnimeDialog__ToTop--Show'"
         />
       </template>
     </NativeDialog>
@@ -150,7 +150,7 @@ const { state: scrollState } = useScroll($body);
   }
   &__ToTop {
     position: sticky;
-    top: calc(var(--dialog-height) - 6.8rem);
+    top: calc(var(--dialog-height) - 6.8rem + var(--bottom-tab-safe-margin));
     left: 50%;
     z-index: 100;
     background-color: hsl(var(--theme-500));
