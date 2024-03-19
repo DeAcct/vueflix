@@ -7,6 +7,9 @@ export function useOveray() {
   const $root = ref(null);
 
   function show(e) {
+    if (!$root.value) {
+      return;
+    }
     $root.value.dialogRoot.showModal();
     document.documentElement.style.overflow = "hidden";
   }
@@ -33,6 +36,7 @@ export function useAutoPop(time = 1000) {
   return { visible, show, close };
 }
 
+const validRoutes = ["episodes", "reviews"];
 export function useAnimeModal() {
   const router = useRouter();
   const animeInfo = ref({});
@@ -55,13 +59,23 @@ export function useAnimeModal() {
   async function getAnimeData(docRef) {
     const anime = await getDoc(docRef);
     if (!anime.exists()) {
-      return router.push({ name: "isekai-404" });
+      return router.replace({ name: "isekai-404" });
     }
     animeInfo.value = anime.data();
   }
 
-  const cleanup = router.afterEach(setAnimeView);
-  onUnmounted(() => cleanup());
+  // 입구컷 - 이상한 경로를 넣으면 404 페이지로 이동
+  function invalidRoute(to) {
+    if (to.query.modal && !validRoutes.includes(to.query.route)) {
+      return router.replace({ name: "isekai-404" });
+    }
+  }
+  const cleanupBefore = router.beforeEach(invalidRoute);
+  const cleanupAfter = router.afterEach(setAnimeView);
+  onUnmounted(() => {
+    cleanupBefore();
+    cleanupAfter();
+  });
 
   return { $root, animeInfo };
 }
