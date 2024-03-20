@@ -120,6 +120,7 @@ const {
   display: flex;
   flex-direction: column;
   min-height: calc(var(--vh) * 1px * 90);
+  padding-bottom: 2rem;
   &__Head {
     width: 100%;
     min-height: 55vh;
@@ -141,13 +142,12 @@ const {
     margin-bottom: 2rem;
   }
   &__Body {
-    border-radius: calc(var(--global-radius) * 6) calc(var(--global-radius) * 6)
-      0 0;
+    border-radius: calc(var(--global-radius) * 6);
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     background-color: var(--anime-layout-episodes);
-    padding-bottom: 8.5rem;
+    padding-bottom: 2rem;
   }
   &__TabSelector {
     display: flex;
@@ -187,7 +187,10 @@ const {
 
 .anime-layout-enter-active,
 .anime-layout-leave-active {
-  transition: opacity 0.3s;
+  transition: opacity 300ms;
+}
+.anime-layout-leave-active {
+  display: none;
 }
 .anime-layout-enter-from,
 .anime-layout-leave-to {
@@ -203,6 +206,7 @@ const {
     grid-template-rows: 50vh auto;
     row-gap: 3.2rem;
     column-gap: 2rem;
+
     &__Head {
       height: 50vh;
       border-radius: 0;
@@ -227,7 +231,6 @@ const {
       background-color: var(--anime-layout-episodes);
       box-shadow: none;
       grid-area: 2 / 2 / 3 / 3;
-      border-radius: calc(var(--global-radius) * 6);
     }
     &__TabSelector {
       padding: 0 2rem;

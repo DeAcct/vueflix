@@ -436,7 +436,7 @@ const { latest } = useMaratonData();
     --dialog-starting-translate: -50% 3rem;
     --dialog-border-radius: calc(var(--global-radius) * 2);
     --dialog-padding: 3rem;
-    --dialog-max-width: auto;
+    --dialog-max-width: 50rem;
   }
 }
 @media screen and (min-width: 1920px) {

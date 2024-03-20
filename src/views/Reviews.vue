@@ -24,12 +24,16 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
+
+import { useAuth } from "@/store/auth";
+
+import { useHead } from "@/composables/head";
+
 import KeywordReviews from "@/components/KeywordReviews.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
 import LoginWidget from "@/components/LoginWidget.vue";
-import { computed } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import { useAuth } from "@/store/auth";
 
 const route = useRoute();
 
@@ -38,6 +42,7 @@ function goAuth() {
   router.push("/auth");
 }
 // const store = useStore();
+useHead({ title: `${route.query.modal} 리뷰` });
 const auth = useAuth();
 const user = computed(() => auth.user);
 </script>

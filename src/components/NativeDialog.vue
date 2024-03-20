@@ -1,9 +1,11 @@
 <template>
   <dialog class="NativeDialog" ref="dialogRoot">
     <form method="dialog" class="NativeDialog__Body" ref="dialogBody">
-      <slot name="title"></slot>
-      <slot name="content"></slot>
-      <slot name="control"></slot>
+      <div class="NativeDialog__Wrap">
+        <slot name="title"></slot>
+        <slot name="content"></slot>
+        <slot name="control"></slot>
+      </div>
     </form>
   </dialog>
 </template>
@@ -37,8 +39,6 @@ defineExpose({
       overay 150ms ease-out allow-discrete;
   }
   &[open] &__Body {
-    display: flex;
-    flex-direction: column;
     position: fixed;
     z-index: 2;
     inset: var(--dialog-inset, auto);
@@ -58,6 +58,11 @@ defineExpose({
       translate: var(--dialog-starting-translate, 0 100%);
       opacity: var(--dialog-starting-opacity, 1);
     }
+  }
+  &__Wrap {
+    display: flex;
+    flex-direction: column;
+    position: relative;
   }
 
   &[open] &__Close {

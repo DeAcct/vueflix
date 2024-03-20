@@ -1,5 +1,6 @@
 <template>
   <RouterView v-slot="{ Component, route }">
+    <span class="AnimeLoading" v-if="isLoading"></span>
     <VueflixHeader v-if="route.meta.appBar" :is-touch-device="device.isTouch" />
     <BottomTabMenu v-if="route.meta.bottomTabMenu && device.isMobile" />
     <Transition
@@ -17,10 +18,12 @@
       </template>
       <template #content>
         <AnimeLayout :anime-info />
-        <ToTop
-          class="AnimeDialog__ToTop"
-          :class="scrollState !== 'top' && 'AnimeDialog__ToTop--Show'"
-        />
+        <div class="AnimeDialog__TopWrap">
+          <ToTop
+            class="AnimeDialog__ToTop"
+            :class="scrollState !== 'top' && 'AnimeDialog__ToTop--Show'"
+          />
+        </div>
       </template>
     </NativeDialog>
   </RouterView>
@@ -86,7 +89,7 @@ onUnmounted(() => {
 
 const transition = useRootTransition();
 
-const { $root, animeInfo } = useAnimeModal();
+const { $root, animeInfo, isLoading } = useAnimeModal();
 const $body = computed(() => $root.value?.dialogBody);
 const { state: scrollState } = useScroll($body);
 
@@ -129,6 +132,33 @@ const { state: scrollState } = useScroll($body);
   }
 }
 
+.AnimeLoading {
+  display: block;
+  width: calc(var(--vw) * 1px * 100);
+  height: 0.2rem;
+  position: fixed;
+  top: 0;
+  z-index: 101;
+  background-color: hsl(var(--theme-500));
+  box-shadow: 0 0 1.2rem hsl(var(--theme-500));
+  animation: loading-animation 1s infinite;
+  transform-origin: left;
+  pointer-events: none;
+  touch-action: none;
+}
+@keyframes loading-animation {
+  0% {
+    scale: 0 1;
+  }
+  50% {
+    scale: 1 1;
+    translate: 0 0;
+  }
+  100% {
+    translate: 100% 0;
+  }
+}
+
 .AnimeDialog {
   --dialog-inset: auto auto 0 0;
   --dialog-translate: 0 0;
@@ -148,10 +178,16 @@ const { state: scrollState } = useScroll($body);
     width: 100%;
     height: 12rem;
   }
-  &__ToTop {
+  &__TopWrap {
+    width: 100%;
+    height: 0;
     position: sticky;
-    top: calc(var(--dialog-height) - 6.8rem + var(--bottom-tab-safe-margin));
+    bottom: 0;
+  }
+  &__ToTop {
+    position: absolute;
     left: 50%;
+    bottom: var(--bottom-tab-safe-margin);
     z-index: 100;
     background-color: hsl(var(--theme-500));
     translate: -50% 10rem;
@@ -179,7 +215,9 @@ const { state: scrollState } = useScroll($body);
     --dialog-starting-opacity: 0;
     --dialog-border-radius: var(--global-radius);
     &__ToTop {
-      left: calc(100% - 8.8rem);
+      left: auto;
+      right: 4rem;
+      bottom: 4rem;
       translate: 0 10rem;
       &--Show {
         translate: 0 0;

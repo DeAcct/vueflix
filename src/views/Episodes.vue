@@ -74,9 +74,9 @@ const props = defineProps({
 const emit = defineEmits(["open-login-modal"]);
 const route = useRoute();
 
-useHead({ title: route.params.title });
+useHead({ title: route.query.modal });
 
-const { getEpisodeProgress } = useMaratonData(route.params.title);
+const { getEpisodeProgress } = useMaratonData(route.query.modal);
 </script>
 
 <style lang="scss" scoped>

@@ -43,8 +43,8 @@ function toggle() {
     z-index: 50;
     background: linear-gradient(
       150deg,
-      hsl(var(--bg-900) / 0.1),
-      hsl(var(--bg-900) / 0.05)
+      hsl(var(--bg-400) / 0.75),
+      hsl(var(--bg-400) / 0.5)
     );
     backdrop-filter: blur(10px);
     border-radius: var(--global-radius);
@@ -54,14 +54,7 @@ function toggle() {
     justify-content: space-between;
     align-items: center;
     font-size: 1.4rem;
-    font-weight: 700;
-    // .border-wrap {
-    //   display: flex;
-    //   justify-content: space-between;
-    //   border-radius: calc(var(--global-radius) - 1px);
-    //   align-items: center;
-    //   background-color: hsl(var(--bg-200) / 0.5);
-    // }
+    font-weight: 900;
   }
   &__OpenIcon {
     display: flex;

@@ -40,13 +40,16 @@ const validRoutes = ["episodes", "reviews"];
 export function useAnimeModal() {
   const router = useRouter();
   const animeInfo = ref({});
+  const isLoading = ref(false);
   const { $root, show, close } = useOveray();
 
   async function setAnimeView(to, from) {
     // 새로운 경로에 modal 정보가 포함되어 있고, 이전에는 없었으면
     if (to.query.modal && !from.query.modal) {
       const docRef = doc(db, "anime", to.query.modal);
+      isLoading.value = true;
       await getAnimeData(docRef);
+      isLoading.value = false;
       show();
     }
     // 새로운 경로에 modal 정보가 없고, 이전에는 있었으면
@@ -77,5 +80,5 @@ export function useAnimeModal() {
     cleanupAfter();
   });
 
-  return { $root, animeInfo };
+  return { $root, animeInfo, isLoading };
 }
