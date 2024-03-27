@@ -1,11 +1,11 @@
-import { computed } from "vue";
+import { computed, toValue } from "vue";
 import { useAuth } from "@/store/auth";
 
 const LEVEL_MAP = [
   {
     maxDays: 0,
     maxLikeit: 0,
-    levelName: "베이비",
+    levelName: "뉴비",
     styleIdentifier: "baby",
   },
   {
@@ -57,10 +57,15 @@ export function useUserLevel(date) {
   // const user = computed(() => store.user);
 
   const level = computed(() => {
-    if (!date.value) return "loading";
+    if (!toValue(date))
+      return {
+        number: 0,
+        text: "뉴비",
+        styleIdentifier: "baby",
+      };
 
     const currentMonth = new Date();
-    const initMonth = date.value.toDate();
+    const initMonth = toValue(date).toDate();
 
     const ONE_DAY_TO_MILLISECOND = 24 * 60 * 60 * 1000;
 

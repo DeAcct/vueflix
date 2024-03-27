@@ -1,5 +1,5 @@
 <template>
-  <div class="StatCard">
+  <section class="StatCard">
     <div class="StatCard__Info">
       <h2 class="StatCard__Nickname" :class="{ 'loading-target': loading }">
         {{ data?.nickname || "아직 로그인하지 않았어요" }}
@@ -7,19 +7,7 @@
       <p class="StatCard__Email" :class="{ 'loading-target': loading }">
         {{ data?.email }}
       </p>
-      <RouterLink class="StatCard__Stat" :to="`/history/${uid}`">
-        <div class="StatCard__StatItem" :class="{ 'loading-target': loading }">
-          <h3 class="StatCard__StatName">보고싶다</h3>
-          <p class="StatCard__StatValue">{{ data?.wannaSee.length }}개</p>
-        </div>
-        <div class="StatCard__StatItem" :class="{ 'loading-target': loading }">
-          <h3 class="StatCard__StatName">리뷰</h3>
-          <p class="StatCard__StatValue">{{ data?.reaction.length }}개</p>
-        </div>
-        <IconBase class="StatCard__Icon">
-          <IconArrowNext />
-        </IconBase>
-      </RouterLink>
+      <HistoryInfo :uid :loading :data />
     </div>
     <OptimizedMedia
       :src="data?.profileImg.name"
@@ -27,13 +15,18 @@
       class="StatCard__Image"
       skelleton
     />
-    <LevelRenderer
-      :init-date="data?.membership?.initDate"
-      to="/my/level"
-      class="StatCard__Level"
-      :class="{ 'loading-target': loading }"
-    />
-  </div>
+    <section class="StatCard__Membership">
+      <LevelRenderer
+        :init-date="data?.membership?.initDate"
+        to="/my/level"
+        class="StatCard__Item StatCard__Item--Level"
+        :class="{ 'loading-target': loading }"
+      />
+      <div class="StatCard__Item">
+        <slot />
+      </div>
+    </section>
+  </section>
 </template>
 
 <script setup>
@@ -45,6 +38,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../utility/firebase";
 import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
+import HistoryInfo from "./HistoryInfo.vue";
 
 const props = defineProps({
   uid: {
@@ -115,44 +109,33 @@ watch(
       color: transparent;
     }
   }
-  &__Stat {
-    display: flex;
-    gap: 1.2rem;
-    align-items: center;
-  }
-  &__StatItem {
-    display: flex;
-    gap: 0.4rem;
-    text-align: center;
-    &.loading-target {
-      width: 8rem;
-      height: 2rem;
-      text-overflow: hidden;
-      color: transparent;
-    }
-  }
-  &__StatName {
-    font-size: 1.6rem;
-    font-weight: 500;
-    color: inherit;
-  }
-  &__StatValue {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: inherit;
-  }
-  &__Icon {
-    width: 1.8rem;
-    height: 1.8rem;
-    margin-left: -0.6rem;
-  }
-  &__Level {
+
+  &__Membership {
     width: 100%;
-    height: 6rem;
+    // display: flex;
+    // gap: 1rem;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 1.2rem;
+  }
+  &__Item {
+    background-color: hsl(var(--bg-200));
     border-radius: var(--global-radius);
-    &.loading-target {
-      --level-renderer: transparent;
-    }
+    // display: flex;
+    // border-radius: var(--global-radius);
+    // overflow: hidden;
+    // background-color: hsl(var(--bg-200));
+
+    // flex-grow: 1;
+    // flex-shrink: 1;
+    // flex-basis: 0px;
+    // width: 0;
+    // &--Level {
+    //   &.loading-target {
+    //     --level-renderer: transparent;
+    //   }
+    // }
   }
 }
 </style>

@@ -142,6 +142,8 @@ export const useAuth = defineStore("auth", () => {
         keywordReview: [],
         membership: {
           initDate: new Date(),
+          tier: "free",
+          viewCounter: 0,
         },
       };
 
