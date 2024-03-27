@@ -8,8 +8,6 @@
       :autoplay-disable-on-interaction="false"
       class="BannerSlide__Container"
       ref="$swiper"
-      @autoplaytimeleft="onLeft"
-      @progress="ddd"
     >
       <swiper-slide
         v-for="animeID in randomIDs"
@@ -41,7 +39,6 @@
         </IconBase>
       </i>
     </button>
-    <div class="BannerSlide__Progress"></div>
   </section>
 </template>
 
@@ -54,7 +51,7 @@ import SlideContent from "./SlideContent.vue";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 
-import { register } from "swiper/element/bundle";
+// import { register } from "swiper/element/bundle";
 import { onMounted, ref } from "vue";
 
 const randomMaxNumber = ref(0);
@@ -90,30 +87,15 @@ function prevClick() {
 function nextClick() {
   $swiper.value.swiper.slideNext();
 }
-const autoPlayProgress = ref(0);
-function onLeft({ detail }) {
-  const [, , progress] = detail;
-  autoPlayProgress.value = progress;
-}
 </script>
 
 <style lang="scss" scoped>
 .BannerSlide {
   position: relative;
+  overflow: hidden;
   aspect-ratio: 3/4;
   &__Container {
     aspect-ratio: 3/4;
-  }
-  &__Progress {
-    position: absolute;
-    bottom: -0.2rem;
-    left: 0;
-    width: 100%;
-    transform-origin: left;
-    transform: scaleX(calc(1 - v-bind(autoPlayProgress)));
-    height: 0.2rem;
-    background-color: hsl(var(--bg-900));
-    z-index: 20;
   }
   &__Button {
     display: none;

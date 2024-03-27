@@ -15,7 +15,6 @@ export function usePWA() {
 
   let deferredPrompt;
   function showModal(e) {
-    console.log(postponed.value);
     if (!isExpired()) return;
     deferredPrompt = e;
 

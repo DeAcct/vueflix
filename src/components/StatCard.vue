@@ -112,8 +112,6 @@ watch(
 
   &__Membership {
     width: 100%;
-    // display: flex;
-    // gap: 1rem;
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: 1fr;
@@ -122,20 +120,6 @@ watch(
   &__Item {
     background-color: hsl(var(--bg-200));
     border-radius: var(--global-radius);
-    // display: flex;
-    // border-radius: var(--global-radius);
-    // overflow: hidden;
-    // background-color: hsl(var(--bg-200));
-
-    // flex-grow: 1;
-    // flex-shrink: 1;
-    // flex-basis: 0px;
-    // width: 0;
-    // &--Level {
-    //   &.loading-target {
-    //     --level-renderer: transparent;
-    //   }
-    // }
   }
 }
 </style>

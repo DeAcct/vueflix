@@ -1,20 +1,8 @@
 <template>
-  <RouterLink
-    :to="
-      slideData.name
-        ? {
-            query: {
-              modal: slideData.name,
-              route: 'episodes',
-            },
-          }
-        : '#'
-    "
-    class="SlideContent"
-  >
+  <div class="SlideContent">
     <div
-      class="SlideContent__BackgroundHolder"
       :class="loaded.bg && 'SlideContent__BackgroundHolder--Loaded'"
+      class="SlideContent__BackgroundHolder"
     >
       <picture>
         <source media="(max-width: 767px)" :srcset="slideData.mWebpBg" />
@@ -23,26 +11,38 @@
         <img
           :src="slideData.pcJpegBg"
           :alt="`${slideData.name} 배너`"
-          class="SlideContent__BackgroundImage"
+          class="SlideContent__Image"
           @load="bgComplete"
           loading="lazy"
         />
       </picture>
+      <RouterLink
+        class="SlideContent__Shade"
+        :to="
+          slideData.name
+            ? {
+                query: {
+                  modal: slideData.name,
+                  route: 'episodes',
+                },
+              }
+            : '#'
+        "
+      >
+        <h3 class="SlideContent__Presentation">
+          <img
+            :src="slideData.logo"
+            :alt="slideData.name"
+            class="SlideContent__AniLogo"
+            :class="loaded.bg && 'SlideContent__AniLogo--Loaded'"
+            @load="logoComplete"
+            loading="lazy"
+          />
+        </h3>
+        <strong class="SlideContent__Copy">{{ slideData.copy }}</strong>
+      </RouterLink>
     </div>
-    <div class="SlideContent__Presentation">
-      <h3>
-        <img
-          :src="slideData.logo"
-          :alt="slideData.name"
-          class="SlideContent__AniLogo"
-          :class="loaded.bg && 'SlideContent__AniLogo--Loaded'"
-          @load="logoComplete"
-          loading="lazy"
-        />
-      </h3>
-      <strong class="SlideContent__Copy">{{ slideData.copy }}</strong>
-    </div>
-  </RouterLink>
+  </div>
 </template>
 
 <script setup>
@@ -109,50 +109,58 @@ function bgComplete() {
 
 <style lang="scss" scoped>
 .SlideContent {
-  max-height: 50vh;
   &__BackgroundHolder {
-    display: flex;
     position: relative;
-
-    width: 100vw;
-    padding-bottom: 133.333%;
     opacity: 0;
-    &::before {
-      position: absolute;
-      width: 100vw;
-      padding-bottom: 133.333%;
-      top: 0;
-      content: "";
-      background: linear-gradient(
-        180deg,
-        rgba(0, 0, 0, 0.6) 0%,
-        rgba(0, 0, 0, 0.15) 40%,
-        rgba(0, 0, 0, 0.15) 60%,
-        rgba(0, 0, 0, 0.6) 100%
-      );
-      opacity: 0;
-    }
-
+    transition: opacity 150ms ease-out;
     &--Loaded {
       opacity: 1;
-      &::before {
-        opacity: 1;
-      }
     }
   }
-  &__BackgroundImage {
+  // &__RatioHold {
+  //   display: flex;
+  //   position: relative;
+  //   width: 100vw;
+  //   padding-bottom: 133.333%;
+  //   &::after {
+  //     position: absolute;
+  //     z-index: 10;
+  //     width: 100vw;
+  //     top: 0;
+  //     background: linear-gradient(
+  //       180deg,
+  //       rgba(0, 0, 0, 0.6) 0%,
+  //       rgba(0, 0, 0, 0.15) 40%,
+  //       rgba(0, 0, 0, 0.15) 60%,
+  //       rgba(0, 0, 0, 0.6) 100%
+  //     );
+  //     content: "";
+  //   }
+  // }
+  &__Image {
     width: 100vw;
     object-fit: cover;
   }
-  &__Presentation {
+  &__Shade {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 6rem var(--inner-padding);
+    gap: 2rem;
+
     position: absolute;
-    left: 2rem;
-    bottom: 10%;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.6) 0%,
+      rgba(0, 0, 0, 0.15) 40%,
+      rgba(0, 0, 0, 0.15) 60%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
   }
   &__AniLogo {
     max-width: 70vw;
     max-height: 15em;
-    margin-bottom: 2rem;
     opacity: 0;
     transition: 150ms ease-out;
     &--Loaded {
@@ -169,20 +177,13 @@ function bgComplete() {
 
 @media screen and (min-width: 768px) {
   .SlideContent {
-    &__BackgroundHolder {
-      padding: 0;
-      height: calc(100vw / 2560 * 1043);
-      &::after {
-        height: 100%;
-      }
-    }
-    &__Presentation {
-      left: 5rem;
+    &__Shade {
+      padding: 8rem 5rem;
+      gap: 3rem;
     }
     &__AniLogo {
       max-width: 40vw;
       max-height: 10em;
-      margin-bottom: 3rem;
     }
     &__Copy {
       font-size: 2em;
@@ -191,6 +192,13 @@ function bgComplete() {
 }
 @media screen and (min-width: 1080px) {
   .SlideContent {
+    &__Shade {
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.4) 100%
+      );
+    }
     &__AniLogo {
       max-width: 30vw;
       max-height: 18em;

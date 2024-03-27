@@ -1,6 +1,10 @@
 <template>
   <main class="AppHome">
-    <BannerSlide />
+    <TasogareSlide class="AppHome__Slide">
+      <template #items>
+        <SlideContent v-for="animeId in carouselList" :anime-id />
+      </template>
+    </TasogareSlide>
     <div class="AppHome__Curator">
       <div class="AppHome__Item" v-if="latest(6).length">
         <h2 class="AppHome__Title inner">최근 본 애니</h2>
@@ -209,6 +213,7 @@ import { db } from "@/utility/firebase";
 import { DAYS } from "@/enums/Days";
 import { useMaratonData } from "@/api/maraton";
 import { usePWA, useRandomPWAPromotionCopy } from "@/composables/pwa";
+import { useCarouselList } from "@/composables/carousel";
 
 import BannerSlide from "@/components/BannerSlide.vue";
 import InputBoolean from "@/components/InputBoolean.vue";
@@ -219,6 +224,9 @@ import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
+
+import TasogareSlide from "@/components/TasogareSlide.vue";
+import SlideContent from "@/components/SlideContent.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconIOSInstall from "@/components/icons/IconIOSInstall.vue";
@@ -265,6 +273,8 @@ function escaper(str) {
 }
 
 const { latest } = useMaratonData();
+
+const carouselList = useCarouselList();
 </script>
 
 <style lang="scss" scoped>
@@ -428,6 +438,9 @@ const { latest } = useMaratonData();
     }
     &__CurationItem {
       width: var(--thumbnail-width, 28vw);
+    }
+    &__Slide {
+      margin-top: var(--header-height);
     }
   }
   .PWAModal {

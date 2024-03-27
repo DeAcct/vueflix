@@ -30,7 +30,7 @@ const { limit, used } = useMembershipLimit(props.tier);
     font-size: 1.4rem;
   }
   &__Value {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
 }
 </style>

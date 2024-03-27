@@ -1,7 +1,7 @@
 <template>
   <header
     class="VueflixHeader inner"
-    :class="scrollPercent > 0 && 'VueflixHeader'"
+    :class="scrollPercent > 0 && 'VueflixHeader--Fill'"
   >
     <h1
       class="VueflixHeader__Activity"

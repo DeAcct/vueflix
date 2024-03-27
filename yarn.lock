@@ -9830,13 +9830,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swiper@npm:^11.0.7":
-  version: 11.0.7
-  resolution: "swiper@npm:11.0.7"
-  checksum: 10c0/d27b8c3b5deccde730317c2fe868350fad039e9776c8c6dfd11a89d9e732a66c1292292ca635141a7e0bbb363fcac1291c9fd716bf7a8e3b85d320e58ff94eba
-  languageName: node
-  linkType: hard
-
 "tar-stream@npm:^2.2.0":
   version: 2.2.0
   resolution: "tar-stream@npm:2.2.0"
@@ -10600,7 +10593,6 @@ __metadata:
     gsap: "npm:^3.12.5"
     pinia: "npm:^2.1.7"
     sass: "npm:^1.72.0"
-    swiper: "npm:^11.0.7"
     vite: "npm:^5.2.6"
     vite-plugin-pwa: "npm:^0.19.7"
     vite-plugin-vue-devtools: "npm:^7.0.23"
