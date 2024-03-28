@@ -14,6 +14,7 @@
         <RouterLink
           replace
           v-for="({ name, tabName }, index) in children"
+          :key="name"
           :to="{ query: { ...route.query, route: name } }"
           v-slot="{ href, navigate }"
           custom

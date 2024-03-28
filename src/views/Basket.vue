@@ -13,6 +13,7 @@
             class="Basket__Button Basket__Button--Toggle"
             @click="toggleEditmode"
             :disabled="list.length === 0"
+            type="button"
           >
             <IconBase>
               <IconRemove></IconRemove>

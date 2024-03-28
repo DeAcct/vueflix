@@ -5,6 +5,7 @@
         class="OAuthGroup__Item"
         :class="`OAuthGroup__Item--${key}`"
         @click="showModal({ service: text, key })"
+        type="button"
       >
         <IconBase>
           <component :is="icon" />

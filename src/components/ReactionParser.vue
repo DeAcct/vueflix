@@ -1,8 +1,14 @@
 <template>
   <p class="ReactionParser">
-    <template v-for="(item, index) in content">
-      <template v-if="index % 2 === 1">
-        <button class="ReactionParser__TimeButton" @click="teleport(item.replace('<time>', ''))">{{ item.replace('<time>', '') }}</button> 
+    <template v-for="(item, index) in content" :key="`line-${item}`">
+      <template v-if="item.includes('<time>')">
+        <button 
+          class="ReactionParser__TimeButton" 
+          @click="teleport(item.replace('<time>', ''))"
+          type="button"
+        >
+          {{ item.replace('<time>', '') }}
+        </button> 
       </template>
       <template v-else>
         {{ item }}

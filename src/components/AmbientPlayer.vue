@@ -42,7 +42,11 @@
         <template #time>{{ time.current }} / {{ time.duration }}</template>
       </VideoControlBar>
       <div class="AmbientPlayer__TakeScreenshot">
-        <button class="AmbientPlayer__ScreenshotButton" @click="takeScreenshot">
+        <button
+          class="AmbientPlayer__ScreenshotButton"
+          @click="takeScreenshot"
+          type="button"
+        >
           <IconBase>
             <IconScreenshot />
           </IconBase>
@@ -74,16 +78,24 @@
       </template>
       <template #control>
         <div class="ScreenshotDialog__Actions">
-          <button class="ScreenshotDialog__Delete" @click="close">
+          <button class="ScreenshotDialog__Delete" @click="close" type="button">
             <IconBase>
               <IconTrash />
             </IconBase>
           </button>
           <div class="ScreenshotDialog__TextButtons">
-            <button class="ScreenshotDialog__Action" @click="download">
+            <button
+              class="ScreenshotDialog__Action"
+              @click="download"
+              type="button"
+            >
               다운로드
             </button>
-            <button class="ScreenshotDialog__Action" @click="share">
+            <button
+              class="ScreenshotDialog__Action"
+              @click="share"
+              type="button"
+            >
               다른 앱으로 공유
             </button>
           </div>

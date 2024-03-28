@@ -18,6 +18,7 @@
       @click="wannaSeeToggle"
       class="bg-less AnimeActions__WannaSee"
       :class="wannaSee && 'AnimeActions__WannaSee--Checked'"
+      type="button"
     >
       <i class="icon">
         <IconBase class="icon--added">
@@ -36,6 +37,7 @@
       @touchstart.passive="activeTrigger"
       @touchend="activeTrigger"
       @click="purchase"
+      type="button"
     >
       <i class="icon">
         <IconBase>

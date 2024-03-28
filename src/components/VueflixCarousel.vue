@@ -9,6 +9,7 @@
           class="VueflixCarousel__Button VueflixCarousel__Button--prev"
           v-if="prevActive"
           @click="prev"
+          type="button"
         >
           <IconBase class="VueflixCarousel__Icon">
             <IconArrowPrev></IconArrowPrev>
@@ -19,6 +20,7 @@
           class="VueflixCarousel__Button VueflixCarousel__Button--next"
           v-if="nextActive"
           @click="next"
+          type="button"
         >
           <IconBase class="VueflixCarousel__Icon">
             <IconArrowNext></IconArrowNext>

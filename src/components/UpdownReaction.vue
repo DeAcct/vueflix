@@ -4,6 +4,7 @@
       class="UpdownReaction__Button UpdownReaction__Button--Up"
       @click="change(1)"
       :disabled="user?.uid === writer || !user"
+      type="button"
     >
       <IconBase>
         <IconArrowNext></IconArrowNext>
@@ -14,6 +15,7 @@
       class="UpdownReaction__Button UpdownReaction__Button--Down"
       @click="change(-1)"
       :disabled="user?.uid === writer || !user"
+      type="button"
     >
       <IconBase>
         <IconArrowPrev></IconArrowPrev>

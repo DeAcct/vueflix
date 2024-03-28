@@ -1,18 +1,6 @@
 <template>
   <div class="VideoSetting">
-    <!-- <strong>화질</strong>
-    <MultiSelector
-      :data="quality"
-      v-model="selected.quality"
-      @update:modelValue="change('quality', $event)"
-    ></MultiSelector>
-    <strong>재생 속도</strong>
-    <MultiSelector
-      :data="speed"
-      v-model="selected.speed"
-      @update:modelValue="change('speed', $event)"
-    ></MultiSelector> -->
-    <div v-for="{ title, key, items } in data" class="VideoSetting__Set">
+    <div v-for="{ title, key, items } in data" class="VideoSetting__Set" :key>
       <strong class="VideoSetting__Title">{{ title }}</strong>
       <MultiSelector
         :data="items"

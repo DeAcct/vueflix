@@ -53,11 +53,14 @@
         class="ReactionItem__Updown"
       />
       <div class="ReactionItem__SubActions">
-        <button v-if="!self" class="ReactionItem__ActionItem">신고</button>
+        <button v-if="!self" class="ReactionItem__ActionItem" type="button">
+          신고
+        </button>
         <button
           v-if="self"
           @click="editTrigger"
           class="ReactionItem__ActionItem"
+          type="button"
         >
           {{ mode === "show" ? "수정" : "취소" }}
         </button>
@@ -66,6 +69,7 @@
           @click="updateReaction"
           class="ReactionItem__ActionItem ReactionItem__ActionItem--Submit"
           :disabled="!editValue"
+          type="button"
         >
           수정
         </button>
@@ -73,6 +77,7 @@
           v-if="self && mode === 'show'"
           @click="deleteTrigger"
           class="ReactionItem__ActionItem"
+          type="button"
         >
           삭제
         </button>

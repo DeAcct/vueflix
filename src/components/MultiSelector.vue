@@ -13,6 +13,7 @@
       "
       @focus="indicatorMove(index)"
       ref="$Items"
+      type="button"
     >
       {{ text }}
     </button>

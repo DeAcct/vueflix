@@ -11,7 +11,8 @@
       <template v-if="!isLoaded">
         <li
           class="AnimeMeta__Item AnimeMeta__Item--Dummy loading-target"
-          v-for="v in randomSkellWeight"
+          v-for="(v, i) in randomSkellWeight"
+          :key="`dummy-${i}`"
           :style="`--weight:${v * 5}`"
         >
           <span class="blind">로딩중</span>

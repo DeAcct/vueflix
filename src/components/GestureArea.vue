@@ -6,6 +6,7 @@
       :class="
         moveFiveSecInteraction === 'before' && 'GestureArea__Item--Interact'
       "
+      type="button"
     >
       <Transition name="gesture-area-before">
         <IconBase
@@ -22,6 +23,7 @@
       :class="
         moveFiveSecInteraction === 'after' && 'GestureArea__Item--Interact'
       "
+      type="button"
     >
       <Transition name="gesture-area-after">
         <IconBase

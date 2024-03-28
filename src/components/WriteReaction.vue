@@ -23,6 +23,7 @@
         <button
           class="WriteReaction__Button WriteReaction__Button--AddTime"
           v-if="parent === 'comment'"
+          type="button"
         >
           현재 시간 추가
         </button>
@@ -30,6 +31,7 @@
           class="WriteReaction__Button WriteReaction__Button--Clear"
           @click="clear"
           :disabled="reviewData.length === 0"
+          type="button"
         >
           지우기
         </button>

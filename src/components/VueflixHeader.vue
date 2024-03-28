@@ -32,6 +32,7 @@
         class="VueflixHeader__Action"
         v-if="route.meta.appBar.backButton && isTouchDevice"
         @click="back"
+        type="button"
       >
         <IconBase>
           <IconArrowPrev />
@@ -61,7 +62,11 @@
       <SearchBar
         class="VueflixHeader__SearchBar VueflixHeader__SearchBar--MobileOnly"
       />
-      <button @click="toggleSearchMode" class="VueflixHeader__SearchCloseBtn">
+      <button
+        @click="toggleSearchMode"
+        class="VueflixHeader__SearchCloseBtn"
+        type="button"
+      >
         <span class="blind">닫기</span>
         <IconBase>
           <IconClose />

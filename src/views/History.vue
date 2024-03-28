@@ -16,6 +16,7 @@
       <div v-else class="History__List History__List--Reaction">
         <ReactionItem
           v-for="reaction in reactions"
+          :key="reaction._id"
           :user
           :reaction-data="reaction"
           component="RouterLink"

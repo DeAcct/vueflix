@@ -98,6 +98,7 @@
             component="button"
             class="LoginAlert__Button"
             v-for="{ action, text } in currentModal.buttons"
+            :key="text"
             @click="action"
           >
             <template #text>{{ text }}</template>

@@ -13,6 +13,7 @@
         <template v-slot:content>
           <Thumbnailset
             v-for="{ title, index, thumbnail } in episodes"
+            :key="`episode-${title}`"
             class="AnimeEpisodes__Item"
           >
             <template #image>

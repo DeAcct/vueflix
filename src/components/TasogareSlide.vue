@@ -11,11 +11,12 @@
       </div>
     </div>
     <button
-      class="Slide__ControlButton"
       v-for="{ icon, modifier, action } in controller"
-      :class="`Slide__ControlButton--${modifier}`"
       :key="modifier"
       @click="action"
+      class="Slide__ControlButton"
+      :class="`Slide__ControlButton--${modifier}`"
+      type="button"
     >
       <IconBase>
         <component :is="icon" />

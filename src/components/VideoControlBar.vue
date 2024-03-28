@@ -16,7 +16,11 @@
             </div>
           </template>
           <template #trigger>
-            <button class="VideoControlBar__Button" @click="togglePlay">
+            <button
+              class="VideoControlBar__Button"
+              @click="togglePlay"
+              type="button"
+            >
               <IconBase>
                 <component :is="isPlaying ? IconPlay : IconPause" />
               </IconBase>
@@ -38,7 +42,11 @@
             </div>
           </template>
           <template #trigger>
-            <button class="VideoControlBar__Button" @click="toggleMuted">
+            <button
+              class="VideoControlBar__Button"
+              @click="toggleMuted"
+              type="button"
+            >
               <IconBase>
                 <component :is="isMuted ? IconMuteOn : IconMuteOff" />
               </IconBase>
@@ -116,7 +124,7 @@
             />
           </template>
           <template #trigger>
-            <button class="VideoControlBar__Button">
+            <button class="VideoControlBar__Button" type="button">
               <IconBase>
                 <IconSetting />
               </IconBase>
@@ -130,7 +138,11 @@
             </div>
           </template>
           <template #trigger>
-            <button class="VideoControlBar__Button" @click="toggleTheater">
+            <button
+              class="VideoControlBar__Button"
+              @click="toggleTheater"
+              type="button"
+            >
               <IconBase>
                 <component :is="isTheater ? IconShirink : IconExpand" />
               </IconBase>
@@ -144,7 +156,11 @@
             </div>
           </template>
           <template #trigger>
-            <button class="VideoControlBar__Button" @click="togglePIP">
+            <button
+              class="VideoControlBar__Button"
+              @click="togglePIP"
+              type="button"
+            >
               <IconBase>
                 <IconPIP />
               </IconBase>
@@ -158,7 +174,11 @@
             </div>
           </template>
           <template #trigger>
-            <button class="VideoControlBar__Button" @click="toggleFullScreen">
+            <button
+              class="VideoControlBar__Button"
+              @click="toggleFullScreen"
+              type="button"
+            >
               <IconBase>
                 <component
                   :is="isFull ? IconFullScreenOff : IconFullScreenOn"

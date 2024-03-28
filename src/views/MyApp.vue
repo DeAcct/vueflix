@@ -9,10 +9,16 @@
         이메일 인증을 하면 더 많은 서비스를 이용할 수 있어요!
       </template>
       <template #cta>
-        <button class="MyApp__Button" @click="emailVerifyPostpone">
+        <button
+          class="MyApp__Button"
+          @click="emailVerifyPostpone"
+          type="button"
+        >
           30일동안 보지 않기
         </button>
-        <button class="MyApp__Button" @click="sendEmail">인증하기</button>
+        <button class="MyApp__Button" @click="sendEmail" type="button">
+          인증하기
+        </button>
       </template>
     </RecommendCard>
     <section class="MyApp__FlexWrap">
@@ -48,7 +54,7 @@
           }}</template>
         </ArrowBtnWidget>
       </section>
-      <template v-for="{ items, requireLogin } in viewModel">
+      <template v-for="({ items, requireLogin }, i) in viewModel" :key="i">
         <section class="MyApp__Group" v-if="user || !requireLogin">
           <template v-for="{ icon, text, to } in items" :key="text">
             <ArrowBtnWidget

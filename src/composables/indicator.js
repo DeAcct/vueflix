@@ -30,12 +30,12 @@ export function useIndicatorAnimation(index) {
     } = items.value[i].getBoundingClientRect();
     const { x: bodyX, y: bodyY } = selector.value.getBoundingClientRect();
 
-    const [paddingLeft] = getComputedStyle(selector.value, null)
-      .getPropertyValue("padding-left")
-      .split("px");
-    const [paddingTop] = getComputedStyle(selector.value, null)
-      .getPropertyValue("padding-Top")
-      .split("px");
+    // const [paddingLeft] = getComputedStyle(selector.value, null)
+    //   .getPropertyValue("padding-left")
+    //   .split("px");
+    // const [paddingTop] = getComputedStyle(selector.value, null)
+    //   .getPropertyValue("padding-Top")
+    //   .split("px");
 
     to.x = toX - bodyX;
     to.y = toY - bodyY;

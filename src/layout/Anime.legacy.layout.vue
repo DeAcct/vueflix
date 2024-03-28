@@ -14,6 +14,7 @@
           :to="`./${name}`"
           replace
           v-for="({ name, tabName }, index) in children"
+          :key="name"
           v-slot="{ isActive, href, navigate }"
           custom
         >

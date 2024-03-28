@@ -52,6 +52,7 @@
         <div class="ProfileAlert__Control">
           <VueflixBtn
             v-for="{ action, text } in alertData.control"
+            :key="text"
             type="button"
             component="button"
             @click="action"

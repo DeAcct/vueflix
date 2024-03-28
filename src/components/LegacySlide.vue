@@ -20,6 +20,7 @@
     <button
       class="BannerSlide__Button BannerSlide__Button--Prev"
       @click="prevClick"
+      type="button"
     >
       <span class="blind">이전</span>
       <i class="BannerSlide__Icon">
@@ -31,6 +32,7 @@
     <button
       class="BannerSlide__Button BannerSlide__Button--Next"
       @click="nextClick"
+      type="button"
     >
       <span class="blind">다음</span>
       <i class="BannerSlide__Icon">

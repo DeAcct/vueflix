@@ -2,7 +2,7 @@
   <div class="video-controller inner">
     <div class="row-top">
       <div class="col-left">
-        <button @click="exitPlayer" class="video-controller__btn" replace>
+        <button @click="exitPlayer" class="video-controller__btn" type="button">
           <i class="icon">
             <IconBase icon-name="뒤로가기">
               <IconArrowPrev />
@@ -24,14 +24,22 @@
         </div>
       </div>
       <div class="col-right">
-        <button @click="openMiniEpisodeList" class="video-controller__btn">
+        <button
+          @click="openMiniEpisodeList"
+          class="video-controller__btn"
+          type="button"
+        >
           <i class="icon">
             <IconBase icon-name="에피소드 목록">
               <IconEpisodeList />
             </IconBase>
           </i>
         </button>
-        <button @click="openPlayerSetting" class="video-controller__btn">
+        <button
+          @click="openPlayerSetting"
+          class="video-controller__btn"
+          type="button"
+        >
           <i class="icon">
             <IconBase icon-name="플레이어 설정">
               <IconOverflow />
@@ -78,7 +86,11 @@
       </div>
       <div class="btn-area">
         <div class="col-left">
-          <button @click="togglePlayState" class="video-controller__btn">
+          <button
+            @click="togglePlayState"
+            class="video-controller__btn"
+            type="button"
+          >
             <i class="icon">
               <IconBase :icon-name="isPlaying ? '일시중지' : '재생'">
                 <IconPause v-if="isPlaying" />
@@ -98,7 +110,11 @@
               </IconBase>
             </i>
           </RouterLink>
-          <button @click="toggleMuted" class="video-controller__btn">
+          <button
+            @click="toggleMuted"
+            class="video-controller__btn"
+            type="button"
+          >
             <i class="icon">
               <IconBase :icon-name="isMuted ? '소리 끄기' : '소리 켜기'">
                 <IconMuteOff v-if="isMuted" />
@@ -108,7 +124,11 @@
           </button>
         </div>
         <div class="col-right">
-          <button @click="takeScreenshot" class="video-controller__btn">
+          <button
+            @click="takeScreenshot"
+            class="video-controller__btn"
+            type="button"
+          >
             <i class="icon">
               <IconBase icon-name="스크린샷 찍고 저장하기">
                 <IconScreenshot />
@@ -126,7 +146,11 @@
               </IconBase>
             </i>
           </button>
-          <button @click="toggleFullScreen" class="video-controller__btn">
+          <button
+            @click="toggleFullScreen"
+            class="video-controller__btn"
+            type="button"
+          >
             <i class="icon">
               <IconBase icon-name="전체화면">
                 <IconFullScreenOff v-if="isFullScreen" />

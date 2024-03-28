@@ -2,7 +2,11 @@
   <main class="AppHome">
     <TasogareSlide class="AppHome__Slide">
       <template #items>
-        <SlideContent v-for="animeId in carouselList" :anime-id />
+        <SlideContent
+          v-for="animeId in carouselList"
+          :anime-id
+          :key="animeId"
+        />
       </template>
     </TasogareSlide>
     <div class="AppHome__Curator">
@@ -106,7 +110,11 @@
           </ThumbnailSet>
         </VueflixCarousel>
       </div>
-      <div class="AppHome__Item" v-for="recommended in recommendedAnime">
+      <div
+        class="AppHome__Item"
+        v-for="recommended in recommendedAnime"
+        :key="recommended.subject"
+      >
         <h2 class="AppHome__Title inner">
           {{ recommended.subject }}
         </h2>
@@ -215,7 +223,6 @@ import { useMaratonData } from "@/api/maraton";
 import { usePWA, useRandomPWAPromotionCopy } from "@/composables/pwa";
 import { useCarouselList } from "@/composables/carousel";
 
-import BannerSlide from "@/components/BannerSlide.vue";
 import InputBoolean from "@/components/InputBoolean.vue";
 import MultiSelector from "@/components/MultiSelector.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";

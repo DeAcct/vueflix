@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 
 export const useTheme = defineStore("theme", () => {
   const theme = ref("");

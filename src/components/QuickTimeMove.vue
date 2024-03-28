@@ -5,7 +5,11 @@
         ><div class="QuickTimeMove__Text">5초 앞으로</div></template
       >
       <template #trigger>
-        <button class="QuickTimeMove__Trigger" @click="secAction.before">
+        <button
+          class="QuickTimeMove__Trigger"
+          @click="secAction.before"
+          type="button"
+        >
           <IconBase>
             <IconPrevFiveSec />
           </IconBase>
@@ -17,7 +21,11 @@
         <div class="QuickTimeMove__Text">5초 뒤로</div>
       </template>
       <template #trigger>
-        <button class="QuickTimeMove__Trigger" @click="secAction.after">
+        <button
+          class="QuickTimeMove__Trigger"
+          @click="secAction.after"
+          type="button"
+        >
           <IconBase>
             <IconNextFiveSec />
           </IconBase>
