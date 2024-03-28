@@ -55,6 +55,7 @@ export function useAnimeModal() {
     // 새로운 경로에 modal 정보가 없고, 이전에는 있었으면
     else if (from.query.modal && !to.query.modal) {
       close();
+      animeInfo.value = {};
     }
     return true;
   }
