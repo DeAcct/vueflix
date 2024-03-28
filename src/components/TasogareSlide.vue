@@ -4,6 +4,7 @@
     ref="$root"
     @touchstart="onTouchstart"
     @touchmove="onTouchmove"
+    @touchend="onTouchend"
   >
     <div class="Slide__RatioHold">
       <div class="Slide__Body" ref="$body">
@@ -11,11 +12,11 @@
       </div>
     </div>
     <button
+      class="Slide__ControlButton"
       v-for="{ icon, modifier, action } in controller"
+      :class="`Slide__ControlButton--${modifier}`"
       :key="modifier"
       @click="action"
-      class="Slide__ControlButton"
-      :class="`Slide__ControlButton--${modifier}`"
       type="button"
     >
       <IconBase>
@@ -49,10 +50,8 @@ const page = ref(0);
 const $body = ref(null);
 const $root = ref(null);
 
-let transitionTime = `${TRANSITION_UNIT_TIME}ms`;
-
-// const slots = useSlots();
 const TRANSITION_UNIT_TIME = 300;
+let transitionTime = `${TRANSITION_UNIT_TIME}ms`;
 
 function prev() {
   transitionTime = `${TRANSITION_UNIT_TIME}ms`;
@@ -78,33 +77,38 @@ function next() {
 }
 
 let interval = null;
-onMounted(() => {
+function resume() {
+  if (interval) {
+    stop();
+  }
   interval = setInterval(() => {
-    if (isMoving.value) return;
     next();
   }, TRANSITION_UNIT_TIME * 7.5);
-});
-onUnmounted(() => {
+}
+function stop() {
   clearInterval(interval);
-});
+}
+onMounted(resume);
+onUnmounted(stop);
 
-const isMoving = ref(false);
-const position = ref(0);
+const position = ref({ start: 0, end: 0 });
 function onTouchstart(event) {
-  isMoving.value = true;
-  position.value = event.touches[0].clientX;
+  position.value.start = event.touches[0].clientX;
 }
 function onTouchmove(event) {
-  if (!isMoving.value) return;
-  const diff = position.value - event.touches[0].clientX;
-  if (diff > 0) {
+  position.value.end = event.touches[0].clientX;
+}
+function onTouchend() {
+  const diff = position.value.start - position.value.end;
+  if (diff >= 0) {
     next();
   } else {
     prev();
   }
+  stop();
   setTimeout(() => {
-    isMoving.value = false;
-    position.value = 0;
+    resume();
+    position.value = { start: 0, end: 0 };
   }, TRANSITION_UNIT_TIME * 5);
 }
 </script>
