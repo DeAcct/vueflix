@@ -81,5 +81,5 @@ export function useAnimeModal() {
     cleanupAfter();
   });
 
-  return { $root, animeInfo, isLoading };
+  return { $root, animeInfo, isLoading, getAnimeData };
 }

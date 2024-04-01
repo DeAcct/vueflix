@@ -148,7 +148,7 @@ const continueData = computed(() => {
     justify-content: flex-end;
     height: 15rem;
     width: min(calc(100% - 4rem), 128rem);
-    margin: 0 auto 2rem;
+    margin: 0 auto;
     gap: 2rem;
 
     > .col-right {

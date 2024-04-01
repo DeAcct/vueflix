@@ -8,7 +8,30 @@
       @handle-interest="handleInterest"
       class="AnimeLayout__Head"
     />
-    <AnimeMeta class="AnimeLayout__Meta" :anime-info></AnimeMeta>
+    <aside class="AnimeLayout__Sidebar">
+      <div class="AnimeLayout__SideSticky">
+        <!-- [조건렌더] !animeInfo.isEnd && day === today -->
+        <div class="AnimeLayout__AsideBubble AnimeLayout__AsideBubble--Update">
+          <strong
+            class="AnimeLayout__BubbleItem AnimeLayout__BubbleItem--UpdateDay"
+          >
+            새 에피소드는 매주 {{ animeInfo.day }}요일!
+          </strong>
+          <label
+            v-if="true"
+            class="AnimeLayout__BubbleItem AnimeLayout__BubbleItem--AutoUpdate"
+          >
+            카운트다운 후 새 에피소드 맞이하기
+            <InputBoolean v-model="autoUpdate"></InputBoolean>
+          </label>
+        </div>
+        <!-- [/조건렌더] -->
+        <AnimeMeta
+          class="AnimeLayout__AsideBubble AnimeLayout__AsideBubble--Meta"
+          :anime-info
+        ></AnimeMeta>
+      </div>
+    </aside>
     <main class="AnimeLayout__Body">
       <div class="AnimeLayout__TabSelector inner" ref="$TabSelector">
         <RouterLink
@@ -41,12 +64,6 @@
         </RouterLink>
         <div class="AnimeLayout__TabIndicator"></div>
       </div>
-      <!-- <RouterView v-slot="{ Component }">
-        <component
-          :is="Component"
-          @open-login-modal="openLoginModal"
-          ></component>
-        </RouterView> -->
       <Transition name="anime-layout">
         <component
           :is="children[routeIndex].component"
@@ -60,7 +77,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
 import { useScroll } from "@/composables/scroll";
@@ -71,6 +88,7 @@ import Reviews from "@/views/Reviews.vue";
 
 import AnimeItemHead from "@/components/AnimeItemHead.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
+import InputBoolean from "@/components/InputBoolean.vue";
 
 const props = defineProps({
   animeInfo: Object,
@@ -114,6 +132,8 @@ const {
   to: indicatorTo,
   move: indicatorMove,
 } = useIndicatorAnimation(routeIndex.value);
+
+const autoUpdate = ref(false);
 </script>
 
 <style lang="scss" scoped>
@@ -124,7 +144,7 @@ const {
   padding-bottom: 2rem;
   &__Head {
     width: 100%;
-    min-height: 55vh;
+    min-height: 50vh;
     position: relative;
     &::after {
       // negative margin 기법보다 더 직관적으로...
@@ -139,9 +159,38 @@ const {
       z-index: 1;
     }
   }
+
   &__Meta {
     margin-bottom: 2rem;
   }
+  &__AsideBubble {
+    &--Update {
+      width: calc(100% - 4rem);
+      background-color: hsl(var(--text-800) / 0.2);
+      border-radius: var(--global-radius);
+      margin: 1rem auto 2.4rem;
+      font-size: 1.4rem;
+      font-weight: 300;
+    }
+    &--Meta {
+      margin-bottom: 2rem;
+    }
+  }
+  &__BubbleItem {
+    display: flex;
+    align-items: center;
+    height: 4.8rem;
+    padding: 0 var(--inner-padding);
+    &--AutoUpdate {
+      gap: 0.8rem;
+      justify-content: space-between;
+    }
+    & + & {
+      border-top: 1px solid hsl(var(--text-800) / 0.2);
+      height: 4.9rem;
+    }
+  }
+
   &__Body {
     border-radius: calc(var(--global-radius) * 6);
     display: flex;
@@ -215,18 +264,52 @@ const {
       min-height: unset;
       grid-area: 1 / 1 / 2 / 5;
     }
-    &__Meta {
+
+    &__Sidebar {
       grid-area: 2 / 3 / 3 / 4;
-      width: 100%;
     }
-    .optional-show {
-      display: none;
-      transform: none;
-      transition: 150ms ease-out;
-      &.show {
-        display: block;
+    &__SideSticky {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      position: sticky;
+      top: 8rem;
+      z-index: 30;
+    }
+    &__AsideBubble {
+      background-color: var(--anime-layout-episodes);
+      border-radius: calc(var(--global-radius) * 6);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+    }
+    &__BubbleItem {
+      display: flex;
+      height: 4.8rem;
+      align-items: center;
+      font-size: 1.4rem;
+      justify-content: space-between;
+      padding: 0 2rem;
+      &--AutoUpdate {
+        width: 100%;
+        margin: 0;
+        background-color: transparent;
+        border-radius: 0;
+      }
+      & + & {
+        border-top: 1px solid hsl(var(--bg-300));
       }
     }
+    &__StickyChild:not(:last-child) {
+      border-bottom: 1px solid hsl(var(--bg-300));
+    }
+    &__Meta {
+      width: 100%;
+      margin-bottom: 0;
+      flex-direction: column;
+    }
+
     &__Body {
       height: max(35rem, 100%);
       background-color: var(--anime-layout-episodes);
@@ -236,7 +319,7 @@ const {
     &__TabSelector {
       padding: 0 2rem;
       a {
-        font-size: 1.7rem;
+        font-size: 1.6rem;
       }
     }
   }

@@ -16,7 +16,7 @@
       v-for="{ icon, modifier, action } in controller"
       :class="`Slide__ControlButton--${modifier}`"
       :key="modifier"
-      @click="action"
+      @click="delayAfterMove(action)"
       type="button"
     >
       <IconBase>
@@ -36,12 +36,12 @@ import IconArrowNext from "@/components/icons/IconArrowNext.vue";
 const controller = [
   {
     icon: IconArrowPrev,
-    action: prev,
+    action: "prev",
     modifier: "Prev",
   },
   {
     icon: IconArrowNext,
-    action: next,
+    action: "next",
     modifier: "Next",
   },
 ];
@@ -74,6 +74,18 @@ function next() {
   }
   page.value++;
   $body.value.style.willChange = "unset";
+}
+
+function delayAfterMove(type) {
+  if (type === "prev") {
+    prev();
+  } else {
+    next();
+  }
+  stop();
+  setTimeout(() => {
+    resume();
+  }, TRANSITION_UNIT_TIME * 5);
 }
 
 let interval = null;

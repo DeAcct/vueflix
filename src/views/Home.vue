@@ -425,6 +425,9 @@ const carouselList = useCarouselList();
       margin-bottom: 2rem;
     }
     &__Item {
+      &:has(.AppHome__DaySelector) {
+        min-height: 40rem;
+      }
       &:not(:last-child) {
         margin-bottom: 4.5rem;
       }

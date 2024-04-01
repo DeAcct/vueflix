@@ -87,9 +87,6 @@ const isLoaded = computed(() => Object.keys(props.animeInfo).length !== 0);
 }
 @media screen and (min-width: 1080px) {
   .AnimeMeta {
-    position: sticky;
-    z-index: 100;
-    top: 6rem;
     width: 50rem;
     padding: 2rem 0;
     border-radius: 0.6rem;

@@ -57,6 +57,7 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useRoute } from "vue-router";
 
 import { useMaratonData } from "@/api/maraton";
@@ -70,6 +71,7 @@ import ProgressCircle from "@/components/ProgressCircle.vue";
 // const animeInfo = inject("anime-info");
 const props = defineProps({
   animeInfo: Object,
+  refresh: Function,
 });
 
 const emit = defineEmits(["open-login-modal"]);
@@ -87,6 +89,7 @@ const { getEpisodeProgress } = useMaratonData(route.query.modal);
   gap: 1.6rem;
   display: flex;
   flex-direction: column;
+
   &__Accordion {
     width: calc(100% - 4rem);
     --episode-gap: 1.2rem;
