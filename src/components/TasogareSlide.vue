@@ -112,7 +112,10 @@ function onTouchmove(event) {
 }
 function onTouchend() {
   const diff = position.value.start - position.value.end;
-  if (diff >= 100) {
+  if (Math.abs(diff) < 30) {
+    return;
+  }
+  if (diff > 0) {
     next();
   } else {
     prev();
