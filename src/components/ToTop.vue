@@ -12,8 +12,20 @@
 import IconBase from "@/components/IconBase.vue";
 import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
 
+const props = defineProps({
+  scrollTarget: {
+    type: [HTMLElement, Object],
+    default: window,
+  },
+});
+
 function toTop() {
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  // console.log(props.scrollTarget);
+  // if (props.scrollTarget instanceof HTMLElement) {
+  //   return;
+  // }
+  // window.scrollTo({ top: 0, behavior: "smooth" });
+  props.scrollTarget.scrollTo({ top: 0, behavior: "smooth" });
 }
 </script>
 

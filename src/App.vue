@@ -17,15 +17,17 @@
         </DialogNavigation>
       </template>
       <template #content>
-        <AnimeLayout :anime-info />
+        <AnimeLayout :anime-info :sync-function />
         <div class="AnimeDialog__TopWrap">
           <ToTop
+            :scroll-target="$body"
             class="AnimeDialog__ToTop"
             :class="scrollState !== 'top' && 'AnimeDialog__ToTop--Show'"
           />
         </div>
       </template>
     </NativeDialog>
+    <div id="AnotherOveray"></div>
   </RouterView>
 </template>
 
@@ -92,6 +94,10 @@ const transition = useRootTransition();
 const { $root, animeInfo, isLoading } = useAnimeModal();
 const $body = computed(() => $root.value?.dialogBody);
 const { state: scrollState } = useScroll($body);
+
+function syncFunction(data) {
+  animeInfo.value = data;
+}
 
 // const padding = computed(() => {
 //   if (state.value === "top") {
@@ -182,13 +188,13 @@ const { state: scrollState } = useScroll($body);
     width: 100%;
     height: 0;
     position: sticky;
+    z-index: 100;
     bottom: 0;
   }
   &__ToTop {
     position: absolute;
     left: 50%;
     bottom: var(--bottom-tab-safe-margin);
-    z-index: 100;
     background-color: hsl(var(--theme-500));
     translate: -50% 10rem;
     transition: 150ms ease-out;

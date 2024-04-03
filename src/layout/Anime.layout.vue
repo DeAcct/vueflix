@@ -22,7 +22,7 @@
             class="AnimeLayout__BubbleItem AnimeLayout__BubbleItem--AutoUpdate"
           >
             카운트다운 후 새 에피소드 맞이하기
-            <InputBoolean v-model="autoUpdate"></InputBoolean>
+            <InputBoolean v-model="newEpisodeFanfare"></InputBoolean>
           </label>
         </div>
         <!-- [/조건렌더] -->
@@ -77,8 +77,11 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
+
+import { onSnapshot, doc } from "firebase/firestore";
+import { db } from "@/utility/firebase";
 
 import { useScroll } from "@/composables/scroll";
 import { useIndicatorAnimation } from "@/composables/indicator";
@@ -91,7 +94,13 @@ import AnimeMeta from "@/components/AnimeMeta.vue";
 import InputBoolean from "@/components/InputBoolean.vue";
 
 const props = defineProps({
-  animeInfo: Object,
+  animeInfo: {
+    type: Object,
+  },
+  syncFunction: {
+    type: Function,
+    default: () => {},
+  },
 });
 
 const { state: scrollState } = useScroll();
@@ -103,7 +112,7 @@ function openLoginModal(e) {
 
 async function removeWatchHistory() {
   // store.commit("auth/clearMaraton", route.params.title);
-  await clearMaratonByTitle(route.params.title);
+  await clearMaratonByTitle(route.query.modal);
 }
 
 function handleInterest() {
@@ -133,7 +142,19 @@ const {
   move: indicatorMove,
 } = useIndicatorAnimation(routeIndex.value);
 
-const autoUpdate = ref(false);
+const newEpisodeFanfare = ref(false);
+
+let cleanup;
+onMounted(() => {
+  cleanup = onSnapshot(doc(db, "anime", route.query.modal), (doc) => {
+    props.syncFunction(doc.data());
+  });
+});
+onUnmounted(() => {
+  if (cleanup) {
+    cleanup();
+  }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -144,7 +165,7 @@ const autoUpdate = ref(false);
   padding-bottom: 2rem;
   &__Head {
     width: 100%;
-    min-height: 50vh;
+    min-height: 55vh;
     position: relative;
     &::after {
       // negative margin 기법보다 더 직관적으로...

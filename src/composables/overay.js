@@ -1,6 +1,6 @@
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { onMounted, onUnmounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { db } from "@/utility/firebase";
 
 export function useOveray() {
@@ -45,6 +45,7 @@ export function useAnimeModal() {
 
   async function setAnimeView(to, from) {
     // 새로운 경로에 modal 정보가 포함되어 있고, 이전에는 없었으면
+    let unsub = null;
     if (to.query.modal && !from.query.modal) {
       const docRef = doc(db, "anime", to.query.modal);
       isLoading.value = true;
@@ -61,6 +62,7 @@ export function useAnimeModal() {
   }
 
   async function getAnimeData(docRef) {
+    console.log("update");
     const anime = await getDoc(docRef);
     if (!anime.exists()) {
       return router.replace({ name: "isekai-404" });

@@ -23,6 +23,8 @@ defineExpose({
 
 <style lang="scss" scoped>
 .NativeDialog {
+  min-height: 0;
+  max-height: unset;
   &__Close {
     touch-action: none;
   }

@@ -1,8 +1,27 @@
 <template>
   <div class="AnimeEpisodes">
+    <!-- <button class="AnimeEpisodes__SortButton" @click="toggleSort" type="button">
+      <IconBase class="AnimeEpisodes__SortIcon">
+        <IconSort />
+      </IconBase>
+      <Transition :name="`sort-text-${sortBase}`">
+        <span :key="sortBase">
+          {{ sortBase === "asc" ? "처음" : "최신화" }}부터
+        </span>
+      </Transition>
+    </button> -->
+    <div class="AnimeEpisodes__Actions">
+      <SortButton
+        :base="sortBase"
+        :toggle-sort
+        class="AnimeEpisodes__Sort"
+        :text="['처음', '최신화']"
+      />
+      <button clas="AnimeEpisodes__ClearWatched">시청기록 초기화</button>
+    </div>
     <template v-if="animeInfo.parts">
       <AccordionGroup
-        v-for="({ part, episodes }, iteratePart) in animeInfo.parts"
+        v-for="({ part, episodes }, iteratePart) in sortedParts"
         :key="iteratePart"
         :open="iteratePart === 0"
         class="AnimeEpisodes__Accordion"
@@ -11,45 +30,48 @@
           {{ part }}
         </template>
         <template v-slot:content>
-          <Thumbnailset
-            v-for="{ title, index, thumbnail } in episodes"
-            :key="`episode-${title}`"
-            class="AnimeEpisodes__Item"
-          >
-            <template #image>
-              <RouterLink
-                class="AnimeEpisodes__Thumbnail"
-                :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
-              >
-                <OptimizedMedia
-                  :src="`${animeInfo.name}/${thumbnail}`"
-                  :alt="`${animeInfo.name} ${part} ${index} 미리보기 이미지`"
-                  skelleton
-                />
-                <ProgressCircle
-                  v-if="
-                    getEpisodeProgress(route.params.title, part, index)
-                      .percent !== '0%'
-                  "
-                  class="AnimeEpisodes__WatchPercent"
-                  :percent="
-                    getEpisodeProgress(route.params.title, part, index).percent
-                  "
-                />
-              </RouterLink>
-            </template>
-            <template #text>
-              <RouterLink
-                class="AnimeEpisodes__TextLink"
-                :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
-              >
-                <strong class="AnimeEpisodes__PartIndex">
-                  {{ part }} {{ index }}
-                </strong>
-                <span class="AnimeEpisodes__Title">{{ title }}</span>
-              </RouterLink>
-            </template>
-          </Thumbnailset>
+          <TransitionGroup name="episode-update">
+            <Thumbnailset
+              v-for="{ title, index, thumbnail } in episodes"
+              :key="`episode-${title}`"
+              class="AnimeEpisodes__Item"
+            >
+              <template #image>
+                <RouterLink
+                  class="AnimeEpisodes__Thumbnail"
+                  :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
+                >
+                  <OptimizedMedia
+                    :src="`${animeInfo.name}/${thumbnail}`"
+                    :alt="`${animeInfo.name} ${part} ${index} 미리보기 이미지`"
+                    skelleton
+                  />
+                  <ProgressCircle
+                    v-if="
+                      getEpisodeProgress(route.params.title, part, index)
+                        .percent !== '0%'
+                    "
+                    class="AnimeEpisodes__WatchPercent"
+                    :percent="
+                      getEpisodeProgress(route.params.title, part, index)
+                        .percent
+                    "
+                  />
+                </RouterLink>
+              </template>
+              <template #text>
+                <RouterLink
+                  class="AnimeEpisodes__TextLink"
+                  :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
+                >
+                  <strong class="AnimeEpisodes__PartIndex">
+                    {{ part }} {{ index }}
+                  </strong>
+                  <span class="AnimeEpisodes__Title">{{ title }}</span>
+                </RouterLink>
+              </template>
+            </Thumbnailset>
+          </TransitionGroup>
         </template>
       </AccordionGroup>
     </template>
@@ -57,22 +79,47 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 
 import { useMaratonData } from "@/api/maraton";
 import { useHead } from "@/composables/head";
+import { deepReverse } from "@/utility/extArray";
 
 import AccordionGroup from "@/components/AccordionGroup.vue";
 import Thumbnailset from "@/components/ThumbnailSet.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ProgressCircle from "@/components/ProgressCircle.vue";
 
+import IconBase from "@/components/IconBase.vue";
+import IconSort from "@/components/icons/IconSort.vue";
+import SortButton from "../components/SortButton.vue";
+
 // const animeInfo = inject("anime-info");
 const props = defineProps({
   animeInfo: Object,
   refresh: Function,
 });
+
+const sortBase = ref("asc");
+const sortedParts = computed(() => {
+  if (!props.animeInfo) {
+    return [];
+  }
+  if (sortBase.value === "asc") {
+    return props.animeInfo.parts;
+  }
+  // const reversedParts = [...props.animeInfo.parts].reverse();
+  // const reversedDeep = reversedParts.map((part) => ({
+  //   ...part,
+  //   episodes: part.episodes.reverse(),
+  // }));
+  return deepReverse(props.animeInfo.parts, ["episodes"]);
+});
+
+function toggleSort() {
+  sortBase.value = sortBase.value === "asc" ? "desc" : "asc";
+}
 
 const emit = defineEmits(["open-login-modal"]);
 const route = useRoute();
@@ -89,6 +136,19 @@ const { getEpisodeProgress } = useMaratonData(route.query.modal);
   gap: 1.6rem;
   display: flex;
   flex-direction: column;
+
+  &__Actions {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0 var(--inner-padding);
+  }
+  &__Sort {
+    margin-right: auto;
+    font-size: 1.4rem;
+    font-weight: 500;
+    height: 2.4rem;
+  }
 
   &__Accordion {
     width: calc(100% - 4rem);
@@ -137,8 +197,25 @@ const { getEpisodeProgress } = useMaratonData(route.query.modal);
   }
 }
 
+.episode-update-move,
+.episode-update-enter-active,
+.episode-update-leave-active {
+  transition: 150ms ease-out;
+}
+.episode-update-enter-from,
+.episode-update-leave-to {
+  opacity: 0;
+  translate: -0.5rem;
+}
+.episode-leave-active {
+  position: absolute;
+}
+
 @media screen and (min-width: 768px) {
   .AnimeEpisodes {
+    &__Actions {
+      padding: 0 2rem;
+    }
     &__Accordion {
       --episode-gap: 1.2rem;
       --thumbnail-width: 23rem;
