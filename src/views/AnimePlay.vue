@@ -41,12 +41,11 @@
           class="AnimePlay__AniTitle loading-target"
           :class="nowEpisode && 'AnimePlay__AniTitle--Loaded'"
         >
-          <RouterLink
-            :to="{ query: { modal: route.params.title, route: 'episodes' } }"
-            replace
-          >
-            {{ route.params.title }}
-          </RouterLink>
+          <GoBack>
+            <template #content>
+              {{ route.params.title }}
+            </template>
+          </GoBack>
         </h2>
         <h3
           class="AnimePlay__EpisodeTitle loading-target"
@@ -74,69 +73,7 @@
         {{ episodeCounter }}개의 에피소드
       </h3>
       <div class="AnimePlay__ScrollContainer">
-        <div class="AnimePlay__Episodes">
-          <AccordionGroup
-            v-for="({ part, episodes }, iterateParts) in animeInfo.parts"
-            :open="iterateParts === 0"
-            :key="iterateParts"
-            class="AnimePlay__PartsAccordion"
-          >
-            <template v-slot:title>
-              {{ part }}
-            </template>
-            <template v-slot:content>
-              <VueflixCarousel
-                :type="deviceInfo.isTouch ? 'arrow' : 'nobutton'"
-                :length="episodes.length"
-                :direction="deviceInfo.isTouch ? 'row' : 'column'"
-                class="AnimePlay__EpisodesCarousel"
-              >
-                <ThumbnailSet
-                  v-for="{ title, index, thumbnail } in episodes"
-                  :key="`${title}-${part}-${index}`"
-                  class="AnimePlay__EpisodeItem"
-                >
-                  <template #image>
-                    <RouterLink
-                      :to="`/anime-play/${route.params.title}/${part}/${index}`"
-                      class="AnimePlay__Thumbnail"
-                      exact-active-class="AnimePlay__Thumbnail--Selected"
-                    >
-                      <OptimizedMedia
-                        class="AnimePlay__ThumbnailImage"
-                        :src="`${route.params.title}/${thumbnail}`"
-                        :alt="`${route.params.title} ${part} ${index} 미리보기 이미지`"
-                        skelleton
-                      />
-                      <ProgressCircle
-                        v-if="
-                          getEpisodeProgress(route.params.title, part, index)
-                            .percent !== '0%'
-                        "
-                        class="AnimePlay__WatchPercent"
-                        :percent="
-                          getEpisodeProgress(route.params.title, part, index)
-                            .percent
-                        "
-                      />
-                    </RouterLink>
-                  </template>
-                  <template #text>
-                    <RouterLink
-                      class="AnimePlay__TextLink"
-                      :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
-                    >
-                      <strong class="AnimePlay__PartIndex">
-                        {{ part }} {{ index }}
-                      </strong>
-                      <span class="AnimePlay__ThumbnailTitle">{{ title }}</span>
-                    </RouterLink>
-                  </template>
-                </ThumbnailSet>
-              </VueflixCarousel>
-            </template>
-          </AccordionGroup>
-        </div>
+        <Episodes :anime-info class="AnimePlay__Episodes" />
       </div>
     </section>
     <ReactionCombo
@@ -161,7 +98,7 @@
 
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 
-import { onMounted, onUnmounted, ref, computed, inject, reactive } from "vue";
+import { onMounted, onUnmounted, ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuth } from "@/store/auth";
 
@@ -171,13 +108,10 @@ import { useEpisode } from "@/composables/episode";
 import { useHead } from "@/composables/head";
 
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
-import AccordionGroup from "@/components/AccordionGroup.vue";
+import Episodes from "@/views/Episodes.vue";
+import GoBack from "@/components/GoBack.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
-import ThumbnailSet from "@/components/ThumbnailSet.vue";
-import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import ToTop from "@/components/ToTop.vue";
-import ProgressCircle from "@/components/ProgressCircle.vue";
-import OptimizedMedia from "@/components/OptimizedMedia.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
@@ -306,7 +240,7 @@ function setInteract(e) {
   isInteracting.value = e;
 }
 
-const deviceInfo = inject("device-info");
+// const { isTouchable } = useDevice();
 
 async function openSystemShare() {
   const shareData = {
@@ -357,6 +291,7 @@ const { state: scrollState } = useScroll();
     padding: 0.8rem 1.2rem;
     font-size: 1.5rem;
     border-radius: var(--global-radius);
+    color: #fff;
   }
 
   &__TitleRenderer {
@@ -422,12 +357,12 @@ const { state: scrollState } = useScroll();
     border-radius: var(--global-radius);
     height: 30rem;
   }
-  &__PartsAccordion {
-    --carousel-padding: 0;
-    --carousel-clip-radius: var(--global-radius);
-    --thumbnail-width: 35vw;
-    width: 100%;
-  }
+  // &__PartsAccordion {
+  //   --carousel-padding: 0;
+  //   --carousel-clip-radius: var(--global-radius);
+  //   --thumbnail-width: 35vw;
+  //   width: 100%;
+  // }
   &__Episodes {
     display: flex;
     flex-direction: column;
@@ -435,46 +370,49 @@ const { state: scrollState } = useScroll();
 
     --accordion-sticky-top: 0;
     --accordion-direction: row;
+    --episodes-width: 100%;
+    --episodes-action-width: 100%;
+    margin-top: 0;
   }
-  &__EpisodeItem {
-    --thumbnail-units: 33;
-    width: calc(var(--thumbnail-units) * 1px * var(--vw));
-    flex-direction: column;
-  }
-  &__Thumbnail {
-    width: calc(var(--thumbnail-units) * 1px * var(--vw));
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--global-radius);
-  }
-  &__WatchPercent {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    padding: 0.8rem;
-    background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
-    color: #fff;
-    font-size: 1.2rem;
-    align-items: flex-end;
-  }
-  &__TextLink {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-  &__PartIndex {
-    font-size: 1.4rem;
-  }
-  &__ThumbnailTitle {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    font-size: 1.4rem;
-    line-height: 1.3;
-  }
+  // &__EpisodeItem {
+  //   --thumbnail-units: 33;
+  //   width: calc(var(--thumbnail-units) * 1px * var(--vw));
+  //   flex-direction: column;
+  // }
+  // &__Thumbnail {
+  //   width: calc(var(--thumbnail-units) * 1px * var(--vw));
+  //   position: relative;
+  //   overflow: hidden;
+  //   border-radius: var(--global-radius);
+  // }
+  // &__WatchPercent {
+  //   position: absolute;
+  //   bottom: 0;
+  //   width: 100%;
+  //   display: flex;
+  //   padding: 0.8rem;
+  //   background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
+  //   color: #fff;
+  //   font-size: 1.2rem;
+  //   align-items: flex-end;
+  // }
+  // &__TextLink {
+  //   display: flex;
+  //   flex-direction: column;
+  //   gap: 0.6rem;
+  // }
+  // &__PartIndex {
+  //   font-size: 1.4rem;
+  // }
+  // &__ThumbnailTitle {
+  //   display: -webkit-box;
+  //   -webkit-box-orient: vertical;
+  //   -webkit-line-clamp: 2;
+  //   text-overflow: ellipsis;
+  //   overflow: hidden;
+  //   font-size: 1.4rem;
+  //   line-height: 1.3;
+  // }
 
   &__Comments {
     z-index: 6;
@@ -509,6 +447,7 @@ const { state: scrollState } = useScroll();
   .AnimePlay {
     &__EpisodeItem {
       --thumbnail-units: 20;
+      --accordion-sticky-top: 0;
     }
   }
 }
@@ -557,6 +496,21 @@ const { state: scrollState } = useScroll();
       transform: translate(-50%, -50%);
       width: 100vw;
       height: 100%;
+    }
+    &__LimitTitle {
+      font-size: 2rem;
+    }
+    &__LimitExplain {
+      color: #000;
+      font-size: 1.4rem;
+      margin-bottom: 2rem;
+    }
+    &__CTA {
+      background-color: hsl(var(--theme-500));
+      padding: 0.8rem 1.2rem;
+      font-size: 1.4rem;
+      border-radius: var(--global-radius);
+      color: #fff;
     }
 
     &__TitleRenderer {

@@ -38,6 +38,7 @@
         }"
         :volume="volume"
         :meta="meta"
+        v-if="controls"
       >
         <template #time>{{ time.current }} / {{ time.duration }}</template>
       </VideoControlBar>
@@ -57,6 +58,7 @@
           </div>
         </Transition>
       </div>
+      <slot name="time-limit"></slot>
     </div>
     <canvas
       ref="$effect"
@@ -110,7 +112,7 @@ import { reactive, ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useEventListener } from "@vueuse/core";
 
-import useAmbient from "@/composables/ambient";
+import { useAmbient } from "@/composables/canvas";
 import { useSecToFormat } from "@/composables/formatter";
 import { useVideoScreenshot } from "@/composables/screenshot";
 import { useOveray } from "@/composables/overay";
@@ -142,6 +144,10 @@ const props = defineProps({
   },
   meta: {
     type: Object,
+  },
+  controls: {
+    type: Boolean,
+    default: true,
   },
 });
 

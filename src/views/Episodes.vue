@@ -140,8 +140,8 @@ const { getEpisodeProgress } = useMaratonData(route.query.modal);
   &__Actions {
     display: flex;
     align-items: center;
-    width: 100%;
-    padding: 0 var(--inner-padding);
+    margin: 0 auto;
+    width: var(--episodes-action-width, calc(100% - 4rem));
   }
   &__Sort {
     margin-right: auto;
@@ -151,9 +151,10 @@ const { getEpisodeProgress } = useMaratonData(route.query.modal);
   }
 
   &__Accordion {
-    width: calc(100% - 4rem);
+    width: var(--episodes-width, calc(100% - 4rem));
     --episode-gap: 1.2rem;
     --thumbnail-width: 14rem;
+    --accordion-sticky-top: var(--episodes-sticky-top, 0);
   }
   &__Item {
     padding: 0;
@@ -214,12 +215,12 @@ const { getEpisodeProgress } = useMaratonData(route.query.modal);
 @media screen and (min-width: 768px) {
   .AnimeEpisodes {
     &__Actions {
-      padding: 0 2rem;
+      // padding: 0 2rem;
+      width: var(--episodes-action-width, 100%);
     }
     &__Accordion {
       --episode-gap: 1.2rem;
       --thumbnail-width: 23rem;
-      --accordion-sticky-top: 8rem;
     }
     &__Thumbnail {
       width: 40rem;

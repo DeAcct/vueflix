@@ -32,7 +32,7 @@
           <template #content>
             <div
               class="VideoControlBar__ToolTipContent VideoControlBar__ToolTipContent--Volume"
-              v-if="!deviceInfo.isTouch"
+              v-if="!isTouchable"
             >
               <ProgressBar
                 class="VideoControlBar__VolumeSlide"
@@ -131,7 +131,7 @@
             </button>
           </template>
         </ToolTip>
-        <ToolTip v-if="!isFull && !deviceInfo.isMobile" align="flex-end">
+        <ToolTip v-if="!isFull && !isSmall" align="flex-end">
           <template #content>
             <div class="VideoControlBar__ToolTipContent">
               {{ isTheater ? "일반" : "영화관" }} 모드
@@ -193,9 +193,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, inject } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useEventListener } from "@vueuse/core";
+
+import { useDevice } from "../composables/device";
 
 import ProgressBar from "./ProgressBar.vue";
 import OptimizedMedia from "./OptimizedMedia.vue";
@@ -217,7 +219,7 @@ import IconPlay from "./icons/IconPlay.vue";
 import IconSetting from "./icons/IconSetting.vue";
 import IconShirink from "./icons/IconShirink.vue";
 
-const deviceInfo = inject("device-info");
+const { isTouchable, isSmall } = useDevice();
 
 const settingModel = [
   {

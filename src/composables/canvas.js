@@ -1,6 +1,6 @@
 import { ref, onMounted, onUnmounted } from "vue";
 
-export default function useAmbient() {
+export function useAmbient() {
   const $video = ref(null);
   const $effect = ref(null);
   const isVideoLoaded = ref(false);

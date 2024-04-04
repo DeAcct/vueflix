@@ -1,12 +1,14 @@
 <template>
   <div class="DialogNavigation">
     <div class="wrap">
-      <button class="DialogNavigation__Button" @click="goBack" type="button">
-        <IconBase icon-name="뒤로가기">
-          <IconArrowPrev class="mobile" />
-          <IconClose class="desktop" />
-        </IconBase>
-      </button>
+      <GoBack class="DialogNavigation__Button">
+        <template #content>
+          <IconBase icon-name="뒤로가기">
+            <IconArrowPrev class="mobile" />
+            <IconClose class="desktop" />
+          </IconBase>
+        </template>
+      </GoBack>
       <strong
         class="DialogNavigation__ActivityName"
         :class="
@@ -37,13 +39,15 @@
 
 <script setup>
 import { useRoute, useRouter } from "vue-router";
+import { computed } from "vue";
+
+import GoBack from "./GoBack.vue";
 
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconClose from "./icons/IconClose.vue";
 import IconShare from "./icons/IconShare.vue";
 import IconOverflow from "./icons/IconOverflow.vue";
-import { computed } from "vue";
 
 const props = defineProps({
   scrollState: String,
@@ -56,15 +60,6 @@ async function openSystemShare() {
     url: window.location.href,
   };
   await navigator.share(shareData);
-}
-
-const router = useRouter();
-function goBack() {
-  if (window.history.state.back === null) {
-    router.push({ path: "/" });
-    return;
-  }
-  router.back();
 }
 
 const padding = computed(() => {

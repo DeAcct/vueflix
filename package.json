@@ -11,18 +11,18 @@
   "dependencies": {
     "@vueuse/core": "^10.9.0",
     "dayjs": "^1.11.10",
-    "firebase": "^10.9.0",
-    "firebase-tools": "^13.0.2",
+    "firebase": "^10.10.0",
+    "firebase-tools": "^13.6.1",
     "gsap": "^3.12.5",
     "pinia": "^2.1.7",
-    "sass": "^1.72.0",
+    "sass": "^1.74.1",
     "vite-plugin-pwa": "^0.19.7",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
-    "vite": "^5.2.6",
+    "vite": "^5.2.8",
     "vite-plugin-vue-devtools": "^7.0.25"
   },
   "packageManager": "yarn@4.1.0"

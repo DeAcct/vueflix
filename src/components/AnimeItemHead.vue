@@ -51,8 +51,10 @@
 <script setup>
 import { inject, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
+
 import { useAuth } from "@/store/auth";
 import { useWannaSee } from "@/api/wannaSee";
+import { useDevice } from "../composables/device";
 
 import AnimeActions from "./AnimeActions.vue";
 import OptimizedMedia from "./OptimizedMedia.vue";
@@ -68,7 +70,7 @@ const emit = defineEmits([
   "remove-watch-history",
   "handle-interest",
 ]);
-const deviceInfo = inject("device-info");
+const { isSmall } = useDevice();
 
 const route = useRoute();
 const router = useRouter();
@@ -91,7 +93,7 @@ function purchase() {
 //   aniTitle: props.animeInfo.name,
 //   fileName: props.animeInfo.poster,
 // });
-const gradientPercent = computed(() => (!deviceInfo.isMobile ? "90%" : "80%"));
+const gradientPercent = computed(() => (!isSmall.value ? "90%" : "80%"));
 
 const continueData = computed(() => {
   if (!user.value) {

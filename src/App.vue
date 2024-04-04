@@ -1,8 +1,8 @@
 <template>
   <RouterView v-slot="{ Component, route }">
     <span class="AnimeLoading" v-if="isLoading"></span>
-    <VueflixHeader v-if="route.meta.appBar" :is-touch-device="device.isTouch" />
-    <BottomTabMenu v-if="route.meta.bottomTabMenu && device.isMobile" />
+    <VueflixHeader v-if="route.meta.appBar" />
+    <BottomTabMenu v-if="route.meta.bottomTabMenu && isTouchable" />
     <Transition
       :name="route.meta.transition || `root-move-${transition.direction}`"
     >
@@ -32,13 +32,14 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, provide, reactive } from "vue";
+import { computed, onMounted } from "vue";
 
 import { useTheme } from "@/store/theme";
 
 import { useRootTransition } from "@/composables/transition";
 import { useAnimeModal } from "@/composables/overay";
-import { useScroll } from "./composables/scroll";
+import { useScroll } from "@/composables/scroll";
+import { useDevice } from "@/composables/device";
 
 import AnimeLayout from "./layout/Anime.layout.vue";
 
@@ -48,45 +49,12 @@ import NativeDialog from "./components/NativeDialog.vue";
 import ToTop from "@/components/ToTop.vue";
 import VueflixHeader from "@/components/VueflixHeader.vue";
 
-const pointerDeviceQuery = window.matchMedia(
-  "(hover: hover) and (pointer: fine)"
-);
-const mobileDeviceQuery = window.matchMedia("screen and (max-width: 1080px)");
-const device = reactive({
-  isTouch: !pointerDeviceQuery.matches,
-  isMobile: mobileDeviceQuery.matches,
-});
-function setDeviceInfo() {
-  pointerDeviceQuery.addEventListener("change", (e) => {
-    device.isTouch = !e.matches;
-  });
-  mobileDeviceQuery.addEventListener("change", (e) => {
-    device.isMobile = e.matches;
-  });
-}
-
-function setViewPort() {
-  document.documentElement.style.setProperty("--vw", window.innerWidth / 100);
-  document.documentElement.style.setProperty("--vh", window.innerHeight / 100);
-}
-
-provide("device-info", device);
+const { isTouchable } = useDevice();
 
 const theme = useTheme();
 onMounted(() => {
-  setDeviceInfo();
-  setViewPort();
-  window.addEventListener("resize", () => {
-    setViewPort();
-  });
   const saved = localStorage.getItem("theme") || "light";
   theme.setMode(saved);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("resize", () => {
-    setViewPort();
-  });
 });
 
 const transition = useRootTransition();
@@ -98,16 +66,6 @@ const { state: scrollState } = useScroll($body);
 function syncFunction(data) {
   animeInfo.value = data;
 }
-
-// const padding = computed(() => {
-//   if (state.value === "top") {
-//     return "2rem";
-//   }
-//   return "4rem";
-// });
-// onMounted(() => {
-//   $body.value = $root.value?.dialogBody;
-// });
 </script>
 
 <style lang="scss" scoped>

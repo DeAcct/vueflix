@@ -268,6 +268,14 @@ onUnmounted(() => {
   opacity: 0;
 }
 
+@media screen and (min-width: 768px) {
+  .AnimeLayout {
+    &__Body {
+      --episodes-sticky-top: 8rem;
+    }
+  }
+}
+
 @media screen and (min-width: 1080px) {
   .AnimeLayout {
     display: grid;
@@ -333,6 +341,7 @@ onUnmounted(() => {
 
     &__Body {
       height: max(35rem, 100%);
+      --episodes-action-width: calc(100% - 4rem);
       background-color: var(--anime-layout-episodes);
       box-shadow: none;
       grid-area: 2 / 2 / 3 / 3;

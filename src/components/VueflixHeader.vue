@@ -6,11 +6,10 @@
     <h1
       class="VueflixHeader__Activity"
       :class="
-        (activity === 'Logo' || !isTouchDevice) &&
-        'VueflixHeader__Activity--Logo'
+        (activity === 'Logo' || !isTouchable) && 'VueflixHeader__Activity--Logo'
       "
     >
-      <template v-if="activity === 'Logo' || !isTouchDevice">
+      <template v-if="activity === 'Logo' || !isTouchable">
         <RouterLink to="/">
           <VueflixLogo>데레</VueflixLogo>
         </RouterLink>
@@ -30,7 +29,7 @@
     <div class="VueflixHeader__Actions">
       <button
         class="VueflixHeader__Action"
-        v-if="route.meta.appBar.backButton && isTouchDevice"
+        v-if="route.meta.appBar.backButton && isTouchable"
         @click="back"
         type="button"
       >
@@ -80,6 +79,8 @@
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
+import { useDevice } from "@/composables/device";
+
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconClose from "./icons/IconClose.vue";
@@ -88,7 +89,9 @@ import SearchBar from "./SearchBar.vue";
 import VueflixLogo from "./VueflixLogo.vue";
 import ProfileCombo from "./ProfileCombo.vue";
 
-defineProps({ isTouchDevice: Boolean, isMobile: Boolean });
+// defineProps({  isMobile: Boolean });
+
+const { isTouchable, isSmall } = useDevice();
 
 const route = useRoute();
 const activity = ref(route.meta.appBar.activityContent);
