@@ -369,7 +369,6 @@ const { state: scrollState } = useScroll();
     gap: 1.2rem;
 
     --accordion-sticky-top: 0;
-    --accordion-direction: row;
     --episodes-width: 100%;
     --episodes-action-width: 100%;
     margin-top: 0;
