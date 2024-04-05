@@ -2,7 +2,7 @@
   <RouterView v-slot="{ Component, route }">
     <span class="AnimeLoading" v-if="isLoading"></span>
     <VueflixHeader v-if="route.meta.appBar" />
-    <BottomTabMenu v-if="route.meta.bottomTabMenu && isTouchable" />
+    <BottomTabMenu v-if="route.meta.bottomTabMenu && isSmall" />
     <Transition
       :name="route.meta.transition || `root-move-${transition.direction}`"
     >
@@ -32,14 +32,14 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed, onMounted, watch } from "vue";
 
 import { useTheme } from "@/store/theme";
 
 import { useRootTransition } from "@/composables/transition";
 import { useAnimeModal } from "@/composables/overay";
 import { useScroll } from "@/composables/scroll";
-import { useDevice } from "@/composables/device";
+import { useMediaQuery, useViewport } from "@/composables/device";
 
 import AnimeLayout from "./layout/Anime.layout.vue";
 
@@ -49,11 +49,15 @@ import NativeDialog from "./components/NativeDialog.vue";
 import ToTop from "@/components/ToTop.vue";
 import VueflixHeader from "@/components/VueflixHeader.vue";
 
-const { isTouchable } = useDevice();
+const isTouchable = useMediaQuery("not (hover: hover) and (pointer: fine)");
+const isSmall = useMediaQuery("(max-width: 1080px)");
 
 const theme = useTheme();
 onMounted(() => {
-  const saved = localStorage.getItem("theme") || "light";
+  const nativeTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+  const saved = localStorage.getItem("theme") || nativeTheme;
   theme.setMode(saved);
 });
 
@@ -66,6 +70,17 @@ const { state: scrollState } = useScroll($body);
 function syncFunction(data) {
   animeInfo.value = data;
 }
+
+const { viewportBase } = useViewport();
+const $docu = document.documentElement;
+watch(
+  viewportBase,
+  () => {
+    $docu.style.setProperty("--vw", viewportBase.vw);
+    $docu.style.setProperty("--vh", viewportBase.vh);
+  },
+  { immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>

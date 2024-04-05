@@ -197,7 +197,7 @@ import { ref, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useEventListener } from "@vueuse/core";
 
-import { useDevice } from "../composables/device";
+import { useMediaQuery } from "../composables/device";
 
 import ProgressBar from "./ProgressBar.vue";
 import OptimizedMedia from "./OptimizedMedia.vue";
@@ -219,7 +219,8 @@ import IconPlay from "./icons/IconPlay.vue";
 import IconSetting from "./icons/IconSetting.vue";
 import IconShirink from "./icons/IconShirink.vue";
 
-const { isTouchable, isSmall } = useDevice();
+const isTouchable = useMediaQuery("not (hover: hover) and (pointer: fine)");
+const isSmall = useMediaQuery("(max-width: 1080px)");
 
 const settingModel = [
   {

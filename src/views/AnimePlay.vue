@@ -240,8 +240,6 @@ function setInteract(e) {
   isInteracting.value = e;
 }
 
-// const { isTouchable } = useDevice();
-
 async function openSystemShare() {
   const shareData = {
     title: `${route.params.title} ${route.params.part} ${route.params.index}`,

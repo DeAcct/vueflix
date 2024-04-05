@@ -29,7 +29,7 @@
     <div class="VueflixHeader__Actions">
       <button
         class="VueflixHeader__Action"
-        v-if="route.meta.appBar.backButton && isTouchable"
+        v-if="route.meta.appBar.backButton && isSmall"
         @click="back"
         type="button"
       >
@@ -79,7 +79,7 @@
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useDevice } from "@/composables/device";
+import { useMediaQuery } from "@/composables/device";
 
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
@@ -89,9 +89,8 @@ import SearchBar from "./SearchBar.vue";
 import VueflixLogo from "./VueflixLogo.vue";
 import ProfileCombo from "./ProfileCombo.vue";
 
-// defineProps({  isMobile: Boolean });
-
-const { isTouchable, isSmall } = useDevice();
+const isTouchable = useMediaQuery("not (hover: hover) and (pointer: fine)");
+const isSmall = useMediaQuery("(max-width: 1080px)");
 
 const route = useRoute();
 const activity = ref(route.meta.appBar.activityContent);

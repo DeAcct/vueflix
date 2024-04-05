@@ -54,7 +54,7 @@ import { useRouter, useRoute } from "vue-router";
 
 import { useAuth } from "@/store/auth";
 import { useWannaSee } from "@/api/wannaSee";
-import { useDevice } from "../composables/device";
+import { useMediaQuery } from "@/composables/device";
 
 import AnimeActions from "./AnimeActions.vue";
 import OptimizedMedia from "./OptimizedMedia.vue";
@@ -70,7 +70,7 @@ const emit = defineEmits([
   "remove-watch-history",
   "handle-interest",
 ]);
-const { isSmall } = useDevice();
+const isSmall = useMediaQuery("(max-width: 1080px)");
 
 const route = useRoute();
 const router = useRouter();
