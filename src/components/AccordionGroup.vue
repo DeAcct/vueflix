@@ -40,7 +40,7 @@ function toggle() {
   &__PartTitle {
     position: sticky;
     top: var(--accordion-sticky-top, 6rem);
-    z-index: 50;
+    z-index: var(--z-index-s1);
     background: linear-gradient(
       150deg,
       hsl(var(--bg-400) / 0.75),

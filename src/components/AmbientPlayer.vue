@@ -80,7 +80,11 @@
       </template>
       <template #control>
         <div class="ScreenshotDialog__Actions">
-          <button class="ScreenshotDialog__Delete" @click="close" type="button">
+          <button
+            class="ScreenshotDialog__Delete"
+            @click="$root.close"
+            type="button"
+          >
             <IconBase>
               <IconTrash />
             </IconBase>
@@ -115,7 +119,6 @@ import { useEventListener } from "@vueuse/core";
 import { useAmbient } from "@/composables/canvas";
 import { useSecToFormat } from "@/composables/formatter";
 import { useVideoScreenshot } from "@/composables/screenshot";
-import { useOveray } from "@/composables/overay";
 
 import GestureArea from "./GestureArea.vue";
 import LoadAnimation from "./LoadAnimation.vue";
@@ -351,14 +354,14 @@ function goToAnimeList() {
   router.push({ query: { modal: route.params.title, route: "episodes" } });
 }
 
-const { $root, show, close } = useOveray();
+const $root = ref(null);
 const screenshotAlert = ref(false);
 const screenshotSrc = ref("");
 function takeScreenshot() {
   screenshotAlert.value = true;
   const { downloadURL } = useVideoScreenshot($video);
   screenshotSrc.value = downloadURL.value;
-  show();
+  $root.value.show();
   $video.value.style.transform = "scale(0.95)";
   setTimeout(() => {
     $video.value.style.transform = "scale(1)";
@@ -397,7 +400,7 @@ async function share() {
 
 <style lang="scss" scoped>
 .AmbientPlayer {
-  z-index: 1;
+  z-index: var(--z-index-s1);
   display: flex;
   align-items: center;
   overflow: hidden;

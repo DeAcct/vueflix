@@ -8,8 +8,9 @@
 </template>
 
 <script setup>
-import { useAutoPop } from "@/composables/overay";
-const { visible, show, close } = useAutoPop(700);
+import { useOveray } from "@/composables/overay";
+
+const { visible, show, close } = useOveray({ time: 700 });
 
 defineExpose({ show, close });
 </script>

@@ -119,9 +119,6 @@ import { useAuth } from "../store/auth";
 import { usePassword } from "@/composables/strictUser";
 import { useLoginSave } from "@/composables/loginSave";
 import { useBrowserStorage } from "@/composables/browserStorage";
-import { useOveray } from "@/composables/overay";
-
-import { PROVIDERS } from "@/enums/OAuthProvider";
 
 import InputBoolean from "@/components/InputBoolean.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
@@ -147,9 +144,13 @@ const { isLoginSave, data, saveData } = useLoginSave();
 const isLoginWaiting = ref(false);
 const currentModal = ref({ title: "", text: "", buttons: [] });
 async function login(key = "Email") {
+  if (isLoginSave.value) {
+    saveData({ email, password });
+  }
   isLoginWaiting.value = true;
   const result = await auth.continueUser({ key, email, password });
   if (result.code) {
+    console.log(result.code);
     showAlert(result.code);
     return;
   }
@@ -157,21 +158,34 @@ async function login(key = "Email") {
   setRecentLogin(key);
 }
 
-const { $root, show, close } = useOveray();
+const $root = ref(null);
 function showAlert(errorCode) {
   currentModal.value = errorMap[errorCode];
-  show();
+  $root.value.show();
+}
+function closeAlert() {
+  $root.value.close();
 }
 const errorMap = {
+  "auth/invalid-email": {
+    title: "이메일 형식이 아닙니다",
+    text: "이메일 형식이 아닙니다. 다시 확인해주세요.",
+    buttons: [{ action: closeAlert, text: "확인" }],
+  },
   "auth/account-exists-with-different-credential": {
     title: "이미 가입된 계정",
     text: "이미 가입된 계정이 있습니다. 다른 방법으로 로그인해주세요.",
-    buttons: [{ action: close, text: "확인" }],
+    buttons: [{ action: closeAlert, text: "확인" }],
   },
   "auth/user-not-found": {
     title: "계정을 찾을 수 없음",
     text: "입력하신 계정을 찾을 수 없습니다. 다시 확인해주세요.",
-    buttons: [{ action: close, text: "확인" }],
+    buttons: [{ action: closeAlert, text: "확인" }],
+  },
+  "auth/wrong-password": {
+    title: "비밀번호가 틀림",
+    text: "입력하신 비밀번호가 틀렸습니다. 다시 확인해주세요.",
+    buttons: [{ action: closeAlert, text: "확인" }],
   },
 };
 

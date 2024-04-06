@@ -50,7 +50,7 @@
           <VueflixBtn
             type="button"
             component="button"
-            @click="close"
+            @click="$root.close"
             class="OAuthGroupModal__Button OAuthGroupModal__Button--Wide"
           >
             <template #text>취소</template>
@@ -77,7 +77,7 @@
             component="button"
             type="button"
             class="OAuthGroupModal__Button"
-            @click="close"
+            @click="$root.close"
           >
             <template #text>{{
               !currentModal.enabled || enabled.length !== 1 ? "취소" : "확인"
@@ -93,9 +93,8 @@
 import { ref, onMounted } from "vue";
 import { getAuth } from "firebase/auth";
 
-import { PROVIDERS, connectedToKey } from "../enums/OAuthProvider";
+import { PROVIDERS, connectedToKey } from "@/enums/OAuthProvider";
 
-import { useOveray } from "@/composables/overay";
 import { useAuth } from "@/store/auth";
 
 import NativeDialog from "@/components/NativeDialog.vue";
@@ -117,7 +116,7 @@ onMounted(() => {
   setEnabled();
 });
 
-const { $root, show, close } = useOveray();
+const $root = ref(null);
 /** @type {import("vue").Ref<{service:string, key:"Email" | "Google" | "Facebook"}>} */
 const currentModal = ref({ service: "", key: "", enabled: false });
 function showModal(changeTo) {
@@ -126,7 +125,7 @@ function showModal(changeTo) {
     enabled: enabled.value.includes(changeTo.key),
   };
   console.log(currentModal.value.enabled);
-  show();
+  $root.value.show();
 }
 
 const auth = useAuth();
@@ -137,7 +136,7 @@ async function toggleOAuth() {
     await auth.connectAuth({ key: currentModal.value.key });
   }
   setEnabled();
-  close();
+  $root.value.close();
 }
 </script>
 

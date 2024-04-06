@@ -8,7 +8,7 @@
     >
       <component :is="Component"></component>
     </Transition>
-    <NativeDialog ref="$root" class="AnimeDialog" v-if="route.query?.modal">
+    <NativeDialog ref="$AnimeDialog" class="AnimeDialog">
       <template #title>
         <DialogNavigation class="AnimeDialog__Navigation" :scroll-state>
           <template #activity-name>
@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watch } from "vue";
+import { onMounted, watch, ref, computed } from "vue";
 
 import { useTheme } from "@/store/theme";
 
@@ -49,7 +49,7 @@ import NativeDialog from "./components/NativeDialog.vue";
 import ToTop from "@/components/ToTop.vue";
 import VueflixHeader from "@/components/VueflixHeader.vue";
 
-const isTouchable = useMediaQuery("not (hover: hover) and (pointer: fine)");
+// const isTouchable = useMediaQuery("not (hover: hover) and (pointer: fine)");
 const isSmall = useMediaQuery("(max-width: 1080px)");
 
 const theme = useTheme();
@@ -63,8 +63,9 @@ onMounted(() => {
 
 const transition = useRootTransition();
 
-const { $root, animeInfo, isLoading } = useAnimeModal();
-const $body = computed(() => $root.value?.dialogBody);
+const $AnimeDialog = ref(null);
+const { animeInfo, isLoading } = useAnimeModal($AnimeDialog);
+const $body = computed(() => $AnimeDialog.value?.$body);
 const { state: scrollState } = useScroll($body);
 
 function syncFunction(data) {
@@ -117,7 +118,7 @@ watch(
   height: 0.2rem;
   position: fixed;
   top: 0;
-  z-index: 101;
+  z-index: calc(var(--z-index-1) + 1);
   background-color: hsl(var(--theme-500));
   box-shadow: 0 0 1.2rem hsl(var(--theme-500));
   animation: loading-animation 1s infinite;
@@ -149,7 +150,7 @@ watch(
   &__Navigation {
     flex-shrink: 0;
     position: sticky;
-    z-index: 20;
+    z-index: calc(var(--z-index-overay-1) + 1);
     left: 0;
     top: -1px;
     margin-bottom: -12rem;
@@ -161,7 +162,7 @@ watch(
     width: 100%;
     height: 0;
     position: sticky;
-    z-index: 100;
+    z-index: calc(var(--z-index-overay-1) + 2);
     bottom: 0;
   }
   &__ToTop {

@@ -6,7 +6,7 @@
         :type="metaModal ? 'button' : undefined"
         class="ReactionItem__OpenMetaButton"
         :disabled="!meta"
-        @click="metaModal && show"
+        @click="metaModal && $root.show()"
       >
         <OptimizedMedia
           :src="meta.profileImg.name"
@@ -91,7 +91,7 @@
         <VueflixBtn
           component="button"
           class="ReactionItem__CloseBtn"
-          @click="close"
+          @click="$root.close"
           type="button"
         >
           <template #text> 닫기 </template>
@@ -109,7 +109,6 @@ import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 import { useAuth } from "@/store/auth";
 import { useUserMeta } from "@/api/userMeta";
 import { useFormatDate } from "@/composables/formatter";
-import { useOveray } from "@/composables/overay";
 
 import NativeDialog from "./NativeDialog.vue";
 import OptimizedMedia from "./OptimizedMedia.vue";
@@ -158,7 +157,7 @@ const self = computed(() => props.user?.uid === props.reactionData.uid);
 const { date: formattedDate } = useFormatDate(props.reactionData.time.toDate());
 const meta = useUserMeta(props.reactionData.uid);
 
-const { $root, show, close } = useOveray();
+const $root = ref(null);
 
 const editValue = ref(temporalRemoveTimeFlag());
 function temporalRemoveTimeFlag() {

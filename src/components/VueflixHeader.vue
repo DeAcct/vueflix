@@ -153,7 +153,7 @@ function toggleSearchMode() {
   width: 100%;
   position: fixed;
   top: 0;
-  z-index: 100;
+  z-index: var(--z-index-1);
   height: var(--header-height);
   display: flex;
   align-items: center;

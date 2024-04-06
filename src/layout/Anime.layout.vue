@@ -177,7 +177,7 @@ onUnmounted(() => {
       bottom: 0;
       left: 0;
       background-color: var(--anime-layout-bg);
-      z-index: 1;
+      z-index: var(--z-index-s1);
     }
   }
 
@@ -303,7 +303,7 @@ onUnmounted(() => {
       gap: 2rem;
       position: sticky;
       top: 8rem;
-      z-index: 30;
+      z-index: calc(var(--z-index-overay-100) + 1);
     }
     &__AsideBubble {
       background-color: var(--anime-layout-episodes);

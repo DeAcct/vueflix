@@ -22,9 +22,7 @@
         class="StatCard__Item StatCard__Item--Level"
         :class="{ 'loading-target': loading }"
       />
-      <div class="StatCard__Item">
-        <slot />
-      </div>
+      <slot />
     </section>
   </section>
 </template>
@@ -116,10 +114,6 @@ watch(
     grid-auto-flow: column;
     grid-auto-columns: 1fr;
     gap: 1.2rem;
-  }
-  &__Item {
-    background-color: hsl(var(--bg-200));
-    border-radius: var(--global-radius);
   }
 }
 </style>

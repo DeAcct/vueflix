@@ -66,7 +66,7 @@ const { state: scrollState } = useScroll();
   display: flex;
   gap: 1rem;
   align-items: center;
-  z-index: 100;
+  z-index: var(--z-index-1);
   bottom: var(--bottom-tab-safe-margin);
   left: 50%;
   transform: translate(-50%, 0);

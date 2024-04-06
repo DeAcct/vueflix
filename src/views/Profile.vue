@@ -20,7 +20,7 @@
           class="Profile__Button"
           type="button"
           component="button"
-          @click="exitModal.show"
+          @click="$root?.show"
         >
           <template #text>회원 탈퇴</template>
         </VueflixBtn>
@@ -36,7 +36,7 @@
     >
       <template #text>{{ completePop.message }}</template>
     </AutoPop>
-    <NativeDialog :ref="exitModal.$root" class="ProfileAlert">
+    <NativeDialog ref="$root" class="ProfileAlert">
       <template #title>
         <strong class="ProfileAlert__Title"> {{ alertData.title }} </strong>
       </template>
@@ -72,7 +72,6 @@ import { useRouter } from "vue-router";
 import { getAuth } from "firebase/auth";
 
 import { useAuth } from "@/store/auth";
-import { useOveray } from "@/composables/overay";
 
 import AutoPop from "@/components/AutoPop.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
@@ -105,7 +104,7 @@ watch(
   { immediate: true }
 );
 
-const exitModal = useOveray();
+const $root = ref(null);
 const alertData = ref({
   title: "o(TヘTo)",
   text: "데레와 헤어질 결심을 하셨나요?",
@@ -116,14 +115,18 @@ const alertData = ref({
       text: "탈퇴",
     },
     {
-      action: exitModal.close,
+      action: closeModal,
       text: "취소",
     },
   ],
 });
+function closeModal() {
+  $root.value.close();
+}
+
 async function deleteUser() {
+  $root.value.close();
   await store.goodbyeUser();
-  exitModal.close();
   alertData.value = {
     title: "탈퇴 완료",
     text: "다음에 또 만날 수 있었으면 좋겠어요.",
@@ -134,12 +137,12 @@ async function deleteUser() {
       },
     ],
   };
-  exitModal.show();
+  $root.value.show();
 }
 
 const router = useRouter();
 function backToHome() {
-  exitModal.close();
+  $root.value.close();
   router.push("/");
 }
 

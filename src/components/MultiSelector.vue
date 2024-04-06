@@ -48,7 +48,7 @@ const {
   position: relative;
   overflow: hidden;
   &__Item {
-    z-index: 2;
+    z-index: var(--z-index-s2);
     width: var(--item-width);
     height: var(--item-height);
     font-size: 1.5rem;
@@ -72,7 +72,7 @@ const {
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 1;
+    z-index: var(--z-index-s1);
     width: calc(v-bind("to.width") * 1px);
     height: calc(v-bind("to.height") * 1px);
     background-color: hsl(var(--theme-500) / 0.2);

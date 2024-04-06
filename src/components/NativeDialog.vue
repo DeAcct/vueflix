@@ -1,23 +1,49 @@
 <template>
-  <dialog class="NativeDialog" ref="dialogRoot">
-    <form method="dialog" class="NativeDialog__Body" ref="dialogBody">
-      <div class="NativeDialog__Wrap">
-        <slot name="title"></slot>
-        <slot name="content"></slot>
-        <slot name="control"></slot>
+  <div class="NativeDialog">
+    <button
+      @click="
+        () => {
+          backdrop === 'close' && close();
+        }
+      "
+      class="NativeDialog__Close"
+      v-show="visible && backdrop !== 'none'"
+    ></button>
+    <Transition name="dialog-body">
+      <div class="NativeDialog__Body" v-if="visible">
+        <div class="NativeDialog__Wrap">
+          <slot name="title"></slot>
+          <slot name="content"></slot>
+          <slot name="control"></slot>
+        </div>
       </div>
-    </form>
-  </dialog>
+    </Transition>
+  </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import { useOveray } from "@/composables/overay";
 
-const dialogRoot = ref(null);
-const dialogBody = ref(null);
+defineProps({
+  backdrop: {
+    type: String,
+    validator(value) {
+      return ["close", "shade-only", "none"].includes(value);
+    },
+    default: "close",
+  },
+});
+
+const { visible, show, close } = useOveray({
+  time: Infinity,
+  overflowHidden: true,
+});
+const $body = ref(null);
 defineExpose({
-  dialogRoot,
-  dialogBody,
+  show,
+  close,
+  $body,
 });
 </script>
 
@@ -25,24 +51,29 @@ defineExpose({
 .NativeDialog {
   min-height: 0;
   max-height: unset;
-  &__Close {
-    touch-action: none;
+
+  --dialog-calc-z-index: var(--dialog-z-index, var(--z-index-overay-1));
+
+  &__Wrap {
+    display: flex;
+    flex-direction: column;
   }
 
-  @starting-style {
-    &[open]::backdrop {
+  &__Close {
+    position: fixed;
+    inset: 0;
+    z-index: var(--dialog-calc-z-index);
+    background-color: rgba(0 0 0 / 0.5);
+    transition: all 150ms ease-out allow-discrete;
+    @starting-style {
       opacity: 0;
     }
   }
-  &[open]::backdrop {
-    opacity: 1;
-    background-color: hsl(0 0% 0% / 0.3);
-    transition: opacity 150ms ease-out, display 150ms ease-out allow-discrete,
-      overay 150ms ease-out allow-discrete;
-  }
-  &[open] &__Body {
+
+  &__Body {
     position: fixed;
-    z-index: 2;
+    z-index: calc(var(--z-index-overay-1) + 1);
+    z-index: calc(var(--dialog-calc-z-index) + 1);
     inset: var(--dialog-inset, auto);
     translate: var(--dialog-translate, -50% -50%);
     background-color: var(--dialog-bg, hsl(var(--bg-100)));
@@ -52,27 +83,21 @@ defineExpose({
     box-shadow: var(--dialog-shadow, none);
     overflow: var(--dialog-overflow, auto);
     height: var(--dialog-height, auto);
-
-    transition: translate 150ms ease-out, display 150ms ease-out allow-discrete,
-      overay 150ms ease-out allow-discrete, opacity 150ms ease-out;
     opacity: 1;
-    @starting-style {
-      translate: var(--dialog-starting-translate, 0 100%);
-      opacity: var(--dialog-starting-opacity, 1);
-    }
   }
-  &__Wrap {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  }
+}
 
-  &[open] &__Close {
-    touch-action: auto;
-    position: fixed;
-    z-index: 1;
-    width: calc(100 * 1px * var(--vw));
-    height: calc(100 * 1px * var(--vh));
-  }
+.dialog-body-enter-active,
+.dialog-body-leave-active {
+  transition: all 150ms ease-out;
+}
+.dialog-body-leave-active {
+  transition: all 100ms ease-out;
+}
+
+.dialog-body-enter-from,
+.dialog-body-leave-to {
+  translate: var(--dialog-starting-translate, 0 100%);
+  opacity: var(--dialog-starting-opacity, 1);
 }
 </style>

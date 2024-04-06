@@ -3,68 +3,52 @@ import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { db } from "@/utility/firebase";
 
-export function useOveray() {
-  const $root = ref(null);
-
-  function show(e) {
-    if (!$root.value) {
-      return;
-    }
-    $root.value.dialogRoot.showModal();
-    document.documentElement.style.overflow = "hidden";
-  }
-
-  function close() {
-    document.documentElement.style.overflow = "auto";
-    $root.value.dialogRoot.close();
-  }
-
-  return { $root, show, close };
-}
-
-export function useAutoPop(time = 1000) {
+export function useOveray({ time = Infinity, overflowHidden = false }) {
   const visible = ref(false);
   function show() {
     visible.value = true;
-    setTimeout(() => {
-      close();
-    }, time);
+    console.log(overflowHidden);
+    if (overflowHidden) document.documentElement.style.overflow = "hidden";
+    if (time !== Infinity) {
+      setTimeout(() => {
+        close();
+      }, time);
+    }
   }
   function close() {
+    if (overflowHidden) document.documentElement.style.overflow = "auto";
     visible.value = false;
   }
   return { visible, show, close };
 }
 
 const validRoutes = ["episodes", "reviews"];
-export function useAnimeModal() {
+export function useAnimeModal($root) {
   const router = useRouter();
   const animeInfo = ref({});
   const isLoading = ref(false);
-  const { $root, show, close } = useOveray();
 
   async function setAnimeView(to, from) {
     // 새로운 경로에 modal 정보가 포함되어 있고, 이전에는 없었으면
-    let unsub = null;
     if (to.query.modal && !from.query.modal) {
       const docRef = doc(db, "anime", to.query.modal);
       isLoading.value = true;
       await getAnimeData(docRef);
       isLoading.value = false;
-      show();
+      $root.value.show();
     }
     // 새로운 경로에 modal 정보가 없고, 이전에는 있었으면
     else if (from.query.modal && !to.query.modal) {
-      close();
+      $root.value.close();
       animeInfo.value = {};
     }
     return true;
   }
 
   async function getAnimeData(docRef) {
-    console.log("update");
     const anime = await getDoc(docRef);
     if (!anime.exists()) {
+      isLoading.value = false;
       return router.replace({ name: "isekai-404" });
     }
     animeInfo.value = anime.data();
@@ -83,5 +67,5 @@ export function useAnimeModal() {
     cleanupAfter();
   });
 
-  return { $root, animeInfo, isLoading, getAnimeData };
+  return { animeInfo, isLoading, getAnimeData };
 }

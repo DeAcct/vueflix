@@ -159,7 +159,7 @@
         </VueflixCarousel>
       </div>
     </div>
-    <NativeDialog ref="$installModal" class="PWAModal">
+    <NativeDialog ref="$PWAModal" class="PWAModal">
       <template #title>
         <strong class="PWAModal__Title">
           {{ pwaCopy }}
@@ -267,13 +267,8 @@ onMounted(async () => {
 });
 
 const pwaCopy = ref("");
-const {
-  $root: $installModal,
-  postpone,
-  install,
-  hideModal,
-  isDeviceIOS,
-} = usePWA();
+const $PWAModal = ref(null);
+const { postpone, install, hideModal, isDeviceIOS } = usePWA($PWAModal);
 
 function escaper(str) {
   return str.replaceAll(/:|\./g, "_").replaceAll(/\?/g, "");
@@ -322,7 +317,7 @@ const carouselList = useCarouselList();
   }
   &__WatchPercent {
     position: absolute;
-    z-index: 2;
+    z-index: var(--z-index-s2);
     width: 100%;
     flex-shrink: 0;
     font-size: 1.3rem;
@@ -363,6 +358,7 @@ const carouselList = useCarouselList();
   --dialog-starting-translate: 0 100%;
   --dialog-border-radius: calc(var(--global-radius) * 2)
     calc(var(--global-radius) * 2) 0 0;
+  --dialog-z-index: var(--z-index-overay-2);
   &__Title {
     font-size: 2rem;
     margin-bottom: 1.2rem;

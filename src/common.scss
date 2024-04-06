@@ -78,6 +78,16 @@ svg {
   --bottom-tab-height: 4.8rem;
   --bottom-tab-safe-margin: 1.2rem;
   --global-radius: 0.4rem;
+
+  --z-index-s1: 1;
+  --z-index-s2: 2;
+  --z-index-s3: 3;
+  --z-index-1: 10;
+  --z-index-2: 20;
+  --z-index-3: 30;
+  --z-index-overay-1: 100;
+  --z-index-overay-2: 200;
+  --z-index-overay-3: 300;
 }
 #app {
   min-height: calc(var(--vh) * 100 * 1px);

@@ -1,7 +1,7 @@
 <template>
   <main class="MyApp">
     <StatCard :uid="user?.uid" class="MyApp__Profile" v-if="user">
-      <MembershipLimit :tier="user?.membership?.tier" />
+      <MembershipLimit :tier="user?.membership?.tier" class="MyApp__Limit" />
     </StatCard>
     <RecommendCard v-if="showVerify()">
       <template #title>이메일을 인증해주세요</template>
@@ -191,6 +191,10 @@ function emailVerifyPostpone() {
       left: 0;
       right: 0;
     }
+  }
+  &__Limit {
+    background-color: hsl(var(--bg-200));
+    border-radius: var(--global-radius);
   }
 
   &__Button {

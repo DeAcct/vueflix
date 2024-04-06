@@ -70,7 +70,7 @@
             component="button"
             type="button"
             class="CheckModal__Button"
-            @click="close"
+            @click="$root.close"
           >
             <template #text>취소</template>
           </VueflixBtn>
@@ -90,7 +90,6 @@ import { computed, onMounted, ref } from "vue";
 
 import { Create, Read, Update, Delete } from "@/api/reaction";
 import { useAuth } from "@/store/auth";
-import { useOveray } from "@/composables/overay";
 
 import LoadAnimation from "./LoadAnimation.vue";
 import NativeDialog from "./NativeDialog.vue";
@@ -132,7 +131,7 @@ const auth = useAuth();
 const user = computed(() => auth.user);
 const reactions = ref([]);
 
-const { $root, show, close } = useOveray();
+const $root = ref(null);
 onMounted(async () => {
   reactions.value = await Read({
     parent: props.parent,
@@ -169,7 +168,7 @@ function onMutate(method, data) {
     text: methodMap[method].text,
     data,
   };
-  show();
+  $root.value.show();
 }
 
 async function applyMutate() {
@@ -181,7 +180,7 @@ async function applyMutate() {
     type: props.type,
   });
   currentModal.value.isLoading = false;
-  close();
+  $root.value.close();
 }
 
 function requestTeleport(e) {

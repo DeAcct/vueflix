@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { ref, unref } from "vue";
 import { useBrowserStorage } from "./browserStorage";
 
 export function useLoginSave() {
@@ -6,8 +6,8 @@ export function useLoginSave() {
 
   const isLoginSave = ref(!!data.value);
 
-  function saveData(email, password) {
-    if (!email.value || !password.value) {
+  function saveData({ email, password }) {
+    if (!unref(email) || !unref(password)) {
       throw {
         code: "error",
         message: "이메일과 비밀번호가 제공되지 않았습니다.",
