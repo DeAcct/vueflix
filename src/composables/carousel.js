@@ -24,5 +24,5 @@ export function useCarouselList() {
     return result;
   }
 
-  return idArray;
+  return { idArray };
 }

@@ -1,6 +1,6 @@
 <template>
   <main class="AppHome">
-    <TasogareSlide class="AppHome__Slide">
+    <TasogareSlide class="AppHome__Slide" autoplay>
       <template #items>
         <SlideContent
           v-for="animeId in carouselList"
@@ -276,7 +276,7 @@ function escaper(str) {
 
 const { latest } = useMaratonData();
 
-const carouselList = useCarouselList();
+const { idArray: carouselList } = useCarouselList();
 </script>
 
 <style lang="scss" scoped>

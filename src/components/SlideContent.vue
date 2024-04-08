@@ -29,7 +29,7 @@
             : '#'
         "
       >
-        <h3 class="SlideContent__Presentation">
+        <div class="SlideContent__Presentation">
           <img
             :src="slideData.logo"
             :alt="slideData.name"
@@ -38,8 +38,8 @@
             @load="logoComplete"
             loading="lazy"
           />
-        </h3>
-        <strong class="SlideContent__Copy">{{ slideData.copy }}</strong>
+          <strong class="SlideContent__Copy">{{ slideData.copy }}</strong>
+        </div>
       </RouterLink>
     </div>
   </div>
@@ -109,6 +109,7 @@ function bgComplete() {
 
 <style lang="scss" scoped>
 .SlideContent {
+  // position: relative;
   &__BackgroundHolder {
     position: relative;
     opacity: 0;
@@ -145,7 +146,6 @@ function bgComplete() {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 6rem var(--inner-padding);
     gap: 2rem;
 
     position: absolute;
@@ -157,6 +157,15 @@ function bgComplete() {
       rgba(0, 0, 0, 0.15) 60%,
       rgba(0, 0, 0, 0.6) 100%
     );
+  }
+
+  &__Presentation {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: var(--inner-padding);
+    bottom: 6rem;
+    gap: 3rem;
   }
   &__AniLogo {
     max-width: 70vw;
@@ -178,8 +187,11 @@ function bgComplete() {
 @media screen and (min-width: 768px) {
   .SlideContent {
     &__Shade {
-      padding: 8rem 5rem;
       gap: 3rem;
+    }
+    &__Presentation {
+      left: 5rem;
+      bottom: 8rem;
     }
     &__AniLogo {
       max-width: 40vw;

@@ -6,17 +6,15 @@
     @touchmove="onTouchmove"
     @touchend="onTouchend"
   >
-    <div class="Slide__RatioHold">
-      <div class="Slide__Body" ref="$body">
-        <slot name="items"></slot>
-      </div>
+    <div class="Slide__RatioHold" ref="$body">
+      <slot name="items"></slot>
     </div>
     <button
       class="Slide__ControlButton"
       v-for="{ icon, modifier, action } in controller"
       :class="`Slide__ControlButton--${modifier}`"
       :key="modifier"
-      @click="delayAfterMove(action)"
+      @click="move(action)"
       type="button"
     >
       <IconBase>
@@ -27,21 +25,32 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
 import IconArrowNext from "@/components/icons/IconArrowNext.vue";
 
+const props = defineProps({
+  autoplay: {
+    type: Boolean,
+    default: false,
+  },
+  time: {
+    type: Number,
+    default: 3000,
+  },
+});
+
 const controller = [
   {
     icon: IconArrowPrev,
-    action: "prev",
+    action: -1,
     modifier: "Prev",
   },
   {
     icon: IconArrowNext,
-    action: "next",
+    action: 1,
     modifier: "Next",
   },
 ];
@@ -49,62 +58,47 @@ const controller = [
 const page = ref(0);
 const $body = ref(null);
 const $root = ref(null);
+// const translateX = computed(() => {
+//   if (!$root.value) {
+//     return 0;
+//   }
+//   return `${-1 * page.value * $root.value.clientWidth}px`;
+// });
 
-const TRANSITION_UNIT_TIME = 300;
-let transitionTime = `${TRANSITION_UNIT_TIME}ms`;
+function move(amount) {
+  page.value =
+    (page.value + amount + $body.value.children.length) %
+    $body.value.children.length;
 
-function prev() {
-  transitionTime = `${TRANSITION_UNIT_TIME}ms`;
-  $body.value.style.willChange = "transform";
-  if (page.value <= 0) {
-    page.value = $body.value.children.length - 1;
-    transitionTime = `${TRANSITION_UNIT_TIME * $body.value.children.length}ms`;
-    return;
-  }
-  page.value--;
-  $body.value.style.willChange = "unset";
-}
-function next() {
-  transitionTime = `${TRANSITION_UNIT_TIME}ms`;
-  $body.value.style.willChange = "transform";
-  if (page.value >= $body.value.children.length - 1) {
-    page.value = 0;
-    transitionTime = `${TRANSITION_UNIT_TIME * $body.value.children.length}ms`;
-    return;
-  }
-  page.value++;
-  $body.value.style.willChange = "unset";
-}
-
-function delayAfterMove(type) {
-  if (type === "prev") {
-    prev();
-  } else {
-    next();
-  }
-  stop();
-  setTimeout(() => {
-    resume();
-  }, TRANSITION_UNIT_TIME * 5);
+  [...$body.value.children].forEach((child, i) => {
+    if (i === page.value) {
+      child.style.opacity = 1;
+      return;
+    }
+    child.style.opacity = 0;
+  });
 }
 
 let interval = null;
-function resume() {
+function loopStart() {
   if (interval) {
-    stop();
+    loopEnd();
   }
-  interval = setInterval(() => {
-    next();
-  }, TRANSITION_UNIT_TIME * 7.5);
+  if (props.autoplay) {
+    interval = setInterval(() => {
+      move(1);
+    }, props.time);
+  }
 }
-function stop() {
+function loopEnd() {
   clearInterval(interval);
 }
-onMounted(resume);
-onUnmounted(stop);
+onMounted(loopStart);
+onUnmounted(loopEnd);
 
 const position = ref({ start: 0, end: 0 });
 function onTouchstart(event) {
+  loopEnd();
   position.value.start = event.touches[0].clientX;
 }
 function onTouchmove(event) {
@@ -112,40 +106,42 @@ function onTouchmove(event) {
 }
 function onTouchend() {
   const diff = position.value.start - position.value.end;
-  if (Math.abs(diff) < 30) {
+  if (Math.abs(diff) < $root.value.clientWidth / 3) {
     return;
   }
   if (diff > 0) {
-    next();
+    move(1);
   } else {
-    prev();
+    move(-1);
   }
-  stop();
   setTimeout(() => {
-    resume();
+    loopStart();
     position.value = { start: 0, end: 0 };
-  }, TRANSITION_UNIT_TIME * 5);
+  }, props.time);
 }
 </script>
+
+<style lang="scss">
+.Slide {
+  &__RatioHold > * {
+    position: absolute;
+    top: 0;
+    transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+</style>
 
 <style lang="scss" scoped>
 .Slide {
   overflow: hidden;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   &__RatioHold {
+    width: 100%;
     position: relative;
     padding-bottom: 133.333%;
-  }
-  &__Body {
-    position: absolute;
-    display: flex;
-    flex-wrap: nowrap;
-    translate: calc(-1 * v-bind("page") * 100vw) 0;
-    transition: translate v-bind("transitionTime") cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   &__ControlButton {
