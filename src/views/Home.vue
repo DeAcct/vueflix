@@ -302,8 +302,12 @@ const { idArray: carouselList } = useCarouselList();
     --item-width: 4rem;
     --item-height: 4rem;
   }
+  &__Item {
+    &:has(.AppHome__DaySelector) {
+      min-height: 31rem;
+    }
+  }
   &__Carousel {
-    min-height: 20rem;
     margin-top: 1.6rem;
   }
   &__CurationItem {
@@ -417,12 +421,20 @@ const { idArray: carouselList } = useCarouselList();
     &__Curator {
       padding-top: 3.6rem;
     }
+    &__AniTitle {
+      font-size: 1.6rem;
+    }
+    &__PartIndex {
+      font-size: 1.6rem;
+    }
     &__Title {
       font-size: 2.5rem;
       margin-bottom: 2rem;
     }
-    &__Carousel {
-      min-height: 26rem;
+    &__Item {
+      &:has(.AppHome__DaySelector) {
+        min-height: 33.5rem;
+      }
     }
     &__Item {
       &:not(:last-child) {
@@ -431,6 +443,15 @@ const { idArray: carouselList } = useCarouselList();
     }
     &__CurationItem {
       width: var(--thumbnail-width, 32vw);
+    }
+  }
+}
+@media screen and (min-width: 1024px) {
+  .AppHome {
+    &__Item {
+      &:has(.AppHome__DaySelector) {
+        min-height: 37rem;
+      }
     }
   }
 }
@@ -461,8 +482,19 @@ const { idArray: carouselList } = useCarouselList();
 }
 @media screen and (min-width: 1920px) {
   .AppHome {
+    &__AniTitle {
+      font-size: 2rem;
+    }
+    &__PartIndex {
+      font-size: 2rem;
+    }
     &__CurationItem {
       width: var(--thumbnail-width, 15vw);
+    }
+    &__Item {
+      &:has(.AppHome__DaySelector) {
+        min-height: 42rem;
+      }
     }
   }
 }
