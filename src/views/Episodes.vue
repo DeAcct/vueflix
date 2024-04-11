@@ -48,13 +48,12 @@
                   />
                   <ProgressCircle
                     v-if="
-                      getEpisodeProgress(route.params.title, part, index)
+                      getEpisodeProgress(animeInfo.name, part, index)
                         .percent !== '0%'
                     "
                     class="AnimeEpisodes__WatchPercent"
                     :percent="
-                      getEpisodeProgress(route.params.title, part, index)
-                        .percent
+                      getEpisodeProgress(animeInfo.name, part, index).percent
                     "
                   />
                 </RouterLink>
@@ -91,8 +90,6 @@ import Thumbnailset from "@/components/ThumbnailSet.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ProgressCircle from "@/components/ProgressCircle.vue";
 
-import IconBase from "@/components/IconBase.vue";
-import IconSort from "@/components/icons/IconSort.vue";
 import SortButton from "../components/SortButton.vue";
 
 // const animeInfo = inject("anime-info");
@@ -109,11 +106,6 @@ const sortedParts = computed(() => {
   if (sortBase.value === "asc") {
     return props.animeInfo.parts;
   }
-  // const reversedParts = [...props.animeInfo.parts].reverse();
-  // const reversedDeep = reversedParts.map((part) => ({
-  //   ...part,
-  //   episodes: part.episodes.reverse(),
-  // }));
   return deepReverse(props.animeInfo.parts, ["episodes"]);
 });
 

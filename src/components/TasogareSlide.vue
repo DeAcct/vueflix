@@ -55,23 +55,21 @@ const controller = [
   },
 ];
 
-const page = ref(0);
+const page = ref({ now: 0, next: 1 });
 const $body = ref(null);
 const $root = ref(null);
-// const translateX = computed(() => {
-//   if (!$root.value) {
-//     return 0;
-//   }
-//   return `${-1 * page.value * $root.value.clientWidth}px`;
-// });
 
 function move(amount) {
-  page.value =
-    (page.value + amount + $body.value.children.length) %
-    $body.value.children.length;
+  const now = page.value.now + amount;
+  page.value = {
+    now: (now + $body.value.children.length) % $body.value.children.length,
+    next:
+      (now + amount + $body.value.children.length) %
+      $body.value.children.length,
+  };
 
   [...$body.value.children].forEach((child, i) => {
-    if (i === page.value) {
+    if (i === page.value.now || i === page.value.next) {
       child.style.opacity = 1;
       return;
     }

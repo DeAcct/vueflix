@@ -285,7 +285,7 @@ const { idArray: carouselList } = useCarouselList();
     display: flex;
     flex-direction: column;
     padding: 3.2rem 0
-      calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin) + 3.2rem);
+      calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin));
     background-color: hsl(var(--bg-100));
     gap: 3rem;
   }
@@ -303,6 +303,7 @@ const { idArray: carouselList } = useCarouselList();
     --item-height: 4rem;
   }
   &__Carousel {
+    min-height: 20rem;
     margin-top: 1.6rem;
   }
   &__CurationItem {
@@ -420,10 +421,10 @@ const { idArray: carouselList } = useCarouselList();
       font-size: 2.5rem;
       margin-bottom: 2rem;
     }
+    &__Carousel {
+      min-height: 26rem;
+    }
     &__Item {
-      &:has(.AppHome__DaySelector) {
-        min-height: 40rem;
-      }
       &:not(:last-child) {
         margin-bottom: 4.5rem;
       }

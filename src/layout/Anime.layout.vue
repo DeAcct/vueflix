@@ -8,6 +8,12 @@
       @handle-interest="handleInterest"
       class="AnimeLayout__Head"
     />
+    <!-- <FanfareCount/> -->
+    <FanfareCount
+      :count="5"
+      class="AnimeLayout__Fanfare"
+      v-if="false"
+    ></FanfareCount>
     <aside class="AnimeLayout__Sidebar">
       <div class="AnimeLayout__SideSticky">
         <!-- [조건렌더] !animeInfo.isEnd && day === today -->
@@ -18,7 +24,6 @@
             새 에피소드는 매주 {{ animeInfo.day }}요일!
           </strong>
           <label
-            v-if="true"
             class="AnimeLayout__BubbleItem AnimeLayout__BubbleItem--AutoUpdate"
           >
             카운트다운 후 새 에피소드 맞이하기
@@ -32,7 +37,7 @@
         ></AnimeMeta>
       </div>
     </aside>
-    <main class="AnimeLayout__Body">
+    <div class="AnimeLayout__Body">
       <div class="AnimeLayout__TabSelector inner" ref="$TabSelector">
         <RouterLink
           replace
@@ -72,7 +77,7 @@
           :key="children[routeIndex].name"
         ></component>
       </Transition>
-    </main>
+    </div>
   </div>
 </template>
 
@@ -92,6 +97,7 @@ import Reviews from "@/views/Reviews.vue";
 import AnimeItemHead from "@/components/AnimeItemHead.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
 import InputBoolean from "@/components/InputBoolean.vue";
+import FanfareCount from "../components/FanfareCount.vue";
 
 const props = defineProps({
   animeInfo: {
@@ -163,6 +169,14 @@ onUnmounted(() => {
   flex-direction: column;
   min-height: calc(var(--vh) * 1px * 90);
   padding-bottom: 2rem;
+
+  &__Fanfare {
+    position: fixed;
+    inset: 50% auto auto 50%;
+    translate: -50% -50%;
+    z-index: var(--z-index-overay-200);
+  }
+
   &__Head {
     width: 100%;
     min-height: 55vh;

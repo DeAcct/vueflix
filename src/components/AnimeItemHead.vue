@@ -37,10 +37,9 @@
           }"
           @wanna-see-toggle="toggleWannaSee"
           @purchase="purchase"
-          v-show="!!animeInfo.type && !!animeInfo.rating && !!animeInfo.name"
           :disabled="{
-            wanna: !!user,
-            purchase: !!user,
+            wanna: !user,
+            purchase: !user,
           }"
         ></AnimeActions>
       </div>
@@ -88,11 +87,6 @@ function purchase() {
   }
 }
 
-// const posterURL = usePoster({
-//   typeFor: "css",
-//   aniTitle: props.animeInfo.name,
-//   fileName: props.animeInfo.poster,
-// });
 const gradientPercent = computed(() => (!isSmall.value ? "90%" : "80%"));
 
 const continueData = computed(() => {

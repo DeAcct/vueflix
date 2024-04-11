@@ -10,7 +10,7 @@
       v-show="visible && backdrop !== 'none'"
     ></button>
     <Transition name="dialog-body">
-      <div class="NativeDialog__Body" v-if="visible">
+      <div class="NativeDialog__Body" v-if="visible" ref="$body">
         <div class="NativeDialog__Wrap">
           <slot name="title"></slot>
           <slot name="content"></slot>

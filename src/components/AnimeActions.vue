@@ -1,24 +1,23 @@
 <template>
   <div class="AnimeActions">
-    <div class="col-left">
-      <RouterLink
-        class="AnimeActions__Continue"
-        :to="continueData.link"
-        replace
-      >
-        <i class="icon">
-          <IconBase>
-            <IconPlay />
-          </IconBase>
-        </i>
-        <span class="text">{{ continueData.text }}</span>
-      </RouterLink>
-    </div>
+    <RouterLink
+      class="AnimeActions__Continue AnimeActions__Continue--Continue"
+      :to="continueData.link"
+      replace
+    >
+      <i class="icon">
+        <IconBase>
+          <IconPlay />
+        </IconBase>
+      </i>
+      <span class="text">{{ continueData.text }}</span>
+    </RouterLink>
     <button
       @click="wannaSeeToggle"
-      class="bg-less AnimeActions__WannaSee"
-      :class="wannaSee && 'AnimeActions__WannaSee--Checked'"
+      class="AnimeActions__Button AnimeActions__Button--WannaSee"
+      :class="wannaSee && 'Checked'"
       type="button"
+      :disabled="disabled.wanna"
     >
       <i class="icon">
         <IconBase class="icon--added">
@@ -31,13 +30,14 @@
       <span class="text">보고싶다</span>
     </button>
     <button
-      class="bg-less AnimeActions__Purchase"
+      class="AnimeActions__Button AnimeActions__Button--Purchase"
       @mousedown="activeTrigger"
       @mouseup="activeTrigger"
       @touchstart.passive="activeTrigger"
       @touchend="activeTrigger"
       @click="purchase"
       type="button"
+      :disabled="disabled.purchase"
     >
       <i class="icon">
         <IconBase>
@@ -88,7 +88,6 @@ const props = defineProps({
 const emits = defineEmits(["wanna-see-toggle", "purchase"]);
 
 function wannaSeeToggle() {
-  console.log("??");
   emits("wanna-see-toggle");
 }
 function purchase() {
@@ -106,20 +105,46 @@ function activeTrigger() {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   transition: 150ms ease-out;
 
-  // .col-right {
-  //   width: auto;
-  //   height: auto;
-  //   display: flex;
-  //   gap: 1rem;
-  // }
-  .bg-less {
+  &__Continue {
+    .text {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--anime-layout-text);
+    }
+
+    &--Continue {
+      display: flex;
+      align-items: center;
+      transition: 150ms ease-out;
+      margin-right: auto;
+      .icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 4.8rem;
+        height: 4.8rem;
+        background-color: var(--anime-layout-text);
+        color: var(--anime-layout-bg);
+        border-radius: 50%;
+        margin-right: 1rem;
+      }
+    }
+  }
+  &--BGLess {
+    display: flex;
+    flex-direction: column;
     height: 4rem;
+    align-items: center;
+  }
+
+  &__Button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    gap: 0.8rem;
     .icon {
       position: relative;
       width: 2.4rem;
@@ -137,70 +162,44 @@ function activeTrigger() {
       }
     }
     .text {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 500;
       color: var(--anime-layout-text);
     }
-  }
 
-  &__Continue {
-    display: flex;
-    align-items: center;
-    transition: 150ms ease-out;
-    .icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 4.8rem;
-      height: 4.8rem;
-      background-color: var(--anime-layout-text);
-      color: var(--anime-layout-bg);
-      border-radius: 50%;
-      margin-right: 1rem;
-    }
-    svg {
-      width: 2rem;
-      height: 2rem;
+    &--WannaSee {
+      .icon {
+        svg {
+          position: absolute;
+        }
+        &--added {
+          transition-delay: 0ms;
+          stroke-dasharray: 25;
+          stroke-dashoffset: 25;
+        }
+        &--not-added {
+          transition-delay: 150ms;
+        }
+      }
+      &.Checked .icon {
+        &--added {
+          transition-delay: 150ms;
+          stroke-dashoffset: 0;
+          stroke-linejoin: round;
+        }
+        &--not-added {
+          transition-delay: 0ms;
+          // transform: translateY(2.5rem) scale(0);
+          translate: 0 2.5rem;
+          scale: 0;
+          opacity: 0;
+        }
+      }
     }
 
-    .text {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--anime-layout-text);
+    &--Purchase {
+      margin-left: 1rem;
     }
-  }
-
-  &__WannaSee {
-    margin-left: auto;
-    .icon {
-      svg {
-        position: absolute;
-      }
-      &--added {
-        transition-delay: 0ms;
-        stroke-dasharray: 25;
-        stroke-dashoffset: 25;
-      }
-      &--not-added {
-        transition-delay: 150ms;
-      }
-    }
-    &--Checked .icon {
-      &--added {
-        transition-delay: 150ms;
-        stroke-dashoffset: 0;
-        stroke-linejoin: round;
-      }
-      &--not-added {
-        transition-delay: 0ms;
-        transform: translateY(2.5rem) scale(0);
-        opacity: 0;
-      }
-    }
-  }
-
-  &__Purchase {
-    margin-left: 1rem;
   }
 }
 
@@ -208,7 +207,7 @@ function activeTrigger() {
   .AnimeActions {
     padding: 0;
     &__Continue .text {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
     }
   }
 }

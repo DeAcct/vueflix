@@ -41,7 +41,8 @@ export function useScroll(target = window) {
   });
 
   useEventListener(target, "scroll", () => {
-    const current = target === window ? target.scrollY : target.value.scrollTop;
+    const _target = unref(target);
+    const current = _target === window ? _target.scrollY : _target.scrollTop;
     if (current === 0) {
       state.value = "top";
       return;

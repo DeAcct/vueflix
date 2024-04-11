@@ -17,22 +17,15 @@
       >
         <slot name="activity-name"></slot>
       </strong>
-      <div class="DialogNavigation__Actions">
-        <button
-          class="DialogNavigation__Button"
-          @click="openSystemShare"
-          type="button"
-        >
-          <IconBase icon-name="공유">
-            <IconShare />
-          </IconBase>
-        </button>
-        <button class="DialogNavigation__Button" type="button">
-          <IconBase>
-            <IconOverflow />
-          </IconBase>
-        </button>
-      </div>
+      <button
+        class="DialogNavigation__Button DialogNavigation__Button--Share"
+        @click="openSystemShare"
+        type="button"
+      >
+        <IconBase icon-name="공유">
+          <IconShare />
+        </IconBase>
+      </button>
     </div>
   </div>
 </template>
@@ -88,6 +81,9 @@ const padding = computed(() => {
     color: var(--anime-layout-text);
     width: 2.4rem;
     height: 2.4rem;
+    &--Share {
+      margin-left: auto;
+    }
   }
 
   &__ActivityName {
@@ -109,10 +105,6 @@ const padding = computed(() => {
       opacity: 1;
       translate: 0 0;
     }
-  }
-  &__Actions {
-    display: flex;
-    gap: 1.2rem;
   }
 
   .desktop {
