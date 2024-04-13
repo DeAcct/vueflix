@@ -20,17 +20,17 @@
       <button clas="AnimeEpisodes__ClearWatched">시청기록 초기화</button>
     </div>
     <template v-if="animeInfo.parts">
-      <AccordionGroup
-        v-for="({ part, episodes }, iteratePart) in sortedParts"
-        :key="iteratePart"
-        :open="iteratePart === 0"
-        class="AnimeEpisodes__Accordion"
-      >
-        <template v-slot:title>
-          {{ part }}
-        </template>
-        <template v-slot:content>
-          <TransitionGroup name="episode-update">
+      <TransitionGroup name="episode-update">
+        <AccordionGroup
+          v-for="({ part, episodes }, iteratePart) in sortedParts"
+          :key="part"
+          :open="iteratePart === 0"
+          class="AnimeEpisodes__Accordion"
+        >
+          <template v-slot:title>
+            {{ part }}
+          </template>
+          <template v-slot:content>
             <Thumbnailset
               v-for="{ title, index, thumbnail } in episodes"
               :key="`episode-${title}`"
@@ -70,9 +70,9 @@
                 </RouterLink>
               </template>
             </Thumbnailset>
-          </TransitionGroup>
-        </template>
-      </AccordionGroup>
+          </template>
+        </AccordionGroup>
+      </TransitionGroup>
     </template>
   </div>
 </template>
@@ -96,24 +96,29 @@ import SortButton from "../components/SortButton.vue";
 const props = defineProps({
   animeInfo: Object,
   refresh: Function,
+  sortBase: {
+    type: String,
+    default: "asc",
+  },
 });
+const emit = defineEmits(["open-login-modal", "sort-toggle"]);
 
-const sortBase = ref("asc");
+// const sortBase = ref("asc");
 const sortedParts = computed(() => {
   if (!props.animeInfo) {
     return [];
   }
-  if (sortBase.value === "asc") {
+  if (props.sortBase === "asc") {
     return props.animeInfo.parts;
   }
   return deepReverse(props.animeInfo.parts, ["episodes"]);
 });
 
 function toggleSort() {
-  sortBase.value = sortBase.value === "asc" ? "desc" : "asc";
+  // sortBase.value = sortBase.value === "asc" ? "desc" : "asc";
+  emit("toggle-sort");
 }
 
-const emit = defineEmits(["open-login-modal"]);
 const route = useRoute();
 
 useHead({ title: route.query.modal });
@@ -147,6 +152,7 @@ const { getEpisodeProgress } = useMaratonData(route.query.modal);
     --episode-gap: 1.2rem;
     --thumbnail-width: 14rem;
     --accordion-sticky-top: var(--episodes-sticky-top, 0);
+    --accordion-z-index: calc(var(--z-index-overay-1) + 1);
   }
   &__Item {
     padding: 0;
@@ -198,7 +204,7 @@ const { getEpisodeProgress } = useMaratonData(route.query.modal);
 .episode-update-enter-from,
 .episode-update-leave-to {
   opacity: 0;
-  translate: -0.5rem;
+  translate: 0 -0.5rem;
 }
 .episode-leave-active {
   position: absolute;

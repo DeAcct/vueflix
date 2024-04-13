@@ -40,7 +40,7 @@ function toggle() {
   &__PartTitle {
     position: sticky;
     top: var(--accordion-sticky-top, 6rem);
-    z-index: var(--z-index-s1);
+    z-index: var(--accordion-z-index, var(--z-index-s1));
     background: linear-gradient(
       150deg,
       hsl(var(--bg-400) / 0.75),
@@ -65,7 +65,7 @@ function toggle() {
     transition: 150ms ease-in-out;
     transform: rotate(-90deg);
     &--WidgetOpened {
-      transform: rotate(0);
+      transform: rotate(90deg);
     }
   }
   &__Body {

@@ -7,3 +7,12 @@ export const DAYS = [
   { text: "금", key: "friday" },
   { text: "토", key: "saturday" },
 ];
+
+export function textToIndex(text) {
+  return DAYS.findIndex((day) => day.text === text);
+}
+
+export function isToday(day) {
+  const today = new Date().getDay();
+  return textToIndex(day) === today;
+}

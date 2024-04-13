@@ -7,7 +7,6 @@ export function useOveray({ time = Infinity, overflowHidden = false }) {
   const visible = ref(false);
   function show() {
     visible.value = true;
-    console.log(overflowHidden);
     if (overflowHidden) document.documentElement.style.overflow = "hidden";
     if (time !== Infinity) {
       setTimeout(() => {

@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { computed } from "vue";
 
 import GoBack from "./GoBack.vue";
@@ -40,7 +40,6 @@ import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import IconClose from "./icons/IconClose.vue";
 import IconShare from "./icons/IconShare.vue";
-import IconOverflow from "./icons/IconOverflow.vue";
 
 const props = defineProps({
   scrollState: String,
@@ -49,7 +48,8 @@ const props = defineProps({
 const route = useRoute();
 async function openSystemShare() {
   const shareData = {
-    title: `데레에서 ${route.query.modal} 다시보기`,
+    title: route.query.modal,
+    text: `데레에서 ${route.query.modal} 다시보기`,
     url: window.location.href,
   };
   await navigator.share(shareData);
@@ -57,9 +57,9 @@ async function openSystemShare() {
 
 const padding = computed(() => {
   if (props.scrollState === "top") {
-    return "2rem 2rem 0rem";
+    return "2rem 2rem 0";
   }
-  return "2rem 4rem 0rem";
+  return "2rem 4rem 0";
 });
 </script>
 

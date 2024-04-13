@@ -73,7 +73,12 @@
         {{ episodeCounter }}개의 에피소드
       </h3>
       <div class="AnimePlay__ScrollContainer">
-        <Episodes :anime-info class="AnimePlay__Episodes" />
+        <Episodes
+          :anime-info
+          class="AnimePlay__Episodes"
+          :sort-base
+          @toggle-sort="toggleSort"
+        />
       </div>
     </section>
     <ReactionCombo
@@ -181,6 +186,10 @@ const {
   part: route.params.part,
   index: route.params.index,
 });
+const sortBase = ref("asc");
+function toggleSort() {
+  sortBase.value = sortBase.value === "asc" ? "desc" : "asc";
+}
 
 async function getVideoUrl() {
   if (import.meta.env.DEV) {

@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import { useEventListener } from "@vueuse/core";
 
 export function useAmbient() {
@@ -72,8 +72,8 @@ export function useFanfare({ amount = 100, colors = [] }) {
   const $canvas = ref(null);
 
   function resize() {
-    $canvas.value.width = window.innerWidth;
-    $canvas.value.height = window.innerHeight;
+    $canvas.value.width = $canvas.value.parentElement.offsetWidth;
+    $canvas.value.height = $canvas.value.parentElement.offsetHeight;
   }
   let ctx;
   onMounted(() => {
@@ -86,8 +86,8 @@ export function useFanfare({ amount = 100, colors = [] }) {
 
   function createConfetti() {
     return {
-      x: Math.floor(Math.random() * window.innerWidth),
-      y: Math.floor(Math.random() * window.innerHeight),
+      x: Math.floor(Math.random() * $canvas.value.width),
+      y: Math.floor(Math.random() * $canvas.value.height),
       size: 10,
       angle: Math.random() * Math.PI * 2,
       color: colors[Math.floor(Math.random() * (colors.length - 1))],
@@ -136,6 +136,12 @@ export function useFanfare({ amount = 100, colors = [] }) {
     fanfareEffect();
     animate();
   }
+
+  watch(confetti, (_value) => {
+    if (_value.length === 0) {
+      $canvas.value.remove();
+    }
+  });
 
   return { $canvas, init };
 }

@@ -8,29 +8,29 @@
       @handle-interest="handleInterest"
       class="AnimeLayout__Head"
     />
-    <!-- <FanfareCount/> -->
-    <FanfareCount
-      :count="5"
-      class="AnimeLayout__Fanfare"
-      v-if="false"
-    ></FanfareCount>
+
     <aside class="AnimeLayout__Sidebar">
       <div class="AnimeLayout__SideSticky">
-        <!-- [조건렌더] !animeInfo.isEnd && day === today -->
-        <div class="AnimeLayout__AsideBubble AnimeLayout__AsideBubble--Update">
+        <div
+          class="AnimeLayout__AsideBubble AnimeLayout__AsideBubble--Update"
+          v-if="!animeInfo.isEnd"
+        >
           <strong
             class="AnimeLayout__BubbleItem AnimeLayout__BubbleItem--UpdateDay"
           >
-            새 에피소드는 매주 {{ animeInfo.day }}요일!
+            새 에피소드는 매주 {{ updateTime }}
           </strong>
           <label
-            class="AnimeLayout__BubbleItem AnimeLayout__BubbleItem--AutoUpdate"
+            class="AnimeLayout__BubbleItem AnimeLayout__BubbleItem--CountToggle"
+            v-if="isToday(animeInfo.day)"
           >
             카운트다운 후 새 에피소드 맞이하기
-            <InputBoolean v-model="newEpisodeFanfare"></InputBoolean>
+            <InputBoolean
+              v-model="newEpisodeFanfare"
+              class="AnimeLayout__BubbleToggle"
+            ></InputBoolean>
           </label>
         </div>
-        <!-- [/조건렌더] -->
         <AnimeMeta
           class="AnimeLayout__AsideBubble AnimeLayout__AsideBubble--Meta"
           :anime-info
@@ -75,21 +75,31 @@
           :anime-info
           @open-login-modal="openLoginModal"
           :key="children[routeIndex].name"
+          :sort-base
+          @toggle-sort="toggleSort"
         ></component>
       </Transition>
     </div>
+    <FanfareCount
+      :count="FANFARE_COUNT_SEC"
+      class="AnimeLayout__Fanfare"
+      v-if="fanfareVisible"
+    ></FanfareCount>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import { onSnapshot, doc } from "firebase/firestore";
 import { db } from "@/utility/firebase";
 
+import { isToday } from "../enums/Days";
+
 import { useScroll } from "@/composables/scroll";
 import { useIndicatorAnimation } from "@/composables/indicator";
+import { useTime2Next } from "../composables/time";
 
 import Episodes from "@/views/Episodes.vue";
 import Reviews from "@/views/Reviews.vue";
@@ -97,7 +107,7 @@ import Reviews from "@/views/Reviews.vue";
 import AnimeItemHead from "@/components/AnimeItemHead.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
 import InputBoolean from "@/components/InputBoolean.vue";
-import FanfareCount from "../components/FanfareCount.vue";
+import FanfareCount from "@/components/FanfareCount.vue";
 
 const props = defineProps({
   animeInfo: {
@@ -148,7 +158,36 @@ const {
   move: indicatorMove,
 } = useIndicatorAnimation(routeIndex.value);
 
+const FANFARE_COUNT_SEC = 5;
 const newEpisodeFanfare = ref(false);
+const fanfareVisible = ref(false);
+let timer = null;
+function fanfareToggle(_effect) {
+  if (_effect) {
+    const lastTime =
+      useTime2Next(props.animeInfo.day, props.animeInfo.updateTime) -
+      FANFARE_COUNT_SEC * 1000;
+    sortBase.value = "desc";
+    timer = setTimeout(() => {
+      fanfareVisible.value = true;
+    }, lastTime);
+    return;
+  }
+  if (timer) {
+    clearTimeout(timer);
+  }
+  sortBase.value = "asc";
+}
+watch(newEpisodeFanfare, fanfareToggle);
+const updateTime = computed(() => {
+  const [hh, mm] = props.animeInfo.updateTime.split(":");
+  return `${props.animeInfo.day}요일 ${hh}:${mm}`;
+});
+
+const sortBase = ref("asc");
+function toggleSort() {
+  sortBase.value = sortBase.value === "asc" ? "desc" : "asc";
+}
 
 let cleanup;
 onMounted(() => {
@@ -169,34 +208,25 @@ onUnmounted(() => {
   flex-direction: column;
   min-height: calc(var(--vh) * 1px * 90);
   padding-bottom: 2rem;
-
+  position: relative;
   &__Fanfare {
-    position: fixed;
-    inset: 50% auto auto 50%;
-    translate: -50% -50%;
-    z-index: var(--z-index-overay-200);
+    position: absolute;
+    inset: 0;
+    z-index: calc(var(--z-index-overay-1) + 1);
+    --fanfare-counter-top: 50%;
+    --fanfare-counter-left: 50%;
+    --fanfare-counter-translate: -50% -50%;
+    --fanfare-counter-width: 6rem;
+    --fanfare-counter-height: 6rem;
+    --fanfare-counter-bg: hsl(var(--bg-100));
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 900;
   }
 
   &__Head {
     width: 100%;
     min-height: 55vh;
-    position: relative;
-    &::after {
-      // negative margin 기법보다 더 직관적으로...
-      // 높이가 정말 작은 가상 요소로 덮어 그라디언트가 어색한 부분을 가리는 방법을 사용했다.
-      position: absolute;
-      content: "";
-      width: 100%;
-      height: 1px;
-      bottom: 0;
-      left: 0;
-      background-color: var(--anime-layout-bg);
-      z-index: var(--z-index-s1);
-    }
-  }
-
-  &__Meta {
-    margin-bottom: 2rem;
   }
   &__AsideBubble {
     &--Update {
@@ -209,21 +239,25 @@ onUnmounted(() => {
     }
     &--Meta {
       margin-bottom: 2rem;
+      &:first-of-type {
+        margin-top: 2rem;
+      }
     }
   }
   &__BubbleItem {
     display: flex;
     align-items: center;
-    height: 4.8rem;
-    padding: 0 var(--inner-padding);
-    &--AutoUpdate {
+    padding: 2rem var(--inner-padding);
+    &--CountToggle {
       gap: 0.8rem;
-      justify-content: space-between;
+      // justify-content: space-between;
     }
     & + & {
       border-top: 1px solid hsl(var(--text-800) / 0.2);
-      height: 4.9rem;
     }
+  }
+  &__BubbleToggle {
+    margin-left: auto;
   }
 
   &__Body {
@@ -233,6 +267,7 @@ onUnmounted(() => {
     flex-grow: 1;
     background-color: var(--anime-layout-episodes);
     padding-bottom: 2rem;
+    --episodes-sticky-top: var(--header-height);
   }
   &__TabSelector {
     display: flex;
@@ -282,14 +317,6 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-@media screen and (min-width: 768px) {
-  .AnimeLayout {
-    &__Body {
-      --episodes-sticky-top: 8rem;
-    }
-  }
-}
-
 @media screen and (min-width: 1080px) {
   .AnimeLayout {
     display: grid;
@@ -326,15 +353,20 @@ onUnmounted(() => {
       display: flex;
       flex-direction: column;
       margin: 0;
+      &--Meta {
+        margin-bottom: 0;
+        &:first-of-type {
+          margin-top: 0;
+        }
+      }
     }
     &__BubbleItem {
       display: flex;
-      height: 4.8rem;
       align-items: center;
       font-size: 1.4rem;
       justify-content: space-between;
-      padding: 0 2rem;
-      &--AutoUpdate {
+      padding: 2rem;
+      &--CountToggle {
         width: 100%;
         margin: 0;
         background-color: transparent;
@@ -347,14 +379,10 @@ onUnmounted(() => {
     &__StickyChild:not(:last-child) {
       border-bottom: 1px solid hsl(var(--bg-300));
     }
-    &__Meta {
-      width: 100%;
-      margin-bottom: 0;
-      flex-direction: column;
-    }
 
     &__Body {
       height: max(35rem, 100%);
+      --episodes-sticky-top: 8rem;
       --episodes-action-width: calc(100% - 4rem);
       background-color: var(--anime-layout-episodes);
       box-shadow: none;

@@ -69,15 +69,10 @@ function move(amount) {
   };
 
   [...$body.value.children].forEach((child, i) => {
-    if (i === page.value.now || i === page.value.next) {
-      child.style.pointerEvents = "auto";
-      child.style.touch = "auto";
-      child.style.opacity = 1;
-      return;
-    }
-    child.style.pointerEvents = "none";
-    child.style.touch = "none";
-    child.style.opacity = 0;
+    const isActive = i === page.value.now || i === page.value.next;
+    child.style.pointerEvents = isActive ? "auto" : "none";
+    child.style.touch = isActive ? "auto" : "none";
+    child.style.opacity = isActive ? 1 : 0;
   });
 }
 

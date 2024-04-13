@@ -5,6 +5,7 @@
       v-model="modelValue"
       :checked="modelValue"
       class="blind InputBoolean__Skell"
+      :id="inputId"
     />
     <i class="InputBoolean__Track" v-if="type === 'toggle'">
       <span class="InputBoolean__Body"></span>
@@ -31,6 +32,9 @@ const props = defineProps({
     validator(value) {
       return ["checkbox", "toggle", "presentation"].includes(value);
     },
+  },
+  inputId: {
+    type: String,
   },
 });
 
