@@ -1,36 +1,22 @@
 <template>
-  <section class="AccordionGroup">
-    <button class="AccordionGroup__PartTitle" @click="toggle" type="button">
+  <details class="AccordionGroup">
+    <summary class="AccordionGroup__PartTitle" data-pointer="true">
       <slot name="title"></slot>
-      <i
-        class="AccordionGroup__OpenIcon"
-        :class="isOpen && 'AccordionGroup__OpenIcon--WidgetOpened'"
-      >
-        <IconBase :icon-name="isOpen ? '닫기' : '열기'">
+      <i class="AccordionGroup__OpenIcon">
+        <IconBase :icon-name="open ? '닫기' : '열기'">
           <IconArrowPrev />
         </IconBase>
       </i>
-    </button>
-    <div
-      class="AccordionGroup__Body"
-      :class="isOpen && 'AccordionGroup__Body--Opened'"
-    >
+    </summary>
+    <div class="AccordionGroup__Body">
       <slot name="content"></slot>
     </div>
-  </section>
+  </details>
 </template>
 
 <script setup>
-import { toRef } from "vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
-const props = defineProps({
-  open: Boolean,
-});
-const isOpen = toRef(props.open);
-function toggle() {
-  isOpen.value = !isOpen.value;
-}
 </script>
 
 <style lang="scss" scoped>
@@ -64,9 +50,6 @@ function toggle() {
     height: 1.8rem;
     transition: 150ms ease-in-out;
     transform: rotate(-90deg);
-    &--WidgetOpened {
-      transform: rotate(90deg);
-    }
   }
   &__Body {
     height: 0;
@@ -83,11 +66,17 @@ function toggle() {
       transition: 150ms ease-in-out;
       opacity: 0;
     }
-    &--Opened {
+  }
+
+  &[open] {
+    .AccordionGroup__OpenIcon {
+      transform: rotate(90deg);
+    }
+    .AccordionGroup__Body {
+      height: auto;
       padding: {
         top: var(--open-top-padding, 1.2rem);
       }
-      height: auto;
       .episode-card {
         opacity: 1;
       }

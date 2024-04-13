@@ -17,15 +17,15 @@
         class="AnimeEpisodes__Sort"
         :text="['처음', '최신화']"
       />
-      <button clas="AnimeEpisodes__ClearWatched">시청기록 초기화</button>
+      <button class="AnimeEpisodes__ClearWatched">시청기록 초기화</button>
     </div>
     <template v-if="animeInfo.parts">
       <TransitionGroup name="episode-update">
         <AccordionGroup
-          v-for="({ part, episodes }, iteratePart) in sortedParts"
+          v-for="({ part, episodes }, i) in sortedParts"
           :key="part"
-          :open="iteratePart === 0"
           class="AnimeEpisodes__Accordion"
+          :open="i === 0"
         >
           <template v-slot:title>
             {{ part }}
