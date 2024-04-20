@@ -236,6 +236,7 @@ function clear() {
   --dialog-z-index: var(--z-index-overay-2);
   --dialog-height: auto;
   --dialog-padding: 2rem;
+  --dialog-bg: hsl(var(--bg-200));
   &__Title {
     font-size: 2rem;
     margin-bottom: 1.2rem;
@@ -298,6 +299,14 @@ function clear() {
   .AnimeEpisodes {
     margin-top: 2rem;
     gap: 1.2rem;
+  }
+  .ClearMaratonAlert {
+    --dialog-inset: 50% auto auto 50%;
+    --dialog-translate: -50% -50%;
+    --dialog-starting-translate: -50% 3rem;
+    --dialog-border-radius: calc(var(--global-radius) * 2);
+    --dialog-padding: 3rem;
+    --dialog-max-width: 50rem;
   }
 }
 </style>

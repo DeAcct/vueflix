@@ -77,7 +77,7 @@ defineExpose({
     z-index: calc(var(--dialog-calc-z-index) + 1);
     inset: var(--dialog-inset, auto);
     translate: var(--dialog-translate, -50% -50%);
-    background-color: var(--dialog-bg, hsl(var(--bg-100)));
+    background-color: var(--dialog-bg, hsl(var(--bg-200)));
     border-radius: var(--dialog-border-radius);
     width: min(var(--dialog-max-width), 100%);
     padding: var(--dialog-padding, var(--inner-padding));
