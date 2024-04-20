@@ -3,7 +3,7 @@
     <div class="wrap">
       <GoBack class="DialogNavigation__Button">
         <template #content>
-          <IconBase icon-name="뒤로가기">
+          <IconBase>
             <IconArrowPrev class="mobile" />
             <IconClose class="desktop" />
           </IconBase>

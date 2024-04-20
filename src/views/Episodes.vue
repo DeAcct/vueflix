@@ -1,15 +1,5 @@
 <template>
   <div class="AnimeEpisodes">
-    <!-- <button class="AnimeEpisodes__SortButton" @click="toggleSort" type="button">
-      <IconBase class="AnimeEpisodes__SortIcon">
-        <IconSort />
-      </IconBase>
-      <Transition :name="`sort-text-${sortBase}`">
-        <span :key="sortBase">
-          {{ sortBase === "asc" ? "처음" : "최신화" }}부터
-        </span>
-      </Transition>
-    </button> -->
     <div class="AnimeEpisodes__Actions">
       <SortButton
         :base="sortBase"
@@ -17,7 +7,9 @@
         class="AnimeEpisodes__Sort"
         :text="['처음', '최신화']"
       />
-      <button class="AnimeEpisodes__ClearWatched">시청기록 초기화</button>
+      <button class="AnimeEpisodes__ClearWatched" @click="openAlert">
+        시청기록 초기화
+      </button>
     </div>
     <template v-if="animeInfo.parts">
       <TransitionGroup name="episode-update">
@@ -74,6 +66,33 @@
         </AccordionGroup>
       </TransitionGroup>
     </template>
+    <NativeDialog ref="$clearMaratonAlertRoot" class="ClearMaratonAlert">
+      <template #title>
+        <strong class="ClearMaratonAlert__Title">시청기록 삭제</strong>
+      </template>
+      <template #content>
+        <p class="ClearMaratonAlert__Info">정말 삭제하시겠어요?</p>
+      </template>
+      <template #control>
+        <div class="ClearMaratonAlert__Control">
+          <VueflixBtn
+            type="button"
+            component="button"
+            class="ClearMaratonAlert__Button--Accent"
+            @click="clear"
+          >
+            <template #text> 삭제 </template>
+          </VueflixBtn>
+          <VueflixBtn
+            type="button"
+            component="button"
+            @click="$clearMaratonAlertRoot.close()"
+          >
+            <template #text> 취소 </template>
+          </VueflixBtn>
+        </div>
+      </template>
+    </NativeDialog>
   </div>
 </template>
 
@@ -87,12 +106,12 @@ import { deepReverse } from "@/utility/extArray";
 
 import AccordionGroup from "@/components/AccordionGroup.vue";
 import Thumbnailset from "@/components/ThumbnailSet.vue";
+import NativeDialog from "@/components/NativeDialog.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ProgressCircle from "@/components/ProgressCircle.vue";
+import SortButton from "@/components/SortButton.vue";
+import VueflixBtn from "@/components/VueflixBtn.vue";
 
-import SortButton from "../components/SortButton.vue";
-
-// const animeInfo = inject("anime-info");
 const props = defineProps({
   animeInfo: Object,
   refresh: Function,
@@ -123,7 +142,18 @@ const route = useRoute();
 
 useHead({ title: route.query.modal });
 
-const { getEpisodeProgress } = useMaratonData(route.query.modal);
+const { getEpisodeProgress, clearMaratonByTitle } = useMaratonData(
+  route.query.modal
+);
+
+const $clearMaratonAlertRoot = ref(null);
+function openAlert() {
+  $clearMaratonAlertRoot.value.show();
+}
+function clear() {
+  clearMaratonByTitle(route.query.modal);
+  $clearMaratonAlertRoot.value.close();
+}
 </script>
 
 <style lang="scss" scoped>
@@ -193,6 +223,38 @@ const { getEpisodeProgress } = useMaratonData(route.query.modal);
     overflow: hidden;
     font-size: 1.4rem;
     line-height: 1.3;
+  }
+}
+
+.ClearMaratonAlert {
+  --dialog-max-width: 100%;
+  --dialog-translate: 0;
+  --dialog-inset: auto auto 0 auto;
+  --dialog-starting-translate: 0 100%;
+  --dialog-border-radius: calc(var(--global-radius) * 2)
+    calc(var(--global-radius) * 2) 0 0;
+  --dialog-z-index: var(--z-index-overay-2);
+  --dialog-height: auto;
+  --dialog-padding: 2rem;
+  &__Title {
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+    text-wrap: pretty;
+    line-height: 1.3;
+  }
+  &__Info {
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  &__Control {
+    display: flex;
+    justify-content: flex-end;
+  }
+  &__Button--Accent {
+    background-color: hsl(var(--theme-500));
+    border-radius: var(--global-radius);
   }
 }
 

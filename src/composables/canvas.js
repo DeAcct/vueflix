@@ -28,7 +28,7 @@ export function useAmbient() {
     step = undefined;
   }
 
-  function init() {
+  function start() {
     $video.value.addEventListener(
       "loadeddata",
       () => {
@@ -55,7 +55,7 @@ export function useAmbient() {
 
   onMounted(() => {
     ctx = $effect.value.getContext("2d");
-    init();
+    start();
   });
   onUnmounted(() => {
     cleanup();
@@ -68,6 +68,14 @@ export function useAmbient() {
   };
 }
 
+/**
+ *  부모 엘리먼트의 크기에 맞게 캔버스를 조정하고, confetti 애니메이션을 생성 및 실행합니다.
+ * @param {{
+ * amount:number,
+ * colors: Array<`${number} ${number} ${number}` | `#${string}`>
+ * }} param0
+ * @returns {{$canvas: import("vue").Ref<HTMLCanvasElement|null>, start: () => void}}
+ */
 export function useFanfare({ amount = 100, colors = [] }) {
   const $canvas = ref(null);
 
@@ -132,7 +140,7 @@ export function useFanfare({ amount = 100, colors = [] }) {
     requestAnimationFrame(animate);
   }
 
-  function init() {
+  function start() {
     fanfareEffect();
     animate();
   }
@@ -143,5 +151,9 @@ export function useFanfare({ amount = 100, colors = [] }) {
     }
   });
 
-  return { $canvas, init };
+  onUnmounted(() => {
+    confetti.value = [];
+  });
+
+  return { $canvas, start };
 }

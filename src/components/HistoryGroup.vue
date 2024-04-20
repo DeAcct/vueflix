@@ -86,12 +86,12 @@ function itemToggle(aniTitle) {
 
 <style lang="scss" scoped>
 .HistoryGroup {
-  width: min(100%, 124rem);
+  width: min(calc(100% - 4rem), 124rem);
   display: grid;
   --grid-repeat: 1;
   grid: auto-flow / repeat(var(--grid-repeat), 1fr);
   gap: 1.5rem 1rem;
-  padding: 0 2rem;
+  margin: 0 auto;
   &__Item {
     width: calc(var(--thumbnail-units) * 1px * var(--vw));
     flex-direction: column;

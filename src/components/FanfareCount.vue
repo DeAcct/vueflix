@@ -28,7 +28,7 @@ const props = defineProps({
   },
 });
 
-const { $canvas, init } = useFanfare({
+const { $canvas, start } = useFanfare({
   amount: 100,
   colors: [
     "240 159 144",
@@ -39,20 +39,20 @@ const { $canvas, init } = useFanfare({
   ],
 });
 
-// init($canvas.value);
+// start($canvas.value);
 const _count = ref(props.count);
 onMounted(() => {
   if (props.count < 0) {
     throw new Error("count must be positive");
   }
   if (props.count === 0) {
-    init();
+    start();
     return;
   }
   const interval = setInterval(() => {
     _count.value -= 1;
     if (_count.value === 0) {
-      init();
+      start();
     }
     if (_count.value === props.count * -1) {
       clearInterval(interval);

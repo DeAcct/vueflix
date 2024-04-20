@@ -8,6 +8,7 @@
       "
       class="NativeDialog__Close"
       v-show="visible && backdrop !== 'none'"
+      type="button"
     ></button>
     <Transition name="dialog-body">
       <div class="NativeDialog__Body" v-if="visible" ref="$body">
