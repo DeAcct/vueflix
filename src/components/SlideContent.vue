@@ -78,7 +78,7 @@ onMounted(async () => {
     mWebpBg: "_banner_m.webp",
     logo: ".png",
   };
-  const href = `${name}/${shortName}`;
+  const href = `/anime/${name}/${shortName}`;
   const tasks = await Promise.all(
     Object.values(EXTENSIONS).map((extension) => {
       return getDownloadURL(fireRef(storage, `${href}${extension}`));

@@ -34,7 +34,7 @@
                   :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
                 >
                   <OptimizedMedia
-                    :src="`${animeInfo.name}/${thumbnail}`"
+                    :src="`/anime/${animeInfo.name}/${thumbnail}`"
                     :alt="`${animeInfo.name} ${part} ${index} 미리보기 이미지`"
                     skelleton
                   />

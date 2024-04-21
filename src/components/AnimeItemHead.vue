@@ -2,13 +2,13 @@
   <header class="AnimeItemHead">
     <h1 class="blind">데레</h1>
     <OptimizedMedia
-      :src="`${animeInfo.name}/${animeInfo.poster}`"
+      :src="`/anime/${animeInfo.name}/${animeInfo.poster}`"
       :alt="`${animeInfo.name} 포스터`"
       class="AnimeItemHead__BG"
     />
     <div class="AnimeItemHead__AnimeInfo">
       <OptimizedMedia
-        :src="`${animeInfo.name}/${animeInfo.poster}`"
+        :src="`/anime/${animeInfo.name}/${animeInfo.poster}`"
         :alt="`${animeInfo.name} 포스터`"
         class="AnimeItemHead__Poster"
         skelleton

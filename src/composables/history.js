@@ -73,7 +73,7 @@ export function useHistory(select) {
 export function useParser(type) {
   if (type === "episode") {
     return {
-      thumbnail: ({ aniTitle, thumbnail }) => `${aniTitle}/${thumbnail}`,
+      thumbnail: ({ aniTitle, thumbnail }) => `/anime/${aniTitle}/${thumbnail}`,
       link: ({ aniTitle, part, index }) => ({
         picture: `/anime-play/${aniTitle}/${part}/${index}`,
         text: {
@@ -86,7 +86,7 @@ export function useParser(type) {
     };
   }
   return {
-    thumbnail: ({ aniTitle }) => `${aniTitle}/${aniTitle}.webp`,
+    thumbnail: ({ aniTitle }) => `/anime/${aniTitle}/${aniTitle}.webp`,
     link: ({ aniTitle }) => ({
       picture: {
         query: {

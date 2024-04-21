@@ -29,7 +29,7 @@
                 exact-active-class="AppHome__Image--Selected"
               >
                 <OptimizedMedia
-                  :src="`${aniTitle}/${thumbnail}`"
+                  :src="`/anime/${aniTitle}/${thumbnail}`"
                   :alt="`${aniTitle} ${part} ${index} 이어보기`"
                   skelleton
                 />
@@ -89,7 +89,7 @@
                 exact-active-class="AppHome__Image--Selected"
               >
                 <OptimizedMedia
-                  :src="`${escaper(anime)}/${escaper(anime)}.webp`"
+                  :src="`/anime/${escaper(anime)}/${escaper(anime)}.webp`"
                   :alt="`${anime} 포스터`"
                   skelleton
                 />
@@ -137,7 +137,7 @@
                 exact-active-class="AppHome__Image--Selected"
               >
                 <OptimizedMedia
-                  :src="`${escaper(anime)}/${escaper(anime)}.webp`"
+                  :src="`/anime/${escaper(anime)}/${escaper(anime)}.webp`"
                   :alt="`${anime} 포스터`"
                   skelleton
                 />
