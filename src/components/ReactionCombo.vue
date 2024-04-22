@@ -4,7 +4,7 @@
       <component :is="titleTag" class="ReactionCombo__Title"
         ><slot name="title"></slot
         ><span class="ReactionCombo__Counter">{{
-          reactions.length
+          reactions.allCount
         }}</span></component
       >
     </template>
@@ -12,8 +12,8 @@
       <WriteReaction
         class="ReactionCombo__Write"
         @mutate="onMutate"
-        :user="user"
-        :type="type"
+        :user
+        :type
         :parent="parent"
         @interact="setInteract"
       />
@@ -21,10 +21,12 @@
         tag="ul"
         name="reaction-list"
         class="ReactionCombo__List"
-        :class="{ 'ReactionCombo__List--Exist ': reactions?.length !== 0 }"
+        :class="{
+          'ReactionCombo__List--Exist': reactions.allCount !== 0,
+        }"
       >
         <ReactionItem
-          v-for="(reaction, index) in reactions"
+          v-for="(reaction, index) in reactions.visible"
           :key="reaction._id"
           :reaction-data="reaction"
           :user="user"
@@ -45,6 +47,12 @@
           <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
         </ReactionItem>
       </TransitionGroup>
+      <div class="ReactionCombo__End" ref="$ReadMore" v-if="!isLastPage">
+        <LoadAnimation
+          class="ReactionCombo__MoreLoadAnimation"
+          v-if="loadState === 'loading'"
+        />
+      </div>
     </div>
     <NativeDialog ref="$root" class="CheckModal">
       <template #title>
@@ -59,12 +67,14 @@
             type="button"
             class="CheckModal__Button CheckModal__Button--Accent"
             @click="applyMutate"
-            :icon="currentModal.isLoading"
           >
-            <template #icon>
-              <LoadAnimation class="CheckModal__Loading" />
-            </template>
-            <template #text>{{ currentModal.text }}</template>
+            <template #text>
+              <LoadAnimation
+                class="CheckModal__Loading"
+                v-if="loadState === 'mutating'"
+              />
+              {{ currentModal.text }}</template
+            >
           </VueflixBtn>
           <VueflixBtn
             component="button"
@@ -88,8 +98,16 @@
 
 import { computed, onMounted, ref } from "vue";
 
-import { Create, Read, Update, Delete } from "@/api/reaction";
+import {
+  Create,
+  Read,
+  ReadReactionCount,
+  Update,
+  Delete,
+} from "@/api/reaction";
 import { useAuth } from "@/store/auth";
+
+import { useIntersection } from "@/composables/intersection";
 
 import LoadAnimation from "./LoadAnimation.vue";
 import NativeDialog from "./NativeDialog.vue";
@@ -129,15 +147,36 @@ function setInteract(e) {
 
 const auth = useAuth();
 const user = computed(() => auth.user);
-const reactions = ref([]);
+const reactions = ref({ visible: [], allCount: 0 });
 
 const $root = ref(null);
+const loadState = ref("complete");
+const isLastPage = ref(false);
 onMounted(async () => {
-  reactions.value = await Read({
+  loadState.value = "loading";
+  await setReactions();
+  loadState.value = "complete";
+});
+/**
+ * @type { import("vue").Ref<"complete" | "loading" | "mutating">}
+ */
+async function setReactions() {
+  const target = {
     parent: props.parent,
     type: props.type,
+  };
+  const startDocId =
+    reactions.value.allCount <= 1
+      ? undefined
+      : reactions.value.visible.at(-1)?._id;
+  const { reactions: data, isLastPage: pageEnd } = await Read({
+    ...target,
+    startDocId,
   });
-});
+  reactions.value.visible.push(...data);
+  reactions.value.allCount = await ReadReactionCount(target);
+  isLastPage.value = pageEnd;
+}
 const methodMap = {
   create: {
     action: Create,
@@ -156,9 +195,8 @@ const currentModal = ref({
   method: "",
   text: "",
   data: null,
-  isLoading: false,
 });
-function onMutate(method, data) {
+async function onMutate(method, data) {
   // 일반적인 상황은 아니지만, 로그인하지 않은 상태에서 강제로 사용자가 댓글을 조작하는것을 방지
   if (!user.value) {
     return;
@@ -168,24 +206,34 @@ function onMutate(method, data) {
     text: methodMap[method].text,
     data,
   };
+  if (method === "create") {
+    await applyMutate();
+  }
   $root.value.show();
 }
 
 async function applyMutate() {
   const { method, data } = currentModal.value;
-  currentModal.value.isLoading = true;
+  loadState.value = "mutating";
   await methodMap[method].action(data);
-  reactions.value = await Read({
-    parent: props.parent,
-    type: props.type,
-  });
-  currentModal.value.isLoading = false;
+  await setReactions();
+  loadState.value = "complete";
   $root.value.close();
 }
 
 function requestTeleport(e) {
   emits("request-teleport", e);
 }
+
+const $ReadMore = ref(null);
+useIntersection($ReadMore, async () => {
+  if (isLastPage.value) {
+    return;
+  }
+  loadState.value = "loading";
+  await setReactions();
+  loadState.value = "complete";
+});
 </script>
 
 <style lang="scss" scoped>
@@ -241,6 +289,16 @@ function requestTeleport(e) {
       border-bottom: 1px solid hsl(var(--bg-200));
     }
   }
+  &__End {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    height: 20rem;
+  }
+  &__MoreLoadAnimation {
+    display: block;
+    width: 4rem;
+  }
 }
 
 .CheckModal {
@@ -278,8 +336,7 @@ function requestTeleport(e) {
 .reaction-list-move,
 .reaction-list-enter-active,
 .reaction-list-leave-active {
-  transition: all 0.5s ease;
-  transition-delay: calc(var(--delay-amount) * 100ms);
+  transition: all 300ms ease;
 }
 
 .reaction-list-enter-from,
@@ -304,6 +361,7 @@ function requestTeleport(e) {
     --dialog-translate: -50% -50%;
     --dialog-starting-translate: -50% 3rem;
     --dialog-max-width: 40rem;
+    --dialog-height: auto;
     --dialog-padding: 2rem;
     --dialog-border-radius: calc(var(--global-radius) * 2);
   }

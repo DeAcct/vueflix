@@ -37,23 +37,21 @@
     </div>
     <section class="AnimePlay__TitleRenderer">
       <div class="AnimePlay__Titles">
-        <h2
+        <GoBack
           class="AnimePlay__AniTitle loading-target"
           :class="nowEpisode && 'AnimePlay__AniTitle--Loaded'"
         >
-          <GoBack>
-            <template #content>
-              {{ route.params.title }}
-            </template>
-          </GoBack>
-        </h2>
-        <h3
+          <template #content>
+            {{ route.params.title }}
+          </template>
+        </GoBack>
+        <h2
           class="AnimePlay__EpisodeTitle loading-target"
           :class="nowEpisode && 'AnimePlay__EpisodeTitle--Loaded'"
         >
           {{ route.params.part }} {{ route.params.index }}
           {{ nowEpisode?.title }}
-        </h3>
+        </h2>
       </div>
       <button
         class="AnimeItemHead__ShareBtn"
@@ -84,7 +82,7 @@
     <ReactionCombo
       class="AnimePlay__Comments"
       type="comment"
-      title-tag="h4"
+      title-tag="h3"
       :parent="`${route.params.title} ${route.params.part} ${route.params.index}`"
       @interact="setInteract"
       @request-teleport="onRequestTeleport"
@@ -93,7 +91,7 @@
     </ReactionCombo>
     <ToTop
       class="AnimePlay__ToTop"
-      :class="scrollState === 'top' && 'AnimePlay__ToTop--Show'"
+      :class="scrollState !== 'top' && 'AnimePlay__ToTop--Show'"
     ></ToTop>
   </div>
 </template>
@@ -364,61 +362,17 @@ const { state: scrollState } = useScroll();
     border-radius: var(--global-radius);
     height: 30rem;
   }
-  // &__PartsAccordion {
-  //   --carousel-padding: 0;
-  //   --carousel-clip-radius: var(--global-radius);
-  //   --thumbnail-width: 35vw;
-  //   width: 100%;
-  // }
   &__Episodes {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
 
     --accordion-sticky-top: 0;
+    --episodes-z-index: var(--z-index-s1);
     --episodes-width: 100%;
     --episodes-action-width: 100%;
     margin-top: 0;
   }
-  // &__EpisodeItem {
-  //   --thumbnail-units: 33;
-  //   width: calc(var(--thumbnail-units) * 1px * var(--vw));
-  //   flex-direction: column;
-  // }
-  // &__Thumbnail {
-  //   width: calc(var(--thumbnail-units) * 1px * var(--vw));
-  //   position: relative;
-  //   overflow: hidden;
-  //   border-radius: var(--global-radius);
-  // }
-  // &__WatchPercent {
-  //   position: absolute;
-  //   bottom: 0;
-  //   width: 100%;
-  //   display: flex;
-  //   padding: 0.8rem;
-  //   background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
-  //   color: #fff;
-  //   font-size: 1.2rem;
-  //   align-items: flex-end;
-  // }
-  // &__TextLink {
-  //   display: flex;
-  //   flex-direction: column;
-  //   gap: 0.6rem;
-  // }
-  // &__PartIndex {
-  //   font-size: 1.4rem;
-  // }
-  // &__ThumbnailTitle {
-  //   display: -webkit-box;
-  //   -webkit-box-orient: vertical;
-  //   -webkit-line-clamp: 2;
-  //   text-overflow: ellipsis;
-  //   overflow: hidden;
-  //   font-size: 1.4rem;
-  //   line-height: 1.3;
-  // }
 
   &__Comments {
     z-index: 6;
@@ -529,6 +483,9 @@ const { state: scrollState } = useScroll();
     &__AniTitle {
       font-size: 1.5rem;
     }
+    &__EpisodeTitle {
+      font-size: 2rem;
+    }
 
     &__Parts {
       grid-area: v-bind("area.parts");
@@ -540,17 +497,6 @@ const { state: scrollState } = useScroll();
       &--Theater {
         margin-top: 2rem;
       }
-    }
-    &__EpisodeTitle {
-      font-size: 2rem;
-    }
-    &__PartsAccordion {
-      width: 100%;
-      --episode-gap: 1.6rem;
-      --thumbnail-width: 15rem;
-      --open-top-padding: 1.6rem;
-      --open-bottom-padding: 0.8rem;
-      gap: 1.2rem;
     }
     &__EpisodesCounter {
       font-size: 1.7rem;
@@ -572,14 +518,11 @@ const { state: scrollState } = useScroll();
       position: absolute;
       --accordion-direction: column;
     }
-    &__Thumbnail {
-      width: 25rem;
-      position: relative;
-    }
 
     &__Comments {
       grid-area: v-bind("area.comments");
       padding: 0;
+      --reaction-combo-title-padding: 0;
     }
 
     &__ToTop {

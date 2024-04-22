@@ -15,8 +15,7 @@
       class="AnimeReviews__Method AnimeReviews__Method--Review"
       type="review"
       title-tag="h3"
-      :ancestor="route.params.title"
-      :parent="route.params.title"
+      :parent="route.query.modal"
     >
       <template #title>리뷰</template>
     </ReactionCombo>

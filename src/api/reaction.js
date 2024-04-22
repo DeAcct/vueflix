@@ -1,4 +1,4 @@
-import { computed, watch } from "vue";
+import { computed, unref, watch } from "vue";
 import { useRoute } from "vue-router";
 import {
   doc,
@@ -11,6 +11,11 @@ import {
   deleteDoc,
   arrayRemove,
   getDoc,
+  orderBy,
+  limit,
+  getCountFromServer,
+  startAfter,
+  startAt,
 } from "firebase/firestore";
 
 import { db } from "@/utility/firebase";
@@ -62,40 +67,69 @@ export async function Create({ content, parent, type }) {
   await auth.syncUser();
 }
 
-/**
- * @param {{
- *  parent: string,
- *  type: "comment" | "review"
- * }}
- * 리액션(리뷰, 댓글) 목록을 새로 고칩니다.
- */
-export async function Read({ parent, type }) {
+export async function ReadReactionCount({ parent, type }) {
   const q = query(
     collection(db, "reaction"),
     where("parent", "==", parent),
     where("type", "==", type)
   );
-  let animeReactions = (await getDocs(q)).docs.map((reaction) =>
-    reaction.data()
-  );
+  const countResponse = await getCountFromServer(q);
+  const count = countResponse.data().count;
+  return count;
+}
 
-  animeReactions = animeReactions.toSorted(
-    (prev, next) => prev.time.toDate() - next.time.toDate()
-  );
+/**
+ * 리액션(리뷰, 댓글) 목록을 새로 고칩니다.
+ * @param {{
+ *  parent: string,
+ *  type: "comment" | "review",
+ *  pageSize: number,
+ *  page: number
+ * }} option 부모 문서의 id와 리액션 타입, 필요시 페이지 사이즈와 페이지를 받습니다.
+ */
+export async function Read({ parent, type, pageSize = 10, startDocId }) {
+  const _startDocId = unref(startDocId);
+  const _pageSize = unref(pageSize);
+
+  console.log(_pageSize, _startDocId, parent, type);
+  let q;
+  if (!_startDocId) {
+    q = query(
+      collection(db, "reaction"),
+      where("parent", "==", parent),
+      where("type", "==", type),
+      orderBy("time", "desc"),
+      limit(_pageSize)
+    );
+  } else {
+    console.log(_startDocId);
+    const docSnap = await getDoc(doc(collection(db, "reaction"), _startDocId));
+    q = query(
+      collection(db, "reaction"),
+      where("parent", "==", parent),
+      where("type", "==", type),
+      orderBy("time", "desc"),
+      startAt(docSnap),
+      limit(_pageSize)
+    );
+  }
+  let reactions = (await getDocs(q)).docs.map((reaction) => reaction.data());
+  console.log(reactions);
 
   // 로그인한 상태라면 내가 먼저 보이도록 다시 정렬
   const auth = useAuth();
   const user = computed(() => auth.user);
   if (user) {
-    animeReactions = animeReactions.toSorted((prev, next) => {
+    reactions = reactions.toSorted((prev, next) => {
       if (prev.uid === user.uid) {
         return 1;
       }
-      return -1;
     });
   }
 
-  return animeReactions;
+  const isLastPage = reactions.length < _pageSize;
+
+  return { reactions, isLastPage };
 }
 
 /**

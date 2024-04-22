@@ -51,7 +51,6 @@
 <script setup>
 import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
 import { ref, computed } from "vue";
-import { Create } from "@/api/reaction";
 import { useAuth } from "@/store/auth";
 
 const emits = defineEmits(["mutate", "interact"]);

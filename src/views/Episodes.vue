@@ -182,7 +182,10 @@ function clear() {
     --episode-gap: 1.2rem;
     --thumbnail-width: 14rem;
     --accordion-sticky-top: var(--episodes-sticky-top, 0);
-    --accordion-z-index: calc(var(--z-index-overay-1) + 1);
+    --accordion-z-index: var(
+      --episodes-z-index,
+      calc(var(--z-index-overay-1) + 1)
+    );
   }
   &__Item {
     padding: 0;

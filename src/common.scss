@@ -65,6 +65,7 @@ svg {
   box-sizing: border-box;
   word-break: keep-all;
   float: none;
+  text-align: left;
 }
 ::selection {
   background-color: hsl(var(--theme-500));

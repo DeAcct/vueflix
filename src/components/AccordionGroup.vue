@@ -3,7 +3,7 @@
     <summary class="AccordionGroup__PartTitle" data-pointer="true">
       <slot name="title"></slot>
       <i class="AccordionGroup__OpenIcon">
-        <IconBase :icon-name="open ? '닫기' : '열기'">
+        <IconBase>
           <IconArrowPrev />
         </IconBase>
       </i>
