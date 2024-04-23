@@ -38,7 +38,6 @@ defineProps({
 
 const { visible, show, close } = useOveray({
   time: Infinity,
-  overflowHidden: true,
 });
 const $body = ref(null);
 defineExpose({

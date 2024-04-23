@@ -12,6 +12,7 @@ export function useIntersection(targetElement, cb) {
 
   onMounted(() => {
     const _targetElement = unref(targetElement);
+    console.log(_targetElement);
     observer.observe(_targetElement);
   });
 

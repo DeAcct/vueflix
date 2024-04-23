@@ -37,14 +37,18 @@
     </div>
     <section class="AnimePlay__TitleRenderer">
       <div class="AnimePlay__Titles">
-        <GoBack
+        <RouterLink
           class="AnimePlay__AniTitle loading-target"
           :class="nowEpisode && 'AnimePlay__AniTitle--Loaded'"
+          :to="{
+            name: 'home',
+            query: {
+              modal: route.params.title,
+              route: 'episodes',
+            },
+          }"
+          >{{ route.params.title }}</RouterLink
         >
-          <template #content>
-            {{ route.params.title }}
-          </template>
-        </GoBack>
         <h2
           class="AnimePlay__EpisodeTitle loading-target"
           :class="nowEpisode && 'AnimePlay__EpisodeTitle--Loaded'"
@@ -102,7 +106,7 @@
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 
 import { onMounted, onUnmounted, ref, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import { useAuth } from "@/store/auth";
 
 import { useMaratonData } from "@/api/maraton";

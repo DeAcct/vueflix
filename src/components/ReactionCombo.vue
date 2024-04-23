@@ -47,7 +47,7 @@
           <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
         </ReactionItem>
       </TransitionGroup>
-      <div class="ReactionCombo__End" ref="$ReadMore" v-if="!isLastPage">
+      <div class="ReactionCombo__End" ref="$ReadMore">
         <LoadAnimation
           class="ReactionCombo__MoreLoadAnimation"
           v-if="loadState === 'loading'"
@@ -96,7 +96,7 @@
 // 리뷰는 애니메이션에 작성하는 항목
 // 코멘트는 각 에피소드마다 작성하는 항목
 
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 import {
   Create,
@@ -115,6 +115,7 @@ import VueflixBtn from "./VueflixBtn.vue";
 import WriteReaction from "./WriteReaction.vue";
 import ReactionItem from "./ReactionItem.vue";
 import ReactionParser from "./ReactionParser.vue";
+import { endAt, limit, orderBy, startAfter } from "firebase/firestore";
 
 const props = defineProps({
   type: {
@@ -150,32 +151,49 @@ const user = computed(() => auth.user);
 const reactions = ref({ visible: [], allCount: 0 });
 
 const $root = ref(null);
-const loadState = ref("complete");
-const isLastPage = ref(false);
-onMounted(async () => {
-  loadState.value = "loading";
-  await setReactions();
-  loadState.value = "complete";
-});
 /**
  * @type { import("vue").Ref<"complete" | "loading" | "mutating">}
  */
-async function setReactions() {
-  const target = {
+const loadState = ref("complete");
+// const isLastPage = ref(false);
+const lastDoc = ref(null);
+const isLastPage = computed(() => {
+  return reactions.value.visible.length === reactions.value.allCount;
+});
+watch(
+  () => props.parent,
+  async () => {
+    loadState.value = "loading";
+    await sync();
+    loadState.value = "complete";
+  },
+  { immediate: true }
+);
+async function sync() {
+  const { reactions: data, lastDoc: last } = await Read(
+    { parent: props.parent, type: props.type },
+    orderBy("time", "desc"),
+    lastDoc.value ? endAt(lastDoc.value) : limit(10)
+  );
+  reactions.value.visible = data;
+  reactions.value.allCount = await ReadReactionCount({
     parent: props.parent,
     type: props.type,
-  };
-  const startDocId =
-    reactions.value.allCount <= 1
-      ? undefined
-      : reactions.value.visible.at(-1)?._id;
-  const { reactions: data, isLastPage: pageEnd } = await Read({
-    ...target,
-    startDocId,
   });
+  lastDoc.value = last;
+}
+async function readMore() {
+  const { reactions: data, lastDoc: last } = await Read(
+    {
+      parent: props.parent,
+      type: props.type,
+    },
+    orderBy("time", "desc"),
+    startAfter(lastDoc.value),
+    limit(10)
+  );
   reactions.value.visible.push(...data);
-  reactions.value.allCount = await ReadReactionCount(target);
-  isLastPage.value = pageEnd;
+  lastDoc.value = last;
 }
 const methodMap = {
   create: {
@@ -216,7 +234,7 @@ async function applyMutate() {
   const { method, data } = currentModal.value;
   loadState.value = "mutating";
   await methodMap[method].action(data);
-  await setReactions();
+  await sync();
   loadState.value = "complete";
   $root.value.close();
 }
@@ -231,7 +249,7 @@ useIntersection($ReadMore, async () => {
     return;
   }
   loadState.value = "loading";
-  await setReactions();
+  await readMore();
   loadState.value = "complete";
 });
 </script>
@@ -294,6 +312,7 @@ useIntersection($ReadMore, async () => {
     justify-content: center;
     padding: 2rem;
     height: 20rem;
+    margin-top: -20rem;
   }
   &__MoreLoadAnimation {
     display: block;
