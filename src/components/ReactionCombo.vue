@@ -47,11 +47,8 @@
           <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
         </ReactionItem>
       </TransitionGroup>
-      <div class="ReactionCombo__End" ref="$ReadMore">
-        <LoadAnimation
-          class="ReactionCombo__MoreLoadAnimation"
-          v-if="loadState === 'loading'"
-        />
+      <div class="ReactionCombo__End" ref="$ReadMore" v-if="!isLastPage">
+        <LoadAnimation class="ReactionCombo__MoreLoadAnimation" />
       </div>
     </div>
     <NativeDialog ref="$root" class="CheckModal">
@@ -96,7 +93,7 @@
 // 리뷰는 애니메이션에 작성하는 항목
 // 코멘트는 각 에피소드마다 작성하는 항목
 
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 import {
   Create,
@@ -155,17 +152,17 @@ const $root = ref(null);
  * @type { import("vue").Ref<"complete" | "loading" | "mutating">}
  */
 const loadState = ref("complete");
-// const isLastPage = ref(false);
 const lastDoc = ref(null);
 const isLastPage = computed(() => {
   return reactions.value.visible.length === reactions.value.allCount;
 });
+// const isLastPage = ref(false);
 watch(
   () => props.parent,
   async () => {
-    loadState.value = "loading";
     await sync();
-    loadState.value = "complete";
+    // isLastPage.value =
+    //   reactions.value.visible.length === reactions.value.allCount;
   },
   { immediate: true }
 );
@@ -194,6 +191,8 @@ async function readMore() {
   );
   reactions.value.visible.push(...data);
   lastDoc.value = last;
+  // isLastPage.value =
+  //   reactions.value.visible.length === reactions.value.allCount;
 }
 const methodMap = {
   create: {
@@ -235,6 +234,8 @@ async function applyMutate() {
   loadState.value = "mutating";
   await methodMap[method].action(data);
   await sync();
+  isLastPage.value =
+    reactions.value.visible.length === reactions.value.allCount;
   loadState.value = "complete";
   $root.value.close();
 }
@@ -248,9 +249,7 @@ useIntersection($ReadMore, async () => {
   if (isLastPage.value) {
     return;
   }
-  loadState.value = "loading";
   await readMore();
-  loadState.value = "complete";
 });
 </script>
 
@@ -312,7 +311,6 @@ useIntersection($ReadMore, async () => {
     justify-content: center;
     padding: 2rem;
     height: 20rem;
-    margin-top: -20rem;
   }
   &__MoreLoadAnimation {
     display: block;
@@ -361,7 +359,7 @@ useIntersection($ReadMore, async () => {
 .reaction-list-enter-from,
 .reaction-list-leave-to {
   opacity: 0;
-  translate: 3rem 0;
+  translate: 0 3rem;
 }
 
 .reaction-list-leave-active {

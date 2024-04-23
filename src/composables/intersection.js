@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, unref } from "vue";
+import { watch, onUnmounted, unref } from "vue";
 
 export function useIntersection(targetElement, cb) {
   const observer = new IntersectionObserver((entries) => {
@@ -10,9 +10,12 @@ export function useIntersection(targetElement, cb) {
     });
   });
 
-  onMounted(() => {
+  watch(targetElement, () => {
+    if (!targetElement.value) {
+      observer.disconnect();
+      return;
+    }
     const _targetElement = unref(targetElement);
-    console.log(_targetElement);
     observer.observe(_targetElement);
   });
 
