@@ -55,7 +55,7 @@ const isSmall = useMediaQuery("(max-width: 1080px)");
 
 const router = useRouter();
 function closeSideEffect() {
-  router.push({ name: "home", query: null });
+  router.push({ query: null });
 }
 
 const theme = useTheme();
