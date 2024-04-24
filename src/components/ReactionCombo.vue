@@ -26,12 +26,11 @@
         }"
       >
         <ReactionItem
-          v-for="(reaction, index) in reactions.visible"
+          v-for="reaction in reactions.visible"
           :key="reaction._id"
           :reaction-data="reaction"
           :user="user"
           :type="type"
-          :style="`--delay-amount:${index};`"
           @mutate="onMutate"
           @interact="setInteract"
           class="ReactionCombo__Item"
@@ -51,39 +50,41 @@
         <LoadAnimation class="ReactionCombo__MoreLoadAnimation" />
       </div>
     </div>
-    <NativeDialog ref="$root" class="CheckModal">
-      <template #title>
-        <strong class="CheckModal__Title">
-          정말 {{ currentModal.text }}하시겠습니까?
-        </strong>
-      </template>
-      <template #control>
-        <div class="CheckModal__Control">
-          <VueflixBtn
-            component="button"
-            type="button"
-            class="CheckModal__Button CheckModal__Button--Accent"
-            @click="applyMutate"
-          >
-            <template #text>
-              <LoadAnimation
-                class="CheckModal__Loading"
-                v-if="loadState === 'mutating'"
-              />
-              {{ currentModal.text }}</template
+    <Teleport to="#Overay">
+      <NativeDialog ref="$root" class="CheckModal">
+        <template #title>
+          <strong class="CheckModal__Title">
+            정말 {{ currentModal.text }}하시겠습니까?
+          </strong>
+        </template>
+        <template #control>
+          <div class="CheckModal__Control">
+            <VueflixBtn
+              component="button"
+              type="button"
+              class="CheckModal__Button CheckModal__Button--Accent"
+              @click="applyMutate"
             >
-          </VueflixBtn>
-          <VueflixBtn
-            component="button"
-            type="button"
-            class="CheckModal__Button"
-            @click="$root.close"
-          >
-            <template #text>취소</template>
-          </VueflixBtn>
-        </div>
-      </template>
-    </NativeDialog>
+              <template #text>
+                <LoadAnimation
+                  class="CheckModal__Loading"
+                  v-if="loadState === 'mutating'"
+                />
+                {{ currentModal.text }}</template
+              >
+            </VueflixBtn>
+            <VueflixBtn
+              component="button"
+              type="button"
+              class="CheckModal__Button"
+              @click="$root.close"
+            >
+              <template #text>취소</template>
+            </VueflixBtn>
+          </div>
+        </template>
+      </NativeDialog>
+    </Teleport>
   </section>
 </template>
 
@@ -225,6 +226,7 @@ async function onMutate(method, data) {
   };
   if (method === "create") {
     await applyMutate();
+    return;
   }
   $root.value.show();
 }

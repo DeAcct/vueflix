@@ -92,30 +92,9 @@ export async function Read({ parent, type }, ...queryOption) {
     where("type", "==", type),
     ...queryOption
   );
-  // if (!_startDoc) {
-  //   q = query(
-  //     collection(db, "reaction"),
-  //     where("parent", "==", parent),
-  //     where("type", "==", type),
-  //     orderBy("time", "desc"),
-  //     limit(_pageSize)
-  //   );
-  // } else {
-  //   const docSnap = await getDoc(doc(collection(db, "reaction"), _startDocId));
-  //   q = query(
-  //     collection(db, "reaction"),
-  //     where("parent", "==", parent),
-  //     where("type", "==", type),
-  //     orderBy("time", "desc"),
-  //     startAt(docSnap),
-  //     limit(_pageSize)
-  //   );
-  // }
   const docs = (await getDocs(q)).docs;
   let reactions = docs.map((reaction) => reaction.data());
   const lastDoc = docs[docs.length - 1];
-  // .map((reaction) => reaction.data());
-  // console.log(reactions);
 
   // 로그인한 상태라면 내가 먼저 보이도록 다시 정렬
   const auth = useAuth();
@@ -127,8 +106,6 @@ export async function Read({ parent, type }, ...queryOption) {
       }
     });
   }
-
-  // const isLastPage = reactions.length < _pageSize;
 
   return { reactions, lastDoc };
 }

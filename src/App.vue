@@ -8,7 +8,7 @@
     >
       <component :is="Component"></component>
     </Transition>
-    <NativeDialog ref="$AnimeDialog" class="AnimeDialog">
+    <NativeDialog ref="$AnimeDialog" :close-side-effect class="AnimeDialog">
       <template #title>
         <DialogNavigation class="AnimeDialog__Navigation" :scroll-state>
           <template #activity-name>
@@ -33,6 +33,7 @@
 
 <script setup>
 import { onMounted, watch, ref, computed } from "vue";
+import { useRouter } from "vue-router";
 
 import { useTheme } from "@/store/theme";
 
@@ -51,6 +52,11 @@ import VueflixHeader from "@/components/VueflixHeader.vue";
 
 // const isTouchable = useMediaQuery("not (hover: hover) and (pointer: fine)");
 const isSmall = useMediaQuery("(max-width: 1080px)");
+
+const router = useRouter();
+function closeSideEffect() {
+  router.push({ name: "home", query: null });
+}
 
 const theme = useTheme();
 onMounted(() => {

@@ -25,8 +25,9 @@
 <script setup>
 import { ref } from "vue";
 import { useOveray } from "@/composables/overay";
+import { useEventListener } from "@vueuse/core";
 
-defineProps({
+const props = defineProps({
   backdrop: {
     type: String,
     validator(value) {
@@ -34,12 +35,30 @@ defineProps({
     },
     default: "close",
   },
+  closeSideEffect: {
+    type: Function,
+    default: () => {},
+  },
 });
 
-const { visible, show, close } = useOveray({
+const {
+  visible,
+  show,
+  close: _close,
+} = useOveray({
   time: Infinity,
 });
+function close() {
+  _close();
+  props.closeSideEffect();
+}
 const $body = ref(null);
+useEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    close();
+  }
+});
+
 defineExpose({
   show,
   close,

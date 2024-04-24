@@ -1,14 +1,14 @@
 <template>
   <div class="DialogNavigation">
     <div class="wrap">
-      <GoBack class="DialogNavigation__Button">
-        <template #content>
-          <IconBase>
-            <IconArrowPrev class="mobile" />
-            <IconClose class="desktop" />
-          </IconBase>
-        </template>
-      </GoBack>
+      <RouterLink
+        class="DialogNavigation__Button DialogNavigation__Button--Close mobile"
+        to="/"
+      >
+        <IconBase>
+          <IconArrowPrev />
+        </IconBase>
+      </RouterLink>
       <strong
         class="DialogNavigation__ActivityName"
         :class="
@@ -26,6 +26,14 @@
           <IconShare />
         </IconBase>
       </button>
+      <RouterLink
+        class="DialogNavigation__Button DialogNavigation__Button--Close desktop"
+        to="/"
+      >
+        <IconBase>
+          <IconClose />
+        </IconBase>
+      </RouterLink>
     </div>
   </div>
 </template>
@@ -33,8 +41,6 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { computed } from "vue";
-
-import GoBack from "./GoBack.vue";
 
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
@@ -75,6 +81,7 @@ const padding = computed(() => {
     width: 100%;
     align-items: center;
     height: 2.4rem;
+    gap: 0.5rem;
   }
 
   &__Button {
@@ -87,7 +94,6 @@ const padding = computed(() => {
   }
 
   &__ActivityName {
-    margin-left: 0.5rem;
     margin-right: auto;
     font-size: 1.7rem;
     height: 2.4rem;
@@ -117,10 +123,10 @@ const padding = computed(() => {
     padding: v-bind(padding);
     .wrap {
       height: 4.8rem;
+      gap: 1rem;
     }
     &__ActivityName {
       translate: 0 0;
-      margin-left: 1rem;
     }
     &__Button {
       width: 4.8rem;
@@ -133,7 +139,7 @@ const padding = computed(() => {
       border-radius: 50%;
     }
     .desktop {
-      display: block;
+      display: flex;
     }
     .mobile {
       display: none;
