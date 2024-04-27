@@ -45,8 +45,8 @@ import { useMediaQuery, useViewport } from "@/composables/device";
 import AnimeLayout from "./layout/Anime.layout.vue";
 
 import BottomTabMenu from "@/components/BottomTabMenu.vue";
-import DialogNavigation from "./components/DialogNavigation.vue";
-import NativeDialog from "./components/NativeDialog.vue";
+import DialogNavigation from "@/components/DialogNavigation.vue";
+import NativeDialog from "@/components/NativeDialog.vue";
 import ToTop from "@/components/ToTop.vue";
 import VueflixHeader from "@/components/VueflixHeader.vue";
 

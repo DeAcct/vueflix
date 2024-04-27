@@ -92,6 +92,23 @@
       @request-teleport="onRequestTeleport"
     >
       <template #title>댓글</template>
+      <template #description>
+        <div class="AnimePlay__StickyPrevent">
+          <AccordionGroup open class="AnimePlay__Description">
+            <template #title>댓글 안내</template>
+            <template #content>
+              <ul class="AnimePlay__DescList">
+                <li class="AnimePlay__DescText">
+                  댓글은 에피소드를 보고 느낀 점을 자유롭게 나누는 공간입니다.
+                </li>
+                <li class="AnimePlay__DescText">
+                  시간:분:초 형식으로 작성하면 애니 시간을 첨부할 수 있어요.
+                </li>
+              </ul>
+            </template>
+          </AccordionGroup>
+        </div>
+      </template>
     </ReactionCombo>
     <ToTop
       class="AnimePlay__ToTop"
@@ -116,12 +133,12 @@ import { useHead } from "@/composables/head";
 
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
 import Episodes from "@/views/Episodes.vue";
-import GoBack from "@/components/GoBack.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
 import ToTop from "@/components/ToTop.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconShare from "@/components/icons/IconShare.vue";
+import AccordionGroup from "../components/AccordionGroup.vue";
 
 const mode = ref("normal");
 const area = computed(() => {
@@ -382,7 +399,26 @@ const { state: scrollState } = useScroll();
     z-index: 6;
     font-size: 1.6rem;
     max-width: unset;
-    width: 100%;
+    margin: 0 auto;
+  }
+  &__Description {
+    --accordion-bg: transparent;
+    --accordion-sticky-top: 0;
+    --accordion-title-weight: 700;
+    // --accordion-title-padding: 1.2rem 0;
+    margin-bottom: 1.2rem;
+    background-color: hsl(var(--bg-200));
+  }
+  &__DescList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 0 2rem 2rem;
+  }
+  &__DescText {
+    font-size: 1.4rem;
+    list-style: disc;
+    margin-left: 2rem;
   }
 
   &__ToTop {

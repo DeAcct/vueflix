@@ -325,7 +325,7 @@ useEventListener(document, "fullscreenchange", () => {
 const isMuted = ref(false);
 function toggleMuted() {
   isMuted.value = !isMuted.value;
-  emits("change-volume", isMuted.value ? 0 : 100);
+  emits("change-volume", isMuted.value ? 0 : 1);
 }
 watch(
   () => props.volume,
@@ -338,7 +338,7 @@ function onChangePlayProgress(e) {
   emits("change-play-progress", Number(e.target.value) / props.progress.max);
 }
 function onVolumeChange(e) {
-  emits("change-volume", e);
+  emits("change-volume", e.target.value);
 }
 </script>
 

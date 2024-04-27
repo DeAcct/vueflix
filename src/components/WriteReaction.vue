@@ -87,11 +87,7 @@ const placeholder = computed(() => {
       REACTION_ENUM_WITH_PARTICLE[props.type]
     } 남기려면 먼저 로그인을 해주세요`;
   }
-  return `여기를 눌러 ${REACTION_ENUM_WITH_PARTICLE[props.type]} 작성하세요.${
-    props.type === "comment"
-      ? "\n시간:분:초 형식으로 작성하면 애니 시간을 첨부할 수 있어요!"
-      : ""
-  } `;
+  return `여기를 눌러 ${REACTION_ENUM_WITH_PARTICLE[props.type]} 작성하세요.`;
 });
 
 const reviewData = ref("");

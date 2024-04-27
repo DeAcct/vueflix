@@ -27,20 +27,23 @@ import IconArrowPrev from "./icons/IconArrowPrev.vue";
     position: sticky;
     top: var(--accordion-sticky-top, 6rem);
     z-index: var(--accordion-z-index, var(--z-index-s1));
-    background: linear-gradient(
-      150deg,
-      hsl(var(--bg-400) / 0.75),
-      hsl(var(--bg-400) / 0.5)
+    background: var(
+      --accordion-bg,
+      linear-gradient(
+        150deg,
+        hsl(var(--bg-400) / 0.75),
+        hsl(var(--bg-400) / 0.5)
+      )
     );
     backdrop-filter: blur(10px);
     border-radius: var(--global-radius);
-    padding: 1.5rem 2rem;
+    padding: var(--accordion-title-padding, 1.5rem 2rem);
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 1.4rem;
-    font-weight: 900;
+    font-weight: var(--accordion-title-weight, 900);
   }
   &__OpenIcon {
     display: flex;

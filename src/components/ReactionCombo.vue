@@ -8,6 +8,7 @@
         }}</span></component
       >
     </template>
+    <slot name="description"></slot>
     <div class="ReactionCombo__Body">
       <WriteReaction
         class="ReactionCombo__Write"
@@ -264,7 +265,7 @@ useIntersection($ReadMore, async () => {
   &__Title {
     font-size: inherit;
     font-weight: 700;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.6rem;
     display: flex;
     gap: 0.4rem;
     padding: 0 var(--reaction-combo-title-padding, 2rem);

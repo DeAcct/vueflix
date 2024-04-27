@@ -197,7 +197,6 @@ function clear() {
   }
   &__WatchPercent {
     position: absolute;
-    z-index: 2;
     width: 100%;
     flex-shrink: 0;
     font-size: 1.3rem;

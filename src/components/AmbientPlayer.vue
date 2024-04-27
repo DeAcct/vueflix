@@ -304,9 +304,8 @@ const volume = reactive({
   max: 1,
 });
 function onVolumeChange(e) {
-  volume.current = e.target.value;
+  volume.current = e;
   $video.value.volume = volume.current;
-  console.log($video.value.volume);
 }
 function volumeDown() {
   if (volume.current <= 0) {
