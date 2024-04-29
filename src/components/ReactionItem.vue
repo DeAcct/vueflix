@@ -3,10 +3,10 @@
     <div class="ReactionItem__Meta">
       <component
         :is="metaModal ? 'button' : 'div'"
-        :type="metaModal ? 'button' : undefined"
         class="ReactionItem__OpenMetaButton"
-        :disabled="!meta"
-        @click="metaModal && $root.show()"
+        :type="metaModal ? 'button' : undefined"
+        :disabled="metaModal && !meta"
+        @click="metaModal && requestMetaModal()"
       >
         <OptimizedMedia
           :src="meta.profileImg.name"
@@ -83,7 +83,7 @@
         </button>
       </div>
     </div>
-    <NativeDialog ref="$root" class="ReactionItem__MetaModal" v-if="metaModal">
+    <!-- <NativeDialog ref="$root" class="ReactionItem__MetaModal" v-if="metaModal">
       <template #content>
         <StatCard :uid="reactionData.uid" class="ReactionItem__Data" />
       </template>
@@ -97,7 +97,7 @@
           <template #text> 닫기 </template>
         </VueflixBtn>
       </template>
-    </NativeDialog>
+    </NativeDialog> -->
   </component>
 </template>
 
@@ -110,10 +110,7 @@ import { useAuth } from "@/store/auth";
 import { useUserMeta } from "@/api/userMeta";
 import { useFormatDate } from "@/composables/formatter";
 
-import NativeDialog from "./NativeDialog.vue";
 import OptimizedMedia from "./OptimizedMedia.vue";
-import StatCard from "./StatCard.vue";
-import VueflixBtn from "./VueflixBtn.vue";
 import UpdownReaction from "./UpdownReaction.vue";
 import Aqua from "@/assets/aqua.svg";
 
@@ -156,8 +153,11 @@ const props = defineProps({
 const self = computed(() => props.user?.uid === props.reactionData.uid);
 const { date: formattedDate } = useFormatDate(props.reactionData.time.toDate());
 const meta = useUserMeta(props.reactionData.uid);
+function requestMetaModal() {
+  emits("meta-modal", meta.value);
+}
 
-const $root = ref(null);
+// const $root = ref(null);
 
 const editValue = ref(temporalRemoveTimeFlag());
 function temporalRemoveTimeFlag() {
@@ -178,7 +178,7 @@ function editTrigger() {
   mode.value = mode.value === "edit" ? "show" : "edit";
   emits("interact", mode.value === "edit");
 }
-const emits = defineEmits(["mutate", "interact"]);
+const emits = defineEmits(["mutate", "interact", "meta-modal"]);
 
 const auth = useAuth();
 const user = computed(() => auth.user);
@@ -197,7 +197,6 @@ async function updateReaction() {
   emits("interact", false);
 }
 async function deleteTrigger() {
-  // await Delete({ id: props.reactionData._id, user });
   emits("mutate", "delete", {
     id: props.reactionData._id,
     user,
@@ -212,10 +211,6 @@ async function deleteTrigger() {
   justify-content: space-between;
   padding: 2rem;
 
-  // &__MetaData {
-  //   display: flex;
-  //   align-items: center;
-  // }
   &__Meta {
     display: flex;
     align-items: center;
@@ -339,26 +334,6 @@ async function deleteTrigger() {
       color: #fff;
     }
   }
-  &__SubReplyList {
-    margin-top: 1rem;
-    width: 100%;
-  }
-  &__MetaModal {
-    --dialog-inset: auto auto 0 auto;
-    --dialog-translate: 0;
-    --dialog-padding: 2rem;
-    --dialog-max-width: 100%;
-    --dialog-border-radius: calc(var(--global-radius) * 2)
-      calc(var(--global-radius) * 2) 0 0;
-  }
-  &__Data {
-    padding: 0;
-  }
-  &__CloseBtn {
-    margin-top: 0.8rem;
-    margin-left: auto;
-    box-shadow: none !important;
-  }
 }
 
 .down-fade-enter-active,
@@ -383,13 +358,6 @@ async function deleteTrigger() {
     }
     &__Content {
       font-size: 1.5rem;
-    }
-    &__MetaModal {
-      --dialog-inset: 50% auto auto 50%;
-      --dialog-translate: -50% -50%;
-      --dialog-max-width: 50rem;
-      --dialog-starting-translate: -50% 3rem;
-      --dialog-border-radius: calc(var(--global-radius) * 2);
     }
     .row-top {
       margin-bottom: 0.5rem;

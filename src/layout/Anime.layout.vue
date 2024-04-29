@@ -72,10 +72,14 @@
       <Transition name="anime-layout">
         <component
           :is="children[routeIndex].component"
-          :anime-info
+          :anime-info="
+            children[routeIndex].name === 'episodes' ? animeInfo : undefined
+          "
           @open-login-modal="openLoginModal"
           :key="children[routeIndex].name"
-          :sort-base
+          :sort-base="
+            children[routeIndex].name === 'episodes' ? sortBase : undefined
+          "
           @toggle-sort="toggleSort"
         ></component>
       </Transition>

@@ -34,6 +34,7 @@
           :type="type"
           @mutate="onMutate"
           @interact="setInteract"
+          @meta-modal="onMetaModal"
           class="ReactionCombo__Item"
           actions
           meta-modal
@@ -52,10 +53,10 @@
       </div>
     </div>
     <Teleport to="#Overay">
-      <NativeDialog ref="$root" class="CheckModal">
+      <NativeDialog ref="$CheckModal" class="CheckModal">
         <template #title>
           <strong class="CheckModal__Title">
-            정말 {{ currentModal.text }}하시겠습니까?
+            정말 {{ checkModal.text }}하시겠습니까?
           </strong>
         </template>
         <template #control>
@@ -71,18 +72,33 @@
                   class="CheckModal__Loading"
                   v-if="loadState === 'mutating'"
                 />
-                {{ currentModal.text }}</template
-              >
+                {{ checkModal.text }}
+              </template>
             </VueflixBtn>
             <VueflixBtn
               component="button"
               type="button"
               class="CheckModal__Button"
-              @click="$root.close"
+              @click="$CheckModal.close"
             >
               <template #text>취소</template>
             </VueflixBtn>
           </div>
+        </template>
+      </NativeDialog>
+      <NativeDialog ref="$MetaModal" class="MetaModal">
+        <template #content>
+          <StatCard :uid class="MetaModal__Data" />
+        </template>
+        <template #control>
+          <VueflixBtn
+            component="button"
+            class="MetaModal__CloseBtn"
+            @click="$MetaModal.close"
+            type="button"
+          >
+            <template #text> 닫기 </template>
+          </VueflixBtn>
         </template>
       </NativeDialog>
     </Teleport>
@@ -96,6 +112,7 @@
 // 코멘트는 각 에피소드마다 작성하는 항목
 
 import { computed, ref, watch } from "vue";
+import { endAt, limit, orderBy, startAfter } from "firebase/firestore";
 
 import {
   Create,
@@ -114,7 +131,7 @@ import VueflixBtn from "./VueflixBtn.vue";
 import WriteReaction from "./WriteReaction.vue";
 import ReactionItem from "./ReactionItem.vue";
 import ReactionParser from "./ReactionParser.vue";
-import { endAt, limit, orderBy, startAfter } from "firebase/firestore";
+import StatCard from "./StatCard.vue";
 
 const props = defineProps({
   type: {
@@ -149,7 +166,6 @@ const auth = useAuth();
 const user = computed(() => auth.user);
 const reactions = ref({ visible: [], allCount: 0 });
 
-const $root = ref(null);
 /**
  * @type { import("vue").Ref<"complete" | "loading" | "mutating">}
  */
@@ -210,7 +226,8 @@ const methodMap = {
     text: "삭제",
   },
 };
-const currentModal = ref({
+const $CheckModal = ref(null);
+const checkModal = ref({
   method: "",
   text: "",
   data: null,
@@ -220,7 +237,7 @@ async function onMutate(method, data) {
   if (!user.value) {
     return;
   }
-  currentModal.value = {
+  checkModal.value = {
     method,
     text: methodMap[method].text,
     data,
@@ -229,22 +246,29 @@ async function onMutate(method, data) {
     await applyMutate();
     return;
   }
-  $root.value.show();
+  $CheckModal.value.show();
 }
 
 async function applyMutate() {
-  const { method, data } = currentModal.value;
+  const { method, data } = checkModal.value;
   loadState.value = "mutating";
   await methodMap[method].action(data);
   await sync();
   isLastPage.value =
     reactions.value.visible.length === reactions.value.allCount;
   loadState.value = "complete";
-  $root.value.close();
+  $CheckModal.value.close();
 }
 
 function requestTeleport(e) {
   emits("request-teleport", e);
+}
+
+const $MetaModal = ref(null);
+const uid = ref(null);
+function onMetaModal({ uid: _uid }) {
+  uid.value = _uid;
+  $MetaModal.value.show();
 }
 
 const $ReadMore = ref(null);
@@ -321,12 +345,16 @@ useIntersection($ReadMore, async () => {
   }
 }
 
-.CheckModal {
+.NativeDialog {
+  position: fixed;
+  z-index: 200;
   --dialog-inset: auto auto 0 0;
   --dialog-translate: 0 0;
   --dialog-max-width: 100%;
   --dialog-border-radius: calc(var(--global-radius) * 2)
     calc(var(--global-radius) * 2) 0 0;
+}
+.CheckModal {
   &__Title {
     margin-bottom: 1.2rem;
     font-size: 1.6rem;
@@ -350,6 +378,17 @@ useIntersection($ReadMore, async () => {
   }
   &__Loading {
     width: 1.2rem;
+  }
+}
+.MetaModal {
+  --dialog-padding: 2rem;
+  &__Data {
+    padding: 0;
+  }
+  &__CloseBtn {
+    margin-top: 0.8rem;
+    margin-left: auto;
+    box-shadow: none !important;
   }
 }
 
@@ -376,14 +415,20 @@ useIntersection($ReadMore, async () => {
     }
   }
 
-  .CheckModal {
+  .NativeDialog {
     --dialog-inset: 50% auto auto 50%;
     --dialog-translate: -50% -50%;
     --dialog-starting-translate: -50% 3rem;
-    --dialog-max-width: 40rem;
+    --dialog-max-width: auto;
     --dialog-height: auto;
     --dialog-padding: 2rem;
     --dialog-border-radius: calc(var(--global-radius) * 2);
+  }
+  .CheckModal {
+    --dialog-max-width: 40rem;
+  }
+  .MetaModal {
+    --dialog-max-width: 50rem;
   }
 }
 </style>
