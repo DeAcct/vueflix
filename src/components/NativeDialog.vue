@@ -7,6 +7,7 @@
         }
       "
       class="NativeDialog__Close"
+      :class="shade && 'NativeDialog__Close--Shade'"
       v-show="visible && backdrop !== 'none'"
       type="button"
     ></button>
@@ -31,9 +32,13 @@ const props = defineProps({
   backdrop: {
     type: String,
     validator(value) {
-      return ["close", "shade-only", "none"].includes(value);
+      return ["close", "none"].includes(value);
     },
     default: "close",
+  },
+  shade: {
+    type: Boolean,
+    default: false,
   },
   closeSideEffect: {
     type: Function,
@@ -82,10 +87,12 @@ defineExpose({
     position: fixed;
     inset: 0;
     z-index: var(--dialog-calc-z-index);
-    background-color: rgba(0 0 0 / 0.5);
     transition: all 150ms ease-out allow-discrete;
     @starting-style {
       opacity: 0;
+    }
+    &--Shade {
+      background-color: rgba(0 0 0 / 0.5);
     }
   }
 

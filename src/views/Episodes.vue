@@ -66,7 +66,7 @@
         </AccordionGroup>
       </TransitionGroup>
     </template>
-    <NativeDialog ref="$clearMaratonAlertRoot" class="ClearMaratonAlert">
+    <NativeDialog ref="$clearMaratonAlertRoot" class="ClearMaratonAlert" shade>
       <template #title>
         <strong class="ClearMaratonAlert__Title">시청기록 삭제</strong>
       </template>
@@ -277,10 +277,6 @@ function clear() {
 
 @media screen and (min-width: 768px) {
   .AnimeEpisodes {
-    &__Actions {
-      // padding: 0 2rem;
-      width: var(--episodes-action-width, 100%);
-    }
     &__Accordion {
       --episode-gap: 1.2rem;
       --thumbnail-width: 23rem;

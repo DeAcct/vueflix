@@ -53,7 +53,7 @@
       </div>
     </div>
     <Teleport to="#Overay">
-      <NativeDialog ref="$CheckModal" class="CheckModal">
+      <NativeDialog ref="$CheckModal" class="CheckModal" shade>
         <template #title>
           <strong class="CheckModal__Title">
             정말 {{ checkModal.text }}하시겠습니까?
@@ -86,7 +86,7 @@
           </div>
         </template>
       </NativeDialog>
-      <NativeDialog ref="$MetaModal" class="MetaModal">
+      <NativeDialog ref="$MetaModal" class="MetaModal" shade>
         <template #content>
           <StatCard :uid class="MetaModal__Data" />
         </template>

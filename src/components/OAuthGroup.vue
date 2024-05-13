@@ -18,7 +18,7 @@
         </strong>
       </button>
     </template>
-    <NativeDialog ref="$root" class="OAuthGroupModal">
+    <NativeDialog ref="$root" class="OAuthGroupModal" shade>
       <template #title>
         <strong
           class="OAuthGroupModal__Title"

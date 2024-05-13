@@ -8,7 +8,12 @@
     >
       <component :is="Component"></component>
     </Transition>
-    <NativeDialog ref="$AnimeDialog" :close-side-effect class="AnimeDialog">
+    <NativeDialog
+      ref="$AnimeDialog"
+      :close-side-effect
+      class="AnimeDialog"
+      shade
+    >
       <template #title>
         <DialogNavigation class="AnimeDialog__Navigation" :scroll-state>
           <template #activity-name>

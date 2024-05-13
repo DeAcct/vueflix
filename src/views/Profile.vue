@@ -36,7 +36,7 @@
     >
       <template #text>{{ completePop.message }}</template>
     </AutoPop>
-    <NativeDialog ref="$root" class="ProfileAlert">
+    <NativeDialog ref="$root" class="ProfileAlert" shade>
       <template #title>
         <strong class="ProfileAlert__Title"> {{ alertData.title }} </strong>
       </template>

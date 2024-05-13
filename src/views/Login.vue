@@ -82,7 +82,7 @@
         </template>
       </VueflixBtn>
     </div>
-    <NativeDialog ref="$root" class="LoginAlert">
+    <NativeDialog ref="$root" class="LoginAlert" shade>
       <template #title>
         <strong class="LoginAlert__Title">
           {{ currentModal.title }}

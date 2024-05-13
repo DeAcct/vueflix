@@ -159,7 +159,7 @@
         </VueflixCarousel>
       </div>
     </div>
-    <NativeDialog ref="$PWAModal" class="PWAModal">
+    <NativeDialog ref="$PWAModal" class="PWAModal" shade>
       <template #title>
         <strong class="PWAModal__Title">
           {{ pwaCopy }}

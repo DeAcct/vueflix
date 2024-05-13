@@ -68,46 +68,48 @@
       height="9"
       aria-hidden="true"
     ></canvas>
-    <NativeDialog ref="$root" class="ScreenshotDialog">
-      <template #content>
-        <Transition name="new-screenshot">
-          <img
-            :src="screenshotSrc"
-            :key="screenshotSrc"
-            class="ScreenshotDialog__Preview"
-          />
-        </Transition>
-      </template>
-      <template #control>
-        <div class="ScreenshotDialog__Actions">
-          <button
-            class="ScreenshotDialog__Delete"
-            @click="$root.close"
-            type="button"
-          >
-            <IconBase>
-              <IconTrash />
-            </IconBase>
-          </button>
-          <div class="ScreenshotDialog__TextButtons">
+    <Teleport to="#Overay">
+      <NativeDialog ref="$root" class="ScreenshotDialog">
+        <template #content>
+          <Transition name="new-screenshot">
+            <img
+              :src="screenshotSrc"
+              :key="screenshotSrc"
+              class="ScreenshotDialog__Preview"
+            />
+          </Transition>
+        </template>
+        <template #control>
+          <div class="ScreenshotDialog__Actions">
             <button
-              class="ScreenshotDialog__Action"
-              @click="download"
+              class="ScreenshotDialog__Delete"
+              @click="$root.close"
               type="button"
             >
-              다운로드
+              <IconBase>
+                <IconTrash />
+              </IconBase>
             </button>
-            <button
-              class="ScreenshotDialog__Action"
-              @click="share"
-              type="button"
-            >
-              다른 앱으로 공유
-            </button>
+            <div class="ScreenshotDialog__TextButtons">
+              <button
+                class="ScreenshotDialog__Action"
+                @click="download"
+                type="button"
+              >
+                다운로드
+              </button>
+              <button
+                class="ScreenshotDialog__Action"
+                @click="share"
+                type="button"
+              >
+                다른 앱으로 공유
+              </button>
+            </div>
           </div>
-        </div>
-      </template>
-    </NativeDialog>
+        </template>
+      </NativeDialog>
+    </Teleport>
   </div>
 </template>
 
