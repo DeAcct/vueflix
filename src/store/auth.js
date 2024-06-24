@@ -210,7 +210,11 @@ export const useAuth = defineStore("auth", () => {
         return { code: error.code, message: error.message };
       }
     }
-    await continueOAuth(key);
+    try {
+      await continueOAuth(key);
+    } catch (error) {
+      return { code: error.code, message: error.message };
+    }
   }
 
   async function continueOAuth(key) {

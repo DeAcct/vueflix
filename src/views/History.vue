@@ -14,6 +14,7 @@
         class="History__List"
       ></HistoryGroup>
       <div v-else class="History__List History__List--Reaction">
+        {{ reacitons }}
         <ReactionItem
           v-for="reaction in reactions"
           :key="reaction._id"

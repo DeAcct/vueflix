@@ -151,6 +151,7 @@ const props = defineProps({
   },
 });
 const self = computed(() => props.user?.uid === props.reactionData.uid);
+console.log(props);
 const { date: formattedDate } = useFormatDate(props.reactionData.time.toDate());
 const meta = useUserMeta(props.reactionData.uid);
 function requestMetaModal() {

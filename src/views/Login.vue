@@ -149,6 +149,7 @@ async function login(key = "Email") {
   }
   isLoginWaiting.value = true;
   const result = await auth.continueUser({ key, email, password });
+  console.log(result);
   if (result.code) {
     console.log(result.code);
     showAlert(result.code);

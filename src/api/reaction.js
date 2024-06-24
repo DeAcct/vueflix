@@ -174,10 +174,11 @@ export async function Delete({ id }) {
  */
 export async function ReadByUid(uid) {
   // const q = query();
-  // const userReactions = (await getDocs(q)).docs.map((reaction) =>
-  //   reaction.data()
-  // );
-  const userDoc = doc(db, "user", uid);
-  const userReactions = (await getDoc(userDoc)).data().reaction;
+  const q = query(collection(db, "reaction"), where("uid", "==", uid));
+  const userReactions = (await getDocs(q)).docs.map((reaction) =>
+    reaction.data()
+  );
+  // const userDoc = doc(db, "user", uid);
+  // const userReactions = (await getDoc(userDoc)).data().reaction;
   return userReactions;
 }
