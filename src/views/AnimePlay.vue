@@ -87,7 +87,11 @@
       class="AnimePlay__Comments"
       type="comment"
       title-tag="h3"
-      :parent="`${route.params.title} ${route.params.part} ${route.params.index}`"
+      :parent="{
+        title: route.params.title,
+        part: route.params.part,
+        index: route.params.index,
+      }"
       @interact="setInteract"
       @request-teleport="onRequestTeleport"
     >

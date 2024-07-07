@@ -1,6 +1,6 @@
 <template>
   <component :is="component" class="ReactionItem">
-    <div class="ReactionItem__Meta">
+    <!-- <div class="ReactionItem__Meta">
       <component
         :is="metaModal ? 'button' : 'div'"
         class="ReactionItem__OpenMetaButton"
@@ -26,7 +26,8 @@
           <slot name="from"></slot>
         </p>
       </div>
-    </div>
+    </div> -->
+    <slot name="meta" :self :data="meta" :time></slot>
     <div class="ReactionItem__Content">
       <Transition name="down-fade">
         <template v-if="mode === 'edit'">
@@ -104,7 +105,7 @@
 <script setup>
 import { ref, computed } from "vue";
 
-import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
+import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
 
 import { useAuth } from "@/store/auth";
 import { useUserMeta } from "@/api/userMeta";
@@ -112,13 +113,10 @@ import { useFormatDate } from "@/composables/formatter";
 
 import OptimizedMedia from "./OptimizedMedia.vue";
 import UpdownReaction from "./UpdownReaction.vue";
-import Aqua from "@/assets/aqua.svg";
 
 const placeholder = computed(
   () =>
-    `수정할 ${
-      REACTION_ENUM_WITH_PARTICLE[props.reactionData.type]
-    } 입력해 주세요.${
+    `수정할 ${REACTION_ENUM_WITH_JOSA[props.reactionData.type]} 입력해 주세요.${
       props.reactionData.type === "comment"
         ? "\n시간:분:초 형식으로 작성하면 애니 시간을 첨부할 수 있어요!"
         : ""
@@ -146,17 +144,10 @@ const props = defineProps({
   actions: {
     type: Boolean,
   },
-  metaModal: {
-    type: Boolean,
-  },
 });
 const self = computed(() => props.user?.uid === props.reactionData.uid);
-console.log(props);
-const { date: formattedDate } = useFormatDate(props.reactionData.time.toDate());
 const meta = useUserMeta(props.reactionData.uid);
-function requestMetaModal() {
-  emits("meta-modal", meta.value);
-}
+const { date: time } = useFormatDate(props.reactionData.time.toDate());
 
 // const $root = ref(null);
 
@@ -212,41 +203,8 @@ async function deleteTrigger() {
   justify-content: space-between;
   padding: 2rem;
 
-  &__Meta {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-    margin-bottom: 0.8rem;
-  }
-  &__MetaText {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-  &__OpenMetaButton {
-    width: 3.6rem;
-    height: 3.6rem;
-    display: flex;
-    margin-right: 1.2rem;
-    border-radius: 50%;
-    overflow: hidden;
-  }
-  &__ProfileImg {
-    width: 100%;
-    --aspect-ratio: 100%;
-    --radius: 50%;
-  }
-  &__Author {
-    font-size: 1.6rem;
-    margin-right: 0.6rem;
-  }
-  &__Edited {
-    font-size: 1.2rem;
-    font-weight: 300;
-  }
-
   &__Content {
-    margin: 1.2rem 0;
+    // margin: 1.2rem 0;
     position: relative;
     width: 100%;
     max-width: 80ch;
@@ -264,6 +222,7 @@ async function deleteTrigger() {
     animation: fade 150ms ease-out;
   }
   &__EditWrap {
+    margin: 1.2rem 0;
     height: 9rem;
     padding: 1px;
     background: linear-gradient(
@@ -350,13 +309,6 @@ async function deleteTrigger() {
 
 @media screen and (min-width: 1080px) {
   .ReactionItem {
-    &__Author {
-      font-size: 1.6rem;
-      margin-right: 0.8rem;
-    }
-    &__Date {
-      font-size: 1.3rem;
-    }
     &__Content {
       font-size: 1.5rem;
     }

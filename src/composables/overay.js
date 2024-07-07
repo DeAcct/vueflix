@@ -61,8 +61,13 @@ export function useAnimeModal($root) {
     if (to.query.modal && !from.query.modal) {
       const docRef = doc(db, "anime", to.query.modal);
       isLoading.value = true;
-      await getAnimeData(docRef);
+      const anime = await getDoc(docRef);
       isLoading.value = false;
+      if (!anime.exists()) {
+        router.replace({ name: "isekai-404" });
+        return;
+      }
+      animeInfo.value = anime.data();
       $root.value.show();
       document.body.style.overflow = "hidden";
     }
@@ -75,14 +80,13 @@ export function useAnimeModal($root) {
     return true;
   }
 
-  async function getAnimeData(docRef) {
-    const anime = await getDoc(docRef);
-    if (!anime.exists()) {
-      isLoading.value = false;
-      return router.replace({ name: "isekai-404" });
-    }
-    animeInfo.value = anime.data();
-  }
+  // async function getAnimeData(docRef) {
+  //   const anime = await getDoc(docRef);
+  //   if (!anime.exists()) {
+  //     return router.replace({ name: "isekai-404" });
+  //   }
+  //   animeInfo.value = anime.data();
+  // }
 
   // 입구컷 - 이상한 경로를 넣으면 404 페이지로 이동
   function invalidRoute(to) {
@@ -97,5 +101,5 @@ export function useAnimeModal($root) {
     cleanupAfter();
   });
 
-  return { animeInfo, isLoading, getAnimeData };
+  return { animeInfo, isLoading };
 }

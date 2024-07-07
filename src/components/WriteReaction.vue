@@ -22,10 +22,11 @@
       <div class="WriteReaction__BtnArea">
         <button
           class="WriteReaction__Button WriteReaction__Button--AddTime"
-          v-if="parent === 'comment'"
+          v-if="type === 'comment'"
           type="button"
+          disabled
         >
-          현재 시간 추가
+          현재 시간 추가(comming soon!)
         </button>
         <button
           class="WriteReaction__Button WriteReaction__Button--Clear"
@@ -49,7 +50,7 @@
 </template>
 
 <script setup>
-import { REACTION_ENUM_WITH_PARTICLE } from "@/enums/Reaction";
+import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
 import { ref, computed } from "vue";
 import { useAuth } from "@/store/auth";
 
@@ -63,11 +64,11 @@ const props = defineProps({
     type: String,
     required: true,
     validator(value) {
-      return Object.keys(REACTION_ENUM_WITH_PARTICLE).includes(value);
+      return Object.keys(REACTION_ENUM_WITH_JOSA).includes(value);
     },
   },
   parent: {
-    type: String,
+    type: Object,
   },
   ancestor: {
     type: String,
@@ -84,10 +85,10 @@ function setFocus() {
 const placeholder = computed(() => {
   if (!props.user) {
     return `${
-      REACTION_ENUM_WITH_PARTICLE[props.type]
+      REACTION_ENUM_WITH_JOSA[props.type]
     } 남기려면 먼저 로그인을 해주세요`;
   }
-  return `여기를 눌러 ${REACTION_ENUM_WITH_PARTICLE[props.type]} 작성하세요.`;
+  return `여기를 눌러 ${REACTION_ENUM_WITH_JOSA[props.type]} 작성하세요.`;
 });
 
 const reviewData = ref("");

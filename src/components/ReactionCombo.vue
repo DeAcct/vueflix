@@ -15,7 +15,7 @@
         @mutate="onMutate"
         :user
         :type
-        :parent="parent"
+        :parent
         @interact="setInteract"
       />
       <TransitionGroup
@@ -37,12 +37,20 @@
           @meta-modal="onMetaModal"
           class="ReactionCombo__Item"
           actions
-          meta-modal
         >
+          <template #meta="{ self, data, time }">
+            <ReactionMeta :self :data>
+              <template #edited>
+                {{ reaction.isEdited ? " &middot; 수정됨" : "" }}
+              </template>
+              <template #time>{{ time }}</template>
+            </ReactionMeta>
+          </template>
           <template #content>
             <ReactionParser
               :content="reaction.content"
               @request-teleport="requestTeleport"
+              class="ReactionCombo__Content"
             />
           </template>
           <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
@@ -132,6 +140,7 @@ import WriteReaction from "./WriteReaction.vue";
 import ReactionItem from "./ReactionItem.vue";
 import ReactionParser from "./ReactionParser.vue";
 import StatCard from "./StatCard.vue";
+import ReactionMeta from "./ReactionMeta.vue";
 
 const props = defineProps({
   type: {
@@ -149,7 +158,7 @@ const props = defineProps({
     },
   },
   parent: {
-    type: String,
+    type: Object,
   },
   showTitle: {
     type: Boolean,
@@ -332,6 +341,9 @@ useIntersection($ReadMore, async () => {
     &:not(:last-child) {
       border-bottom: 1px solid hsl(var(--bg-200));
     }
+  }
+  &__Content {
+    margin: 1.2rem 0;
   }
   &__End {
     display: flex;
