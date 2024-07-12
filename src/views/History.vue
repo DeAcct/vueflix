@@ -36,9 +36,11 @@
               <p class="History__FromText">
                 <strong>
                   {{ reaction.parent.title }}
-                  {{ reaction.parent.episode }} </strong
-                >에서 작성한
-                {{ reaction.parent.type === "review" ? "리뷰" : "댓글" }}
+                  {{ reaction.parent.part }}
+                  {{ reaction.parent.index }}
+                </strong>
+                에서 작성한
+                {{ reaction.type === "review" ? "리뷰" : "댓글" }}
               </p>
             </div>
           </template>

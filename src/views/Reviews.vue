@@ -15,7 +15,7 @@
       class="AnimeReviews__Method AnimeReviews__Method--Review"
       type="review"
       title-tag="h3"
-      :parent="route.query.modal"
+      :parent="{ title: route.query.modal }"
     >
       <template #title>리뷰</template>
     </ReactionCombo>

@@ -31,17 +31,22 @@
           :key="reaction._id"
           :reaction-data="reaction"
           :user="user"
-          :type="type"
           @mutate="onMutate"
           @interact="setInteract"
           @meta-modal="onMetaModal"
           class="ReactionCombo__Item"
+          :class="
+            reaction._id === route.query.reaction &&
+            'ReactionCombo__Item--Blink'
+          "
           actions
+          :track-target="trackTarget && reaction._id === route.query.reaction"
         >
           <template #meta="{ self, data, time }">
             <ReactionMeta :self :data>
               <template #edited>
-                {{ reaction.isEdited ? " &middot; 수정됨" : "" }}
+                {{ reaction.isEdited ? " &middot; 수정됨" : "" }} &middot;
+                {{ reaction._id }}
               </template>
               <template #time>{{ time }}</template>
             </ReactionMeta>
@@ -141,6 +146,7 @@ import ReactionItem from "./ReactionItem.vue";
 import ReactionParser from "./ReactionParser.vue";
 import StatCard from "./StatCard.vue";
 import ReactionMeta from "./ReactionMeta.vue";
+import { useRoute } from "vue-router";
 
 const props = defineProps({
   type: {
@@ -164,7 +170,12 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  trackTarget: {
+    type: Boolean,
+  },
 });
+
+const route = useRoute();
 
 const emits = defineEmits(["interact", "request-teleport"]);
 function setInteract(e) {
@@ -341,6 +352,9 @@ useIntersection($ReadMore, async () => {
     &:not(:last-child) {
       border-bottom: 1px solid hsl(var(--bg-200));
     }
+    &--Blink {
+      animation: comment-blink 5s ease-out;
+    }
   }
   &__Content {
     margin: 1.2rem 0;
@@ -354,6 +368,23 @@ useIntersection($ReadMore, async () => {
   &__MoreLoadAnimation {
     display: block;
     width: 4rem;
+  }
+}
+@keyframes comment-blink {
+  10% {
+    background-color: hsl(var(--theme-500) / 0.15);
+  }
+  11% {
+    background-color: transparent;
+  }
+  20% {
+    background-color: hsl(var(--theme-500) / 0.15);
+  }
+  50% {
+    background-color: hsl(var(--theme-500) / 0.15);
+  }
+  100% {
+    background-color: transparent;
   }
 }
 

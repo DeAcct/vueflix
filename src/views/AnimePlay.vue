@@ -94,6 +94,7 @@
       }"
       @interact="setInteract"
       @request-teleport="onRequestTeleport"
+      track-target
     >
       <template #title>댓글</template>
       <template #description>

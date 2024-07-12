@@ -1,5 +1,5 @@
 <template>
-  <component :is="component" class="ReactionItem">
+  <component :is="component" class="ReactionItem" ref="$Item">
     <!-- <div class="ReactionItem__Meta">
       <component
         :is="metaModal ? 'button' : 'div'"
@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
 
@@ -142,6 +142,9 @@ const props = defineProps({
   //   },
   // },
   actions: {
+    type: Boolean,
+  },
+  trackTarget: {
     type: Boolean,
   },
 });
@@ -194,6 +197,20 @@ async function deleteTrigger() {
     user,
   });
 }
+
+// query에 있는 댓글의 id를 통헤 해당 위치로 바로 이동
+const $Item = ref(null);
+onMounted(() => {
+  console.log(props.trackTarget);
+  if (!props.trackTarget) {
+    return;
+  }
+  const commentPosition = $Item.value.getBoundingClientRect().top;
+  window.scrollTo({
+    top: commentPosition,
+    behavior: "smooth",
+  });
+});
 </script>
 
 <style lang="scss" scoped>
