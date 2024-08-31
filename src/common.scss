@@ -225,7 +225,7 @@ summary {
 
 @media (hover: hover) and (pointer: fine) {
   a,
-  button,
+  button:not(:disabled),
   [role="progressbar"],
   [data-pointer="true"] {
     cursor: pointer;

@@ -1,13 +1,13 @@
 <template>
   <form class="WriteReaction">
     <textarea
-      :placeholder="placeholder"
+      :placeholder
       class="WriteReaction__InputArea"
       :disabled="!user"
       @input="setReviewData"
       @focus="setFocus"
       @blur="setBlur"
-      ref="reviewTextArea"
+      ref="$TextArea"
       :value="reviewData"
     />
     <div class="WriteReaction__Interaction">
@@ -22,11 +22,11 @@
       <div class="WriteReaction__BtnArea">
         <button
           class="WriteReaction__Button WriteReaction__Button--AddTime"
+          @click="addTime"
           v-if="type === 'comment'"
           type="button"
-          disabled
         >
-          현재 시간 추가(comming soon!)
+          재생 위치 추가
         </button>
         <button
           class="WriteReaction__Button WriteReaction__Button--Clear"
@@ -50,9 +50,10 @@
 </template>
 
 <script setup>
-import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
 import { ref, computed } from "vue";
 import { useAuth } from "@/store/auth";
+import { useSecToFormat } from "@/composables/formatter";
+import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
 
 const emits = defineEmits(["mutate", "interact"]);
 
@@ -64,7 +65,7 @@ const props = defineProps({
     type: String,
     required: true,
     validator(value) {
-      return Object.keys(REACTION_ENUM_WITH_JOSA).includes(value);
+      return ["comment", "review"].includes(value);
     },
   },
   parent: {
@@ -72,6 +73,10 @@ const props = defineProps({
   },
   ancestor: {
     type: String,
+  },
+  time: {
+    type: [String, Number],
+    required: false,
   },
 });
 
@@ -111,6 +116,23 @@ function reviewTrigger() {
 
 function clear() {
   reviewData.value = "";
+}
+
+const $TextArea = ref(null);
+function addTime() {
+  // reviewData.value += ` ${useSecToFormat(props.time)}`;
+
+  const [start, end] = [
+    $TextArea.value.selectionStart,
+    $TextArea.value.selectionEnd,
+  ];
+  $TextArea.value.setRangeText(
+    ` ${useSecToFormat(props.time)} `,
+    start,
+    end,
+    "select"
+  );
+  reviewData.value = $TextArea.value.value;
 }
 </script>
 

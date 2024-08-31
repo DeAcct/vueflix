@@ -98,7 +98,6 @@ defineExpose({
 
   &__Body {
     position: fixed;
-    z-index: calc(var(--z-index-overay-1) + 1);
     z-index: calc(var(--dialog-calc-z-index) + 1);
     inset: var(--dialog-inset, auto);
     translate: var(--dialog-translate, -50% -50%);

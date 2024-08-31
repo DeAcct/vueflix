@@ -17,6 +17,7 @@
         :type
         :parent
         @interact="setInteract"
+        :time
       />
       <TransitionGroup
         tag="ul"
@@ -110,7 +111,7 @@
             @click="$MetaModal.close"
             type="button"
           >
-            <template #text> 닫기 </template>
+            <template #text>닫기</template>
           </VueflixBtn>
         </template>
       </NativeDialog>
@@ -172,6 +173,10 @@ const props = defineProps({
   },
   trackTarget: {
     type: Boolean,
+  },
+  time: {
+    type: [String, Number],
+    required: false,
   },
 });
 
@@ -325,20 +330,21 @@ useIntersection($ReadMore, async () => {
     margin: 0 auto;
   }
   &__Write {
-    background: var(
-      --reaction-combo-write-bg,
-      linear-gradient(
-        150deg,
-        hsl(var(--bg-900) / 0.2),
-        hsl(var(--bg-900) / 0.025)
-      )
-    );
+    // background: var(
+    //   --reaction-combo-write-bg,
+    //   linear-gradient(
+    //     150deg,
+    //     hsl(var(--bg-900) / 0.2),
+    //     hsl(var(--bg-900) / 0.025)
+    //   )
+    // );
+    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
     padding: 2rem;
     border-radius: var(--global-radius);
+    margin: 0 auto;
     &:last-child {
       border-radius: var(--global-radius);
     }
-    margin: 0 auto;
   }
   &__List {
     overflow: hidden;

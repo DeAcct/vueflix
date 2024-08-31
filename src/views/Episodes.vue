@@ -78,7 +78,7 @@
           <VueflixBtn
             type="button"
             component="button"
-            class="ClearMaratonAlert__Button--Accent"
+            class="ClearMaratonAlert__Button ClearMaratonAlert__Button--Accent"
             @click="clear"
           >
             <template #text> 삭제 </template>
@@ -86,6 +86,7 @@
           <VueflixBtn
             type="button"
             component="button"
+            class="ClearMaratonAlert__Button"
             @click="$clearMaratonAlertRoot.close()"
           >
             <template #text> 취소 </template>
@@ -239,6 +240,7 @@ function clear() {
   --dialog-height: auto;
   --dialog-padding: 2rem;
   --dialog-bg: hsl(var(--bg-200));
+  margin-bottom: -1.2rem;
   &__Title {
     font-size: 2rem;
     margin-bottom: 1.2rem;
@@ -255,9 +257,13 @@ function clear() {
     display: flex;
     justify-content: flex-end;
   }
-  &__Button--Accent {
-    background-color: hsl(var(--theme-500));
-    border-radius: var(--global-radius);
+  &__Button {
+    box-shadow: none;
+    &--Accent {
+      background-color: hsl(var(--theme-500));
+      border-radius: var(--global-radius);
+      color: #fff;
+    }
   }
 }
 

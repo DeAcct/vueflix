@@ -1,6 +1,6 @@
 <template>
   <component class="VueflixBtn" :type="type" :is="component">
-    <i class="VueflixBtn__Icon" v-if="icon">
+    <i class="VueflixBtn__Icon" v-if="$slots.icon">
       <slot name="icon"></slot>
     </i>
     <span class="VueflixBtn__Text">
@@ -16,10 +16,6 @@ defineProps({
   },
   component: {
     type: String,
-  },
-  icon: {
-    type: Boolean,
-    default: false,
   },
 });
 </script>

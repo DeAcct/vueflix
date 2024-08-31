@@ -19,7 +19,6 @@
             @mouseup="toggleSeek"
             @touchstart.passive="toggleSeek"
             @touchend.passive="toggleSeek"
-            icon
             class="Login__Button Login__Button--OtherAction"
           >
             <template #icon>
@@ -64,7 +63,6 @@
       <VueflixBtn
         v-for="{ name, icon } in oAuthServices"
         component="button"
-        icon
         type="button"
         class="Login__Button"
         :class="`Login__Button--${name}`"
@@ -149,9 +147,8 @@ async function login(key = "Email") {
   }
   isLoginWaiting.value = true;
   const result = await auth.continueUser({ key, email, password });
-  console.log(result);
+
   if (result.code) {
-    console.log(result.code);
     showAlert(result.code);
     return;
   }

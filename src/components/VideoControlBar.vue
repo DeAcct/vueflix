@@ -68,7 +68,7 @@
                     :to="`/anime-play/${route.params.title}/${nextEpisode.part}/${nextEpisode.index}`"
                   >
                     <OptimizedMedia
-                      :src="`${route.params.title}/${nextEpisode.thumbnail}`"
+                      :src="`anime/${route.params.title}/${nextEpisode.thumbnail}`"
                       :alt="`${route.params.title} ${nextEpisode.part} ${nextEpisode.index} 미리보기 이미지`"
                       skelleton
                     >

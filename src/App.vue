@@ -3,9 +3,7 @@
     <span class="AnimeLoading" v-if="isLoading"></span>
     <VueflixHeader v-if="route.meta.appBar" />
     <BottomTabMenu v-if="route.meta.bottomTabMenu && isSmall" />
-    <Transition
-      :name="route.meta.transition || `root-move-${transition.direction}`"
-    >
+    <Transition name="fade">
       <component :is="Component"></component>
     </Transition>
     <NativeDialog
@@ -72,7 +70,7 @@ onMounted(() => {
   theme.setMode(saved);
 });
 
-const transition = useRootTransition();
+// const transition = useRootTransition();
 
 const $AnimeDialog = ref(null);
 const { animeInfo, isLoading } = useAnimeModal($AnimeDialog);
@@ -96,31 +94,39 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-.root-move {
-  &-right {
-    &-enter-active,
-    &-leave-active {
-      transition: all calc(200ms * v-bind("transition.weight")) ease-out;
-      opacity: 0;
-    }
-    &-enter-from,
-    &-leave-to {
-      translate: -2rem 0;
-      opacity: 0;
-    }
-  }
-  &-left {
-    &-enter-active,
-    &-leave-active {
-      transition: all calc(200ms * v-bind("transition.weight")) ease-out;
-      opacity: 0;
-    }
-    &-enter-from,
-    &-leave-to {
-      translate: 2rem 0;
-      opacity: 0;
-    }
-  }
+// .root-move {
+//   &-right {
+//     &-enter-active,
+//     &-leave-active {
+//       transition: all calc(200ms * v-bind("transition.weight")) ease-out;
+//       opacity: 0;
+//     }
+//     &-enter-from,
+//     &-leave-to {
+//       translate: -2rem 0;
+//       opacity: 0;
+//     }
+//   }
+//   &-left {
+//     &-enter-active,
+//     &-leave-active {
+//       transition: all calc(200ms * v-bind("transition.weight")) ease-out;
+//       opacity: 0;
+//     }
+//     &-enter-from,
+//     &-leave-to {
+//       translate: 2rem 0;
+//       opacity: 0;
+//     }
+//   }
+// }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 150ms ease-out;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 .AnimeLoading {
@@ -164,10 +170,11 @@ watch(
     z-index: calc(var(--z-index-overay-1) + 1);
     left: 0;
     top: -1px;
-    margin-bottom: -12rem;
+    margin-bottom: -6rem;
+    background: linear-gradient(var(--anime-layout-bg), transparent);
 
     width: 100%;
-    height: 12rem;
+    height: 6rem;
   }
   &__TopWrap {
     width: 100%;
@@ -205,6 +212,10 @@ watch(
     --dialog-starting-translate: -50% calc(-50% + 3rem);
     --dialog-starting-opacity: 0;
     --dialog-border-radius: var(--global-radius);
+    &__Navigation {
+      margin-bottom: -8rem;
+      height: 8rem;
+    }
     &__ToTop {
       left: auto;
       right: 4rem;

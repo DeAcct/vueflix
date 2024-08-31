@@ -20,8 +20,8 @@
       />
       <GestureArea
         class="AmbientPlayer__GestureArea"
-        :before-move="moveBeforeFiveSec"
-        :after-move="moveAfterFiveSec"
+        :action="timeMove"
+        v-model="nowInteraction"
       />
       <VideoControlBar
         v-on="videoEvents"
@@ -33,8 +33,8 @@
         @change-play-progress="onChangePlayProgress"
         @change-volume="onVolumeChange"
         :sec-action="{
-          before: moveBeforeFiveSec,
-          after: moveAfterFiveSec,
+          before: () => timeMove(-5),
+          after: () => timeMove(5),
         }"
         :volume="volume"
         :meta="meta"
@@ -114,9 +114,9 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useEventListener } from "@vueuse/core";
+import { now, useEventListener } from "@vueuse/core";
 
 import { useAmbient } from "@/composables/canvas";
 import { useSecToFormat } from "@/composables/formatter";
@@ -177,8 +177,10 @@ const keyBinding = {
   ArrowDown: volumeDown,
 
   // 좌/우 화살표: 재생위치 5초씩 감소/증가
-  ArrowLeft: moveBeforeFiveSec,
-  ArrowRight: moveAfterFiveSec,
+  // ArrowLeft: moveBeforeFiveSec,
+  // ArrowRight: moveAfterFiveSec,
+  ArrowLeft: () => timeMove(-5),
+  ArrowRight: () => timeMove(5),
 
   // 좌/우 부등호: 이전/다음 에피소드
   ">": requestNextEpisode,
@@ -291,14 +293,21 @@ function setPlaying() {
   playing.value = $video.value.paused;
 }
 
+const nowInteraction = ref("");
 function onChangePlayProgress(e) {
   $video.value.currentTime = $video.value.duration * e;
 }
-function moveBeforeFiveSec() {
-  $video.value.currentTime -= 5;
-}
-function moveAfterFiveSec() {
-  $video.value.currentTime += 5;
+// function moveBeforeFiveSec() {
+//   nowInteraction.value = "before";
+//   $video.value.currentTime -= 5;
+// }
+// function moveAfterFiveSec() {
+//   nowInteraction.value = "after";
+//   $video.value.currentTime += 5;
+// }
+function timeMove(time) {
+  $video.value.currentTime += time;
+  nowInteraction.value = time > 0 ? "after" : "before";
 }
 
 const volume = reactive({

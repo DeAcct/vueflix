@@ -159,6 +159,7 @@ function toggleSearchMode() {
   align-items: center;
   border-bottom: 1px solid hsl(var(--bg-200) / v-bind(scrollPercent));
   background-color: hsl(var(--bg-100) / calc(v-bind(scrollPercent)));
+  --icon-color: hsl(var(--bg-100));
 
   &__Activity {
     font-size: 1.7rem;
@@ -188,7 +189,6 @@ function toggleSearchMode() {
     }
   }
 
-  --icon-color: hsl(var(--bg-100));
   &__Action {
     width: 2.4rem;
     height: 2.4rem;

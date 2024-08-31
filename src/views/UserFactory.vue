@@ -76,7 +76,6 @@
           @touchstart.passive="toggleSeek"
           @touchend.passive="toggleSeek"
           class="UserFactory__Button UserFactory__Button--Seek"
-          icon
         >
           <template #icon>
             <IconBase>
@@ -102,10 +101,9 @@
       class="UserFactory__Button UserFactory__Button--SignUp"
       component="button"
       @click="actionByType"
-      :icon="isLoading"
     >
       <template #icon>
-        <LoadingAnimation class="UserFactory__Loading" />
+        <LoadingAnimation class="UserFactory__Loading" v-if="isLoading" />
       </template>
       <template #text>{{ submitText || "회원가입" }}</template>
     </VueflixBtn>

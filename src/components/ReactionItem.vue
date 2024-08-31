@@ -111,7 +111,6 @@ import { useAuth } from "@/store/auth";
 import { useUserMeta } from "@/api/userMeta";
 import { useFormatDate } from "@/composables/formatter";
 
-import OptimizedMedia from "./OptimizedMedia.vue";
 import UpdownReaction from "./UpdownReaction.vue";
 
 const placeholder = computed(
@@ -201,7 +200,6 @@ async function deleteTrigger() {
 // query에 있는 댓글의 id를 통헤 해당 위치로 바로 이동
 const $Item = ref(null);
 onMounted(() => {
-  console.log(props.trackTarget);
   if (!props.trackTarget) {
     return;
   }

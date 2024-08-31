@@ -10,10 +10,10 @@
     </p>
     <div class="btn-area">
       <VueflixBtn to="#none" component="router-link" class="btn--go">
-        <template v-slot:text>보러가기</template>
+        <template #text>보러가기</template>
       </VueflixBtn>
       <VueflixBtn to="/" component="router-link" class="btn--home">
-        <template v-slot:text>홈으로</template>
+        <template #text>홈으로</template>
       </VueflixBtn>
     </div>
   </main>

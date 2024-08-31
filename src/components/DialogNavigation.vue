@@ -1,6 +1,6 @@
 <template>
   <div class="DialogNavigation">
-    <div class="wrap">
+    <div class="DialogNavigation__Wrap">
       <RouterLink
         class="DialogNavigation__Button DialogNavigation__Button--Close mobile"
         to="/"
@@ -72,11 +72,11 @@ const padding = computed(() => {
 <style lang="scss" scoped>
 .DialogNavigation {
   transition: 150ms ease-out;
-  background: linear-gradient(var(--anime-layout-bg), transparent);
+
   display: flex;
   margin: 0 auto;
   padding: 2rem 2rem 0rem;
-  .wrap {
+  &__Wrap {
     display: flex;
     width: 100%;
     align-items: center;
@@ -107,6 +107,8 @@ const padding = computed(() => {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: 800;
+    text-shadow: 0 0 0.9rem hsl(var(--bg-100) / 0.5);
     &--Scroll {
       opacity: 1;
       translate: 0 0;
@@ -121,7 +123,7 @@ const padding = computed(() => {
 @media screen and (min-width: 1080px) {
   .DialogNavigation {
     padding: v-bind(padding);
-    .wrap {
+    &__Wrap {
       height: 4.8rem;
       gap: 1rem;
     }

@@ -9,7 +9,7 @@
         @toggle-theater="toggleTheater"
         @time-update="updateTime"
         :src="videoSrc"
-        :time="time"
+        :time
         :next-episode="nextEpisode"
         :prev-episode="prevEpisode"
         :ambient="mode !== 'theater'"
@@ -62,7 +62,7 @@
         @click="openSystemShare"
         type="button"
       >
-        <IconBase icon-name="공유">
+        <IconBase>
           <IconShare />
         </IconBase>
       </button>
@@ -95,6 +95,7 @@
       @interact="setInteract"
       @request-teleport="onRequestTeleport"
       track-target
+      :time
     >
       <template #title>댓글</template>
       <template #description>
@@ -102,12 +103,23 @@
           <AccordionGroup open class="AnimePlay__Description">
             <template #title>댓글 안내</template>
             <template #content>
+              <p class="AnimePlay__DescText">
+                댓글은 에피소드를 보고 의견을 자유롭게 나누는 공간이에요.
+              </p>
               <ul class="AnimePlay__DescList">
                 <li class="AnimePlay__DescText">
-                  댓글은 에피소드를 보고 느낀 점을 자유롭게 나누는 공간입니다.
+                  서로의 취향을 존중해 주세요.
                 </li>
                 <li class="AnimePlay__DescText">
-                  시간:분:초 형식으로 작성하면 애니 시간을 첨부할 수 있어요.
+                  스포일러가 포함된 댓글은 스포일러 버튼을 활성화해 주세요.
+                </li>
+                <li class="AnimePlay__DescText">
+                  시간:분:초 혹은 분:초 형식으로 작성하면 애니 시간을 첨부할 수
+                  있어요.
+                </li>
+                <li class="AnimePlay__DescText">
+                  '재생 위치 추가'를 누르면 지금 재생중인 위치를 현재 커서
+                  위치에 넣을 수 있어요.
                 </li>
               </ul>
             </template>
@@ -192,6 +204,7 @@ const time = ref(0);
 const $player = ref(null);
 const showLimitAlert = ref(false);
 function updateTime(e) {
+  time.value = e;
   showLimitAlert.value = e > TRIAL_TIME_LIMIT && !user.value;
   if (showLimitAlert.value) {
     $player.value.$video.pause();
@@ -233,7 +246,9 @@ onMounted(async () => {
   // 마라톤(시청기록)보다 쿼리스트링을 우선시한다.
   // 쿼리스트링은 공유 URL을 통해 접근한 것을 대응한 것이다.
   if (query.time) {
+    time.value = Number(query.time);
     $player.value.$video.currentTime = Number(query.time);
+    $player.value.$video.play();
     return;
   }
   $player.value.$video.currentTime = getEpisodeProgress(
@@ -242,7 +257,7 @@ onMounted(async () => {
     route.params.index
   ).current;
 });
-const saveAndCleanUp = router.afterEach(async (to, from) => {
+const saveAndCleanUp = router.beforeEach(async (to, from) => {
   if (to.path === from.path) {
     return;
   }
@@ -274,10 +289,12 @@ function setInteract(e) {
 }
 
 async function openSystemShare() {
+  console.log(window.location);
+  const { origin, pathname } = window.location;
   const shareData = {
     title: `${route.params.title} ${route.params.part} ${route.params.index}`,
     text: "애니를 당당하게 즐기세요!",
-    url: window.location.href,
+    url: `${origin}${pathname}?time=${Math.floor(time.value)}`,
   };
   await navigator.share(shareData);
 }
