@@ -1,9 +1,7 @@
 <template>
   <component class="VueflixBtn" :type="type" :is="component">
-    <i class="VueflixBtn__Icon" v-if="$slots.icon">
-      <slot name="icon"></slot>
-    </i>
-    <span class="VueflixBtn__Text">
+    <slot name="icon"></slot>
+    <span class="VueflixBtn__Text" v-if="$slots.text">
       <slot name="text"></slot>
     </span>
   </component>
@@ -28,6 +26,7 @@ defineProps({
   padding: 1rem 1.5rem;
   justify-content: center;
   align-items: center;
+  gap: 0.8rem;
 
   width: -moz-fit-content;
   width: fit-content;

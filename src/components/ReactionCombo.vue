@@ -81,11 +81,13 @@
               class="CheckModal__Button CheckModal__Button--Accent"
               @click="applyMutate"
             >
-              <template #text>
+              <template #icon>
                 <LoadAnimation
                   class="CheckModal__Loading"
                   v-if="loadState === 'mutating'"
                 />
+              </template>
+              <template #text>
                 {{ checkModal.text }}
               </template>
             </VueflixBtn>
@@ -444,13 +446,15 @@ useIntersection($ReadMore, async () => {
 .reaction-list-move,
 .reaction-list-enter-active,
 .reaction-list-leave-active {
-  transition: all 300ms ease;
+  transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reaction-list-enter-active {
+  transition-delay: 150ms;
 }
 
 .reaction-list-enter-from,
 .reaction-list-leave-to {
   opacity: 0;
-  translate: 0 3rem;
 }
 
 .reaction-list-leave-active {

@@ -1,5 +1,5 @@
 <template>
-  <div class="AmbientPlayer">
+  <div class="AmbientPlayer" @mousemove="onMouseMove">
     <div class="AmbientPlayer__FullscreenRoot" ref="$fullscreenRoot">
       <LoadAnimation
         class="AmbientPlayer__Loading"
@@ -23,25 +23,27 @@
         :action="timeMove"
         v-model="nowInteraction"
       />
-      <VideoControlBar
-        v-on="videoEvents"
-        class="AmbientPlayer__Control"
-        :progress="progress"
-        :is-playing="playing"
-        :next-episode="nextEpisode"
-        @play-setting="onChangePlaySetting"
-        @change-play-progress="onChangePlayProgress"
-        @change-volume="onVolumeChange"
-        :sec-action="{
-          before: () => timeMove(-5),
-          after: () => timeMove(5),
-        }"
-        :volume="volume"
-        :meta="meta"
-        v-if="controls"
-      >
-        <template #time>{{ time.current }} / {{ time.duration }}</template>
-      </VideoControlBar>
+      <Transition name="control-fade">
+        <VideoControlBar
+          v-on="videoEvents"
+          class="AmbientPlayer__Control"
+          :progress="progress"
+          :is-playing="playing"
+          :next-episode="nextEpisode"
+          @play-setting="onChangePlaySetting"
+          @change-play-progress="onChangePlayProgress"
+          @change-volume="onVolumeChange"
+          :sec-action="{
+            before: () => timeMove(-5),
+            after: () => timeMove(5),
+          }"
+          :volume="volume"
+          :meta="meta"
+          v-if="controlShow"
+        >
+          <template #time>{{ time.current }} / {{ time.duration }}</template>
+        </VideoControlBar>
+      </Transition>
       <div class="AmbientPlayer__TakeScreenshot">
         <button
           class="AmbientPlayer__ScreenshotButton"
@@ -155,6 +157,23 @@ const props = defineProps({
     default: true,
   },
 });
+
+const controlShow = ref(props.controls);
+function onMouseMove() {
+  if (!props.controls && controlShow.value) {
+    return;
+  }
+  controlShow.value = true;
+  delayVanish(1500);
+}
+onMounted(() => {
+  delayVanish(1500);
+});
+function delayVanish(ms) {
+  setTimeout(() => {
+    controlShow.value = false;
+  }, ms);
+}
 
 const keyBinding = {
   // f: 전체화면
@@ -527,6 +546,15 @@ async function share() {
     overflow: hidden;
     display: flex;
   }
+}
+
+.control-fade-enter-active,
+.control-fade-leave-active {
+  transition: opacity 150ms ease-in-out;
+}
+.control-fade-enter-from,
+.control-fade-leave-to {
+  opacity: 0;
 }
 
 .player-alert-enter-active,

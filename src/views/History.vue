@@ -194,6 +194,7 @@ onMounted(async () => {
       width: calc((100% - 1.6rem) / 3);
       background-color: hsl(var(--bg-200));
       border-radius: var(--global-radius);
+      overflow: hidden;
       &::before,
       &::after {
         content: "";
@@ -218,7 +219,7 @@ onMounted(async () => {
       //   // background: ;
       //   z-index: 2;
       // }
-      overflow: hidden;
+
       & > * {
         z-index: 3;
       }
