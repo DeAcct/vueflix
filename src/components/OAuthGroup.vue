@@ -164,7 +164,7 @@ async function toggleOAuth() {
       background-color: hsl(var(--theme-500));
     }
     &--Google {
-      color: hsl(var(--bg-800));
+      color: hsl(var(--bg-900));
       background-color: #fff;
     }
     &--Facebook {

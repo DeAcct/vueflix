@@ -76,7 +76,7 @@ const user = computed(() => auth.user);
   gap: 0.8rem;
 
   &__Button {
-    color: hsl(var(--bg-800));
+    color: hsl(var(--bg-900));
     transform: rotate(-90deg);
 
     //시각보정

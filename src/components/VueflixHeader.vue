@@ -306,8 +306,8 @@ function toggleSearchMode() {
     &__ProfileCombo {
       display: flex;
       gap: 0.8rem;
-      background-color: hsl(var(--bg-200));
-      border: 2px solid hsl(var(--bg-200));
+      background-color: hsl(var(--bg-300) / 0.5);
+      border: 2px solid hsl(var(--bg-300) / 0.5);
       --profile-size: 3.6rem;
       font-size: 1.5rem;
       padding-left: 0.8rem;
@@ -321,7 +321,7 @@ function toggleSearchMode() {
         width: 30rem;
         height: 4.6rem;
         padding: 0 1.2rem;
-        background-color: hsl(var(--bg-200));
+        background-color: hsl(var(--bg-300) / 0.5);
         border-radius: 9999px;
         border: 2px solid transparent;
         transition: border-color 150ms ease-out;

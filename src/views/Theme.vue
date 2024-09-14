@@ -84,7 +84,7 @@ function themeToggle(e) {
     display: block;
     font-size: 1.2rem;
     margin-bottom: 0.75rem;
-    color: var(--bg-800);
+    color: var(--bg-900);
   }
   &__NoteItem {
     line-height: 1.5rem;
