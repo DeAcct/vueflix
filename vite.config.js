@@ -41,7 +41,7 @@ export default defineConfig({
         related_applications: [],
         scope_extensions: [{ origin: "vueflix.hyse.kr" }],
         prefer_related_applications: false,
-        handle_links: preferred,
+        handle_links: "preferred",
         dir: "ltr",
         theme_color: "#F7084D",
         lang: "ko",
