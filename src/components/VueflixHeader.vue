@@ -1,76 +1,77 @@
 <template>
   <header
-    class="VueflixHeader inner"
+    class="VueflixHeader"
     :class="scrollPercent > 0 && 'VueflixHeader--Fill'"
   >
-    <h1
-      class="VueflixHeader__Activity"
-      :class="
-        (activity === 'Logo' || !isTouchable) && 'VueflixHeader__Activity--Logo'
-      "
-    >
-      <template v-if="activity === 'Logo' || !isTouchable">
-        <RouterLink to="/">
-          <VueflixLogo>데레</VueflixLogo>
-        </RouterLink>
-      </template>
-      <template v-else>
-        {{ activity }}
-      </template>
-    </h1>
-    <ul class="VueflixHeader__GNB">
-      <li v-for="{ text, to } in gnbItems" :key="text">
-        <RouterLink class="VueflixHeader__GNBLink" :to>
-          {{ text }}
-        </RouterLink>
-      </li>
-    </ul>
-
-    <div class="VueflixHeader__Actions">
-      <button
-        class="VueflixHeader__Action"
-        v-if="route.meta.appBar.backButton && isSmall"
-        @click="back"
-        type="button"
+    <div class="VueflixHeader__Inner">
+      <h1
+        class="VueflixHeader__Activity"
+        :class="
+          (activity === 'Logo' || !isTouchable) &&
+          'VueflixHeader__Activity--Logo'
+        "
       >
-        <IconBase>
-          <IconArrowPrev />
-        </IconBase>
-      </button>
-
-      <div class="right">
-        <SearchBar
-          class="VueflixHeader__SearchBar VueflixHeader__SearchBar--PCOnly"
-        />
+        <template v-if="activity === 'Logo' || !isTouchable">
+          <RouterLink to="/">
+            <VueflixLogo>데레</VueflixLogo>
+          </RouterLink>
+        </template>
+        <template v-else>
+          {{ activity }}
+        </template>
+      </h1>
+      <ul class="VueflixHeader__GNB">
+        <li v-for="{ text, to } in gnbItems" :key="text">
+          <RouterLink class="VueflixHeader__GNBLink" :to>
+            {{ text }}
+          </RouterLink>
+        </li>
+      </ul>
+      <div class="VueflixHeader__Actions">
         <button
+          class="VueflixHeader__Action"
+          v-if="route.meta.appBar.backButton && isSmall"
+          @click="back"
           type="button"
-          class="VueflixHeader__Action VueflixHeader__Action--MobileOnly"
-          @click="toggleSearchMode"
         >
           <IconBase>
-            <IconSearch></IconSearch>
+            <IconArrowPrev />
           </IconBase>
         </button>
-        <ProfileCombo to="/my" class="VueflixHeader__ProfileCombo" />
+        <div class="right">
+          <SearchBar
+            class="VueflixHeader__SearchBar VueflixHeader__SearchBar--PCOnly"
+          />
+          <button
+            type="button"
+            class="VueflixHeader__Action VueflixHeader__Action--MobileOnly"
+            @click="toggleSearchMode"
+          >
+            <IconBase>
+              <IconSearch></IconSearch>
+            </IconBase>
+          </button>
+          <ProfileCombo to="/my" class="VueflixHeader__ProfileCombo" />
+        </div>
       </div>
-    </div>
-    <div
-      class="VueflixHeader__SearchCombo"
-      :class="searchMode && 'VueflixHeader__SearchCombo--Open'"
-    >
-      <SearchBar
-        class="VueflixHeader__SearchBar VueflixHeader__SearchBar--MobileOnly"
-      />
-      <button
-        @click="toggleSearchMode"
-        class="VueflixHeader__SearchCloseBtn"
-        type="button"
+      <div
+        class="VueflixHeader__SearchCombo"
+        :class="searchMode && 'VueflixHeader__SearchCombo--Open'"
       >
-        <span class="blind">닫기</span>
-        <IconBase>
-          <IconClose />
-        </IconBase>
-      </button>
+        <SearchBar
+          class="VueflixHeader__SearchBar VueflixHeader__SearchBar--MobileOnly"
+        />
+        <button
+          @click="toggleSearchMode"
+          class="VueflixHeader__SearchCloseBtn"
+          type="button"
+        >
+          <span class="blind">닫기</span>
+          <IconBase>
+            <IconClose />
+          </IconBase>
+        </button>
+      </div>
     </div>
   </header>
 </template>
@@ -152,14 +153,21 @@ function toggleSearchMode() {
 .VueflixHeader {
   width: 100%;
   position: fixed;
-  top: 0;
+  top: env(titlebar-area-y, 0);
+  left: env(titlebar-area-x, 0);
   z-index: var(--z-index-1);
-  height: var(--header-height);
-  display: flex;
-  align-items: center;
   border-bottom: 1px solid hsl(var(--bg-200) / v-bind(scrollPercent));
   background-color: hsl(var(--bg-100) / calc(v-bind(scrollPercent)));
   --icon-color: hsl(var(--bg-100));
+
+  &__Inner {
+    display: flex;
+    align-items: center;
+    height: var(--header-height);
+    width: env(titlebar-area-width, 100%);
+    padding: 0 var(--inner-padding);
+    transition: width 150ms ease-out;
+  }
 
   &__Activity {
     font-size: 1.7rem;
@@ -205,6 +213,7 @@ function toggleSearchMode() {
     gap: 1.6rem;
     width: 100%;
     height: 100%;
+    padding: 0 2rem;
     position: absolute;
     left: 0;
     background-color: hsl(var(--bg-100) / 0.8);
@@ -267,7 +276,9 @@ function toggleSearchMode() {
   .VueflixHeader {
     background-color: hsl(var(--bg-100));
     color: inherit;
-    gap: 4rem;
+    &__Inner {
+      gap: 4rem;
+    }
     &__Actions {
       width: 100%;
       .right {
@@ -330,6 +341,13 @@ function toggleSearchMode() {
         }
       }
     }
+  }
+}
+
+@media (display-mode: window-controls-overlay) {
+  .VueflixHeader {
+    -webkit-app-region: drag;
+    app-region: drag;
   }
 }
 </style>

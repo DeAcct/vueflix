@@ -131,7 +131,7 @@ watch(
 
 .AnimeLoading {
   display: block;
-  width: calc(var(--vw) * 1px * 100);
+  width: 100dvh;
   height: 0.2rem;
   position: fixed;
   top: 0;
@@ -206,7 +206,7 @@ watch(
 @media screen and (min-width: 1080px) {
   .AnimeDialog {
     --dialog-max-width: 1080px;
-    --dialog-height: calc(var(--vh) * 100 * 1px - 2rem);
+    --dialog-height: calc(100dvh - 4rem);
     --dialog-inset: 50% auto auto 50%;
     --dialog-translate: -50% -50%;
     --dialog-starting-translate: -50% calc(-50% + 3rem);
@@ -225,6 +225,16 @@ watch(
         translate: 0 0;
       }
     }
+  }
+}
+
+@media (display-mode: window-controls-overlay) {
+  .AnimeDialog {
+    --dialog-height: calc(100dvh - var(--header-height) - 4rem);
+    --dialog-inset: calc(var(--header-height) + 2rem) auto auto 50%;
+    --dialog-translate: -50% 0;
+    --dialog-starting-translate: -50% 3rem;
+    --dialog-close-inset: var(--header-height) 0 0 0;
   }
 }
 </style>

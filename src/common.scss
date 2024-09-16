@@ -223,6 +223,16 @@ summary {
   }
 }
 
+a,
+button:not(:disabled),
+[role="progressbar"],
+[data-pointer="true"],
+label,
+input,
+textarea {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
 @media (hover: hover) and (pointer: fine) {
   a,
   button:not(:disabled),

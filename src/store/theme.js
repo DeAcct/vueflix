@@ -12,6 +12,12 @@ export const useTheme = defineStore("theme", () => {
     const $app = document.getElementById("app");
     $app.dataset.theme = name;
     localStorage.setItem("theme", name);
+    const $meta = document.querySelector('meta[name="theme-color"]');
+    if (name === "dark") {
+      $meta.setAttribute("content", "hsl(234 28% 1%)");
+    } else {
+      $meta.setAttribute("content", "#ffffff");
+    }
   }
   return { mode, setMode };
 });

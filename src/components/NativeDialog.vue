@@ -85,7 +85,7 @@ defineExpose({
 
   &__Close {
     position: fixed;
-    inset: 0;
+    inset: var(--dialog-close-inset, 0);
     z-index: var(--dialog-calc-z-index);
     transition: all 150ms ease-out allow-discrete;
     @starting-style {
