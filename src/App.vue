@@ -94,32 +94,6 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-// .root-move {
-//   &-right {
-//     &-enter-active,
-//     &-leave-active {
-//       transition: all calc(200ms * v-bind("transition.weight")) ease-out;
-//       opacity: 0;
-//     }
-//     &-enter-from,
-//     &-leave-to {
-//       translate: -2rem 0;
-//       opacity: 0;
-//     }
-//   }
-//   &-left {
-//     &-enter-active,
-//     &-leave-active {
-//       transition: all calc(200ms * v-bind("transition.weight")) ease-out;
-//       opacity: 0;
-//     }
-//     &-enter-from,
-//     &-leave-to {
-//       translate: 2rem 0;
-//       opacity: 0;
-//     }
-//   }
-// }
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 150ms ease-out;

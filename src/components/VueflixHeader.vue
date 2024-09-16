@@ -4,22 +4,17 @@
     :class="scrollPercent > 0 && 'VueflixHeader--Fill'"
   >
     <div class="VueflixHeader__Inner">
-      <h1
-        class="VueflixHeader__Activity"
-        :class="
-          (activity === 'Logo' || !isTouchable) &&
-          'VueflixHeader__Activity--Logo'
-        "
-      >
-        <template v-if="activity === 'Logo' || !isTouchable">
-          <RouterLink to="/">
-            <VueflixLogo>데레</VueflixLogo>
-          </RouterLink>
-        </template>
-        <template v-else>
+      <h1 class="blind">데레</h1>
+      <p class="VueflixHeader__Activity">
+        <template v-if="activity !== 'Logo' && !isPC">
           {{ activity }}
         </template>
-      </h1>
+        <template v-else>
+          <RouterLink to="/" class="VueflixHeader__Logo">
+            <VueflixLogo />
+          </RouterLink>
+        </template>
+      </p>
       <ul class="VueflixHeader__GNB">
         <li v-for="{ text, to } in gnbItems" :key="text">
           <RouterLink class="VueflixHeader__GNBLink" :to>
@@ -90,7 +85,7 @@ import SearchBar from "./SearchBar.vue";
 import VueflixLogo from "./VueflixLogo.vue";
 import ProfileCombo from "./ProfileCombo.vue";
 
-const isTouchable = useMediaQuery("not (hover: hover) and (pointer: fine)");
+const isPC = useMediaQuery("(hover: hover) and (pointer: fine)");
 const isSmall = useMediaQuery("(max-width: 1080px)");
 
 const route = useRoute();
@@ -176,10 +171,11 @@ function toggleSearchMode() {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    &--Logo {
-      width: 7rem;
-      flex-shrink: 0;
-    }
+  }
+  &__Logo {
+    display: flex;
+    width: 10rem;
+    flex-shrink: 0;
   }
 
   &__Actions {
@@ -279,6 +275,19 @@ function toggleSearchMode() {
     &__Inner {
       gap: 4rem;
     }
+    &__Logo {
+      align-items: center;
+      height: 4.6rem;
+      border-radius: 9999px;
+      border: 2px solid transparent;
+      transition: 150ms ease-out;
+      &:hover {
+        background-color: hsl(var(--bg-200));
+      }
+      &:focus-visible {
+        border-color: hsl(var(--theme-500));
+      }
+    }
     &__Actions {
       width: 100%;
       .right {
@@ -317,8 +326,8 @@ function toggleSearchMode() {
     &__ProfileCombo {
       display: flex;
       gap: 0.8rem;
-      background-color: hsl(var(--bg-300) / 0.5);
-      border: 2px solid hsl(var(--bg-300) / 0.5);
+      background-color: hsl(var(--bg-200));
+      border: 2px solid hsl(var(--bg-200));
       --profile-size: 3.6rem;
       font-size: 1.5rem;
       padding-left: 0.8rem;
@@ -332,7 +341,7 @@ function toggleSearchMode() {
         width: 30rem;
         height: 4.6rem;
         padding: 0 1.2rem;
-        background-color: hsl(var(--bg-300) / 0.5);
+        background-color: hsl(var(--bg-200));
         border-radius: 9999px;
         border: 2px solid transparent;
         transition: border-color 150ms ease-out;

@@ -6,7 +6,7 @@ const routes = [
     name: "home",
     component: () => import("@/views/Home.vue"),
     meta: {
-      title: "데레 - 애니에 빠지다",
+      title: "올데이 올나잇 정주행 - 데레",
       appBar: {
         activityContent: "Logo",
       },
