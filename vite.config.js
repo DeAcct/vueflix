@@ -41,6 +41,7 @@ export default defineConfig({
         dir: "ltr",
         theme_color: "#F7084D",
         lang: "ko",
+        id: "/",
         icons: [
           {
             src: "icon-192x192.webp",
