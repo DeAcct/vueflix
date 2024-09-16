@@ -165,7 +165,6 @@ function toggleSearchMode() {
     opacity: v-bind(scrollPercent);
     position: absolute;
     left: 50%;
-    // transform: translateX(-50%);
     translate: -50%;
   }
   &__Logo {
@@ -213,10 +212,10 @@ function toggleSearchMode() {
     left: 0;
     background-color: hsl(var(--bg-100) / 0.8);
     backdrop-filter: blur(10px);
-    transform: translateY(-6rem);
-    transition: transform 150ms ease-out;
+    translate: 0 -6rem;
+    transition: translate 150ms ease-in-out;
     &--Open {
-      transform: translateY(0);
+      translate: 0 0;
     }
   }
   &__SearchBar {
@@ -288,7 +287,7 @@ function toggleSearchMode() {
     }
     &__Activity {
       position: static;
-      transform: none;
+      translate: none;
       a:focus-visible {
         color: hsl(var(--theme-500));
       }
@@ -356,7 +355,11 @@ function toggleSearchMode() {
     app-region: drag;
     --icon-color: inherit;
     background-color: hsl(var(--bg-100));
+  }
+}
 
+@media (display-mode: window-controls-overlay) and (max-width: 1079px) {
+  .VueflixHeader {
     &__Activity {
       opacity: 1;
       left: var(--inner-padding);
