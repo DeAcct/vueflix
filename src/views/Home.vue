@@ -313,12 +313,27 @@ const { idArray: carouselList } = useCarouselList();
   &__CurationItem {
     flex-direction: column;
     width: var(--thumbnail-width, 55vw);
+    &:has(:focus-visible),
+    &:has(:hover) {
+      --curation-accent: hsl(var(--theme-500));
+      --curation-accent-translate: 0.5rem 0.5rem;
+    }
   }
   &__Image {
     position: relative;
     flex-shrink: 0;
     --radius: var(--global-radius);
     --aspect-ratio: calc(9 / 16 * 100%);
+    &::after {
+      transition: 150ms ease-in-out;
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: var(--global-radius);
+      background-color: var(--curation-accent);
+      translate: var(--curation-accent-translate);
+    }
   }
   &__WatchPercent {
     position: absolute;
@@ -338,6 +353,9 @@ const { idArray: carouselList } = useCarouselList();
     display: flex;
     gap: 0.5rem;
     flex-direction: column;
+    &:focus-visible {
+      color: var(--curation-accent);
+    }
   }
   &__AniTitle {
     display: -webkit-box;
@@ -350,9 +368,11 @@ const { idArray: carouselList } = useCarouselList();
     font-size: 1.4rem;
     line-height: 1.5;
     font-weight: 600;
+    color: inherit;
   }
   &__PartIndex {
     font-size: 1.4rem;
+    color: inherit;
   }
 }
 
@@ -495,6 +515,21 @@ const { idArray: carouselList } = useCarouselList();
       &:has(.AppHome__DaySelector) {
         min-height: 42rem;
       }
+    }
+  }
+}
+
+// @media (display-mode: window-controls-overlay) and (max-width: 1080px) {
+//   .AppHome {
+//     &__Slide {
+//       margin-top: calc(var(--header-height) + env(safe-area-inset-top));
+//     }
+//   }
+// }
+@media (display-mode: window-controls-overlay) and (max-width: 1080px) {
+  .AppHome {
+    &__Slide {
+      margin-top: calc(var(--header-height) + env(safe-area-inset-top));
     }
   }
 }

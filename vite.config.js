@@ -75,9 +75,9 @@ export default defineConfig({
             purpose: "any",
           },
           {
-            src: "icon-maskable.png",
+            src: "icon-maskable.webp",
             sizes: "512x512",
-            type: "image/png",
+            type: "image/webp",
             purpose: "maskable",
           },
           {

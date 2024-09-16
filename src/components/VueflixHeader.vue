@@ -22,40 +22,35 @@
           </RouterLink>
         </li>
       </ul>
-      <div class="VueflixHeader__Actions">
-        <button
-          class="VueflixHeader__Action"
-          v-if="route.meta.appBar.backButton && isSmall"
-          @click="back"
-          type="button"
-        >
-          <IconBase>
-            <IconArrowPrev />
-          </IconBase>
-        </button>
-        <div class="right">
-          <SearchBar
-            class="VueflixHeader__SearchBar VueflixHeader__SearchBar--PCOnly"
-          />
-          <button
-            type="button"
-            class="VueflixHeader__Action VueflixHeader__Action--MobileOnly"
-            @click="toggleSearchMode"
-          >
-            <IconBase>
-              <IconSearch></IconSearch>
-            </IconBase>
-          </button>
-          <ProfileCombo to="/my" class="VueflixHeader__ProfileCombo" />
-        </div>
-      </div>
+      <button
+        class="VueflixHeader__Action"
+        v-if="route.meta.appBar.backButton && isSmall"
+        @click="back"
+        type="button"
+      >
+        <IconBase>
+          <IconArrowPrev />
+        </IconBase>
+      </button>
+      <button
+        type="button"
+        class="VueflixHeader__Action VueflixHeader__Action--SearchMobileBtn"
+        @click="toggleSearchMode"
+      >
+        <IconBase>
+          <IconSearch></IconSearch>
+        </IconBase>
+      </button>
+      <SearchBar
+        class="VueflixHeader__SearchBar VueflixHeader__SearchBar--PCOnly"
+      />
+      <ProfileCombo to="/my" class="VueflixHeader__ProfileCombo" />
+
       <div
         class="VueflixHeader__SearchCombo"
         :class="searchMode && 'VueflixHeader__SearchCombo--Open'"
       >
-        <SearchBar
-          class="VueflixHeader__SearchBar VueflixHeader__SearchBar--MobileOnly"
-        />
+        <SearchBar class="VueflixHeader__SearchBar" />
         <button
           @click="toggleSearchMode"
           class="VueflixHeader__SearchCloseBtn"
@@ -161,7 +156,7 @@ function toggleSearchMode() {
     height: var(--header-height);
     width: env(titlebar-area-width, 100%);
     padding: 0 var(--inner-padding);
-    transition: width 150ms ease-out;
+    // transition: width 150ms ease-out;
   }
 
   &__Activity {
@@ -170,7 +165,8 @@ function toggleSearchMode() {
     opacity: v-bind(scrollPercent);
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    // transform: translateX(-50%);
+    translate: -50%;
   }
   &__Logo {
     display: flex;
@@ -178,20 +174,20 @@ function toggleSearchMode() {
     flex-shrink: 0;
   }
 
-  &__Actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    .right {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      flex-grow: 1;
-      margin-right: 0;
-      gap: 0.8rem;
-    }
-  }
+  // &__Actions {
+  //   display: flex;
+  //   justify-content: space-between;
+  //   align-items: center;
+  //   margin-left: auto;
+  // .right {
+  //   display: flex;
+  //   justify-content: flex-end;
+  //   align-items: center;
+  //   flex-grow: 1;
+  //   margin-right: 0;
+  //   gap: 0.8rem;
+  // }
+  // }
 
   &__Action {
     width: 2.4rem;
@@ -201,6 +197,9 @@ function toggleSearchMode() {
     justify-content: center;
     color: var(--icon-color);
     border-radius: 9999px;
+    &--SearchMobileBtn {
+      margin-left: auto;
+    }
   }
 
   &__SearchCombo {
@@ -248,7 +247,6 @@ function toggleSearchMode() {
 }
 @media screen and (min-width: 769px) {
   .VueflixHeader {
-    justify-content: space-between;
     color: hsl(var(--header-content));
     transition: color 150ms ease-out;
     &--Fill {
@@ -288,12 +286,6 @@ function toggleSearchMode() {
         border-color: hsl(var(--theme-500));
       }
     }
-    &__Actions {
-      width: 100%;
-      .right {
-        gap: 1.6rem;
-      }
-    }
     &__Activity {
       position: static;
       transform: none;
@@ -308,7 +300,7 @@ function toggleSearchMode() {
       border: 2px solid transparent;
       transition: border-color 150ms ease-out;
 
-      &--MobileOnly {
+      &--SearchMobileBtn {
         display: none;
       }
     }
@@ -318,6 +310,10 @@ function toggleSearchMode() {
     }
     &__GNBLink {
       font-size: 1.6rem;
+      transition: color 150ms ease-out;
+      &:focus-visible {
+        color: hsl(var(--theme-500));
+      }
     }
     &__SearchCombo {
       display: none;
@@ -334,6 +330,7 @@ function toggleSearchMode() {
     }
 
     &__SearchBar {
+      margin-left: auto;
       &--PCOnly {
         display: flex;
         gap: 0.8rem;
@@ -357,6 +354,25 @@ function toggleSearchMode() {
   .VueflixHeader {
     -webkit-app-region: drag;
     app-region: drag;
+    --icon-color: inherit;
+    background-color: hsl(var(--bg-100));
+
+    &__Activity {
+      opacity: 1;
+      left: var(--inner-padding);
+      translate: 0;
+    }
   }
 }
+
+// .VueflixHeader {
+//   background-color: hsl(var(--bg-100));
+//   -webkit-app-region: drag;
+//   app-region: drag;
+//   --icon-color: inherit;
+
+//   &__Activity {
+//     opacity: 1;
+//   }
+// }
 </style>
