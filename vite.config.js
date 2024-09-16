@@ -25,13 +25,22 @@ export default defineConfig({
       },
       manifest: {
         name: "데레",
-        short_name: "데레",
+        short_name: "데레 - 애니 스트리밍",
+        categories: ["entertainment", "anime", "streaming"],
         description:
           "당당하게 애니 볼 땐, 데레! 고전 명작부터 이번 분기 화제작까지 모든 애니를 고화질로 스트리밍할 수 있는 곳은 이곳 뿐.",
-        theme_color: "#F7084D",
-        lang: "ko",
         display: "standalone",
         display_override: ["window-controls-overlay"],
+        orientation: "portrait-primary",
+        launch_handler: {
+          client_mode: ["focus-existing", "auto"],
+        },
+        related_applications: [],
+        scope_extensions: [{ origin: "vueflix.hyse.kr" }],
+        prefer_related_applications: false,
+        dir: "ltr",
+        theme_color: "#F7084D",
+        lang: "ko",
         icons: [
           {
             src: "icon-192x192.webp",
@@ -52,7 +61,30 @@ export default defineConfig({
             src: "icon-512x512.webp",
             sizes: "512x512",
             type: "image/webp",
-            purpose: "any maskable",
+            purpose: "any",
+          },
+          {
+            src: "icon-maskable.webp",
+            sizes: "512x512",
+            type: "image/webp",
+            purpose: "maskable",
+          },
+        ],
+        screenshots: [
+          {
+            src: "screenshot_home.webp",
+            sizes: "1082x2402",
+            type: "image/webp",
+          },
+          {
+            src: "screenshot_my.webp",
+            sizes: "1082x2402",
+            type: "image/webp",
+          },
+          {
+            src: "screenshot_player.webp",
+            sizes: "1082x2402",
+            type: "image/webp",
           },
         ],
         shortcuts: [
