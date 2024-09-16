@@ -69,6 +69,11 @@ export default defineConfig({
             type: "image/webp",
             purpose: "maskable",
           },
+          {
+            src: "favicon.svg",
+            sizes: "512x512",
+            type: "image/svg",
+          },
         ],
         screenshots: [
           {
