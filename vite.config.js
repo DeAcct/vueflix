@@ -35,13 +35,23 @@ export default defineConfig({
         launch_handler: {
           client_mode: ["focus-existing", "auto"],
         },
+        edge_side_panel: {
+          preferred_width: 412,
+        },
         related_applications: [],
         scope_extensions: [{ origin: "vueflix.hyse.kr" }],
         prefer_related_applications: false,
+        handle_links: preferred,
         dir: "ltr",
         theme_color: "#F7084D",
         lang: "ko",
         id: "/",
+        protocol_handlers: [
+          {
+            protocol: "web+dere",
+            url: "/?modal=%s&route=episodes",
+          },
+        ],
         icons: [
           {
             src: "icon-192x192.webp",
