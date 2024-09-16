@@ -54,30 +54,30 @@ export default defineConfig({
         ],
         icons: [
           {
-            src: "icon-192x192.webp",
+            src: "icon-192x192.png",
             sizes: "192x192",
-            type: "image/webp",
+            type: "image/png",
           },
           {
-            src: "icon-256x256.webp",
+            src: "icon-256x256.png",
             sizes: "256x256",
-            type: "image/webp",
+            type: "image/png",
           },
           {
-            src: "icon-384x384.webp",
+            src: "icon-384x384.png",
             sizes: "384x384",
-            type: "image/webp",
+            type: "image/png",
           },
           {
-            src: "icon-512x512.webp",
+            src: "icon-512x512.png",
             sizes: "512x512",
-            type: "image/webp",
+            type: "image/png",
             purpose: "any",
           },
           {
-            src: "icon-maskable.webp",
+            src: "icon-maskable.png",
             sizes: "512x512",
-            type: "image/webp",
+            type: "image/png",
             purpose: "maskable",
           },
           {
