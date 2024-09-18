@@ -37,7 +37,6 @@ export default function useAccordion(duration = { open: 150, close: 150 }) {
       animation.value.cancel();
     }
 
-    console.log(startHeight, endHeight, "expand");
     animation.value = $root.value.animate(
       { height: [startHeight, endHeight] },
       {
@@ -63,7 +62,6 @@ export default function useAccordion(duration = { open: 150, close: 150 }) {
       animation.value.cancel();
     }
 
-    console.log(startHeight, endHeight, "shrink");
     animation.value = $root.value.animate(
       { height: [startHeight, endHeight] },
       {

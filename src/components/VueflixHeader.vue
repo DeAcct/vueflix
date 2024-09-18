@@ -148,7 +148,7 @@ function toggleSearchMode() {
   z-index: var(--z-index-1);
   border-bottom: 1px solid hsl(var(--bg-200) / v-bind(scrollPercent));
   background-color: hsl(var(--bg-100) / calc(v-bind(scrollPercent)));
-  --icon-color: hsl(var(--bg-100));
+  --icon-color: #fff;
 
   &__Inner {
     display: flex;
@@ -269,9 +269,6 @@ function toggleSearchMode() {
   .VueflixHeader {
     background-color: hsl(var(--bg-100));
     color: inherit;
-    &__Inner {
-      gap: 4rem;
-    }
     &__Logo {
       align-items: center;
       height: 4.6rem;
@@ -306,6 +303,7 @@ function toggleSearchMode() {
     &__GNB {
       display: flex;
       gap: 1.6rem;
+      margin-left: 4rem;
     }
     &__GNBLink {
       font-size: 1.6rem;
@@ -316,16 +314,6 @@ function toggleSearchMode() {
     }
     &__SearchCombo {
       display: none;
-    }
-
-    &__ProfileCombo {
-      display: flex;
-      gap: 0.8rem;
-      background-color: hsl(var(--bg-200));
-      border: 2px solid hsl(var(--bg-200));
-      --profile-size: 3.6rem;
-      font-size: 1.5rem;
-      padding-left: 0.8rem;
     }
 
     &__SearchBar {
@@ -345,6 +333,16 @@ function toggleSearchMode() {
           border-color: hsl(var(--theme-500));
         }
       }
+    }
+    &__ProfileCombo {
+      display: flex;
+      gap: 0.8rem;
+      background-color: hsl(var(--bg-200));
+      border: 2px solid hsl(var(--bg-200));
+      --profile-size: 3.6rem;
+      font-size: 1.5rem;
+      padding-left: 0.8rem;
+      margin-left: 1.6rem;
     }
   }
 }

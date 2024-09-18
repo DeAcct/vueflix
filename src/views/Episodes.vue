@@ -25,7 +25,7 @@
           <template v-slot:content>
             <Thumbnailset
               v-for="{ title, index, thumbnail } in episodes"
-              :key="`episode-${title}`"
+              :key="`episode-${title}-${part}-${index}`"
               class="AnimeEpisodes__Item"
             >
               <template #image>
@@ -275,7 +275,7 @@ function clear() {
 .episode-update-enter-from,
 .episode-update-leave-to {
   opacity: 0;
-  translate: 0 -0.5rem;
+  translate: 0 -0.5rem 0;
 }
 .episode-leave-active {
   position: absolute;
