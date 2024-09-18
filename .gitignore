@@ -23,6 +23,7 @@ package-lock.json
 
 # Editor directories and files
 .vscode
+vite.config.js.timestamp-*
 
 # asset files
 *.ai

@@ -23,12 +23,25 @@ import { useTimeSplit } from "@/composables/formatter";
 import { useAuth } from "@/store/auth";
 
 /**
+ * 사용자가 생성한 리액션을 나타내는 객체입니다.
+ * @typedef {Object} Reaction
+ * @property {string} uid 리액션을 생성한 사용자의 uid
+ * @property {string} parent 리액션의 부모 문서의 id
+ * @property {Array<string|`<time>${string}`>} content 리액션의 내용
+ * @property {number} updown 리액션의 추천 수
+ * @property {Date} time 리액션이 생성된 시간
+ * @property {"comment" | "review"} type 리액션의 타입
+ * @property {boolean} isEdited 리액션이 수정되었는지 여부
+ * */
+
+/**
  * 리액션(리뷰, 댓글)을 새로 생성합니다.
  * @param {{
  *  content: string,
  *  parent: string,
  *  type: "comment" | "review",
  * }} option 리액션의 내용을 받습니다.
+ * @returns {Promise<Reaction>} 작업이 완료되면 생성된 리액션 객체를 반환합니다.
  */
 export async function Create({ content, parent, type }) {
   const auth = useAuth();
@@ -53,7 +66,6 @@ export async function Create({ content, parent, type }) {
     time: new Date(),
     type,
     isEdited: false,
-    thumbs: 0,
   };
 
   // 문서의 이름을 난수로 생성
@@ -65,6 +77,8 @@ export async function Create({ content, parent, type }) {
     { merge: true }
   );
   await auth.syncUser();
+
+  return newItem;
 }
 
 export async function ReadReactionCount({ parent, type }) {
@@ -84,6 +98,7 @@ export async function ReadReactionCount({ parent, type }) {
  *  parent: string,
  *  type: "comment" | "review",
  * }} option 부모 문서의 id와 리액션 타입, 필요시 페이지 사이즈와 페이지를 받습니다.
+ * @returns {Promise<{reactions: Array<Reaction>, lastDoc: Reaction}>}
  */
 export async function Read({ parent, type }, ...queryOption) {
   const q = query(

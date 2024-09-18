@@ -44,7 +44,7 @@
           <template #time>{{ time.current }} / {{ time.duration }}</template>
         </VideoControlBar>
       </Transition>
-      <div class="AmbientPlayer__TakeScreenshot">
+      <div class="AmbientPlayer__TakeScreenshot" v-if="controlShow">
         <button
           class="AmbientPlayer__ScreenshotButton"
           @click="takeScreenshot"

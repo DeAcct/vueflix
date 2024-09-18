@@ -16,7 +16,6 @@ export function useWannaSee(aniTitle) {
 
   async function getWannaSee(uid) {
     const data = await getDoc(doc(db, "user", uid));
-    console.log(data.data());
     return data.data().wannaSee;
   }
 

@@ -29,14 +29,6 @@
           재생 위치 추가
         </button>
         <button
-          class="WriteReaction__Button WriteReaction__Button--Clear"
-          @click="clear"
-          :disabled="reviewData.length === 0"
-          type="button"
-        >
-          지우기
-        </button>
-        <button
           :disabled="reviewData.length > 1000 || reviewData.length === 0"
           @click="reviewTrigger"
           class="WriteReaction__Button WriteReaction__Button--Submit"
@@ -50,10 +42,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onUnmounted } from "vue";
 import { useAuth } from "@/store/auth";
 import { useSecToFormat } from "@/composables/formatter";
 import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
+import { useBrowserStorage } from "../composables/browserStorage";
 
 const emits = defineEmits(["mutate", "interact"]);
 
@@ -101,6 +94,12 @@ function setReviewData(e) {
   // 한글 특성상 v-model 사용불가
   reviewData.value = e.target.value;
 }
+const { data, setData, clearData } = useBrowserStorage("review-data");
+/**@todo 리액션 컴포넌트가 제거되면 작성중인 리액션을 자동저장*/
+onUnmounted(() => {
+  console.log("comment autosaved");
+  // setData([...data.value, {value:reviewData.value}]);
+});
 
 const auth = useAuth();
 const user = computed(() => auth.user);
@@ -111,10 +110,6 @@ function reviewTrigger() {
     user,
     type: props.type,
   });
-  reviewData.value = "";
-}
-
-function clear() {
   reviewData.value = "";
 }
 
