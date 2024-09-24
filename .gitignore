@@ -11,6 +11,8 @@ node_modules
 !.yarn/sdks
 !.yarn/versions
 
+.vite
+
 # local env files
 .env
 .env.local

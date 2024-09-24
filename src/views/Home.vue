@@ -171,8 +171,7 @@
           <i class="PWAModal__HowTo">
             <template v-if="isDeviceIOS">
               애플 기기를 사용하시네요! 하단의
-              <IconBase class="PWAModal__IOSIcon">
-                <IconIOSInstall /> </IconBase
+              <IconBase class="PWAModal__IOSIcon"> <IconIOSInstall /> </IconBase
               >을 누르면 앱을 설치할 수 있어요!
             </template>
             <template v-else>앱을 설치해보실래요?</template>
