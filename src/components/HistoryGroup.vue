@@ -27,7 +27,7 @@
           <ProgressCircle
             v-if="progressBar"
             class="HistoryGroup__WatchPercent"
-            :percent="`${(progress.current / progress.max) * 100}%`"
+            :progress
           />
         </RouterLink>
       </template>

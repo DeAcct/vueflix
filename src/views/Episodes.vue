@@ -44,9 +44,7 @@
                         .percent !== '0%'
                     "
                     class="AnimeEpisodes__WatchPercent"
-                    :percent="
-                      getEpisodeProgress(animeInfo.name, part, index).percent
-                    "
+                    :progress="getEpisodeProgress(animeInfo.name, part, index)"
                   />
                 </RouterLink>
               </template>

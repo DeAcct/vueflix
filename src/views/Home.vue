@@ -10,154 +10,36 @@
       </template>
     </TasogareSlide>
     <div class="AppHome__Curator">
-      <div class="AppHome__Item" v-if="latest(6).length">
-        <h2 class="AppHome__Title inner">최근 본 애니</h2>
-        <VueflixCarousel
-          :length="latest(6).length"
-          class="AppHome__Carousel"
-          type="arrow"
-        >
-          <ThumbnailSet
-            v-for="{ aniTitle, part, index, progress, thumbnail } in latest(6)"
-            :key="aniTitle"
-            class="AppHome__CurationItem"
-          >
-            <template #image>
-              <RouterLink
-                :to="`/anime-play/${aniTitle}/${part}/${index}`"
-                class="AppHome__Image"
-                exact-active-class="AppHome__Image--Selected"
-              >
-                <OptimizedMedia
-                  :src="`/anime/${aniTitle}/${thumbnail}`"
-                  :alt="`${aniTitle} ${part} ${index} 이어보기`"
-                  skelleton
-                />
-                <ProgressCircle
-                  class="AppHome__WatchPercent"
-                  :percent="`${(progress.current / progress.max) * 100}%`"
-                />
-              </RouterLink>
-            </template>
-            <template #text>
-              <RouterLink
-                class="AppHome__TextLink"
-                :to="{
-                  query: {
-                    modal: aniTitle,
-                    route: 'episodes',
-                  },
-                }"
-              >
-                <span class="AppHome__AniTitle">
-                  {{ aniTitle }}
-                </span>
-                <p class="AppHome__Episode">
-                  <strong class="AppHome__PartIndex">
-                    {{ part }} {{ index }}
-                  </strong>
-                </p>
-              </RouterLink>
-            </template>
-          </ThumbnailSet>
-        </VueflixCarousel>
-      </div>
-      <div class="AppHome__Item">
-        <h2 class="AppHome__Title inner">요일별 신작</h2>
-        <MultiSelector
-          class="AppHome__DaySelector"
-          v-model="selectedDay"
-          @update:model-value="onDayChange"
-          :data="DAYS"
-        ></MultiSelector>
-        <VueflixCarousel
-          :length="selectedDailyAnime.length"
-          class="AppHome__Carousel"
-          type="arrow"
-        >
-          <ThumbnailSet
-            v-for="anime in selectedDailyAnime"
-            :key="`${selectedDay}-${anime}`"
-            class="AppHome__CurationItem"
-          >
-            <template #image>
-              <RouterLink
-                :to="{
-                  query: { modal: anime, route: 'episodes' },
-                }"
-                class="AppHome__Image"
-                exact-active-class="AppHome__Image--Selected"
-              >
-                <OptimizedMedia
-                  :src="`/anime/${escaper(anime)}/${escaper(anime)}.webp`"
-                  :alt="`${anime} 포스터`"
-                  skelleton
-                />
-              </RouterLink>
-            </template>
-            <template #text>
-              <RouterLink
-                :to="{
-                  query: { modal: anime, route: 'episodes' },
-                }"
-                class="AppHome__TextLink"
-              >
-                <span class="AppHome__AniTitle">
-                  {{ anime }}
-                </span>
-              </RouterLink>
-            </template>
-          </ThumbnailSet>
-        </VueflixCarousel>
-      </div>
-      <div
+      <CurationGroup
+        :list="latest(6)"
+        subject="최근 본 작품"
         class="AppHome__Item"
-        v-for="recommended in recommendedAnime"
-        :key="recommended.subject"
       >
-        <h2 class="AppHome__Title inner">
-          {{ recommended.subject }}
-        </h2>
-        <VueflixCarousel
-          :length="recommended.list.length"
-          class="AppHome__Carousel"
-          type="arrow"
-        >
-          <ThumbnailSet
-            v-for="anime in recommended.list"
-            class="AppHome__CurationItem"
-            :key="`${recommended.subject}-${anime}`"
-          >
-            <template #image>
-              <RouterLink
-                :to="{
-                  query: { modal: anime, route: 'episodes' },
-                }"
-                class="AppHome__Image"
-                exact-active-class="AppHome__Image--Selected"
-              >
-                <OptimizedMedia
-                  :src="`/anime/${escaper(anime)}/${escaper(anime)}.webp`"
-                  :alt="`${anime} 포스터`"
-                  skelleton
-                />
-              </RouterLink>
-            </template>
-            <template #text>
-              <RouterLink
-                :to="{
-                  query: { modal: anime, route: 'episodes' },
-                }"
-                class="AppHome__TextLink"
-              >
-                <span class="AppHome__AniTitle">
-                  {{ anime }}
-                </span>
-              </RouterLink>
-            </template>
-          </ThumbnailSet>
-        </VueflixCarousel>
-      </div>
+        <template #watched-percent="progress">
+          <ProgressCircle class="AppHome__WatchPercent" :progress />
+        </template>
+      </CurationGroup>
+      <CurationGroup
+        class="AppHome__Item"
+        :list="selectedDailyAnime"
+        subject="요일별 신작"
+      >
+        <template #list-changer>
+          <MultiSelector
+            class="AppHome__DaySelector"
+            v-model="selectedDay"
+            @update:model-value="onDayChange"
+            :data="DAYS"
+          />
+        </template>
+      </CurationGroup>
+      <CurationGroup
+        class="AppHome__Item"
+        v-for="curation in curatedList"
+        :key="curation.subject"
+        :list="curation.list"
+        :subject="curation.subject"
+      />
     </div>
     <NativeDialog ref="$PWAModal" class="PWAModal" shade>
       <template #title>
@@ -223,10 +105,7 @@ import { useCarouselList } from "@/composables/carousel";
 
 import InputBoolean from "@/components/InputBoolean.vue";
 import MultiSelector from "@/components/MultiSelector.vue";
-import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import ProgressCircle from "@/components/ProgressCircle.vue";
-import ThumbnailSet from "@/components/ThumbnailSet.vue";
-import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
 
@@ -235,6 +114,7 @@ import SlideContent from "@/components/SlideContent.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconIOSInstall from "@/components/icons/IconIOSInstall.vue";
+import CurationGroup from "../components/CurationGroup.vue";
 
 const now = new Date();
 const selectedDay = ref(now.getDay());
@@ -256,21 +136,17 @@ watch(selectedDay, async () => {
   await getSelectedDayList();
 });
 
-const recommendedAnime = ref({});
+const curatedList = ref({});
 onMounted(async () => {
   pwaCopy.value = useRandomPWAPromotionCopy();
   const qSnapshot = await getDocs(collection(db, "recommend"));
   const data = qSnapshot.docs.map((doc) => doc.data());
-  recommendedAnime.value = data;
+  curatedList.value = data;
 });
 
 const pwaCopy = ref("");
 const $PWAModal = ref(null);
 const { postpone, install, hideModal, isDeviceIOS } = usePWA($PWAModal);
-
-function escaper(str) {
-  return str.replaceAll(/:|\./g, "_").replaceAll(/\?/g, "");
-}
 
 const { latest } = useMaratonData();
 
@@ -296,7 +172,7 @@ const { idArray: carouselList } = useCarouselList();
   &__DaySelector {
     width: calc(100% - var(--inner-padding) * 2);
     border-radius: 9999px;
-    margin: 0 auto;
+    margin: 0 auto 1.6rem;
     --item-width: 4rem;
     --item-height: 4rem;
   }
@@ -486,6 +362,11 @@ const { idArray: carouselList } = useCarouselList();
     }
     &__Slide {
       margin-top: var(--header-height);
+    }
+    &__Item {
+      &:has(.AppHome__DaySelector) {
+        min-height: 40rem;
+      }
     }
   }
   .PWAModal {

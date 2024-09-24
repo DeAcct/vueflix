@@ -1,0 +1,190 @@
+<template>
+  <div class="CurationGroup">
+    <h2 class="CurationGroup__Subject inner">
+      {{ subject }}
+    </h2>
+    <slot name="list-changer"></slot>
+    <VueflixCarousel
+      :length="list.length"
+      class="CurationGroup__Carousel"
+      type="arrow"
+    >
+      <ThumbnailSet
+        v-for="{ aniTitle, part, index, progress } in list"
+        class="CurationGroup__Item"
+        :key="`${subject}-${aniTitle}`"
+      >
+        <template #image>
+          <RouterLink
+            :to="{
+              query: { modal: aniTitle, route: 'episodes' },
+            }"
+            class="CurationGroup__Image"
+            exact-active-class="CurationGroup__Image--Selected"
+          >
+            <OptimizedMedia
+              :src="`/anime/${escaper(aniTitle)}/${escaper(aniTitle)}.webp`"
+              :alt="`${aniTitle} 포스터`"
+              skelleton
+            />
+            <slot name="watched-percent" v-bind="progress"></slot>
+          </RouterLink>
+        </template>
+        <template #text>
+          <RouterLink
+            :to="{
+              query: { modal: aniTitle, route: 'episodes' },
+            }"
+            class="CurationGroup__TextLink"
+          >
+            <span class="CurationGroup__AniTitle">
+              {{ aniTitle }}
+            </span>
+            <strong class="CurationGroup__PartIndex" v-if="part && index">
+              {{ part }} {{ index }}
+            </strong>
+          </RouterLink>
+        </template>
+      </ThumbnailSet>
+    </VueflixCarousel>
+  </div>
+</template>
+
+<script setup>
+import ThumbnailSet from "@/components/ThumbnailSet.vue";
+import VueflixCarousel from "@/components/VueflixCarousel.vue";
+import OptimizedMedia from "@/components/OptimizedMedia.vue";
+
+defineProps({
+  list: {
+    type: Array,
+    required: true,
+    validator(value) {
+      return value.every(
+        (item) => typeof item === "object" && "aniTitle" in item
+      );
+    },
+  },
+  subject: {
+    type: String,
+  },
+});
+
+function escaper(str) {
+  return str.replaceAll(/:|\./g, "_").replaceAll(/\?/g, "");
+}
+</script>
+
+<style lang="scss" scoped>
+.CurationGroup {
+  &__Subject {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  &__Item {
+    display: flex;
+    width: var(--thumbnail-width, 55vw);
+    flex-direction: column;
+    &:has(:focus-visible),
+    &:has(:hover) {
+      --curation-accent: hsl(var(--theme-500));
+      --curation-accent-translate: 0.5rem 0.5rem;
+    }
+  }
+  &__Image {
+    width: 100%;
+    position: relative;
+    flex-shrink: 0;
+    --radius: var(--global-radius);
+    --aspect-ratio: calc(9 / 16 * 100%);
+    &::after {
+      transition: 150ms ease-in-out;
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: var(--global-radius);
+      background-color: var(--curation-accent);
+      translate: var(--curation-accent-translate);
+    }
+  }
+  &__TextLink {
+    width: 100%;
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+    &:focus-visible {
+      color: var(--curation-accent);
+    }
+  }
+  &__AniTitle {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    --episode-title-width: 20ch;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    font-weight: 600;
+    color: inherit;
+  }
+  &__PartIndex {
+    font-size: 1.4rem;
+    color: inherit;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .CurationGroup {
+    &__Item {
+      width: var(--thumbnail-width, 32vw);
+    }
+    &__AniTitle {
+      font-size: 1.6rem;
+    }
+    &__PartIndex {
+      font-size: 1.6rem;
+    }
+    &__Subject {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    &__PartIndex {
+      font-size: 1.6rem;
+    }
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .CurationGroup {
+    &__Item {
+      width: var(--thumbnail-width, 28vw);
+    }
+    &__Subject {
+      font-size: 3rem;
+    }
+    &__DaySelector {
+      width: 40rem;
+      margin-left: var(--inner-padding);
+    }
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .CurationGroup {
+    &__AniTitle {
+      font-size: 2rem;
+    }
+    &__PartIndex {
+      font-size: 2rem;
+    }
+    &__Item {
+      width: var(--thumbnail-width, 15vw);
+    }
+  }
+}
+</style>

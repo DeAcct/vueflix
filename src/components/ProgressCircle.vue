@@ -4,18 +4,21 @@
       <circle class="ProgressCircle__Track" cx="12" cy="12" r="9" />
       <circle class="ProgressCircle__Body" cx="12" cy="12" r="9" ref="$body" />
     </svg>
-    <figcaption class="ProgressCircle__Percent">
-      {{ Math.floor(Number(percent.slice(0, -1))) }}%
-    </figcaption>
+    <figcaption class="ProgressCircle__Percent">{{ percent }}%</figcaption>
   </figure>
 </template>
 
 <script setup>
+import { computed, toRefs, onMounted } from "vue";
 import usePercentToSVGRound from "@/composables/svg";
 
 const props = defineProps({
-  percent: {
-    type: String,
+  progress: {
+    type: Object,
+    required: true,
+    validator(value) {
+      return "current" in value && "max" in value;
+    },
   },
   direction: {
     type: String,
@@ -25,7 +28,15 @@ const props = defineProps({
   },
 });
 
-const { $body, trackLength, bodyLength } = usePercentToSVGRound(props.percent);
+// const percent = ref(0);
+onMounted(() => {
+  console.log(props.progress);
+});
+const percent = computed(() =>
+  Math.floor((props.progress.current / props.progress.max) * 100)
+);
+
+const { $body, trackLength, bodyLength } = usePercentToSVGRound(percent);
 </script>
 
 <style lang="scss" scoped>
