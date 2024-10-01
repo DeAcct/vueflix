@@ -11,7 +11,7 @@
           selected = key;
         }
       "
-      @focus="indicatorMove(index)"
+      @focus="() => false && indicatorMove(index)"
       ref="$Items"
       type="button"
     >
@@ -56,15 +56,17 @@ const {
     line-height: 4rem;
     border-radius: var(--indicator-radius, 9999px);
     transition: color 150ms ease-out;
-    border: 2px solid transparent;
+    border: 1px solid transparent;
     display: flex;
     justify-content: center;
     align-items: center;
+    color: hsl(var(--bg-600));
     &--Active {
-      color: hsl(var(--theme-500));
+      color: hsl(var(--text-800));
     }
     &:focus-visible {
-      border: 2px solid hsl(var(--theme-500));
+      border-color: currentColor;
+      // background-color: hsl(var(--theme-500) / 0.1);
     }
   }
 
@@ -75,10 +77,13 @@ const {
     z-index: var(--z-index-s1);
     width: calc(v-bind("to.width") * 1px);
     height: calc(v-bind("to.height") * 1px);
-    background-color: hsl(var(--theme-500) / 0.2);
+    // background-color: hsl(var(--theme-500) / 0.2);
+    background-color: hsl(var(--bg-100));
+    box-shadow: 0 1px 1px hsl(0deg 0% 0% / 0.06),
+      0 2px 2px hsl(0deg 0% 0% / 0.06), 0 4px 4px hsl(0deg 0% 0% / 0.06);
     border-radius: var(--indicator-radius, 9999px);
     translate: calc(v-bind("to.x") * 1px) calc(v-bind("to.y") * 1px);
-    transition: translate 150ms ease-out;
+    transition: translate 150ms cubic-bezier(0.83, 0, 0.17, 1);
   }
 }
 </style>

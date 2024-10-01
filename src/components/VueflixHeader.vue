@@ -271,7 +271,7 @@ function toggleSearchMode() {
     color: inherit;
     &__Logo {
       align-items: center;
-      height: 4.6rem;
+      height: 4.8rem;
       border-radius: 9999px;
       border: 2px solid transparent;
       transition: 150ms ease-out;

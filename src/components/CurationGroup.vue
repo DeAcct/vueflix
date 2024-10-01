@@ -16,18 +16,19 @@
       >
         <template #image>
           <RouterLink
-            :to="{
-              query: { modal: aniTitle, route: 'episodes' },
-            }"
-            class="CurationGroup__Image"
-            exact-active-class="CurationGroup__Image--Selected"
+            class="CurationGroup__Thumbnail"
+            :to="`/anime-play/${aniTitle}/${part}/${index}`"
+            exact-active-class="CurationGroup__Thumbnail--Selected"
           >
             <OptimizedMedia
               :src="`/anime/${escaper(aniTitle)}/${escaper(aniTitle)}.webp`"
               :alt="`${aniTitle} 포스터`"
+              class="CurationGroup__Image"
               skelleton
             />
-            <slot name="watched-percent" v-bind="progress"></slot>
+            <div class="CurationGroup__SnackBar">
+              <slot name="snack-bar" v-bind="{ progress, aniTitle }"></slot>
+            </div>
           </RouterLink>
         </template>
         <template #text>
@@ -51,6 +52,9 @@
 </template>
 
 <script setup>
+/**
+ * @todo wannaSeeToggle 버튼 추가
+ */
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
@@ -91,9 +95,11 @@ function escaper(str) {
     &:has(:hover) {
       --curation-accent: hsl(var(--theme-500));
       --curation-accent-translate: 0.5rem 0.5rem;
+      --snack-bar-opacity: 1;
+      --snack-bar-translate: 0;
     }
   }
-  &__Image {
+  &__Thumbnail {
     width: 100%;
     position: relative;
     flex-shrink: 0;
@@ -110,6 +116,25 @@ function escaper(str) {
       translate: var(--curation-accent-translate);
     }
   }
+  &__SnackBar {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.2rem;
+    border-radius: 0 0 var(--global-radius) var(--global-radius);
+    background: linear-gradient(transparent, hsl(var(--text-900) / 0.5));
+    opacity: var(--snack-bar-opacity, 0);
+    translate: var(--snack-bar-translate, 0 0.8rem);
+    transition: 150ms ease-in-out;
+    &:empty {
+      display: none;
+    }
+  }
+
   &__TextLink {
     width: 100%;
     display: flex;

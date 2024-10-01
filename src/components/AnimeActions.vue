@@ -50,6 +50,10 @@
 </template>
 
 <script setup>
+/**
+ * @todo wannaSeeToggle 버튼 컴포넌트화
+ */
+
 import { ref } from "vue";
 
 import IconBase from "./IconBase.vue";

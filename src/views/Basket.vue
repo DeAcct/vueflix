@@ -145,11 +145,10 @@ async function all() {
     flex-grow: 1;
     display: flex;
     --item-width: 25%;
-    --item-height: 4.8rem;
+    --item-height: 3.6rem;
     border-radius: 9999px;
-    background-color: transparent;
     justify-content: flex-start;
-    padding: 0.6rem 0;
+    padding: 0.6rem;
   }
   &__Button {
     height: 4.8rem;

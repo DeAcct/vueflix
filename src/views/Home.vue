@@ -11,15 +11,6 @@
     </TasogareSlide>
     <div class="AppHome__Curator">
       <CurationGroup
-        :list="latest(6)"
-        subject="최근 본 작품"
-        class="AppHome__Item"
-      >
-        <template #watched-percent="progress">
-          <ProgressCircle class="AppHome__WatchPercent" :progress />
-        </template>
-      </CurationGroup>
-      <CurationGroup
         class="AppHome__Item"
         :list="selectedDailyAnime"
         subject="요일별 신작"
@@ -31,6 +22,16 @@
             @update:model-value="onDayChange"
             :data="DAYS"
           />
+        </template>
+      </CurationGroup>
+      <CurationGroup
+        :list="latest(6)"
+        subject="최근 본 작품"
+        class="AppHome__Item"
+        v-if="maraton.length"
+      >
+        <template #snack-bar="{ progress, aniTitle }">
+          <WatchContinue :progress class="AppHome__ContinueButton" />
         </template>
       </CurationGroup>
       <CurationGroup
@@ -105,7 +106,7 @@ import { useCarouselList } from "@/composables/carousel";
 
 import InputBoolean from "@/components/InputBoolean.vue";
 import MultiSelector from "@/components/MultiSelector.vue";
-import ProgressCircle from "@/components/ProgressCircle.vue";
+
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
 
@@ -114,7 +115,8 @@ import SlideContent from "@/components/SlideContent.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconIOSInstall from "@/components/icons/IconIOSInstall.vue";
-import CurationGroup from "../components/CurationGroup.vue";
+import CurationGroup from "@/components/CurationGroup.vue";
+import WatchContinue from "@/components/WatchContinue.vue";
 
 const now = new Date();
 const selectedDay = ref(now.getDay());
@@ -148,7 +150,7 @@ const pwaCopy = ref("");
 const $PWAModal = ref(null);
 const { postpone, install, hideModal, isDeviceIOS } = usePWA($PWAModal);
 
-const { latest } = useMaratonData();
+const { latest, maraton } = useMaratonData();
 
 const { idArray: carouselList } = useCarouselList();
 </script>
@@ -184,69 +186,8 @@ const { idArray: carouselList } = useCarouselList();
   &__Carousel {
     margin-top: 1.6rem;
   }
-  &__CurationItem {
-    flex-direction: column;
-    width: var(--thumbnail-width, 55vw);
-    &:has(:focus-visible),
-    &:has(:hover) {
-      --curation-accent: hsl(var(--theme-500));
-      --curation-accent-translate: 0.5rem 0.5rem;
-    }
-  }
-  &__Image {
-    position: relative;
-    flex-shrink: 0;
-    --radius: var(--global-radius);
-    --aspect-ratio: calc(9 / 16 * 100%);
-    &::after {
-      transition: 150ms ease-in-out;
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      border-radius: var(--global-radius);
-      background-color: var(--curation-accent);
-      translate: var(--curation-accent-translate);
-    }
-  }
-  &__WatchPercent {
-    position: absolute;
-    z-index: var(--z-index-s2);
-    width: 100%;
-    flex-shrink: 0;
-    font-size: 1.3rem;
-    left: 0;
-    padding: 0.75rem;
-    bottom: 0;
-    color: #fff;
-    background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
-    border-radius: var(--global-radius);
-  }
-  &__TextLink {
-    width: 100%;
-    display: flex;
-    gap: 0.5rem;
-    flex-direction: column;
-    &:focus-visible {
-      color: var(--curation-accent);
-    }
-  }
-  &__AniTitle {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    width: 100%;
-    --episode-title-width: 20ch;
-    font-size: 1.4rem;
-    line-height: 1.5;
-    font-weight: 600;
-    color: inherit;
-  }
-  &__PartIndex {
-    font-size: 1.4rem;
-    color: inherit;
+  &__ContinueButton {
+    background-color: #fff;
   }
 }
 
@@ -334,9 +275,6 @@ const { idArray: carouselList } = useCarouselList();
         margin-bottom: 4.5rem;
       }
     }
-    &__CurationItem {
-      width: var(--thumbnail-width, 32vw);
-    }
   }
 }
 @media screen and (min-width: 1024px) {
@@ -356,9 +294,6 @@ const { idArray: carouselList } = useCarouselList();
     &__DaySelector {
       width: 40rem;
       margin-left: var(--inner-padding);
-    }
-    &__CurationItem {
-      width: var(--thumbnail-width, 28vw);
     }
     &__Slide {
       margin-top: var(--header-height);
@@ -380,15 +315,6 @@ const { idArray: carouselList } = useCarouselList();
 }
 @media screen and (min-width: 1920px) {
   .AppHome {
-    &__AniTitle {
-      font-size: 2rem;
-    }
-    &__PartIndex {
-      font-size: 2rem;
-    }
-    &__CurationItem {
-      width: var(--thumbnail-width, 15vw);
-    }
     &__Item {
       &:has(.AppHome__DaySelector) {
         min-height: 42rem;
