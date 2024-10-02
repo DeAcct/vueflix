@@ -31,10 +31,15 @@
                 skelleton
               />
             </RouterLink>
-            <div class="CurationGroup__SnackBar">
+            <div class="CurationGroup__SnackBar" v-if="media">
               <slot
                 name="snack-bar"
-                v-bind="{ aniTitle, part, index, progress }"
+                v-bind="{
+                  aniTitle,
+                  part,
+                  index,
+                  progress,
+                }"
               ></slot>
             </div>
           </div>
@@ -60,12 +65,10 @@
 </template>
 
 <script setup>
-/**
- * @todo wannaSeeToggle 버튼 추가
- */
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
+import { useMediaQuery } from "@/composables/device";
 
 defineProps({
   list: {
@@ -85,6 +88,7 @@ defineProps({
 function escaper(str) {
   return str.replaceAll(/:|\./g, "_").replaceAll(/\?/g, "");
 }
+const media = useMediaQuery("(hover: hover) and (pointer: fine)");
 </script>
 
 <style lang="scss" scoped>
@@ -212,24 +216,22 @@ function escaper(str) {
       &:has(:focus-visible),
       &:has(:hover) {
         --snack-bar-opacity: 1;
-        --snack-bar-translate: 0;
       }
     }
     &__SnackBar {
       display: flex;
       position: absolute;
       align-items: center;
-      justify-content: space-between;
+      gap: 1.2rem;
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 1.2rem;
+      padding: 1.6rem;
       border-radius: 0 0 var(--global-radius) var(--global-radius);
-      background: linear-gradient(transparent, hsl(var(--text-900) / 0.5));
+      background: linear-gradient(transparent, hsl(var(--text-900) / 0.3));
 
-      transition: 150ms ease-in-out;
+      transition: opacity 150ms ease-in-out;
       opacity: var(--snack-bar-opacity, 0);
-      translate: var(--snack-bar-translate, 0 0.8rem);
     }
   }
 }

@@ -38,14 +38,18 @@
                     :alt="`${animeInfo.name} ${part} ${index} 미리보기 이미지`"
                     skelleton
                   />
-                  <ProgressCircle
-                    v-if="
-                      getEpisodeProgress(animeInfo.name, part, index)
-                        .percent !== '0%'
-                    "
-                    class="AnimeEpisodes__WatchPercent"
-                    :progress="getEpisodeProgress(animeInfo.name, part, index)"
-                  />
+                  <div class="AnimeEpisodes__ProgressRenderer">
+                    <ProgressCircle
+                      v-if="
+                        getEpisodeProgress(animeInfo.name, part, index)
+                          .percent !== '0%'
+                      "
+                      class="AnimeEpisodes__WatchPercent"
+                      :progress="
+                        getEpisodeProgress(animeInfo.name, part, index)
+                      "
+                    />
+                  </div>
                 </RouterLink>
               </template>
               <template #text>
@@ -194,17 +198,20 @@ function clear() {
     min-width: 0;
     position: relative;
   }
-  &__WatchPercent {
+  &__ProgressRenderer {
     position: absolute;
-    width: 100%;
-    flex-shrink: 0;
-    font-size: 1.3rem;
-    left: 0;
-    padding: 0.75rem;
+    padding: 0.8rem;
     bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, hsl(0 0 0 / 0.5));
+    border-radius: 0 0 var(--global-radius) var(--global-radius);
+  }
+  &__WatchPercent {
+    font-size: 1.3rem;
+    left: 0.8rem;
+    bottom: 0.8rem;
     color: #fff;
-    background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
-    border-radius: var(--global-radius);
   }
   &__TextLink {
     display: flex;

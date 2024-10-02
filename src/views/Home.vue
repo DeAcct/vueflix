@@ -23,6 +23,15 @@
             :data="DAYS"
           />
         </template>
+        <template #snack-bar="{ aniTitle }">
+          <button
+            class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
+            @click="toggleWannaSee(aniTitle)"
+            type="button"
+          >
+            <WannaSeeMotion :ani-title />
+          </button>
+        </template>
       </CurationGroup>
       <CurationGroup
         :list="latest(6)"
@@ -33,10 +42,17 @@
         <template #snack-bar="{ aniTitle, part, index, progress }">
           <RouterLink
             :to="`/anime-play/${aniTitle}/${part}/${index}`"
-            class="CurationGroup__SnackBarButton"
+            class="AppHome__SnackBarButton"
           >
-            <WatchContinue :progress class="AppHome__ContinueButton" />
+            <WatchContinue :progress />
           </RouterLink>
+          <button
+            class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
+            @click="toggleWannaSee(aniTitle)"
+            type="button"
+          >
+            <WannaSeeMotion :ani-title />
+          </button>
         </template>
       </CurationGroup>
       <CurationGroup
@@ -45,7 +61,17 @@
         :key="curation.subject"
         :list="curation.list"
         :subject="curation.subject"
-      />
+      >
+        <template #snack-bar="{ aniTitle }">
+          <button
+            class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
+            @click="toggleWannaSee(aniTitle)"
+            type="button"
+          >
+            <WannaSeeMotion :ani-title />
+          </button>
+        </template>
+      </CurationGroup>
     </div>
     <NativeDialog ref="$PWAModal" class="PWAModal" shade>
       <template #title>
@@ -106,8 +132,9 @@ import { db } from "@/utility/firebase";
 
 import { DAYS } from "@/enums/Days";
 import { useMaratonData } from "@/api/maraton";
-import { usePWA, useRandomPWAPromotionCopy } from "@/composables/pwa";
+import { useWannaSee } from "@/api/wannaSee";
 import { useCarouselList } from "@/composables/carousel";
+import { usePWA, useRandomPWAPromotionCopy } from "@/composables/pwa";
 
 import InputBoolean from "@/components/InputBoolean.vue";
 import MultiSelector from "@/components/MultiSelector.vue";
@@ -122,6 +149,7 @@ import IconBase from "@/components/IconBase.vue";
 import IconIOSInstall from "@/components/icons/IconIOSInstall.vue";
 import CurationGroup from "@/components/CurationGroup.vue";
 import WatchContinue from "@/components/WatchContinue.vue";
+import WannaSeeMotion from "@/components/WannaSeeMotion.vue";
 
 const now = new Date();
 const selectedDay = ref(now.getDay());
@@ -158,6 +186,11 @@ const { postpone, install, hideModal, isDeviceIOS } = usePWA($PWAModal);
 const { latest, maraton } = useMaratonData();
 
 const { idArray: carouselList } = useCarouselList();
+
+function toggleWannaSee(aniTitle) {
+  const { toggleWannaSee } = useWannaSee(aniTitle);
+  toggleWannaSee();
+}
 </script>
 
 <style lang="scss" scoped>
@@ -191,10 +224,16 @@ const { idArray: carouselList } = useCarouselList();
   &__Carousel {
     margin-top: 1.6rem;
   }
-  &__ContinueButton {
-    width: 3.6rem;
-    height: 3.6rem;
+  &__SnackBarButton {
+    width: 4.8rem;
+    height: 4.8rem;
     background-color: #fff;
+    border-radius: 9999px;
+    &--WannaSee {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 }
 

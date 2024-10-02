@@ -46,8 +46,7 @@
           <template #meta="{ self, data, time }">
             <ReactionMeta :self :data>
               <template #edited>
-                {{ reaction.isEdited ? " &middot; 수정됨" : "" }} &middot;
-                {{ reaction._id }}
+                {{ reaction.isEdited ? " &middot; 수정됨" : "" }}
               </template>
               <template #time>{{ time }}</template>
             </ReactionMeta>

@@ -1,6 +1,6 @@
 <template>
   <div class="AnimeLayout">
-    <AnimeItemHead
+    <AnimeHero
       :is-scroll="scrollState !== 'top'"
       :anime-info
       @require-login="openLoginModal"
@@ -108,7 +108,7 @@ import { useTime2Next } from "../composables/time";
 import Episodes from "@/views/Episodes.vue";
 import Reviews from "@/views/Reviews.vue";
 
-import AnimeItemHead from "@/components/AnimeItemHead.vue";
+import AnimeHero from "@/components/AnimeHero.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
 import InputBoolean from "@/components/InputBoolean.vue";
 import FanfareCount from "@/components/FanfareCount.vue";

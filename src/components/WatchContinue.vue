@@ -1,19 +1,16 @@
 <template>
   <div class="WatchContinue">
-    <div class="WatchContinue__Icon">
-      <ProgressCircle class="WatchContinue__Progress" :progress />
-      <IconBase class="WatchContinue__PlayIcon">
-        <IconPlay />
-      </IconBase>
-    </div>
+    <ProgressCircle class="WatchContinue__Progress" :progress />
+    <IconBase class="WatchContinue__PlayIcon">
+      <IconPlay />
+    </IconBase>
   </div>
 </template>
 
 <script setup>
+import ProgressCircle from "@/components/ProgressCircle.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconPlay from "@/components/icons/IconPlay.vue";
-
-import ProgressCircle from "@/components/ProgressCircle.vue";
 
 const props = defineProps({
   progress: {
@@ -27,22 +24,15 @@ const props = defineProps({
 .WatchContinue {
   display: flex;
   align-items: center;
-  width: 4rem;
-  height: 4rem;
   gap: 0.4rem;
-
   display: flex;
-  border-radius: 9999px;
-  &__Icon {
-    position: relative;
-  }
+  position: relative;
   &__Progress {
     width: 100%;
     height: 100%;
     font-size: 1.3rem;
     color: #fff;
     border-radius: var(--global-radius);
-    translate: 0 0.1rem;
   }
   &__PlayIcon {
     position: absolute;

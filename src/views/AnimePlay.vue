@@ -57,11 +57,7 @@
           {{ nowEpisode?.title }}
         </h2>
       </div>
-      <button
-        class="AnimeItemHead__ShareBtn"
-        @click="openSystemShare"
-        type="button"
-      >
+      <button @click="openSystemShare" type="button">
         <IconBase>
           <IconShare />
         </IconBase>

@@ -145,7 +145,7 @@ function toggleSearchMode() {
   position: fixed;
   top: env(titlebar-area-y, 0);
   left: env(titlebar-area-x, 0);
-  z-index: var(--z-index-1);
+  z-index: var(--z-index-2);
   border-bottom: 1px solid hsl(var(--bg-200) / v-bind(scrollPercent));
   background-color: hsl(var(--bg-100) / calc(v-bind(scrollPercent)));
   --icon-color: #fff;
@@ -172,21 +172,6 @@ function toggleSearchMode() {
     width: 10rem;
     flex-shrink: 0;
   }
-
-  // &__Actions {
-  //   display: flex;
-  //   justify-content: space-between;
-  //   align-items: center;
-  //   margin-left: auto;
-  // .right {
-  //   display: flex;
-  //   justify-content: flex-end;
-  //   align-items: center;
-  //   flex-grow: 1;
-  //   margin-right: 0;
-  //   gap: 0.8rem;
-  // }
-  // }
 
   &__Action {
     width: 2.4rem;

@@ -5,17 +5,24 @@
         <IconSearch />
       </IconBase>
     </i>
-    <input
-      type="text"
-      class="SearchBar__Input"
-      placeholder="제목/제작사/감독으로 검색해보세요"
-    />
+    <input type="text" class="SearchBar__Input" :placeholder />
   </label>
 </template>
 
 <script setup>
+import { computed } from "vue";
 import IconBase from "./IconBase.vue";
 import IconSearch from "./icons/IconSearch.vue";
+
+const PLACEHOLDER_LIST = [
+  "제목, 제작사, 감독 등으로 검색해보세요",
+  "나도 이제 어른, 야릇한 이야기",
+  "불행 속 마침내 행복을 찾는 이야기",
+  "현실에서 못하는 연애 여기서라도",
+];
+const placeholder = computed(
+  () => PLACEHOLDER_LIST[Math.floor(Math.random() * PLACEHOLDER_LIST.length)]
+);
 </script>
 
 <style lang="scss" scoped>
@@ -23,6 +30,7 @@ import IconSearch from "./icons/IconSearch.vue";
   display: flex;
   align-items: center;
   height: 100%;
+  cursor: text;
 
   &__Icon {
     display: flex;

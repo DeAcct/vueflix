@@ -42,12 +42,12 @@ const { $body, trackLength, bodyLength } = usePercentToSVGRound(percent);
   height: 2.4rem;
   &__Track {
     fill: none;
-    stroke: hsl(0 0% 100% / 0.5);
+    stroke: var(--progress-circle-track-color, hsl(0 0% 100% / 0.5));
     stroke-width: 2px;
   }
   &__Body {
     fill: none;
-    stroke: hsl(var(--theme-500));
+    stroke: var(--progress-circle-body-color, hsl(var(--theme-500)));
     stroke-width: 2px;
     stroke-linecap: round;
     stroke-dasharray: calc(v-bind(trackLength) * 1px);

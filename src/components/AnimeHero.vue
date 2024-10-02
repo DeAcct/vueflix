@@ -1,58 +1,37 @@
 <template>
-  <header class="AnimeItemHead">
-    <h1 class="blind">데레</h1>
+  <header class="AnimeHero">
     <OptimizedMedia
       :src="`/anime/${animeInfo.name}/${animeInfo.poster}`"
       :alt="`${animeInfo.name} 포스터`"
-      class="AnimeItemHead__BG"
+      class="AnimeHero__BG"
     />
-    <div class="AnimeItemHead__AnimeInfo">
+    <div class="AnimeHero__Content">
       <OptimizedMedia
         :src="`/anime/${animeInfo.name}/${animeInfo.poster}`"
         :alt="`${animeInfo.name} 포스터`"
-        class="AnimeItemHead__Poster"
+        class="AnimeHero__Poster"
         skelleton
       />
-      <div
-        class="col-right"
-        :class="
-          (!animeInfo.type || !animeInfo.rating || !animeInfo.name) &&
-          'loading-target'
-        "
-      >
-        <div class="row-top">
-          <h2 class="AnimeItemHead__Title">{{ animeInfo.name }}</h2>
-          <p class="AnimeItemHead__SubInfo">
-            {{ animeInfo.type }}
-            &middot;
-            {{ animeInfo.rating }}
-            &middot;
-            {{ animeInfo.isEnd ? "완결" : "방영중" }}
-          </p>
-        </div>
-        <AnimeActions
-          v-bind="{
-            continueData,
-            wannaSee,
-          }"
-          @wanna-see-toggle="toggleWannaSee"
-          @purchase="purchase"
-          :disabled="{
-            wanna: !user,
-            purchase: !user,
-          }"
-        ></AnimeActions>
+      <div class="AnimeHero__Info">
+        <h2 class="AnimeHero__Title">{{ animeInfo.name }}</h2>
+        <p class="AnimeHero__SubInfo">
+          {{ animeInfo.type }}
+          &middot;
+          {{ animeInfo.rating }}
+          &middot;
+          {{ animeInfo.isEnd ? "완결" : "방영중" }}
+        </p>
+        <AnimeActions v-bind="continueData" @purchase="purchase"></AnimeActions>
       </div>
     </div>
   </header>
 </template>
 
 <script setup>
-import { inject, computed } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 
 import { useAuth } from "@/store/auth";
-import { useWannaSee } from "@/api/wannaSee";
 import { useMediaQuery } from "@/composables/device";
 
 import AnimeActions from "./AnimeActions.vue";
@@ -72,12 +51,9 @@ const emit = defineEmits([
 const isSmall = useMediaQuery("(max-width: 1080px)");
 
 const route = useRoute();
-const router = useRouter();
 
 const auth = useAuth();
 const user = computed(() => auth.user);
-
-const { wannaSee, toggleWannaSee } = useWannaSee(route.query.modal);
 
 function purchase() {
   if (user.value) {
@@ -107,12 +83,13 @@ const continueData = computed(() => {
     };
   }
   const latestUpdate = currentAnime.lastUpdate.toDate().getTime();
-  const latestWatch = currentAnime.episodes.find(
+  const { part, index, progress } = currentAnime.episodes.find(
     (log) => log.time.toDate().getTime() === latestUpdate
   );
   return {
-    link: `/anime-play/${route.query.modal}/${latestWatch.part}/${latestWatch.index}`,
-    text: `${latestWatch.part} ${latestWatch.index}부터 이어보기`,
+    link: `/anime-play/${route.query.modal}/${part}/${index}`,
+    text: `${part} ${index}부터 이어보기`,
+    progress,
   };
 });
 
@@ -120,7 +97,7 @@ const continueData = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.AnimeItemHead {
+.AnimeHero {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -138,7 +115,7 @@ const continueData = computed(() => {
     z-index: -1;
     animation: none;
   }
-  &__AnimeInfo {
+  &__Content {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -146,29 +123,6 @@ const continueData = computed(() => {
     width: min(calc(100% - 4rem), 128rem);
     margin: 0 auto;
     gap: 2rem;
-
-    > .col-right {
-      width: 100%;
-      height: 12rem;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: var(--global-radius);
-
-      &.loading-target {
-        color: transparent;
-      }
-
-      .row-top {
-        color: inherit;
-        transition: 150ms ease-out;
-        margin-bottom: 1.5rem;
-      }
-
-      .row-bottom {
-        display: flex;
-        color: inherit;
-      }
-    }
   }
 
   &__Poster {
@@ -187,12 +141,13 @@ const continueData = computed(() => {
     color: inherit;
     font-size: 1.2rem;
     font-weight: 400;
+    margin-bottom: 2rem;
   }
 }
 
 @media screen and (min-width: 768px) {
-  .AnimeItemHead {
-    &__AnimeInfo {
+  .AnimeHero {
+    &__Content {
       height: auto;
       flex-direction: row;
       justify-content: unset;
@@ -205,11 +160,14 @@ const continueData = computed(() => {
       --aspect-ratio: calc(7 / 5 * 100 * 1%);
       flex-shrink: 0;
     }
+    &__Info {
+      flex-grow: 1;
+    }
   }
 }
 
 @media screen and (min-width: 1080px) {
-  .AnimeItemHead {
+  .AnimeHero {
     padding: 0 0 1px; // 그라이언트 가림용 가상요소 대비를 위한 1px의 패딩
     &__Navigation {
       width: 100%;
@@ -225,37 +183,12 @@ const continueData = computed(() => {
     &__OverflowBtn {
       position: relative;
     }
-    .action-sheet {
-      right: 0;
-    }
 
-    &__AnimeInfo {
+    &__Content {
       position: relative;
       flex-direction: row;
       align-items: flex-end;
       margin-bottom: 0;
-
-      .col-right {
-        flex: 1;
-        width: 100%;
-        height: auto;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-start;
-        .row-top {
-          .genres .genre {
-            font-size: 1.5rem;
-          }
-
-          .AnimeItemHead__SubInfo {
-            font-size: 1.5rem;
-          }
-        }
-        &--Loaded {
-          width: auto;
-        }
-      }
     }
     &__Title {
       font-size: 3.5rem;
