@@ -27,8 +27,8 @@ const props = defineProps({
 .WatchContinue {
   display: flex;
   align-items: center;
-  width: 3.6rem;
-  height: 3.6rem;
+  width: 4rem;
+  height: 4rem;
   gap: 0.4rem;
 
   display: flex;
@@ -37,8 +37,8 @@ const props = defineProps({
     position: relative;
   }
   &__Progress {
-    width: 3.6rem;
-    height: 3.6rem;
+    width: 100%;
+    height: 100%;
     font-size: 1.3rem;
     color: #fff;
     border-radius: var(--global-radius);

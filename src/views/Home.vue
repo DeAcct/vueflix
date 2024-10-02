@@ -30,8 +30,13 @@
         class="AppHome__Item"
         v-if="maraton.length"
       >
-        <template #snack-bar="{ progress, aniTitle }">
-          <WatchContinue :progress class="AppHome__ContinueButton" />
+        <template #snack-bar="{ aniTitle, part, index, progress }">
+          <RouterLink
+            :to="`/anime-play/${aniTitle}/${part}/${index}`"
+            class="CurationGroup__SnackBarButton"
+          >
+            <WatchContinue :progress class="AppHome__ContinueButton" />
+          </RouterLink>
         </template>
       </CurationGroup>
       <CurationGroup
@@ -187,6 +192,8 @@ const { idArray: carouselList } = useCarouselList();
     margin-top: 1.6rem;
   }
   &__ContinueButton {
+    width: 3.6rem;
+    height: 3.6rem;
     background-color: #fff;
   }
 }

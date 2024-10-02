@@ -15,21 +15,29 @@
         :key="`${subject}-${aniTitle}`"
       >
         <template #image>
-          <RouterLink
-            class="CurationGroup__Thumbnail"
-            :to="`/anime-play/${aniTitle}/${part}/${index}`"
-            exact-active-class="CurationGroup__Thumbnail--Selected"
-          >
-            <OptimizedMedia
-              :src="`/anime/${escaper(aniTitle)}/${escaper(aniTitle)}.webp`"
-              :alt="`${aniTitle} 포스터`"
-              class="CurationGroup__Image"
-              skelleton
-            />
+          <div class="CurationGroup__Thumbnail">
+            <RouterLink
+              :to="
+                part
+                  ? `/anime-play/${aniTitle}/${part}/${index}`
+                  : { query: { modal: aniTitle, route: 'episodes' } }
+              "
+              exact-active-class="CurationGroup__Thumbnail--Selected"
+            >
+              <OptimizedMedia
+                :src="`/anime/${escaper(aniTitle)}/${escaper(aniTitle)}.webp`"
+                :alt="`${aniTitle} 포스터`"
+                class="CurationGroup__Image"
+                skelleton
+              />
+            </RouterLink>
             <div class="CurationGroup__SnackBar">
-              <slot name="snack-bar" v-bind="{ progress, aniTitle }"></slot>
+              <slot
+                name="snack-bar"
+                v-bind="{ aniTitle, part, index, progress }"
+              ></slot>
             </div>
-          </RouterLink>
+          </div>
         </template>
         <template #text>
           <RouterLink
@@ -117,22 +125,7 @@ function escaper(str) {
     }
   }
   &__SnackBar {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1.2rem;
-    border-radius: 0 0 var(--global-radius) var(--global-radius);
-    background: linear-gradient(transparent, hsl(var(--text-900) / 0.5));
-    opacity: var(--snack-bar-opacity, 0);
-    translate: var(--snack-bar-translate, 0 0.8rem);
-    transition: 150ms ease-in-out;
-    &:empty {
-      display: none;
-    }
+    display: none;
   }
 
   &__TextLink {
@@ -209,6 +202,34 @@ function escaper(str) {
     }
     &__Item {
       width: var(--thumbnail-width, 15vw);
+    }
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .CurationGroup {
+    &__Item {
+      &:has(:focus-visible),
+      &:has(:hover) {
+        --snack-bar-opacity: 1;
+        --snack-bar-translate: 0;
+      }
+    }
+    &__SnackBar {
+      display: flex;
+      position: absolute;
+      align-items: center;
+      justify-content: space-between;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.2rem;
+      border-radius: 0 0 var(--global-radius) var(--global-radius);
+      background: linear-gradient(transparent, hsl(var(--text-900) / 0.5));
+
+      transition: 150ms ease-in-out;
+      opacity: var(--snack-bar-opacity, 0);
+      translate: var(--snack-bar-translate, 0 0.8rem);
     }
   }
 }
