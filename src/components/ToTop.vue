@@ -20,11 +20,6 @@ const props = defineProps({
 });
 
 function toTop() {
-  // console.log(props.scrollTarget);
-  // if (props.scrollTarget instanceof HTMLElement) {
-  //   return;
-  // }
-  // window.scrollTo({ top: 0, behavior: "smooth" });
   props.scrollTarget.scrollTo({ top: 0, behavior: "smooth" });
 }
 </script>

@@ -20,11 +20,9 @@ import IconPurchase from "@/components/icons/IconPurchase.vue";
 
 const isActive = ref(false);
 function downTrigger() {
-  console.log("down");
   isActive.value = true;
 }
 function upTrigger() {
-  console.log("up");
   isActive.value = false;
 }
 </script>

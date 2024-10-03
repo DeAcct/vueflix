@@ -20,6 +20,8 @@ import { ref, watchEffect } from "vue";
 import { ref as fireRef, getDownloadURL } from "firebase/storage";
 import { storage } from "@/utility/firebase";
 
+import Thumb404 from "@/assets/Thumb404.webp";
+
 const props = defineProps({
   src: {
     type: String,
@@ -54,7 +56,18 @@ watchEffect(async () => {
     return;
   }
   const fileRef = fireRef(storage, props.src);
-  fileSrc.value = await getDownloadURL(fileRef);
+  try {
+    fileSrc.value = await getDownloadURL(fileRef);
+  } catch (error) {
+    console.log(props.src.split("/").length > 3 && props.src, error.code);
+    switch (error.code) {
+      case "storage/object-not-found":
+        fileSrc.value = Thumb404;
+        break;
+      default:
+        console.error(e);
+    }
+  }
 });
 </script>
 

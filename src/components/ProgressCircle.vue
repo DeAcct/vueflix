@@ -25,10 +25,6 @@ const props = defineProps({
   },
 });
 
-// const percent = ref(0);
-onMounted(() => {
-  console.log(props.progress);
-});
 const percent = computed(() =>
   Math.floor((props.progress.current / props.progress.max) * 100)
 );

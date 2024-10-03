@@ -53,55 +53,6 @@
             </button>
           </template>
         </ToolTip>
-        <ToolTip
-          class="VideoControlBar__ControlItem"
-          v-if="nextEpisode !== '다음 화 없음' && nextEpisode"
-          align="flex-start"
-        >
-          <template #content>
-            <div class="VideoControlBar__ToolTipContent">
-              <p class="VideoControlBar__ToolTipText">다음화</p>
-              <ThumbnailSet component="div" class="VideoControlBar__Next">
-                <template #image>
-                  <RouterLink
-                    class="VideoControlBar__NextThumbnail"
-                    :to="`/anime-play/${route.params.title}/${nextEpisode.part}/${nextEpisode.index}`"
-                  >
-                    <OptimizedMedia
-                      :src="`anime/${route.params.title}/${nextEpisode.thumbnail}`"
-                      :alt="`${route.params.title} ${nextEpisode.part} ${nextEpisode.index} 미리보기 이미지`"
-                      skelleton
-                    >
-                    </OptimizedMedia>
-                  </RouterLink>
-                </template>
-                <template #text>
-                  <RouterLink
-                    :to="`/anime-play/${route.params.title}/${nextEpisode.part}/${nextEpisode.index}`"
-                    class="VideoControlBar__ToolTipText VideoControlBar__ToolTipText--Next"
-                  >
-                    <strong
-                      >{{ nextEpisode.part }} {{ nextEpisode.index }}</strong
-                    >
-                    <span>{{ nextEpisode.title }}</span>
-                  </RouterLink>
-                </template>
-              </ThumbnailSet>
-            </div>
-          </template>
-          <template #trigger>
-            <RouterLink
-              class="VideoControlBar__Button"
-              :class="nextLink === '#' && 'VideoControlBar__Button--Disabled'"
-              :to="nextLink"
-              replace
-            >
-              <IconBase>
-                <IconNextEpisode />
-              </IconBase>
-            </RouterLink>
-          </template>
-        </ToolTip>
 
         <p class="VideoControlBar__Time">
           <slot name="time"></slot>
@@ -193,17 +144,14 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
-import { useRoute } from "vue-router";
+import { ref, watch } from "vue";
 import { useEventListener } from "@vueuse/core";
 
 import { useMediaQuery } from "../composables/device";
 
 import ProgressBar from "./ProgressBar.vue";
-import OptimizedMedia from "./OptimizedMedia.vue";
 import QuickTimeMove from "./QuickTimeMove.vue";
 import ToolTip from "./ToolTip.vue";
-import ThumbnailSet from "./ThumbnailSet.vue";
 import VideoSetting from "./VideoSetting.vue";
 
 import IconBase from "./IconBase.vue";
@@ -212,7 +160,6 @@ import IconFullScreenOff from "./icons/IconFullScreenOff.vue";
 import IconFullScreenOn from "./icons/IconFullScreenOn.vue";
 import IconMuteOn from "./icons/IconMuteOn.vue";
 import IconMuteOff from "./icons/IconMuteOff.vue";
-import IconNextEpisode from "./icons/IconNextEpisode.vue";
 import IconPause from "./icons/IconPause.vue";
 import IconPIP from "./icons/IconPIP.vue";
 import IconPlay from "./icons/IconPlay.vue";
@@ -287,14 +234,6 @@ const props = defineProps({
   secAction: {
     type: Object,
   },
-});
-
-const route = useRoute();
-const nextLink = computed(() => {
-  if (props.nextEpisode === "다음 화 없음" || !props.nextEpisode) {
-    return "#";
-  }
-  return `/anime-play/${route.params.title}/${props.nextEpisode.part}/${props.nextEpisode.index}`;
 });
 
 function togglePlay() {

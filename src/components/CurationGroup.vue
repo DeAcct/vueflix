@@ -232,6 +232,10 @@ const media = useMediaQuery("(hover: hover) and (pointer: fine)");
 
       transition: opacity 150ms ease-in-out;
       opacity: var(--snack-bar-opacity, 0);
+      pointer-events: none;
+      & * {
+        pointer-events: all;
+      }
     }
   }
 }

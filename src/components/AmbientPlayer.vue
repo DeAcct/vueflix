@@ -40,6 +40,8 @@
           :volume="volume"
           :meta="meta"
           v-if="controlShow"
+          @mouseenter="pointerOver"
+          @mouseout="pointerOut"
         >
           <template #time>{{ time.current }} / {{ time.duration }}</template>
         </VideoControlBar>
@@ -159,6 +161,13 @@ const props = defineProps({
 });
 
 const controlShow = ref(props.controls);
+const isPointerOverControl = ref(false);
+function pointerOver() {
+  isPointerOverControl.value = true;
+}
+function pointerOut() {
+  isPointerOverControl.value = false;
+}
 function onMouseMove() {
   if (!props.controls && controlShow.value) {
     return;
@@ -170,6 +179,9 @@ onMounted(() => {
   delayVanish(1500);
 });
 function delayVanish(ms) {
+  if (isPointerOverControl.value) {
+    return;
+  }
   setTimeout(() => {
     controlShow.value = false;
   }, ms);

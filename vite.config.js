@@ -48,10 +48,6 @@ export default defineConfig({
         id: "/",
         protocol_handlers: [
           {
-            protocol: "web+dereRecommend",
-            url: "/",
-          },
-          {
             protocol: "web+dereAnime",
             url: "/?modal=%s&route=episodes",
           },

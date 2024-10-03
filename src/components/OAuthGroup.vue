@@ -124,7 +124,6 @@ function showModal(changeTo) {
     ...changeTo,
     enabled: enabled.value.includes(changeTo.key),
   };
-  console.log(currentModal.value.enabled);
   $root.value.show();
 }
 
