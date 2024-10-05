@@ -10,8 +10,6 @@ export default function usePercentToSVGRound(progress) {
     return Math.floor((progress.current / progress.max) * 100);
   });
 
-  console.log(percent.value);
-
   const trackLength = computed(() => {
     if (!$body.value) {
       return 0;

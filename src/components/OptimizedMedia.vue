@@ -59,7 +59,6 @@ watchEffect(async () => {
   try {
     fileSrc.value = await getDownloadURL(fileRef);
   } catch (error) {
-    console.log(props.src.split("/").length > 3 && props.src, error.code);
     switch (error.code) {
       case "storage/object-not-found":
         fileSrc.value = Thumb404;

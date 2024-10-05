@@ -10,8 +10,6 @@ import usePercentToSVGRound from "@/composables/svg";
 
 const props = defineProps({
   progress: {
-    type: Object,
-    required: true,
     validator(value) {
       return "current" in value && "max" in value;
     },
