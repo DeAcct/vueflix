@@ -14,6 +14,7 @@ import IconPlay from "@/components/icons/IconPlay.vue";
 
 const props = defineProps({
   progress: {
+    type: Object,
     validator(value) {
       return "current" in value && "max" in value;
     },
