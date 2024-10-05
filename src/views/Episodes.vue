@@ -204,7 +204,7 @@ function clear() {
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(transparent, hsl(0 0 0 / 0.5));
+    background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
     border-radius: 0 0 var(--global-radius) var(--global-radius);
   }
   &__WatchPercent {

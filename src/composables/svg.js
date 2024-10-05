@@ -1,8 +1,16 @@
 import { ref, computed, toValue } from "vue";
 
-export default function usePercentToSVGRound(percent) {
+export default function usePercentToSVGRound(progress) {
   const $body = ref(null);
-  const _percent = toValue(percent);
+
+  const percent = computed(() => {
+    if (!progress) {
+      return 0;
+    }
+    return Math.floor((progress.current / progress.max) * 100);
+  });
+
+  console.log(percent.value);
 
   const trackLength = computed(() => {
     if (!$body.value) {
@@ -12,7 +20,7 @@ export default function usePercentToSVGRound(percent) {
   });
 
   const bodyLength = computed(
-    () => trackLength.value * 0.01 * (100 - _percent)
+    () => trackLength.value * 0.01 * (100 - percent.value)
   );
   return { $body, trackLength, bodyLength };
 }

@@ -6,7 +6,6 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue";
 import usePercentToSVGRound from "@/composables/svg";
 
 const props = defineProps({
@@ -25,11 +24,7 @@ const props = defineProps({
   },
 });
 
-const percent = computed(() =>
-  Math.floor((props.progress.current / props.progress.max) * 100)
-);
-
-const { $body, trackLength, bodyLength } = usePercentToSVGRound(percent);
+const { $body, trackLength, bodyLength } = usePercentToSVGRound(props.progress);
 </script>
 
 <style lang="scss" scoped>

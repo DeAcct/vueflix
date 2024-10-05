@@ -1,11 +1,7 @@
 <template>
   <div class="AnimeActions">
     <RouterLink class="AnimeActions__Continue" :to="link" replace>
-      <WatchContinue
-        :progress
-        v-if="progress"
-        class="AnimeActions__ContinueIcon"
-      />
+      <WatchContinue :progress class="AnimeActions__ContinueIcon" />
       <span class="AnimeActions__ContinueText">{{ text }}</span>
     </RouterLink>
     <button
@@ -36,8 +32,6 @@ import { useRoute } from "vue-router";
 import { useAuth } from "@/store/auth";
 import { useWannaSee } from "@/api/wannaSee";
 
-import IconBase from "./IconBase.vue";
-import IconPlay from "./icons/IconPlay.vue";
 import WannaSeeMotion from "@/components/WannaSeeMotion.vue";
 import WatchContinue from "@/components/WatchContinue.vue";
 import PurchaseMotion from "@/components/PurchaseMotion.vue";
