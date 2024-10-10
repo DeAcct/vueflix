@@ -65,10 +65,11 @@
 </template>
 
 <script setup>
+import { useMediaQuery } from "@/composables/device";
+
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
-import { useMediaQuery } from "@/composables/device";
 
 defineProps({
   list: {

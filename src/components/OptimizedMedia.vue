@@ -10,6 +10,7 @@
         :poster
         @load="loadTrigger"
         loading="lazy"
+        :ref="imgRef"
       />
     </span>
   </span>
@@ -21,6 +22,12 @@ import { ref as fireRef, getDownloadURL } from "firebase/storage";
 import { storage } from "@/utility/firebase";
 
 import Thumb404 from "@/assets/Thumb404.webp";
+
+/**
+ * @todo 이미지의 대표 컬러를 추출하여 외부로 노출
+ */
+const imgRef = ref(null);
+defineExpose({ imgRef });
 
 const props = defineProps({
   src: {

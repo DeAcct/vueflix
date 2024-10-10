@@ -157,3 +157,33 @@ export function useFanfare({ amount = 100, colors = [] }) {
 
   return { $canvas, start };
 }
+
+export function useImageAccentColor() {
+  const $image = ref(null);
+  const accentColor = ref("");
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  function getImageData() {
+    canvas.width = $image.value.width;
+    canvas.height = $image.value.height;
+    ctx.drawImage($image.value, 0, 0, canvas.width, canvas.height);
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    const color = [0, 0, 0];
+    for (let i = 0; i < data.length; i += 4) {
+      color[0] += data[i];
+      color[1] += data[i + 1];
+      color[2] += data[i + 2];
+    }
+    color[0] = Math.floor(color[0] / (data.length / 4));
+    color[1] = Math.floor(color[1] / (data.length / 4));
+    color[2] = Math.floor(color[2] / (data.length / 4));
+    accentColor.value = `rgb(${color.join(",")})`;
+  }
+
+  onMounted(() => {
+    getImageData();
+  });
+
+  return { accentColor, $image };
+}

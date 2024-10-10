@@ -8,7 +8,6 @@
       @handle-interest="handleInterest"
       class="AnimeLayout__Head"
     />
-
     <aside class="AnimeLayout__Sidebar">
       <div class="AnimeLayout__SideSticky">
         <div
@@ -35,6 +34,7 @@
           class="AnimeLayout__AsideBubble AnimeLayout__AsideBubble--Meta"
           :anime-info
         ></AnimeMeta>
+        <!-- <button @click="animeUpload">adminUpload</button> -->
       </div>
     </aside>
     <div class="AnimeLayout__Body">
@@ -112,6 +112,7 @@ import AnimeHero from "@/components/AnimeHero.vue";
 import AnimeMeta from "@/components/AnimeMeta.vue";
 import InputBoolean from "@/components/InputBoolean.vue";
 import FanfareCount from "@/components/FanfareCount.vue";
+// import { animeUpload } from "@/api/adminUp";
 
 const props = defineProps({
   animeInfo: {
@@ -153,7 +154,10 @@ const children = [
   },
 ];
 const routeIndex = computed(() =>
-  children.findIndex(({ name }) => name === route.query.route)
+  children.findIndex(({ name }) => {
+    console.log(route.name);
+    return name === route.query.route || route.name === "episodes";
+  })
 );
 const {
   selector: $TabSelector,

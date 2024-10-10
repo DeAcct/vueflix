@@ -38,12 +38,14 @@
                     :alt="`${animeInfo.name} ${part} ${index} 미리보기 이미지`"
                     skelleton
                   />
-                  <div class="AnimeEpisodes__ProgressRenderer">
+                  <div
+                    class="AnimeEpisodes__ProgressRenderer"
+                    v-if="
+                      getEpisodeProgress(animeInfo.name, part, index)
+                        .percent !== '0%'
+                    "
+                  >
                     <ProgressCircle
-                      v-if="
-                        getEpisodeProgress(animeInfo.name, part, index)
-                          .percent !== '0%'
-                      "
                       class="AnimeEpisodes__WatchPercent"
                       :progress="
                         getEpisodeProgress(animeInfo.name, part, index)

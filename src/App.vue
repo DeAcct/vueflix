@@ -40,7 +40,7 @@ import { useRouter } from "vue-router";
 
 import { useTheme } from "@/store/theme";
 
-import { useRootTransition } from "@/composables/transition";
+// import { useRootTransition } from "@/composables/transition";
 import { useAnimeModal } from "@/composables/overay";
 import { useScroll } from "@/composables/scroll";
 import { useMediaQuery, useViewport } from "@/composables/device";
