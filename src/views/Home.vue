@@ -232,6 +232,7 @@ function toggleWannaSee(aniTitle) {
     height: 4.8rem;
     background-color: #fff;
     border-radius: 9999px;
+    --wanna-see-icon-color: var(--curation-icon);
     &--WannaSee {
       display: flex;
       justify-content: center;

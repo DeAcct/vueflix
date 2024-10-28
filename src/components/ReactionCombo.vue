@@ -149,6 +149,7 @@ import ReactionParser from "./ReactionParser.vue";
 import StatCard from "./StatCard.vue";
 import ReactionMeta from "./ReactionMeta.vue";
 import { useRoute } from "vue-router";
+// import { useAutoSave } from "../composables/autosave";
 
 const props = defineProps({
   type: {
@@ -304,6 +305,9 @@ useIntersection($ReadMore, async () => {
   }
   await readMore();
 });
+
+/** @todo input data의 제어 역전 패턴 및 자동저장 기능 */
+// useAutoSave(reviewData, props.type, props.parent.title);
 </script>
 
 <style lang="scss" scoped>

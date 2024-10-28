@@ -46,7 +46,7 @@ import { ref, computed, onUnmounted } from "vue";
 import { useAuth } from "@/store/auth";
 import { useSecToFormat } from "@/composables/formatter";
 import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
-import { useBrowserStorage } from "../composables/browserStorage";
+// import { useAutoSave } from "../composables/autosave";
 
 const emits = defineEmits(["mutate", "interact"]);
 
@@ -63,9 +63,6 @@ const props = defineProps({
   },
   parent: {
     type: Object,
-  },
-  ancestor: {
-    type: String,
   },
   time: {
     type: [String, Number],
@@ -94,12 +91,6 @@ function setReviewData(e) {
   // 한글 특성상 v-model 사용불가
   reviewData.value = e.target.value;
 }
-const { data, setData, clearData } = useBrowserStorage("review-data");
-/**@todo 리액션 컴포넌트가 제거되면 작성중인 리액션을 자동저장*/
-onUnmounted(() => {
-  console.log("comment autosaved");
-  // setData([...data.value, {value:reviewData.value}]);
-});
 
 const auth = useAuth();
 const user = computed(() => auth.user);

@@ -229,7 +229,7 @@ const media = useMediaQuery("(hover: hover) and (pointer: fine)");
       right: 0;
       padding: 1.6rem;
       border-radius: 0 0 var(--global-radius) var(--global-radius);
-      background: linear-gradient(transparent, hsl(var(--text-900) / 0.3));
+      background: var(--snack-bar-gradient);
 
       transition: opacity 150ms ease-in-out;
       opacity: var(--snack-bar-opacity, 0);

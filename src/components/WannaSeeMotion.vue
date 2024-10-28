@@ -62,30 +62,5 @@ const { wannaSee } = useWannaSee(props.aniTitle);
       opacity: var(--add-icon-opacity, 1);
     }
   }
-  // .icon {
-  //   svg {
-  //     position: absolute;
-  //   }
-  //   &--added {
-  //
-  //   }
-  //   &--not-added {
-  //     transition-delay: 150ms;
-  //   }
-  // }
-  // &.Checked .icon {
-  //   &--added {
-  //     transition-delay: 150ms;
-  //     stroke-dashoffset: 0;
-  //     stroke-linejoin: round;
-  //   }
-  //   &--not-added {
-  //     transition-delay: 0ms;
-  //     // transform: translateY(2.5rem) scale(0);
-  //     translate: 0 2.5rem;
-  //     scale: 0;
-  //     opacity: 0;
-  //   }
-  // }
 }
 </style>
