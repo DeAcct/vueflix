@@ -1,32 +1,5 @@
 <template>
   <component :is="component" class="ReactionItem" ref="$Item">
-    <!-- <div class="ReactionItem__Meta">
-      <component
-        :is="metaModal ? 'button' : 'div'"
-        class="ReactionItem__OpenMetaButton"
-        :type="metaModal ? 'button' : undefined"
-        :disabled="metaModal && !meta"
-        @click="metaModal && requestMetaModal()"
-      >
-        <OptimizedMedia
-          :src="meta.profileImg.name"
-          class="ReactionItem__ProfileImg"
-          v-if="meta?.profileImg"
-          skelleton
-        />
-        <img :src="Aqua" class="ReactionItem__ProfileImg" v-else />
-      </component>
-      <div class="ReactionItem__MetaText">
-        <strong class="ReactionItem__Author">
-          {{ self ? "나" : meta?.nickname || "탈퇴한 사용자" }}
-        </strong>
-        <p class="ReactionItem__Edited">
-          {{ formattedDate }}
-          <slot name="edited"></slot>
-          <slot name="from"></slot>
-        </p>
-      </div>
-    </div> -->
     <slot name="meta" :self :data="meta" :time></slot>
     <div class="ReactionItem__Content">
       <Transition name="down-fade">
@@ -69,7 +42,7 @@
           v-if="mode === 'edit'"
           @click="updateReaction"
           class="ReactionItem__ActionItem ReactionItem__ActionItem--Submit"
-          :disabled="!editValue"
+          :disabled="!editValue || notEdited"
           type="button"
         >
           수정
@@ -133,13 +106,6 @@ const props = defineProps({
   user: {
     type: Object,
   },
-  // type: {
-  //   type: String,
-  //   required: true,
-  //   validator(value) {
-  //     return ["comment", "review", "reply"].includes(value);
-  //   },
-  // },
   actions: {
     type: Boolean,
   },
@@ -177,11 +143,17 @@ const emits = defineEmits(["mutate", "interact", "meta-modal"]);
 const auth = useAuth();
 const user = computed(() => auth.user);
 
+const notEdited = computed(() => {
+  return temporalRemoveTimeFlag() === editValue.value;
+});
 async function updateReaction() {
   if (!editValue.value) {
     return;
   }
   mode.value = "show";
+  if (notEdited.value) {
+    return;
+  }
   emits("mutate", "update", {
     id: props.reactionData._id,
     content: editValue.value,

@@ -1,7 +1,7 @@
 <template>
   <form class="WriteReaction">
     <textarea
-      :placeholder
+      :placeholder="placeholder"
       class="WriteReaction__InputArea"
       :disabled="!user"
       @input="setReviewData"
@@ -9,6 +9,7 @@
       @blur="setBlur"
       ref="$TextArea"
       :value="reviewData"
+      @keydown="saveAction"
     />
     <div class="WriteReaction__Interaction">
       <div class="WriteReaction__Status">
@@ -42,11 +43,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onUnmounted } from "vue";
+import { ref, computed } from "vue";
+
 import { useAuth } from "@/store/auth";
 import { useSecToFormat } from "@/composables/formatter";
 import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
-// import { useAutoSave } from "../composables/autosave";
+import { useAutoSave } from "@/composables/autosave";
 
 const emits = defineEmits(["mutate", "interact"]);
 
@@ -91,6 +93,12 @@ function setReviewData(e) {
   // 한글 특성상 v-model 사용불가
   reviewData.value = e.target.value;
 }
+function saveAction(e) {
+  if (e.key === "s" && e.ctrlKey) {
+    e.preventDefault();
+    forceSave();
+  }
+}
 
 const auth = useAuth();
 const user = computed(() => auth.user);
@@ -106,8 +114,6 @@ function reviewTrigger() {
 
 const $TextArea = ref(null);
 function addTime() {
-  // reviewData.value += ` ${useSecToFormat(props.time)}`;
-
   const [start, end] = [
     $TextArea.value.selectionStart,
     $TextArea.value.selectionEnd,
@@ -169,7 +175,9 @@ function addTime() {
 
   &__BtnArea {
     display: flex;
-    gap: 0.2rem;
+    gap: var(--global-radius);
+    border-radius: var(--global-radius);
+    overflow: hidden;
   }
   &__Button {
     background: linear-gradient(
@@ -197,12 +205,6 @@ function addTime() {
         hsl(var(--bg-900) / 0.025)
       );
       color: hsl(var(--bg-900) / 0.3);
-    }
-    &:first-child {
-      border-radius: var(--global-radius) 0 0 var(--global-radius);
-    }
-    &:last-child {
-      border-radius: 0 var(--global-radius) var(--global-radius) 0;
     }
   }
 }

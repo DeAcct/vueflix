@@ -21,7 +21,7 @@
           &middot;
           {{ animeInfo.isEnd ? "완결" : "방영중" }}
         </p>
-        <AnimeActions v-bind="continueData" @purchase="purchase"></AnimeActions>
+        <!-- <AnimeActions v-bind="continueData" @purchase="purchase"></AnimeActions> -->
       </div>
     </div>
   </header>

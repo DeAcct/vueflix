@@ -120,7 +120,7 @@
 <script setup>
 import { reactive, ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { now, useEventListener } from "@vueuse/core";
+import { useEventListener } from "@vueuse/core";
 
 import { useAmbient } from "@/composables/canvas";
 import { useSecToFormat } from "@/composables/formatter";

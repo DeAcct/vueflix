@@ -49,7 +49,7 @@ export async function Create({ content, parent, type }) {
 
   if (!user.value) {
     console.error("로그인하지 않으면 리액션을 생성할 수 없습니다.");
-    return;
+    return { error: "not-logged-in" };
   }
 
   // 숫자 부분을 기준으로 잘라 배열 생성

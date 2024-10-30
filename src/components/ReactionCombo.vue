@@ -3,16 +3,15 @@
     <template v-if="showTitle">
       <component :is="titleTag" class="ReactionCombo__Title"
         ><slot name="title"></slot
-        ><span class="ReactionCombo__Counter">{{
-          reactions.allCount
-        }}</span></component
+        ><span class="ReactionCombo__Counter">{{ reactions.allCount }}</span
+        ><span class="ReactionCombo__BetaLabel">Beta</span></component
       >
     </template>
     <slot name="description"></slot>
     <div class="ReactionCombo__Body">
       <WriteReaction
         class="ReactionCombo__Write"
-        @mutate="onMutate"
+        @mutate="onRequestModal"
         :user
         :type
         :parent
@@ -32,7 +31,7 @@
           :key="reaction._id"
           :reaction-data="reaction"
           :user="user"
-          @mutate="onMutate"
+          @mutate="onRequestModal"
           @interact="setInteract"
           @meta-modal="onMetaModal"
           class="ReactionCombo__Item"
@@ -206,8 +205,6 @@ watch(
   () => props.parent,
   async () => {
     await sync();
-    // isLastPage.value =
-    //   reactions.value.visible.length === reactions.value.allCount;
   },
   { immediate: true }
 );
@@ -236,8 +233,6 @@ async function readMore() {
   );
   reactions.value.visible.push(...data);
   lastDoc.value = last;
-  // isLastPage.value =
-  //   reactions.value.visible.length === reactions.value.allCount;
 }
 const methodMap = {
   create: {
@@ -259,7 +254,8 @@ const checkModal = ref({
   text: "",
   data: null,
 });
-async function onMutate(method, data) {
+
+async function onRequestModal(method, data) {
   // 일반적인 상황은 아니지만, 로그인하지 않은 상태에서 강제로 사용자가 댓글을 조작하는것을 방지
   if (!user.value) {
     return;
@@ -281,8 +277,6 @@ async function applyMutate() {
   loadState.value = "mutating";
   await methodMap[method].action(data);
   await sync();
-  isLastPage.value =
-    reactions.value.visible.length === reactions.value.allCount;
   loadState.value = "complete";
   $CheckModal.value.close();
 }
@@ -305,9 +299,6 @@ useIntersection($ReadMore, async () => {
   }
   await readMore();
 });
-
-/** @todo input data의 제어 역전 패턴 및 자동저장 기능 */
-// useAutoSave(reviewData, props.type, props.parent.title);
 </script>
 
 <style lang="scss" scoped>
@@ -321,8 +312,13 @@ useIntersection($ReadMore, async () => {
     font-weight: 700;
     margin-bottom: 1.6rem;
     display: flex;
+    align-items: center;
     gap: 0.4rem;
     padding: 0 var(--reaction-combo-title-padding, 2rem);
+  }
+  &__BetaLabel {
+    font-size: 1.3rem;
+    color: hsl(var(--theme-500));
   }
   &__description {
     font-size: 1.3rem;

@@ -1,13 +1,11 @@
 import { ref, onMounted } from "vue";
 
 export function useBrowserStorage(key, initValue = null) {
-  const data = ref();
+  const data = ref(initValue);
   onMounted(() => {
     const storedValue = localStorage.getItem(key);
     if (storedValue) {
       data.value = JSON.parse(storedValue);
-    } else {
-      data.value = initValue;
     }
   });
 
@@ -35,6 +33,7 @@ export function useBrowserStorage(key, initValue = null) {
   return {
     data,
     setData,
+    deleteData,
     clearData,
   };
 }

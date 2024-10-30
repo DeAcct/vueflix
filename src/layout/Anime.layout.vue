@@ -155,7 +155,6 @@ const children = [
 ];
 const routeIndex = computed(() =>
   children.findIndex(({ name }) => {
-    console.log(route.name);
     return name === route.query.route || route.name === "episodes";
   })
 );
