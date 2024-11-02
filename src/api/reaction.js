@@ -47,9 +47,29 @@ export async function Create({ content, parent, type }) {
   const auth = useAuth();
   const user = computed(() => auth.user);
 
+  // 리액션 작성 불가 처리
+  // - 로그인하지 않은 경우
   if (!user.value) {
     console.error("로그인하지 않으면 리액션을 생성할 수 없습니다.");
     return { error: "not-logged-in" };
+  }
+
+  // - 내용이 없는 경우
+  if (!content) {
+    console.error("리액션 내용이 없습니다.");
+    return { error: "no-content" };
+  }
+
+  // - 이미 해당 애니의 리뷰를 작성한 적이 있는 경우
+  if (type === "review") {
+    const count = await ReadReactionCount(
+      { parent, type },
+      where("uid", "==", user.value.uid)
+    );
+    if (count > 0) {
+      console.error("이미 리뷰를 작성한 애니입니다.");
+      return { error: "already-reviewed" };
+    }
   }
 
   // 숫자 부분을 기준으로 잘라 배열 생성
@@ -81,11 +101,12 @@ export async function Create({ content, parent, type }) {
   return newItem;
 }
 
-export async function ReadReactionCount({ parent, type }) {
+export async function ReadReactionCount({ parent, type }, ...queryOption) {
   const q = query(
     collection(db, "reaction"),
     where("parent", "==", parent),
-    where("type", "==", type)
+    where("type", "==", type),
+    ...queryOption
   );
   const countResponse = await getCountFromServer(q);
   const count = countResponse.data().count;

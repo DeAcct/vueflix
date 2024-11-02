@@ -17,6 +17,7 @@
         :parent
         @interact="setInteract"
         :time
+        v-if="writeable"
       />
       <TransitionGroup
         tag="ul"
@@ -125,8 +126,8 @@
 // 리뷰는 애니메이션에 작성하는 항목
 // 코멘트는 각 에피소드마다 작성하는 항목
 
-import { computed, ref, watch } from "vue";
-import { endAt, limit, orderBy, startAfter } from "firebase/firestore";
+import { computed, ref, watch, onMounted } from "vue";
+import { endAt, limit, orderBy, startAfter, where } from "firebase/firestore";
 
 import {
   Create,
@@ -148,7 +149,6 @@ import ReactionParser from "./ReactionParser.vue";
 import StatCard from "./StatCard.vue";
 import ReactionMeta from "./ReactionMeta.vue";
 import { useRoute } from "vue-router";
-// import { useAutoSave } from "../composables/autosave";
 
 const props = defineProps({
   type: {
@@ -191,6 +191,17 @@ function setInteract(e) {
 const auth = useAuth();
 const user = computed(() => auth.user);
 const reactions = ref({ visible: [], allCount: 0 });
+const writeable = ref(true);
+async function setWriteable() {
+  const myReviewCount = await ReadReactionCount(
+    {
+      parent: props.parent,
+      type: props.type,
+    },
+    where("uid", "==", user.value?.uid)
+  );
+  writeable.value = myReviewCount === 0;
+}
 
 /**
  * @type { import("vue").Ref<"complete" | "loading" | "mutating">}
@@ -205,6 +216,9 @@ watch(
   () => props.parent,
   async () => {
     await sync();
+    if (props.type === "review") {
+      await setWriteable();
+    }
   },
   { immediate: true }
 );
@@ -221,6 +235,7 @@ async function sync() {
   });
   lastDoc.value = last;
 }
+
 async function readMore() {
   const { reactions: data, lastDoc: last } = await Read(
     {
@@ -279,6 +294,9 @@ async function applyMutate() {
   await sync();
   loadState.value = "complete";
   $CheckModal.value.close();
+  if (method !== "update" && props.type === "review") {
+    await setWriteable();
+  }
 }
 
 function requestTeleport(e) {
