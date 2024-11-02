@@ -127,6 +127,10 @@ a {
 i {
   font-style: normal;
 }
+input,
+textarea {
+  background-color: transparent;
+}
 button {
   border-radius: 0;
   background-color: transparent;

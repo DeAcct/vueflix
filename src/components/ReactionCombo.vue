@@ -23,9 +23,7 @@
         tag="ul"
         name="reaction-list"
         class="ReactionCombo__List"
-        :class="{
-          'ReactionCombo__List--Exist': reactions.allCount !== 0,
-        }"
+        :class="reactions.allCount !== 0 && 'ReactionCombo__List--Exist'"
       >
         <ReactionItem
           v-for="reaction in reactions.visible"
@@ -349,17 +347,8 @@ useIntersection($ReadMore, async () => {
     margin: 0 auto;
   }
   &__Write {
-    // background: var(
-    //   --reaction-combo-write-bg,
-    //   linear-gradient(
-    //     150deg,
-    //     hsl(var(--bg-900) / 0.2),
-    //     hsl(var(--bg-900) / 0.025)
-    //   )
-    // );
     background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
-    padding: 2rem;
-    border-radius: var(--global-radius);
+
     margin: 0 auto;
     &:last-child {
       border-radius: var(--global-radius);

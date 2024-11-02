@@ -1,51 +1,52 @@
 import { ref, watch, computed } from "vue";
 import { useAuth } from "@/store/auth";
 import { useRandomNickname } from "@/utility/randomNickname";
+import { useForbiddenFilter } from "./word";
 
-const FORBIDDEN_WORD = [
-  // 사칭
-  "운영",
-  "스태프",
-  "스탭",
-  // 정치/젠더 이슈
-  "페미",
-  "메갈",
-  "워마드",
-  "여성시대",
-  "일베",
-  "일간베스트",
-  "한남",
-  "한녀",
-  "소추",
-  "재기",
-  "인셀",
-  "incel",
-  "퇘지",
-  "쿵쾅",
-  "허버허버",
-  "오조오억",
-  "5조5억",
-  "나치",
-  "nazi",
-  "하켄크로이츠",
-  // 비속어 및 부적절한 단어
-  "씨발",
-  "시발",
-  "ㅅㅂ",
-  "병신",
-  "ㅂㅅ",
-  "지랄",
-  "ㅈㄹ",
-  "좆",
-  "자지",
-  "잦",
-  "보지",
-  "봋",
-  "자살",
-  "니거",
-  "nigga",
-  "nigger",
-];
+// const FORBIDDEN_WORD = [
+//   // 사칭
+//   "운영",
+//   "스태프",
+//   "스탭",
+//   // 정치/젠더 이슈
+//   "페미",
+//   "메갈",
+//   "워마드",
+//   "여성시대",
+//   "일베",
+//   "일간베스트",
+//   "한남",
+//   "한녀",
+//   "소추",
+//   "재기",
+//   "인셀",
+//   "incel",
+//   "퇘지",
+//   "쿵쾅",
+//   "허버허버",
+//   "오조오억",
+//   "5조5억",
+//   "나치",
+//   "nazi",
+//   "하켄크로이츠",
+//   // 비속어 및 부적절한 단어
+//   "씨발",
+//   "시발",
+//   "ㅅㅂ",
+//   "병신",
+//   "ㅂㅅ",
+//   "지랄",
+//   "ㅈㄹ",
+//   "좆",
+//   "자지",
+//   "잦",
+//   "보지",
+//   "봋",
+//   "자살",
+//   "니거",
+//   "nigga",
+//   "nigger",
+// ];
 
 export function useNickname(initial) {
   const nickname = ref(initial || "");
@@ -65,7 +66,8 @@ export function useNickname(initial) {
       };
     }
 
-    const word = FORBIDDEN_WORD.filter((word) => nickname.value.includes(word));
+    // const word = FORBIDDEN_WORD.filter((word) => nickname.value.includes(word));
+    const word = useForbiddenFilter("forbidden", nickname);
 
     return !word.length
       ? { code: "Valid", message: "사용 가능해요" }
@@ -132,7 +134,8 @@ export function usePassword(initial) {
       };
     }
 
-    const easy = EASY_KEYWORDS.filter((word) => password.value.includes(word));
+    // const easy = EASY_KEYWORDS.filter((word) => password.value.includes(word));
+    const word = useForbiddenFilter("easy", password);
 
     return easy.length
       ? {

@@ -8,81 +8,85 @@
       @handle-interest="handleInterest"
       class="AnimeLayout__Head"
     />
-    <aside class="AnimeLayout__Sidebar">
-      <div class="AnimeLayout__SideSticky">
-        <div
-          class="AnimeLayout__AsideBubble AnimeLayout__AsideBubble--Update"
-          v-if="!animeInfo.isEnd"
-        >
-          <strong
-            class="AnimeLayout__BubbleItem AnimeLayout__BubbleItem--UpdateDay"
+    <div class="AnimeLayout__Main">
+      <aside class="AnimeLayout__Sidebar">
+        <div class="AnimeLayout__SideSticky">
+          <div
+            class="AnimeLayout__AsideBubble AnimeLayout__AsideBubble--Update"
+            v-if="!animeInfo.isEnd"
           >
-            새 에피소드는 매주 {{ updateTime }}
-          </strong>
-          <label
-            class="AnimeLayout__BubbleItem AnimeLayout__BubbleItem--CountToggle"
-            v-if="isToday(animeInfo.day)"
-          >
-            카운트다운 후 새 에피소드 맞이하기
-            <InputBoolean
-              v-model="newEpisodeFanfare"
-              class="AnimeLayout__BubbleToggle"
-            ></InputBoolean>
-          </label>
-        </div>
-        <AnimeMeta
-          class="AnimeLayout__AsideBubble AnimeLayout__AsideBubble--Meta"
-          :anime-info
-        ></AnimeMeta>
-        <!-- <button @click="animeUpload">adminUpload</button> -->
-      </div>
-    </aside>
-    <div class="AnimeLayout__Body">
-      <div class="AnimeLayout__TabSelector inner" ref="$TabSelector">
-        <RouterLink
-          replace
-          v-for="({ name, tabName }, index) in children"
-          :key="name"
-          :to="{ query: { ...route.query, route: name } }"
-          v-slot="{ href, navigate }"
-          custom
-        >
-          <h3>
-            <a
-              v-bind="$attrs"
-              :href="href"
-              @click="
-                (e) => {
-                  e.preventDefault();
-                  navigate();
-                  indicatorMove(index);
-                }
-              "
-              @focus="indicatorMove(index)"
-              ref="$Tab"
-              class="AnimeLayout__Tab"
-              :class="name === route.query.route && 'AnimeLayout__Tab--Active'"
+            <strong
+              class="AnimeLayout__BubbleItem AnimeLayout__BubbleItem--UpdateDay"
             >
-              {{ tabName }}
-            </a>
-          </h3>
-        </RouterLink>
-        <div class="AnimeLayout__TabIndicator"></div>
+              새 에피소드는 매주 {{ updateTime }}
+            </strong>
+            <label
+              class="AnimeLayout__BubbleItem AnimeLayout__BubbleItem--CountToggle"
+              v-if="isToday(animeInfo.day)"
+            >
+              카운트다운 후 새 에피소드 맞이하기
+              <InputBoolean
+                v-model="newEpisodeFanfare"
+                class="AnimeLayout__BubbleToggle"
+              ></InputBoolean>
+            </label>
+          </div>
+          <AnimeMeta
+            class="AnimeLayout__AsideBubble AnimeLayout__AsideBubble--Meta"
+            :anime-info
+          ></AnimeMeta>
+          <!-- <button @click="animeUpload">adminUpload</button> -->
+        </div>
+      </aside>
+      <div class="AnimeLayout__Body">
+        <div class="AnimeLayout__TabSelector inner" ref="$TabSelector">
+          <RouterLink
+            replace
+            v-for="({ name, tabName }, index) in children"
+            :key="name"
+            :to="{ query: { ...route.query, route: name } }"
+            v-slot="{ href, navigate }"
+            custom
+          >
+            <h3>
+              <a
+                v-bind="$attrs"
+                :href="href"
+                @click="
+                  (e) => {
+                    e.preventDefault();
+                    navigate();
+                    indicatorMove(index);
+                  }
+                "
+                @focus="indicatorMove(index)"
+                ref="$Tab"
+                class="AnimeLayout__Tab"
+                :class="
+                  name === route.query.route && 'AnimeLayout__Tab--Active'
+                "
+              >
+                {{ tabName }}
+              </a>
+            </h3>
+          </RouterLink>
+          <div class="AnimeLayout__TabIndicator"></div>
+        </div>
+        <Transition name="anime-layout">
+          <component
+            :is="children[routeIndex].component"
+            :anime-info="
+              children[routeIndex].name === 'episodes' ? animeInfo : undefined
+            "
+            @open-login-modal="openLoginModal"
+            :key="children[routeIndex].name"
+            :sort-base="
+              children[routeIndex].name === 'episodes' ? sortBase : undefined
+            "
+            @toggle-sort="toggleSort"
+          ></component>
+        </Transition>
       </div>
-      <Transition name="anime-layout">
-        <component
-          :is="children[routeIndex].component"
-          :anime-info="
-            children[routeIndex].name === 'episodes' ? animeInfo : undefined
-          "
-          @open-login-modal="openLoginModal"
-          :key="children[routeIndex].name"
-          :sort-base="
-            children[routeIndex].name === 'episodes' ? sortBase : undefined
-          "
-          @toggle-sort="toggleSort"
-        ></component>
-      </Transition>
     </div>
     <FanfareCount
       :count="FANFARE_COUNT_SEC"
@@ -326,25 +330,21 @@ onUnmounted(() => {
 
 @media screen and (min-width: 1080px) {
   .AnimeLayout {
-    display: grid;
-    // 좌 - 우 공간너비 지정
-    grid-template-columns: 0 auto 35rem calc((100% - 128rem - 4rem) / 2);
-    // 상 - 하 공간높이 지정
-    grid-template-rows: 50vh auto;
-    row-gap: 3.2rem;
-    column-gap: 2rem;
-
     &__Head {
       height: 50vh;
       border-radius: 0;
       padding-top: 8rem;
-      min-height: unset;
-      grid-area: 1 / 1 / 2 / 5;
+      min-height: 40vh;
+      margin-bottom: 2rem;
     }
 
-    &__Sidebar {
-      grid-area: 2 / 3 / 3 / 4;
+    &__Main {
+      display: flex;
+      flex-direction: row-reverse;
+      padding: 0 2rem;
+      gap: 2rem;
     }
+
     &__SideSticky {
       display: flex;
       flex-direction: column;
@@ -354,7 +354,7 @@ onUnmounted(() => {
       z-index: calc(var(--z-index-overay-100) + 1);
     }
     &__AsideBubble {
-      background-color: var(--anime-layout-episodes);
+      background-color: var(--anime-layout-body);
       border-radius: calc(var(--global-radius) * 6);
       width: 100%;
       display: flex;
@@ -388,12 +388,13 @@ onUnmounted(() => {
     }
 
     &__Body {
-      height: max(35rem, 100%);
+      height: max(50rem, 100%);
       --episodes-sticky-top: 8rem;
       --episodes-action-width: calc(100% - 4rem);
-      background-color: var(--anime-layout-episodes);
+      background-color: var(--anime-layout-body);
       box-shadow: none;
-      grid-area: 2 / 2 / 3 / 3;
+      width: 70%;
+      min-width: 0;
     }
     &__TabSelector {
       padding: 0 2rem;

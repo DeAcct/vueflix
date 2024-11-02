@@ -49,11 +49,7 @@ const { $root, $summary, $content } = useAccordion();
     z-index: var(--accordion-z-index, var(--z-index-s1));
     background: var(
       --accordion-bg,
-      linear-gradient(
-        150deg,
-        hsl(var(--bg-400) / 0.75),
-        hsl(var(--bg-400) / 0.5)
-      )
+      linear-gradient(150deg, hsl(var(--bg-200)), hsl(var(--bg-200)))
     );
     backdrop-filter: blur(10px);
     border-radius: var(--global-radius);

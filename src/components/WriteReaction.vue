@@ -1,5 +1,6 @@
 <template>
   <form class="WriteReaction">
+    <KeywordGenerator />
     <textarea
       :placeholder="placeholder"
       class="WriteReaction__InputArea"
@@ -48,7 +49,8 @@ import { ref, computed } from "vue";
 import { useAuth } from "@/store/auth";
 import { useSecToFormat } from "@/composables/formatter";
 import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
-import { useAutoSave } from "@/composables/autosave";
+
+import KeywordGenerator from "@/components/KeywordGenerator.vue";
 
 const emits = defineEmits(["mutate", "interact"]);
 
@@ -131,16 +133,19 @@ function addTime() {
 <style lang="scss" scoped>
 .WriteReaction {
   width: 100%;
+  border-radius: var(--global-radius);
+  background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
+
   &__InputArea {
     width: 100%;
     height: 9rem;
     resize: none;
     font-family: inherit;
-    background-color: transparent;
     line-height: 1.5;
     font-size: 1.4rem;
     font-weight: 500;
-    margin-bottom: 1rem;
+    margin: 2rem 0 1rem;
+    padding: 0 2rem 0;
     &::placeholder {
       color: hsl(var(--bg-700));
       font-weight: 500;
@@ -151,6 +156,7 @@ function addTime() {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0 2rem 2rem;
   }
 
   &__Status {

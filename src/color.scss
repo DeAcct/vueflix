@@ -30,13 +30,9 @@
   --bg-200: 229 8% 95%;
   --bg-100: 0 0% 100%;
 
-  --chart-palette-1: hsl(var(--theme-700));
-  --chart-palette-2: hsl(var(--theme-600));
-  --chart-palette-3: hsl(var(--theme-500));
-  --chart-palette-4: hsl(var(--theme-400));
-  --chart-palette-5: hsl(var(--theme-300));
-  --chart-palette-6: hsl(var(--theme-200));
-  --chart-palette-7: hsl(var(--theme-100));
+  --positive-color: 138 51% 30%;
+  --negative-color: var(--theme-700);
+  --neutral-color: 45 100% 30%;
 
   --level-color-baby: 39 100% 50% / 0.3;
   --level-color-traveler: 219 100% 56% / 0.2;
@@ -66,7 +62,7 @@
 
   --anime-layout-bg: hsl(var(--bg-200));
   --anime-layout-text: hsl(var(--text-900));
-  --anime-layout-episodes: hsl(var(--bg-100));
+  --anime-layout-body: hsl(var(--bg-100));
   --anime-layout-parts: hsl(var(--text-800) / 0.1);
   --anime-layout-shade: hsl(var(--bg-200));
 
@@ -83,13 +79,14 @@
   --anime-wanna-see: hsl(var(--text-800));
   --anime-wanna-see-enabled: 335, 100%, 50%;
 
+  --reaction-combo-write-bg: hsl(var(--bg-200));
+
   --top-item: #fff;
   --episodes: #fff;
   --episodes-part-info: rgb(255, 255, 255);
   --anime-genre: rgba(255, 255, 255, 0.8);
 
   --new-review: hsl(var(--bg-200));
-  --chart-legend: hsl(var(--bg-200));
   --modal-shadow: rgba(0, 0, 0, 0.15);
   --overflow-gradient: linear-gradient(
     90deg,
@@ -138,7 +135,7 @@
   --bg-400: 236 16% 24%;
   --bg-300: 235 20% 16%;
   --bg-200: 233 24% 8%;
-  --bg-100: 234 28% 1%;
+  --bg-100: 234 28% 4%;
 
   --curation-icon: hsl(var(--bg-200));
   --snack-bar-gradient: linear-gradient(
@@ -156,10 +153,12 @@
   --episodes-part-info: 0, 0%, 0%, 0.8;
   --anime-genre: hsla(0, 5%, 13%, 0.8);
 
-  --anime-layout-bg: hsl(234 68% 1%);
+  --anime-layout-bg: hsl(var(--bg-200));
   --anime-layout-text: hsl(0, 0%, 100%);
-  --anime-layout-episodes: hsl(var(--bg-200));
+  --anime-layout-body: hsl(var(--bg-100));
   --anime-layout-parts: hsl(var(--text-800) / 0.1);
+
+  --reaction-combo-write-bg: hsl(var(--bg-200));
 
   --box-shadow: none;
   --overflow-gradient: linear-gradient(
@@ -169,7 +168,6 @@
     hsl(var(--top-item))
   );
   --new-review: hsl(var(--bg-100));
-  --chart-legend: hsl(var(--bg-100));
 
   --general-bg: hsl(var(--bg-100));
 }

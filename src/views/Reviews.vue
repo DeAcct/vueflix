@@ -10,7 +10,7 @@
       </template>
       <template v-slot:login-state-text>로그인</template>
     </LoginWidget>
-    <KeywordReviews class="AnimeReviews__Method" />
+    <!-- <KeywordReviews class="AnimeReviews__Method" /> -->
     <ReactionCombo
       class="AnimeReviews__Method AnimeReviews__Method--Review"
       type="review"
@@ -30,7 +30,6 @@ import { useAuth } from "@/store/auth";
 
 import { useHead } from "@/composables/head";
 
-import KeywordReviews from "@/components/KeywordReviews.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
 import LoginWidget from "@/components/LoginWidget.vue";
 
@@ -73,9 +72,8 @@ const user = computed(() => auth.user);
     font-size: 1.5rem;
     --body-radius: var(--global-radius);
     background-color: transparent;
-    --reaction-combo-write-bg: hsl(var(--bg-200));
+
     --recation-combo-bg: hsl(var(--bg-200) / 0.5);
-    --reaction-combo-border-width: 1px;
     --reaction-combo-title-padding: 0;
     width: calc(100% - 4rem);
   }

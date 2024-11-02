@@ -88,3 +88,7 @@ export function useFormatToSec(origin) {
   console.log(result);
   return result;
 }
+
+export function useFirstCapital(origin) {
+  return origin.charAt(0).toUpperCase() + origin.slice(1);
+}
