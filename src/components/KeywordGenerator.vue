@@ -22,16 +22,22 @@
         </IconBase>
       </template>
     </VueflixBtn>
-    <VueflixCarousel class="KeywordGenerator__List" type="break">
-      <KeywordItem
-        v-for="{ text, state } in dummyItems"
-        :key="text"
-        :state
-        @update:state="onUpdateState($event, text)"
-        @request-delete="onDelete(text)"
+    <VueflixCarousel class="KeywordGenerator__Carousel">
+      <TransitionGroup
+        tag="ul"
+        name="keyword-list"
+        class="KeywordGenerator__List"
       >
-        <template #text>{{ text }}</template>
-      </KeywordItem>
+        <KeywordItem
+          v-for="{ text, state } in dummyItems"
+          :key="text"
+          :state
+          @update:state="onUpdateState($event, text)"
+          @request-delete="onDelete(text)"
+        >
+          <template #text>{{ text }}</template>
+        </KeywordItem>
+      </TransitionGroup>
     </VueflixCarousel>
   </div>
 </template>
@@ -59,8 +65,8 @@ const dummyItems = ref([
 function onUpdateState(state, text) {
   console.log(state, text);
   dummyItems.value = dummyItems.value.map((item) => ({
-    ...item,
     state: item.text === text ? state : item.state,
+    ...item,
   }));
 }
 function onDelete(text) {
@@ -82,14 +88,22 @@ function onNewKeyword() {
   if (newKeyword.value.length >= 10) {
     return;
   }
-  if (newKeyword.value.includes(" ")) {
-    return;
-  }
   if (useForbiddenFilter("forbidden", newKeyword).length > 0) {
     return;
   }
+  // 한영문만 허용
+  if (/[^a-zA-Z가-힣]/.test(newKeyword.value)) {
+    return;
+  }
 
-  dummyItems.value.push({ text: newKeyword.value, state: "none" });
+  if (newKeyword.value.includes(" ")) {
+    newKeyword.value = newKeyword.value.replace(" ", "_");
+  }
+
+  dummyItems.value = [
+    { text: newKeyword.value, state: "none" },
+    ...dummyItems.value,
+  ];
   newKeyword.value = "";
 }
 
@@ -147,10 +161,13 @@ function onNewKeyword() {
   &__Info {
     width: 100%;
     font-size: 1.4rem;
+    line-height: 1.3;
     text-align: center;
   }
   &__Input {
-    flex-grow: 1;
+    // flex-grow: 1;
+    width: calc(100% - 4.8rem);
+    height: 3.6rem;
     font-size: 1.4rem;
     background-color: hsl(var(--bg-100));
     border-radius: 9999px;
@@ -175,14 +192,14 @@ function onNewKeyword() {
     border-radius: 50%;
     color: #fff;
   }
+  &__Carousel {
+    --carousel-padding: 0;
+  }
   &__List {
     display: flex;
     flex-wrap: nowrap;
     width: 100%;
-    --carousel-padding: 0;
-    --carousel-gap: 0.8rem;
-    overflow: hidden;
-    border-radius: 9999px;
+    gap: 0.8rem;
   }
 }
 @media (hover: hover) and (pointer: fine) {
@@ -191,5 +208,23 @@ function onNewKeyword() {
       border-radius: 0;
     }
   }
+}
+
+.keyword-list-move,
+.keyword-list-enter-active,
+.keyword-list-leave-active {
+  transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.keyword-list-enter-active {
+  transition-delay: 150ms;
+}
+
+.keyword-list-enter-from,
+.keyword-list-leave-to {
+  opacity: 0;
+}
+
+.keyword-list-leave-active {
+  position: absolute;
 }
 </style>

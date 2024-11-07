@@ -1,5 +1,5 @@
 <template>
-  <form class="WriteReaction">
+  <form class="WriteReaction" @submit.prevent>
     <KeywordGenerator />
     <textarea
       :placeholder="placeholder"

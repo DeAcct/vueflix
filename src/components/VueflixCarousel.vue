@@ -1,9 +1,9 @@
 <template>
   <div class="VueflixCarousel">
     <div :class="['VueflixCarousel__Track', `VueflixCarousel__Track--${type}`]">
-      <ul :class="['VueflixCarousel__Body', `VueflixCarousel__Body--${type}`]">
+      <div :class="['VueflixCarousel__Body', `VueflixCarousel__Body--${type}`]">
         <slot></slot>
-      </ul>
+      </div>
       <template v-if="type === 'arrow'">
         <button
           class="VueflixCarousel__Button VueflixCarousel__Button--prev"

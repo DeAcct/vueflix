@@ -1,5 +1,5 @@
 <template>
-  <component class="VueflixBtn" :type="type" :is="component">
+  <component class="VueflixBtn" :type :is="component">
     <slot name="icon"></slot>
     <span class="VueflixBtn__Text" v-if="$slots.text">
       <slot name="text"></slot>

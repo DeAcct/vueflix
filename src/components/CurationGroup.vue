@@ -31,7 +31,7 @@
                 skelleton
               />
             </RouterLink>
-            <div class="CurationGroup__SnackBar" v-if="media">
+            <div class="CurationGroup__SnackBar" v-if="notTouch">
               <slot
                 name="snack-bar"
                 v-bind="{
@@ -42,6 +42,13 @@
                 }"
               ></slot>
             </div>
+            <div
+              class="CurationGroup__SlimProgress"
+              v-else
+              :style="`--progress:${
+                (progress?.current / progress?.max) * 100
+              }%`"
+            ></div>
           </div>
         </template>
         <template #text>
@@ -89,7 +96,7 @@ defineProps({
 function escaper(str) {
   return str.replaceAll(/:|\./g, "_").replaceAll(/\?/g, "");
 }
-const media = useMediaQuery("(hover: hover) and (pointer: fine)");
+const notTouch = useMediaQuery("(hover: hover) and (pointer: fine)");
 </script>
 
 <style lang="scss" scoped>
@@ -116,8 +123,9 @@ const media = useMediaQuery("(hover: hover) and (pointer: fine)");
     width: 100%;
     position: relative;
     flex-shrink: 0;
-    --radius: var(--global-radius);
     --aspect-ratio: calc(9 / 16 * 100%);
+    border-radius: var(--global-radius);
+    overflow: hidden;
     &::after {
       transition: 150ms ease-in-out;
       content: "";
@@ -129,8 +137,16 @@ const media = useMediaQuery("(hover: hover) and (pointer: fine)");
       translate: var(--curation-accent-translate);
     }
   }
-  &__SnackBar {
-    display: none;
+  &__SlimProgress {
+    position: absolute;
+    width: 100%;
+    height: 0.4rem;
+    bottom: 0;
+    background: linear-gradient(
+      to right,
+      hsl((var(--theme-500))) var(--progress),
+      transparent var(--progress)
+    );
   }
 
   &__TextLink {

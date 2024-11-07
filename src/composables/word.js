@@ -63,7 +63,6 @@ const DICTIONARY = {
  */
 export function useForbiddenFilter(type, testTarget) {
   const _testTarget = unref(testTarget);
-  console.log(DICTIONARY[type], _testTarget);
   const forbidden = DICTIONARY[type].filter((word) =>
     _testTarget.includes(word)
   );

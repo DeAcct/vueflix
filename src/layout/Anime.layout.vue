@@ -276,7 +276,7 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    background-color: var(--anime-layout-episodes);
+    background-color: var(--anime-layout-body);
     padding-bottom: 2rem;
     --episodes-sticky-top: var(--header-height);
   }
@@ -345,6 +345,9 @@ onUnmounted(() => {
       gap: 2rem;
     }
 
+    &__Sidebar {
+      flex-grow: 1;
+    }
     &__SideSticky {
       display: flex;
       flex-direction: column;
@@ -388,13 +391,12 @@ onUnmounted(() => {
     }
 
     &__Body {
-      height: max(50rem, 100%);
       --episodes-sticky-top: 8rem;
       --episodes-action-width: calc(100% - 4rem);
       background-color: var(--anime-layout-body);
       box-shadow: none;
-      width: 70%;
-      min-width: 0;
+      width: 60rem;
+      flex-shrink: 0;
     }
     &__TabSelector {
       padding: 0 2rem;

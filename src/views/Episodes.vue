@@ -1,17 +1,17 @@
 <template>
   <div class="AnimeEpisodes">
-    <div class="AnimeEpisodes__Actions">
-      <SortButton
-        :base="sortBase"
-        :toggle-sort
-        class="AnimeEpisodes__Sort"
-        :text="['처음', '최신화']"
-      />
-      <button class="AnimeEpisodes__ClearWatched" @click="openAlert">
-        시청기록 초기화
-      </button>
-    </div>
     <template v-if="animeInfo.parts">
+      <div class="AnimeEpisodes__Actions">
+        <SortButton
+          :base="sortBase"
+          :toggle-sort
+          class="AnimeEpisodes__Sort"
+          :text="['처음', '최신화']"
+        />
+        <button class="AnimeEpisodes__ClearWatched" @click="openAlert">
+          시청기록 초기화
+        </button>
+      </div>
       <TransitionGroup name="episode-update">
         <AccordionGroup
           v-for="({ part, episodes }, i) in sortedParts"
@@ -39,6 +39,12 @@
                     skelleton
                   />
                   <div
+                    class="AnimeEpisodes__SlimProgress"
+                    :style="`--progress:${
+                      getEpisodeProgress(animeInfo.name, part, index).percent
+                    }`"
+                  ></div>
+                  <!-- <div
                     class="AnimeEpisodes__ProgressRenderer"
                     v-if="
                       getEpisodeProgress(animeInfo.name, part, index)
@@ -51,7 +57,7 @@
                         getEpisodeProgress(animeInfo.name, part, index)
                       "
                     />
-                  </div>
+                  </div> -->
                 </RouterLink>
               </template>
               <template #text>
@@ -70,6 +76,18 @@
         </AccordionGroup>
       </TransitionGroup>
     </template>
+    <div class="AnimeEpisodes__EmptyPlaceholder">
+      <strong class="AnimeEpisodes__EmptyInfo"
+        >아직 올라온 에피소드가 없어요</strong
+      >
+      <VueflixBtn
+        type="button"
+        component="button"
+        class="AnimeEpisodes__Request"
+      >
+        <template #text>담당자 재촉하기</template>
+      </VueflixBtn>
+    </div>
     <NativeDialog ref="$clearMaratonAlertRoot" class="ClearMaratonAlert" shade>
       <template #title>
         <strong class="ClearMaratonAlert__Title">시청기록 삭제</strong>
@@ -169,6 +187,27 @@ function clear() {
   display: flex;
   flex-direction: column;
 
+  &__EmptyPlaceholder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.2rem;
+    font-size: 1.6rem;
+    color: hsl(var(--bg-700));
+    text-align: center;
+    height: 20vh;
+    margin-top: -2rem;
+  }
+  &__EmptyInfo {
+    font-weight: 500;
+  }
+  &__Request {
+    background-color: hsl(var(--theme-500));
+    color: #fff;
+    border-radius: var(--global-radius);
+  }
+
   &__Actions {
     display: flex;
     align-items: center;
@@ -199,6 +238,19 @@ function clear() {
     width: 30rem;
     min-width: 0;
     position: relative;
+    overflow: hidden;
+    border-radius: var(--global-radius);
+  }
+  &__SlimProgress {
+    position: absolute;
+    width: 100%;
+    height: 0.4rem;
+    bottom: 0;
+    background: linear-gradient(
+      to right,
+      hsl((var(--theme-500))) var(--progress),
+      transparent var(--progress)
+    );
   }
   &__ProgressRenderer {
     position: absolute;
