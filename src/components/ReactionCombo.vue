@@ -191,6 +191,9 @@ const user = computed(() => auth.user);
 const reactions = ref({ visible: [], allCount: 0 });
 const writeable = ref(true);
 async function setWriteable() {
+  if (!user.value) {
+    return;
+  }
   const myReviewCount = await ReadReactionCount(
     {
       parent: props.parent,
@@ -322,7 +325,6 @@ useIntersection($ReadMore, async () => {
   width: 100%;
   max-width: 1080px;
   position: relative;
-  overflow: hidden;
   &__Title {
     font-size: inherit;
     font-weight: 700;

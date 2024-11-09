@@ -42,6 +42,7 @@ function infiniteChange() {
   const currentIndex = VALID_STATE.indexOf(props.state);
   const nextIndex = (currentIndex + 1) % VALID_STATE.length;
   const nextState = VALID_STATE[nextIndex];
+  console.log(nextState);
   emits("update:state", nextState);
 }
 function requestDelete() {

@@ -1,7 +1,7 @@
 import { useEventListener } from "@vueuse/core";
 import { ref } from "vue";
 
-export default function useAccordion(duration = { open: 150, close: 150 }) {
+export default function useAccordion(duration) {
   const $root = ref(null);
   const $summary = ref(null);
   const $content = ref(null);
@@ -10,7 +10,21 @@ export default function useAccordion(duration = { open: 150, close: 150 }) {
   const isClosing = ref(false);
   const isExpanding = ref(false);
 
+  const SUPPORTS_DETAILS_CONTENT_PSUEDO_SELECTOR = CSS.supports(
+    "selector(::details-content)"
+  );
+
   useEventListener($summary, "click", (e) => {
+    console.log(
+      "supports(::details-content):",
+      SUPPORTS_DETAILS_CONTENT_PSUEDO_SELECTOR,
+      SUPPORTS_DETAILS_CONTENT_PSUEDO_SELECTOR
+        ? ""
+        : "(사유:chrome 130 이하 또는 기타 브라우저)"
+    );
+    if (SUPPORTS_DETAILS_CONTENT_PSUEDO_SELECTOR) {
+      return false;
+    }
     e.preventDefault();
     if (isClosing.value || !$root.value.open) {
       accordionOpen();
@@ -22,9 +36,7 @@ export default function useAccordion(duration = { open: 150, close: 150 }) {
   function accordionOpen() {
     $root.value.style.height = `${$root.value.offsetHeight * 0.1}rem`;
     $root.value.open = true;
-    window.requestAnimationFrame(() => {
-      accordionExpand();
-    });
+    accordionExpand();
   }
   function accordionExpand() {
     isExpanding.value = true;
@@ -40,8 +52,8 @@ export default function useAccordion(duration = { open: 150, close: 150 }) {
     animation.value = $root.value.animate(
       { height: [startHeight, endHeight] },
       {
-        duration: 100,
-        easing: "ease-in-out",
+        duration,
+        easing: "cubic-bezier(0.83, 0, 0.17, 1)",
       }
     );
     animation.value.onfinish = () => {
@@ -65,8 +77,8 @@ export default function useAccordion(duration = { open: 150, close: 150 }) {
     animation.value = $root.value.animate(
       { height: [startHeight, endHeight] },
       {
-        duration: 100,
-        easing: "ease-in-out",
+        duration,
+        easing: "cubic-bezier(0.83, 0, 0.17, 1)",
       }
     );
     animation.value.onfinish = () => {

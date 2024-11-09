@@ -42,13 +42,11 @@
                 }"
               ></slot>
             </div>
-            <div
-              class="CurationGroup__SlimProgress"
+            <SlimProgress
               v-else
-              :style="`--progress:${
-                (progress?.current / progress?.max) * 100
-              }%`"
-            ></div>
+              class="CurationGroup__Progress"
+              :percent="`${(progress?.current / progress?.max) * 100}%`"
+            />
           </div>
         </template>
         <template #text>
@@ -77,6 +75,7 @@ import { useMediaQuery } from "@/composables/device";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
+import SlimProgress from "./SlimProgress.vue";
 
 defineProps({
   list: {
@@ -137,16 +136,10 @@ const notTouch = useMediaQuery("(hover: hover) and (pointer: fine)");
       translate: var(--curation-accent-translate);
     }
   }
-  &__SlimProgress {
+  &__Progress {
     position: absolute;
     width: 100%;
-    height: 0.4rem;
     bottom: 0;
-    background: linear-gradient(
-      to right,
-      hsl((var(--theme-500))) var(--progress),
-      transparent var(--progress)
-    );
   }
 
   &__TextLink {

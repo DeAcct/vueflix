@@ -38,26 +38,12 @@
                     :alt="`${animeInfo.name} ${part} ${index} 미리보기 이미지`"
                     skelleton
                   />
-                  <div
-                    class="AnimeEpisodes__SlimProgress"
-                    :style="`--progress:${
+                  <SlimProgress
+                    :percent="
                       getEpisodeProgress(animeInfo.name, part, index).percent
-                    }`"
-                  ></div>
-                  <!-- <div
-                    class="AnimeEpisodes__ProgressRenderer"
-                    v-if="
-                      getEpisodeProgress(animeInfo.name, part, index)
-                        .percent !== '0%'
                     "
-                  >
-                    <ProgressCircle
-                      class="AnimeEpisodes__WatchPercent"
-                      :progress="
-                        getEpisodeProgress(animeInfo.name, part, index)
-                      "
-                    />
-                  </div> -->
+                    class="AnimeEpisodes__Progress"
+                  />
                 </RouterLink>
               </template>
               <template #text>
@@ -76,7 +62,7 @@
         </AccordionGroup>
       </TransitionGroup>
     </template>
-    <div class="AnimeEpisodes__EmptyPlaceholder">
+    <div class="AnimeEpisodes__EmptyPlaceholder" v-else>
       <strong class="AnimeEpisodes__EmptyInfo"
         >아직 올라온 에피소드가 없어요</strong
       >
@@ -131,7 +117,7 @@ import AccordionGroup from "@/components/AccordionGroup.vue";
 import Thumbnailset from "@/components/ThumbnailSet.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
-import ProgressCircle from "@/components/ProgressCircle.vue";
+import SlimProgress from "@/components/SlimProgress.vue";
 import SortButton from "@/components/SortButton.vue";
 import VueflixBtn from "@/components/VueflixBtn.vue";
 
@@ -241,25 +227,10 @@ function clear() {
     overflow: hidden;
     border-radius: var(--global-radius);
   }
-  &__SlimProgress {
+  &__Progress {
     position: absolute;
     width: 100%;
-    height: 0.4rem;
     bottom: 0;
-    background: linear-gradient(
-      to right,
-      hsl((var(--theme-500))) var(--progress),
-      transparent var(--progress)
-    );
-  }
-  &__ProgressRenderer {
-    position: absolute;
-    padding: 0.8rem;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
-    border-radius: 0 0 var(--global-radius) var(--global-radius);
   }
   &__WatchPercent {
     font-size: 1.3rem;

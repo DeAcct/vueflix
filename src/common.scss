@@ -66,6 +66,7 @@ svg {
   word-break: keep-all;
   float: none;
   text-align: left;
+  interpolate-size: allow-keywords;
 }
 ::selection {
   background-color: hsl(var(--theme-500));

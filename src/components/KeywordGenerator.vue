@@ -5,10 +5,11 @@
     </p>
     <input
       type="text"
-      placeholder="원하는 단어를 입력하세요"
+      :placeholder
       class="KeywordGenerator__Input"
       @input="onChange"
       :value="newKeyword"
+      :disabled
     />
     <VueflixBtn
       type="button"
@@ -43,14 +44,16 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
-import IconBase from "./IconBase.vue";
-import IconPlus from "./icons/IconPlus.vue";
+import { useForbiddenFilter } from "@/composables/word";
+
 import VueflixBtn from "@/components/VueflixBtn.vue";
-import VueflixCarousel from "./VueflixCarousel.vue";
-import KeywordItem from "./KeywordItem.vue";
-import { useForbiddenFilter } from "../composables/word";
+import VueflixCarousel from "@/components/VueflixCarousel.vue";
+import KeywordItem from "@/components/KeywordItem.vue";
+
+import IconBase from "@/components/IconBase.vue";
+import IconPlus from "./icons/IconPlus.vue";
 
 const dummyItems = ref([
   { text: "그림체", state: "none" },
@@ -63,19 +66,36 @@ const dummyItems = ref([
 ]);
 
 function onUpdateState(state, text) {
-  console.log(state, text);
   dummyItems.value = dummyItems.value.map((item) => ({
-    state: item.text === text ? state : item.state,
     ...item,
+    state: item.text === text ? state : item.state,
   }));
 }
 function onDelete(text) {
   dummyItems.value = dummyItems.value.filter((item) => item.text !== text);
 }
 
+const props = defineProps({
+  user: {
+    type: Object,
+  },
+});
+
+const disabled = computed(
+  () => dummyItems.value.length >= 10 || props.user === null
+);
+const placeholder = computed(() => {
+  if (props.user === null) {
+    return "키워드를 편집하려면 먼저 로그인을 해주세요";
+  }
+  if (dummyItems.value.length >= 10) {
+    return "최대 10개까지 입력 가능해요";
+  }
+  return "원하는 단어를 입력하세요";
+});
+
 const newKeyword = ref("");
 function onChange(e) {
-  console.log(e.target.value);
   newKeyword.value = e.target.value;
 }
 function onNewKeyword() {
@@ -91,19 +111,31 @@ function onNewKeyword() {
   if (useForbiddenFilter("forbidden", newKeyword).length > 0) {
     return;
   }
-  // 한영문만 허용
-  if (/[^a-zA-Z가-힣]/.test(newKeyword.value)) {
+  // 한영문, 상태구분자':' 이외 입력 불가
+  if (/[^a-zA-Z가-힣\: ]/.test(newKeyword.value)) {
     return;
   }
 
-  if (newKeyword.value.includes(" ")) {
-    newKeyword.value = newKeyword.value.replace(" ", "_");
+  if (newKeyword.value.includes("_")) {
+    newKeyword.value = newKeyword.value.replace("_", " ");
   }
 
-  dummyItems.value = [
-    { text: newKeyword.value, state: "none" },
-    ...dummyItems.value,
+  let [state, text] = newKeyword.value.split(":");
+  const VALID_STATE = [
+    "positive",
+    "neutral",
+    "negative",
+    "긍정",
+    "중립",
+    "부정",
   ];
+  if (!VALID_STATE.includes(state)) {
+    state = "none";
+    text = newKeyword.value;
+  }
+  console.log(state, text);
+
+  dummyItems.value = [{ state, text }, ...dummyItems.value];
   newKeyword.value = "";
 }
 
@@ -157,7 +189,6 @@ function onNewKeyword() {
   flex-wrap: wrap;
   gap: 1.2rem;
   padding: 2rem;
-  border-bottom: 1px solid hsl(var(--text-100));
   &__Info {
     width: 100%;
     font-size: 1.4rem;
@@ -171,7 +202,7 @@ function onNewKeyword() {
     font-size: 1.4rem;
     background-color: hsl(var(--bg-100));
     border-radius: 9999px;
-    border: 1px solid transparent;
+    border: 2px solid transparent;
     padding: 0 1.6rem;
     box-shadow: 0 0.1rem 0.2rem hsl(var(--bg-900) / 0.1),
       0 0.2rem 0.4rem hsl(var(--bg-900) / 0.1);
@@ -206,6 +237,7 @@ function onNewKeyword() {
   .KeywordGenerator {
     &__List {
       border-radius: 0;
+      flex-wrap: wrap;
     }
   }
 }

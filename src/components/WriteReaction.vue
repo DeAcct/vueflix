@@ -1,43 +1,48 @@
 <template>
   <form class="WriteReaction" @submit.prevent>
-    <KeywordGenerator />
-    <textarea
-      :placeholder="placeholder"
-      class="WriteReaction__InputArea"
-      :disabled="!user"
-      @input="setReviewData"
-      @focus="setFocus"
-      @blur="setBlur"
-      ref="$TextArea"
-      :value="reviewData"
-      @keydown="saveAction"
-    />
-    <div class="WriteReaction__Interaction">
-      <div class="WriteReaction__Status">
-        <strong class="WriteReaction__Length"
-          >{{ reviewData.length || 0 }}/1000</strong
-        >
-        <p v-if="reviewData.length > 1000" class="WriteReaction__TooLongAlert">
-          너무 길어요!
-        </p>
-      </div>
-      <div class="WriteReaction__BtnArea">
-        <button
-          class="WriteReaction__Button WriteReaction__Button--AddTime"
-          @click="addTime"
-          v-if="type === 'comment'"
-          type="button"
-        >
-          재생 위치 추가
-        </button>
-        <button
-          :disabled="reviewData.length > 1000 || reviewData.length === 0"
-          @click="reviewTrigger"
-          class="WriteReaction__Button WriteReaction__Button--Submit"
-          type="button"
-        >
-          등록
-        </button>
+    <KeywordGenerator :user v-if="type === 'review'" />
+    <div class="WriteReaction__TextReview">
+      <textarea
+        :placeholder="placeholder"
+        class="WriteReaction__InputArea"
+        :disabled="!user"
+        @input="setReviewData"
+        @focus="setFocus"
+        @blur="setBlur"
+        ref="$TextArea"
+        :value="reviewData"
+        @keydown="saveAction"
+      />
+      <div class="WriteReaction__Interaction">
+        <div class="WriteReaction__Status">
+          <strong class="WriteReaction__Length"
+            >{{ reviewData.length || 0 }}/1000</strong
+          >
+          <p
+            v-if="reviewData.length > 1000"
+            class="WriteReaction__TooLongAlert"
+          >
+            너무 길어요!
+          </p>
+        </div>
+        <div class="WriteReaction__BtnArea">
+          <button
+            class="WriteReaction__Button WriteReaction__Button--AddTime"
+            @click="addTime"
+            v-if="type === 'comment'"
+            type="button"
+          >
+            재생 위치 추가
+          </button>
+          <button
+            :disabled="reviewData.length > 1000 || reviewData.length === 0"
+            @click="reviewTrigger"
+            class="WriteReaction__Button WriteReaction__Button--Submit"
+            type="button"
+          >
+            등록
+          </button>
+        </div>
       </div>
     </div>
   </form>
@@ -152,6 +157,19 @@ function addTime() {
     }
   }
 
+  &__TextReview {
+    border: 2px solid transparent;
+    background-color: hsl(var(--bg-100));
+    border-radius: var(--global-radius);
+    box-shadow: 0 0.1rem 0.2rem hsl(var(--bg-900) / 0.1),
+      0 0.2rem 0.4rem hsl(var(--bg-900) / 0.1);
+    &:focus-within {
+      border-color: hsl(var(--theme-500));
+      box-shadow: 0 0.2rem 0.4rem hsl(var(--bg-900) / 0.1),
+        0 0.4rem 0.8rem hsl(var(--bg-900) / 0.1),
+        0 0.8rem 1.6rem hsl(var(--bg-900) / 0.1);
+    }
+  }
   &__Interaction {
     display: flex;
     justify-content: space-between;

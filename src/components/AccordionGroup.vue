@@ -8,34 +8,23 @@
         </IconBase>
       </i>
     </summary>
-    <div class="AccordionGroup__Content" ref="$content">
+    <ul class="AccordionGroup__Content" ref="$content">
       <slot name="content"></slot>
-    </div>
+    </ul>
   </details>
 </template>
 
 <script setup>
-import useAccordion from "@/composables/accordion";
+import useAccordion from "@/composables/progressive-polyfill";
 
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 
-defineProps({
-  duration: {
-    type: Object,
-    default: {
-      expand: 300,
-      shrink: 300,
-    },
-    validator(value) {
-      return Object.keys(value).every((key) =>
-        ["expand", "shrink"].includes(key)
-      );
-    },
-  },
-});
+const ACCORDION_ANIMATION_DURATION = 300;
 
-const { $root, $summary, $content } = useAccordion();
+const { $root, $summary, $content } = useAccordion(
+  ACCORDION_ANIMATION_DURATION
+);
 </script>
 
 <style lang="scss" scoped>
@@ -67,18 +56,23 @@ const { $root, $summary, $content } = useAccordion();
     justify-content: center;
     width: 1.8rem;
     height: 1.8rem;
-    transition: 150ms ease-in-out;
+    transition: calc(1ms * v-bind(ACCORDION_ANIMATION_DURATION)) ease-in-out;
     transform: rotate(-90deg);
   }
   &__Content {
     display: flex;
     flex-direction: var(--accordion-direction, column);
     gap: var(--episode-gap, 1rem);
-    padding: {
-      top: 0;
-      bottom: 0;
-    }
+    padding-top: var(--open-top-padding, 1.2rem);
+
+    // height: 0;
+    // transition: all calc(1ms * v-bind(ACCORDION_ANIMATION_DURATION)) ease-in-out;
   }
+  // &::details-content {
+  //   background-color: red;
+  //   block-size: 0;
+  //   transition: calc(1ms * v-bind(ACCORDION_ANIMATION_DURATION)) cubic-bezier(0.83, 0, 0.17, 1);
+  // }
 
   &[open] {
     .AccordionGroup__OpenIcon {
@@ -91,6 +85,21 @@ const { $root, $summary, $content } = useAccordion();
       .episode-card {
         opacity: 1;
       }
+    }
+  }
+}
+
+@supports selector(::details-content) {
+  .AccordionGroup {
+    &::details-content {
+      block-size: 0;
+      transition: block-size calc(1ms * v-bind(ACCORDION_ANIMATION_DURATION))
+          cubic-bezier(0.83, 0, 0.17, 1),
+        content-visibility calc(1ms * v-bind(ACCORDION_ANIMATION_DURATION));
+      transition-behavior: allow-discrete;
+    }
+    &[open]::details-content {
+      block-size: auto;
     }
   }
 }
@@ -112,11 +121,6 @@ const { $root, $summary, $content } = useAccordion();
     }
     &__Content {
       gap: var(--episode-gap, 2.5rem);
-      &--Opened {
-        padding: {
-          top: var(--open-top-padding, 2.8rem);
-        }
-      }
     }
   }
 }
