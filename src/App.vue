@@ -2,6 +2,7 @@
   <RouterView v-slot="{ Component, route }">
     <span class="AnimeLoading" v-if="isLoading"></span>
     <VueflixHeader v-if="route.meta.appBar" />
+    <ButterToast />
     <BottomTabMenu v-if="route.meta.bottomTabMenu && isSmall" />
     <Transition name="fade">
       <component :is="Component"></component>
@@ -52,6 +53,7 @@ import DialogNavigation from "@/components/DialogNavigation.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
 import ToTop from "@/components/ToTop.vue";
 import VueflixHeader from "@/components/VueflixHeader.vue";
+import ButterToast from "./components/ButterToast.vue";
 
 // const isTouchable = useMediaQuery("not (hover: hover) and (pointer: fine)");
 const isSmall = useMediaQuery("(max-width: 1080px)");

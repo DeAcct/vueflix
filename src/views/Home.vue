@@ -26,7 +26,7 @@
         <template #snack-bar="{ aniTitle }">
           <button
             class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
-            @click="toggleWannaSee(aniTitle)"
+            @click="onClickWannaSee(aniTitle)"
             type="button"
           >
             <WannaSeeMotion :ani-title />
@@ -48,7 +48,7 @@
           </RouterLink>
           <button
             class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
-            @click="toggleWannaSee(aniTitle)"
+            @click="onClickWannaSee(aniTitle)"
             type="button"
           >
             <WannaSeeMotion :ani-title />
@@ -65,7 +65,7 @@
         <template #snack-bar="{ aniTitle }">
           <button
             class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
-            @click="toggleWannaSee(aniTitle)"
+            @click="onClickWannaSee(aniTitle)"
             type="button"
           >
             <WannaSeeMotion :ani-title />
@@ -126,8 +126,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
+import { useRouter } from "vue-router";
 import { getDocs, collection, doc, getDoc } from "firebase/firestore";
+
+import { useAuth } from "@/store/auth";
 import { db } from "@/utility/firebase";
 
 import { DAYS } from "@/enums/Days";
@@ -190,7 +193,14 @@ const { latest, maraton } = useMaratonData();
 
 const { idArray: carouselList } = useCarouselList();
 
-function toggleWannaSee(aniTitle) {
+const auth = useAuth();
+const user = computed(() => auth.user);
+const router = useRouter();
+function onClickWannaSee(aniTitle) {
+  if (!user.value) {
+    router.push("/auth");
+    return;
+  }
   const { toggleWannaSee } = useWannaSee(aniTitle);
   toggleWannaSee();
 }

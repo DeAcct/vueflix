@@ -20,7 +20,7 @@ export default function useAccordion(duration) {
       SUPPORTS_DETAILS_CONTENT_PSUEDO_SELECTOR,
       SUPPORTS_DETAILS_CONTENT_PSUEDO_SELECTOR
         ? ""
-        : "(사유:chrome 130 이하 또는 기타 브라우저)"
+        : "(chrome 130 이하 또는 기타 브라우저)"
     );
     if (SUPPORTS_DETAILS_CONTENT_PSUEDO_SELECTOR) {
       return false;

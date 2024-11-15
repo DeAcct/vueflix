@@ -3,7 +3,7 @@
   "version": "3.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite && start chrome --incognito http://localhost:5173",
     "build": "vite build",
     "preview": "vite preview"
   },
