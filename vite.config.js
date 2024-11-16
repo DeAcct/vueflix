@@ -9,13 +9,7 @@ import vue from "@vitejs/plugin-vue";
 export default defineConfig({
   cacheDir: "./.vite",
   plugins: [
-    vue({
-      template: {
-        compilerOptions: {
-          isCustomElement: (tag) => tag.includes("swiper"),
-        },
-      },
-    }),
+    vue(),
     VueDevTools(),
     VitePWA({
       includeAssets: ["favicon.svg", "robots.txt"],

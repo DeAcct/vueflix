@@ -70,6 +70,7 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useMediaQuery } from "@/composables/device";
 
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
@@ -77,7 +78,7 @@ import VueflixCarousel from "@/components/VueflixCarousel.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
 import SlimProgress from "./SlimProgress.vue";
 
-defineProps({
+const props = defineProps({
   list: {
     type: Array,
     required: true,

@@ -2,9 +2,9 @@
   <div
     class="Slide loading-target"
     ref="$root"
-    @touchstart="onTouchstart"
+    @touchstart="touchstart"
     @touchmove="onTouchmove"
-    @touchend="onTouchend"
+    @touchend="touchend"
   >
     <div class="Slide__RatioHold" ref="$body">
       <slot name="items"></slot>
@@ -30,6 +30,7 @@ import { ref, onMounted, onUnmounted, computed } from "vue";
 import IconBase from "@/components/IconBase.vue";
 import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
 import IconArrowNext from "@/components/icons/IconArrowNext.vue";
+import { useSwipe } from "../composables/swipe";
 
 const props = defineProps({
   autoplay: {
@@ -57,7 +58,6 @@ const controller = [
 
 const page = ref({ now: 0, next: 1 });
 const $body = ref(null);
-const $root = ref(null);
 
 function move(amount) {
   const now = page.value.now + amount;
@@ -93,28 +93,32 @@ function loopEnd() {
 onMounted(loopStart);
 onUnmounted(loopEnd);
 
-const position = ref({ start: 0, end: 0 });
-function onTouchstart(event) {
+const {
+  $target: $root,
+  onTouchstart,
+  onTouchmove,
+  onTouchend,
+  clear,
+} = useSwipe();
+function touchstart(event) {
   loopEnd();
-  position.value.start = event.touches[0].clientX;
+  onTouchstart(event);
 }
-function onTouchmove(event) {
-  position.value.end = event.touches[0].clientX;
-}
-function onTouchend() {
-  const diff = position.value.start - position.value.end;
-  if (Math.abs(diff) < $root.value.clientWidth / 3) {
-    return;
-  }
-  if (diff > 0) {
-    move(1);
-  } else {
-    move(-1);
-  }
-  setTimeout(() => {
-    loopStart();
-    position.value = { start: 0, end: 0 };
-  }, props.time);
+function touchend() {
+  onTouchend({
+    left() {
+      move(1);
+    },
+    right() {
+      move(-1);
+    },
+    callback() {
+      setTimeout(() => {
+        loopStart();
+        clear();
+      }, props.time);
+    },
+  });
 }
 </script>
 

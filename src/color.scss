@@ -34,6 +34,11 @@
   --negative-color: var(--theme-700);
   --neutral-color: 45 100% 30%;
 
+  --success-color: 100 30% 56%;
+  --error-color: 350 60% 50%;
+  --warning-color: 41 100% 59%;
+  --info-color: 210 20% 50%;
+
   --level-color-baby: 39 100% 50% / 0.3;
   --level-color-traveler: 219 100% 56% / 0.2;
   --level-color-braver: 192 100% 50% / 0.2;
@@ -111,6 +116,9 @@
   --general-bg: hsl(var(--bg-200));
 
   --message-safe: 103, 76%, 43%;
+
+  --toast-bg: var(--bg-900);
+  --toast-text: var(--text-100);
 }
 
 #app[data-theme="dark"],
@@ -170,4 +178,7 @@
   --new-review: hsl(var(--bg-100));
 
   --general-bg: hsl(var(--bg-100));
+
+  --toast-bg: var(--bg-200);
+  --toast-text: var(--text-900);
 }
