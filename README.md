@@ -2,6 +2,20 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/1555cce5-c385-4481-a01a-0d9ec5340b08/deploy-status)](https://app.netlify.com/sites/boisterous-khapse-9ffb12/deploys)
 
+## 도커 세팅 방법
+
+빌드
+
+```
+docker build -t vueflix .
+```
+
+.env 파일을 준비한 뒤
+
+```
+docker run --env-file .env vueflix
+```
+
 ## 특징
 
 단순한 라프텔 클론코딩이 아닙니다.
