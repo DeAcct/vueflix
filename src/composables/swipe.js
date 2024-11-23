@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 export function useSwipe() {
   const $target = ref(null);
   const position = ref({ start: 0, end: 0 });
-  const moved = computed(() => position.value.start - position.value.end);
+  const moved = computed(() => position.value.end - position.value.start);
   function onTouchstart(event) {
     position.value.start = event.touches[0].clientX;
   }

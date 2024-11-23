@@ -69,7 +69,7 @@ const opacity = computed(
   gap: 0.8rem;
   color: hsl(var(--item-color));
 
-  translate: calc(v-bind(moved) * -0.1rem) 0;
+  transform: translateX(calc(v-bind(moved) * 0.1rem));
   opacity: v-bind(opacity);
   // color: hsl(var(--item-color));
   &--Success {

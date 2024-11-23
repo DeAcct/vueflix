@@ -1,15 +1,13 @@
 <template>
   <main class="Basket">
     <template v-if="user">
-      <div class="Basket__ActionGroup">
-        <div class="Basket__Actions inner">
-          <MultiSelector
-            class="Basket__Tabs"
-            v-model="tab.index"
-            @update:model-value="tabMove"
-            :data="tabs"
-          />
-          <button
+      <MultiSelector
+        class="Basket__Tabs"
+        v-model="tab.index"
+        @update:model-value="tabMove"
+        :data="tabs"
+      />
+      <!-- <button
             class="Basket__Button Basket__Button--Toggle"
             @click="toggleEditmode"
             :disabled="list.length === 0"
@@ -18,16 +16,14 @@
             <IconBase>
               <IconRemove></IconRemove>
             </IconBase>
-          </button>
-        </div>
-        <EditBar
+          </button> -->
+      <!-- <EditBar
           :editmode
           :toggle="toggleEditmode"
           :remove="remove"
           :all="all"
           class="inner Basket__EditBar"
-        />
-      </div>
+        /> -->
       <template v-if="list.length > 0">
         <HistoryGroup
           :list
@@ -124,39 +120,38 @@ async function all() {
 .Basket {
   padding: var(--header-height) 0;
 
-  &__ActionGroup {
-    display: flex;
-    flex-wrap: wrap;
-    position: sticky;
-    z-index: 10;
-    top: var(--header-height);
-    width: min(100%, 124rem);
-    margin: 0 auto;
-    background-color: hsl(var(--bg-100));
-    border-bottom: 1px solid hsl(var(--bg-200));
-  }
-  &__Actions {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  // &__ActionGroup {
+  //   display: flex;
+  //   flex-wrap: wrap;
+  //   position: sticky;
+  //   z-index: 10;
+  //   top: var(--header-height);
+  //   width: min(100%, 124rem);
+  //   margin: 0 auto;
+  //   background-color: hsl(var(--bg-100));
+  // }
+  // &__Actions {
+  //   width: 100%;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: space-between;
+  // }
   &__Tabs {
-    flex-grow: 1;
     display: flex;
-    --item-width: 25%;
+    --item-width: 33.333%;
     --item-height: 3.6rem;
     border-radius: 9999px;
-    justify-content: flex-start;
     padding: 0.6rem;
+    width: calc(100% - var(--inner-padding) * 2);
+    margin: 0 auto;
   }
   &__Button {
     height: 4.8rem;
     display: flex;
     justify-content: center;
     &--Toggle {
-      position: absolute;
-      right: var(--inner-padding);
+      // position: absolute;
+      // right: var(--inner-padding);
       width: 2.4rem;
       height: 2.4rem;
       align-items: center;

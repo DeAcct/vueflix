@@ -1,8 +1,7 @@
 <template>
   <component :is="component" class="ProfileCombo">
-    <span class="ProfileCombo__UserName">{{
-      store.user ? store.user.nickname : "게스트"
-    }}</span>
+    <!-- <span class="blind">{{ store.user ? store.user.nickname : "게스트" }}</span> -->
+    <slot name="text" v-bind="nickname"></slot>
     <OptimizedMedia
       :src="store.profileImg.name"
       :alt="`${store.user.nickname} 프로필 사진`"
@@ -15,6 +14,8 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
+
 import { useAuth } from "../store/auth";
 import OptimizedMedia from "./OptimizedMedia.vue";
 
@@ -28,6 +29,8 @@ const props = defineProps({
     default: "RouterLink",
   },
 });
+
+const nickname = computed(() => (store.user ? store.user.nickname : "게스트"));
 </script>
 
 <style lang="scss" scoped>
@@ -54,6 +57,7 @@ const props = defineProps({
     --aspect-ratio: 100%;
     --radius: 50%;
     border-radius: 50%;
+    border: var(--profile-border);
   }
 }
 </style>

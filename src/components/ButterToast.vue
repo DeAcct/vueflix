@@ -12,25 +12,11 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
-
 import { useToast } from "@/store/toast";
 
 import ToastItem from "@/components/ToastItem.vue";
 
 const data = useToast();
-
-onMounted(() => {
-  setTimeout(() => {
-    data.addToast({ type: "success", message: "asdf", key: 0 });
-  }, 1000);
-  setTimeout(() => {
-    data.addToast({ type: "success", message: "asdf", key: 0 });
-  }, 2000);
-  setTimeout(() => {
-    data.addToast({ type: "success", message: "asdf", key: 0 });
-  }, 3000);
-});
 </script>
 
 <style scoped lang="scss">
@@ -56,33 +42,10 @@ onMounted(() => {
 .butter-toast-leave-active {
   transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.butter-toast-leave-active {
-  position: absolute;
-}
 .butter-toast-leave-to {
   opacity: 0;
+  translate: -100% 0;
 }
-// .butter-toast-enter-active {
-//   animation: toast-elastic 600ms;
-// }
-// .butter-toast-move,
-// .butter-toast-leave-active {
-//   transition: opacity 300ms cubic-bezier(0.68, -0.6, 0.32, 1.6),
-//     translate 300ms cubic-bezier(0.68, -0.6, 0.32, 1.6);
-// }
-// .butter-toast-leave-to {
-//   opacity: 0;
-//   translate: -100% 0;
-// }
-// .butter-toast-enter-from {
-//   opacity: 0;
-//   translate: 100% 0;
-// }
-
-// .butter-toast-leave-to {
-//   opacity: 0;
-//   translate: -100% 0;
-// }
 
 @keyframes toast-elastic {
   0% {

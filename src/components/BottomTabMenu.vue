@@ -1,43 +1,46 @@
 <template>
-  <nav class="BottomTabMenu">
-    <h2 class="blind">하단메뉴</h2>
+  <TransitionGroup tag="nav" class="BottomTabMenu" name="bottom-tab">
     <div class="BottomTabMenu__Items">
-      <RouterLink
-        v-for="({ to, name, icon }, index) in items"
-        :key="index"
-        class="BottomTabMenu__Item"
-        :to="to === 'home' ? '/' : `/${to}`"
-        exact-active-class="BottomTabMenu__Item--Active"
-      >
-        <i class="BottomTabMenu__Icon">
-          <template v-if="to !== 'my'">
-            <IconBase>
-              <component :is="icon" :key="name" />
-            </IconBase>
-          </template>
-          <template v-else> </template>
-        </i>
-        <span class="blind">{{ name }}</span>
-      </RouterLink>
+      <div v-for="({ to, name, icon }, index) in items" :key="index">
+        <RouterLink
+          class="BottomTabMenu__Item"
+          :to="to === 'home' ? '/' : `/${to}`"
+          exact-active-class="BottomTabMenu__Item--Active"
+        >
+          <i class="BottomTabMenu__Icon">
+            <template v-if="to !== 'my'">
+              <IconBase>
+                <component :is="icon" :key="name" />
+              </IconBase>
+            </template>
+            <template v-else> </template>
+          </i>
+          <span class="blind">{{ name }}</span>
+        </RouterLink>
+      </div>
+      <!-- <li>
+        <ProfileCombo
+          to="/my"
+          class="BottomTabMenu__Profile"
+          exact-active-class="BottomTabMenu__Profile--Active"
+        />
+      </li> -->
     </div>
-    <ProfileCombo
-      to="/my"
-      class="BottomTabMenu__Profile"
-      exact-active-class="BottomTabMenu__Profile--Active"
-    />
-    <ToTop class="BottomTabMenu__ToTop" v-if="scrollState !== 'top'" />
-  </nav>
+    <div v-if="scrollState !== 'top'">
+      <ToTop class="BottomTabMenu__ToTop" />
+    </div>
+  </TransitionGroup>
 </template>
 
 <script setup>
+import { useScroll } from "@/composables/scroll";
+
+import ToTop from "@/components/ToTop.vue";
+
 import IconBase from "./IconBase.vue";
 import IconHome from "./icons/IconHome.vue";
 import IconBasket from "./icons/IconBasket.vue";
 import IconCocktail from "./icons/IconCocktail.vue";
-import ToTop from "./ToTop.vue";
-
-import { useScroll } from "@/composables/scroll";
-import ProfileCombo from "./ProfileCombo.vue";
 
 const items = [
   {
@@ -64,69 +67,77 @@ const { state: scrollState } = useScroll();
 .BottomTabMenu {
   position: fixed;
   display: flex;
-  gap: 1rem;
   align-items: center;
+  justify-content: center;
   z-index: var(--z-index-1);
   bottom: var(--bottom-tab-safe-margin);
-  left: 50%;
-  transform: translate(-50%, 0);
   transition: 150ms ease-out;
+  border-radius: 9999px;
+  width: 100%;
 
   &__Items {
     display: flex;
-    background-color: hsl(var(--bg-100) / 0.8);
-    backdrop-filter: blur(10px);
+    background-color: hsl(var(--bg-100) / 0.9);
+    backdrop-filter: blur(0.4rem);
+    border: 1px solid hsl(var(--bg-200));
     border-radius: 9999px;
   }
   &__Item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 4.8rem;
-    height: var(--bottom-tab-height);
-    font-size: 1.1rem;
-    color: transparent;
-    --indicator-size: 0;
-    --bottom-tab-active-color: hsl(var(--text-800));
     &--Active {
-      --indicator-size: 0.4rem;
-      --bottom-tab-active-color: hsl(var(--theme-500));
+      color: hsl(var(--theme-500));
     }
   }
   &__Icon {
-    width: 2.4rem;
-    height: 2.4rem;
-    color: var(--bottom-tab-active-color);
-  }
-  &__Profile {
-    --profile-size: 3.8rem;
-    flex-direction: row-reverse;
-    gap: 0.8rem;
-    background-color: hsl(var(--bg-100) / 0.8);
-    backdrop-filter: blur(10px);
-    height: 4.8rem;
-    border: 2px solid transparent;
-    border-radius: 9999px;
-    font-size: 1.5rem;
-    font-weight: 700;
-    padding-right: 1.2rem;
-    &--Active {
-      --bottom-tab-active-color: hsl(var(--theme-500));
-      border-color: var(--bottom-tab-active-color);
-    }
-  }
-  &__ProfileImg {
-    width: 100%;
-    height: 100%;
+    display: block;
+    width: 4.8rem;
+    height: var(--bottom-tab-height);
+    text-align: center;
+    align-content: center;
+    color: inherit;
   }
   &__ToTop {
     width: 4.6rem;
     height: 4.6rem;
-    flex-shrink: 0;
-    position: static;
     background-color: hsl(var(--theme-500));
-    box-shadow: none;
+    flex-shrink: 0;
   }
+  // &__Profile {
+  //   --profile-size: 3.6rem;
+  //   width: 4.8rem;
+  //   gap: 0.3rem;
+  //   height: var(--bottom-tab-height);
+  //   flex-direction: column-reverse;
+  //   justify-content: center;
+  //   border-radius: 9999px;
+  //   font-size: 1.2rem;
+  //   font-weight: 700;
+  //   padding: 0;
+  //   &--Active {
+  //     color: hsl(var(--theme-500));
+  //   }
+  // }
+  // &__ToTop {
+  //   width: 4.6rem;
+  //   height: 4.6rem;
+  //   flex-shrink: 0;
+  //   position: static;
+  //   background-color: hsl(var(--theme-500));
+  //   box-shadow: none;
+  // }
+}
+
+.bottom-tab-move,
+.bottom-tab-enter-active,
+.bottom-tab-leave-active {
+  transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bottom-tab-enter-from,
+.bottom-tab-leave-to {
+  opacity: 0;
+  scale: 0;
+}
+.bottom-tab-leave-active {
+  position: absolute;
+  z-index: -1;
 }
 </style>

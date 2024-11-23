@@ -44,7 +44,11 @@
       <SearchBar
         class="VueflixHeader__SearchBar VueflixHeader__SearchBar--PCOnly"
       />
-      <ProfileCombo to="/my" class="VueflixHeader__ProfileCombo" />
+      <ProfileCombo to="/my" class="VueflixHeader__ProfileCombo">
+        <template #text="nickname">
+          <span class="VueflixHeader__UserName">{{ nickname }}</span>
+        </template>
+      </ProfileCombo>
 
       <div
         class="VueflixHeader__SearchCombo"
@@ -67,7 +71,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useMediaQuery } from "@/composables/device";
@@ -137,6 +141,10 @@ const searchMode = ref(false);
 function toggleSearchMode() {
   searchMode.value = !searchMode.value;
 }
+
+const backbuttonBlank = computed(
+  () => route.meta.appBar.backButton && "2.4rem"
+);
 </script>
 
 <style lang="scss" scoped>
@@ -146,7 +154,6 @@ function toggleSearchMode() {
   top: env(titlebar-area-y, 0);
   left: env(titlebar-area-x, 0);
   z-index: var(--z-index-2);
-  border-bottom: 1px solid hsl(var(--bg-200) / v-bind(scrollPercent));
   background-color: hsl(var(--bg-100) / calc(v-bind(scrollPercent)));
   --icon-color: #fff;
 
@@ -218,8 +225,17 @@ function toggleSearchMode() {
     width: 2.4rem;
     height: 2.4rem;
   }
-
   &__ProfileCombo {
+    transition: translate 150ms ease-out;
+    position: absolute;
+    left: calc(var(--inner-padding));
+    translate: calc(v-bind(backbuttonBlank) + 0.4rem) 0;
+    display: flex;
+    gap: 0.8rem;
+    --profile-size: 2.8rem;
+    font-size: 1.5rem;
+  }
+  &__UserName {
     display: none;
   }
   &--Fill {
@@ -320,14 +336,19 @@ function toggleSearchMode() {
       }
     }
     &__ProfileCombo {
+      position: static;
+      translate: none;
       display: flex;
       gap: 0.8rem;
       background-color: hsl(var(--bg-200));
-      border: 2px solid hsl(var(--bg-200));
       --profile-size: 3.6rem;
-      font-size: 1.5rem;
-      padding-left: 0.8rem;
+      height: 4.6rem;
+      padding-left: 1rem;
       margin-left: 1.6rem;
+    }
+    &__UserName {
+      display: block;
+      font-size: 1.6rem;
     }
   }
 }

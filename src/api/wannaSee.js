@@ -20,30 +20,22 @@ export function useWannaSee(aniTitle) {
   }
 
   async function toggleWannaSee() {
-    if (wannaSee.value) {
-      updateDoc(doc(db, "user", user.value.uid), {
-        wannaSee: user.value.wannaSee.filter(
-          (item) => item.aniTitle !== aniTitle
-        ),
-      });
-    } else {
-      updateDoc(doc(db, "user", user.value.uid), {
-        wannaSee: arrayUnion({ aniTitle, date: new Date() }),
-      });
-    }
+    const updatedWannaSee = wannaSee.value
+      ? user.value.wannaSee.filter((item) => item.aniTitle !== aniTitle)
+      : arrayUnion({ aniTitle, date: new Date() });
+
+    await updateDoc(doc(db, "user", user.value.uid), {
+      wannaSee: updatedWannaSee,
+    });
     await auth.syncUser();
   }
 
   async function removeWannaSee(target = "all") {
-    let result;
-    if (target === "all") {
-      result = [];
-    } else {
-      result = user.value.wannaSee.filter(
-        (item) => ![...target].includes(item.aniTitle)
-      );
-    }
-    updateDoc(doc(db, "user", user.value.uid), {
+    const result =
+      target === "all"
+        ? []
+        : user.value.wannaSee.filter((item) => !target.includes(item.aniTitle));
+    await updateDoc(doc(db, "user", user.value.uid), {
       wannaSee: result,
     });
     await auth.syncUser();

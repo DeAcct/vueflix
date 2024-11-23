@@ -24,10 +24,10 @@
             :alt="`${aniTitle} ${part} ${index} 이어보기`"
             skelleton
           />
-          <ProgressCircle
+          <SlimProgress
             v-if="progressBar"
             class="HistoryGroup__WatchPercent"
-            :progress
+            :progress="`${(progress?.current / progress?.max) * 100}%`"
           />
         </RouterLink>
       </template>
@@ -54,7 +54,7 @@
 
 <script setup>
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
-import ProgressCircle from "@/components/ProgressCircle.vue";
+import SlimProgress from "@/components/SlimProgress.vue";
 import ThumbnailSet from "@/components/ThumbnailSet.vue";
 
 const editmode = defineModel("editmode", {
@@ -112,12 +112,9 @@ function itemToggle(aniTitle) {
   }
   &__WatchPercent {
     width: 100%;
-    justify-content: space-between;
+    height: 0.2rem;
     position: absolute;
     bottom: 0;
-    padding: 1rem;
-    background: linear-gradient(transparent, hsl(0 0% 0% / 0.5));
-    color: #fff;
   }
   &__TextLink {
     display: flex;

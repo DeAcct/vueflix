@@ -39,7 +39,7 @@
                     skelleton
                   />
                   <SlimProgress
-                    :percent="
+                    :progress="
                       getEpisodeProgress(animeInfo.name, part, index).percent
                     "
                     class="AnimeEpisodes__Progress"

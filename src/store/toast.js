@@ -40,7 +40,6 @@ export const useToast = defineStore("toast", () => {
    */
   function selectDestroy(key) {
     toasts.value = toasts.value.filter((item) => item.key !== key);
-    console.log(key, toasts.value);
   }
 
   /**

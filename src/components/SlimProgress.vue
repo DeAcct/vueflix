@@ -4,7 +4,7 @@
 
 <script setup>
 const props = defineProps({
-  percent: {
+  progress: {
     type: String,
     required: true,
   },
@@ -15,8 +15,8 @@ const props = defineProps({
 .SlimProgress {
   background: linear-gradient(
     to right,
-    hsl(var(--theme-500)) v-bind(percent),
-    transparent v-bind(percent)
+    hsl(var(--theme-500)) v-bind(progress),
+    transparent v-bind(progress)
   );
   filter: drop-shadow(0 0 5px hsl(var(--bg-900)));
   height: 0.2rem;

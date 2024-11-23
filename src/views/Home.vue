@@ -212,7 +212,7 @@ function onClickWannaSee(aniTitle) {
     display: flex;
     flex-direction: column;
     padding: 3.2rem 0
-      calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin));
+      calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin) + 3rem);
     background-color: hsl(var(--bg-100));
     gap: 3rem;
   }

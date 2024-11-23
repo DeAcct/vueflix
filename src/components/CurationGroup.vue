@@ -45,7 +45,7 @@
             <SlimProgress
               v-else
               class="CurationGroup__Progress"
-              :percent="`${(progress?.current / progress?.max) * 100}%`"
+              :progress="`${(progress?.current / progress?.max) * 100}%`"
             />
           </div>
         </template>
