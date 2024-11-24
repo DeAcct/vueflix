@@ -24,7 +24,7 @@ const HISTORY_GROUP = [
     list: wannaSee.value,
   },
   {
-    text: "구매한",
+    text: "소장한",
     key: "purchased",
     parser: useParser("anime"),
     progressBar: false,
@@ -41,7 +41,7 @@ const HISTORY_GROUP = [
   },
 ];
 
-export function useHistory(select) {
+export function useHistory(select = "all") {
   const tabs =
     select === "all"
       ? HISTORY_GROUP
@@ -53,21 +53,37 @@ export function useHistory(select) {
       index: tabs.findIndex((item) => item.key === e),
       key: e,
     };
+    editmode.value.on = false;
+    editmode.value.selected.clear();
+  }
+  const list = computed(() => {
+    const listMap = {
+      "recent-watched": latest(6),
+      "wanna-see": wannaSee.value,
+      purchased: [],
+      "not-interested": [],
+    };
+    return listMap[tab.value.key];
+  });
+
+  const editmode = ref({
+    on: false,
+    selected: new Set(),
+  });
+  function toggleEditmode() {
+    editmode.value.on = !editmode.value.on;
+    if (!editmode.value.on) {
+      editmode.value.selected.clear();
+    }
+  }
+  async function removeItem() {
+    if (editmode.value.selected.size !== 0) {
+      await HISTORY_GROUP[tab.value.index].remove(editmode.value.selected);
+    }
+    toggleEditmode();
   }
 
-  const list = computed(() => {
-    switch (tab.value.key) {
-      case "recent-watched":
-        return latest(6);
-      case "wanna-see":
-        return wannaSee.value;
-      case "purchased":
-        return [];
-      case "not-interested":
-        return [];
-    }
-  });
-  return { tabs, tab, changeTab, list };
+  return { tabs, tab, list, changeTab, editmode, toggleEditmode, removeItem };
 }
 
 export function useParser(type) {

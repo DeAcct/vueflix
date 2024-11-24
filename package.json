@@ -8,10 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vueuse/core": "^11.2.0",
+    "@vueuse/core": "^11.3.0",
     "dayjs": "^1.11.13",
     "firebase": "^11.0.2",
-    "firebase-tools": "^13.25.0",
+    "firebase-tools": "^13.27.0",
     "gsap": "^3.12.5",
     "pinia": "^2.2.6",
     "sass": "^1.81.0",

@@ -4,26 +4,19 @@
       <MultiSelector
         class="Basket__Tabs"
         v-model="tab.index"
-        @update:model-value="tabMove"
+        @update:model-value="changeTab"
         :data="tabs"
       />
-      <!-- <button
-            class="Basket__Button Basket__Button--Toggle"
-            @click="toggleEditmode"
-            :disabled="list.length === 0"
-            type="button"
-          >
-            <IconBase>
-              <IconRemove></IconRemove>
-            </IconBase>
-          </button> -->
-      <!-- <EditBar
+      <Transition name="edit-bar-fade">
+        <EditBar
           :editmode
-          :toggle="toggleEditmode"
-          :remove="remove"
+          :toggle
+          :remove
           :all="all"
           class="inner Basket__EditBar"
-        /> -->
+          v-if="[0, 3].includes(tab.index)"
+        />
+      </Transition>
       <template v-if="list.length > 0">
         <HistoryGroup
           :list
@@ -49,16 +42,14 @@
         </div>
       </template>
     </template>
-    <template v-else>
-      <div class="Basket__Alert inner">
-        <strong class="Basket__Info">
-          여기서 지금까지의 덕질을 저장해 보세요!
-        </strong>
-        <RouterLink to="/auth" class="Basket__LoginButton">
-          로그인/회원가입
-        </RouterLink>
-      </div>
-    </template>
+    <div class="Basket__Alert inner" v-else>
+      <strong class="Basket__Info">
+        여기서 지금까지의 덕질을 저장해 보세요!
+      </strong>
+      <RouterLink to="/auth" class="Basket__LoginButton">
+        로그인/회원가입
+      </RouterLink>
+    </div>
   </main>
 </template>
 
@@ -71,6 +62,7 @@ import { computed, ref } from "vue";
 
 import { useAuth } from "@/store/auth";
 
+import { useMaratonData } from "../api/maraton";
 import { useHistory } from "@/composables/history";
 
 import aqua from "@/assets/aqua.svg";
@@ -79,45 +71,25 @@ import EditBar from "@/components/EditBar.vue";
 import MultiSelector from "@/components/MultiSelector.vue";
 import HistoryGroup from "@/components/HistoryGroup.vue";
 
-import IconBase from "@/components/IconBase.vue";
-import IconRemove from "@/components/icons/IconRemove.vue";
-
 const auth = useAuth();
 const user = computed(() => auth.user);
 
-const { tabs, tab, changeTab, list } = useHistory([
-  "recent-watched",
-  "purchased",
-  "not-interested",
-]);
-function tabMove(e) {
-  changeTab(e);
-  editmode.value.on = false;
-  editmode.value.selected.clear();
-}
-
-const editmode = ref({
-  on: false,
-  selected: new Set(),
-});
-function toggleEditmode() {
-  editmode.value.on = !editmode.value.on;
-  if (!editmode.value.on) {
-    editmode.value.selected.clear();
-  }
-}
-async function remove() {
-  await basket[tab.value].remove(editmode.value.selected);
-  toggleEditmode();
-}
-async function all() {
-  await basket[tab.value].remove("all");
-  toggleEditmode();
-}
+const {
+  tabs,
+  tab,
+  list,
+  changeTab,
+  editmode,
+  toggleEditmode: toggle,
+  removeItem: remove,
+} = useHistory();
 </script>
 
 <style lang="scss" scoped>
 .Basket {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: var(--header-height) 0;
 
   // &__ActionGroup {
@@ -149,21 +121,13 @@ async function all() {
     height: 4.8rem;
     display: flex;
     justify-content: center;
-    &--Toggle {
-      // position: absolute;
-      // right: var(--inner-padding);
-      width: 2.4rem;
-      height: 2.4rem;
-      align-items: center;
-      padding: 0;
-      &:disabled {
-        cursor: not-allowed;
-        color: hsl(var(--text-200));
-      }
-    }
   }
   &__EditBar {
-    width: min(100%, 124rem);
+    position: fixed;
+    bottom: calc(
+      var(--bottom-tab-height) + var(--bottom-tab-safe-margin) + 0.8rem
+    );
+    z-index: 100;
   }
 
   &__List {
@@ -201,11 +165,19 @@ async function all() {
   }
 }
 
+.edit-bar-fade {
+  &-enter-active,
+  &-leave-active {
+    transition: opacity 150ms;
+  }
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+}
+
 @media screen and (min-width: 769px) {
   .Basket {
-    &__Actions {
-      padding: 0;
-    }
     &__Button--Toggle {
       right: 0;
     }
@@ -213,11 +185,11 @@ async function all() {
       flex-grow: 0;
       justify-content: space-between;
       width: 50rem;
-      margin: 0 auto;
+      margin: 1.2rem auto 0;
     }
     &__EditBar {
-      border-radius: 9999px;
-      padding-right: 0.8rem;
+      top: calc(var(--header-height) + 4.8rem + 2rem);
+      bottom: auto;
     }
     &__List {
       margin: 2rem auto;

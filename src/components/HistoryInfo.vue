@@ -1,10 +1,6 @@
 <template>
   <RouterLink class="HistoryInfo" :to="`/history/${uid}`">
     <div class="HistoryInfo__Item" :class="{ 'loading-target': loading }">
-      <h3 class="HistoryInfo__Name">보고싶다</h3>
-      <p class="HistoryInfo__Value">{{ data?.wannaSee.length }}개</p>
-    </div>
-    <div class="HistoryInfo__Item" :class="{ 'loading-target': loading }">
       <h3 class="HistoryInfo__Name">리뷰</h3>
       <p class="HistoryInfo__Value">{{ data?.reaction.length }}개</p>
     </div>

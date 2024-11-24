@@ -15,8 +15,12 @@
     >
       <template #image>
         <RouterLink
-          :to="parser.link({ aniTitle, part, index }).picture"
           class="HistoryGroup__Image"
+          :to="
+            !editmode.on
+              ? parser.link({ aniTitle, part, index }).picture
+              : '#none'
+          "
           :replace="editmode.on"
         >
           <OptimizedMedia
@@ -34,7 +38,9 @@
       <template #text>
         <RouterLink
           class="HistoryGroup__TextLink"
-          :to="parser.link({ aniTitle, part, index }).text"
+          :to="
+            !editmode.on ? parser.link({ aniTitle, part, index }).text : '#none'
+          "
           :replace="editmode.on"
         >
           <span class="HistoryGroup__AniTitle">
@@ -158,7 +164,6 @@ function itemToggle(aniTitle) {
 @media screen and (min-width: 769px) {
   .HistoryGroup {
     --grid-repeat: 3;
-
     padding: 0;
     &__WatchPercent {
       font-size: 1.4rem;

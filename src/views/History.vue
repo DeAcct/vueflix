@@ -1,56 +1,43 @@
 <template>
   <main class="History">
-    <MultiSelector
-      :data
-      v-model="tab"
-      class="History__Selector"
-      @update:model-value="onChange"
-    />
-    <Transition name="history-fade">
-      <HistoryGroup
-        :list="wannaSee"
-        :parser="useParser('anime')"
-        v-if="tab === 0"
-        class="History__List"
-      ></HistoryGroup>
-      <div v-else class="History__List History__List--Reaction">
-        <ReactionItem
-          v-for="reaction in reactions"
-          :key="reaction._id"
-          :user
-          :reaction-data="reaction"
-          component="RouterLink"
-          :to="
-            linkParser[reaction.type]({ ...reaction.parent, _id: reaction._id })
-          "
-          class="History__ReactionItem"
-        >
-          <template #meta>
-            <div class="History__From">
-              <OptimizedMedia
-                class="History__FromImg"
-                :src="`anime/${reaction.parent.title}/${reaction.parent.title}.webp`"
-                skelleton
-              >
-              </OptimizedMedia>
-              <p class="History__FromText">
-                <strong>
-                  {{ reaction.parent.title }}
-                  {{ reaction.parent.part }}
-                  {{ reaction.parent.index }}
-                </strong>
-                에서 작성한
-                {{ reaction.type === "review" ? "리뷰" : "댓글" }}
-              </p>
-            </div>
-          </template>
-          <template #content>
-            <ReactionParser :content="reaction.content" />
-          </template>
-          <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
-        </ReactionItem>
-      </div>
-    </Transition>
+    <h3>반응 {{ reactions.length }}</h3>
+    <div class="History__List History__List--Reaction">
+      <ReactionItem
+        v-for="reaction in reactions"
+        :key="reaction._id"
+        :user
+        :reaction-data="reaction"
+        component="RouterLink"
+        :to="
+          linkParser[reaction.type]({ ...reaction.parent, _id: reaction._id })
+        "
+        class="History__ReactionItem"
+      >
+        <template #meta>
+          <div class="History__From">
+            <OptimizedMedia
+              class="History__FromImg"
+              :src="`anime/${reaction.parent.title}/${reaction.parent.title}.webp`"
+              skelleton
+            >
+            </OptimizedMedia>
+            <p class="History__FromText">
+              <strong>
+                {{ reaction.parent.title }}
+                {{ reaction.parent.part }}
+                {{ reaction.parent.index }}
+              </strong>
+              에서 작성한
+              {{ reaction.type === "review" ? "리뷰" : "댓글" }}
+            </p>
+          </div>
+        </template>
+        <template #content>
+          <ReactionParser :content="reaction.content" />
+        </template>
+        <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
+      </ReactionItem>
+    </div>
   </main>
 </template>
 
@@ -63,10 +50,7 @@ import { useAuth } from "@/store/auth";
 import { useWannaSee } from "@/api/wannaSee";
 import { getNickname } from "@/api/userMeta";
 import { ReadByUid as getReactions } from "@/api/reaction";
-import { useParser } from "@/composables/history";
 
-import HistoryGroup from "@/components/HistoryGroup.vue";
-import MultiSelector from "@/components/MultiSelector.vue";
 import ReactionItem from "@/components/ReactionItem.vue";
 import ReactionParser from "@/components/ReactionParser.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";

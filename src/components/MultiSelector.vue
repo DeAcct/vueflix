@@ -51,7 +51,7 @@ const {
     z-index: var(--z-index-s2);
     width: var(--item-width);
     height: var(--item-height);
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 700;
     line-height: 4rem;
     border-radius: var(--indicator-radius, 9999px);

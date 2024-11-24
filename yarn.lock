@@ -3527,31 +3527,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vueuse/core@npm:^11.2.0":
-  version: 11.2.0
-  resolution: "@vueuse/core@npm:11.2.0"
+"@vueuse/core@npm:^11.3.0":
+  version: 11.3.0
+  resolution: "@vueuse/core@npm:11.3.0"
   dependencies:
     "@types/web-bluetooth": "npm:^0.0.20"
-    "@vueuse/metadata": "npm:11.2.0"
-    "@vueuse/shared": "npm:11.2.0"
+    "@vueuse/metadata": "npm:11.3.0"
+    "@vueuse/shared": "npm:11.3.0"
     vue-demi: "npm:>=0.14.10"
-  checksum: 10c0/d4ac9abef8680a521c160c387922fa98e7cb2f7cbc43d647a0c9eaa654bb72581b4e53fe8452ce8520b2a600b657c252ac87d09eafd4736ed0ae1a3c9c91c8e1
+  checksum: 10c0/57ebed3ee2fd5b33297bbb36727424dc1707357db52954a1715366dd6583a4d53a05b10d17d16d1e5bf91fe8f12ea69fd6b232551f60167098ebc606b7234d4a
   languageName: node
   linkType: hard
 
-"@vueuse/metadata@npm:11.2.0":
-  version: 11.2.0
-  resolution: "@vueuse/metadata@npm:11.2.0"
-  checksum: 10c0/a6f6b734d7237e9e80d005f3cd566141153cf2f59011c57396517a5d448857ecda792c910cde0401f7d524f0f693608616af30fd0f70e867a25f9b0d768a8fb4
+"@vueuse/metadata@npm:11.3.0":
+  version: 11.3.0
+  resolution: "@vueuse/metadata@npm:11.3.0"
+  checksum: 10c0/4548912f325d4f250595b029357977824431db66a94651bc6801c04e4992374286ff71eb41604470638ef100338c2b80df2039d663a20f66d92799f68ccba7e9
   languageName: node
   linkType: hard
 
-"@vueuse/shared@npm:11.2.0":
-  version: 11.2.0
-  resolution: "@vueuse/shared@npm:11.2.0"
+"@vueuse/shared@npm:11.3.0":
+  version: 11.3.0
+  resolution: "@vueuse/shared@npm:11.3.0"
   dependencies:
     vue-demi: "npm:>=0.14.10"
-  checksum: 10c0/24c8b4ffb7e1d253f67cb19736926707b5c1b18901b1cd71c075f22495c3382b845253185d2c8986b4a86a17bf637dac01317d68a044cc712621221d278f23ff
+  checksum: 10c0/820af5359d204e434b27ef570e5dfb5fe765e19d540738665c51c8d1569b81dd000dbe292add15dffb1b9538cbcec890626d0b47a5525e624273a0963b524e1f
   languageName: node
   linkType: hard
 
@@ -4540,10 +4540,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^4.0.1":
-  version: 4.1.1
-  resolution: "commander@npm:4.1.1"
-  checksum: 10c0/84a76c08fe6cc08c9c93f62ac573d2907d8e79138999312c92d4155bc2325d487d64d13f669b2000c9f8caf70493c1be2dac74fec3c51d5a04f8bc3ae1830bab
+"commander@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "commander@npm:5.1.0"
+  checksum: 10c0/da9d71dbe4ce039faf1fe9eac3771dca8c11d66963341f62602f7b66e36d2a3f8883407af4f9a37b1db1a55c59c0c1325f186425764c2e963dc1d67aec2a4b6d
   languageName: node
   linkType: hard
 
@@ -5700,9 +5700,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase-tools@npm:^13.25.0":
-  version: 13.25.0
-  resolution: "firebase-tools@npm:13.25.0"
+"firebase-tools@npm:^13.27.0":
+  version: 13.27.0
+  resolution: "firebase-tools@npm:13.27.0"
   dependencies:
     "@electric-sql/pglite": "npm:^0.2.0"
     "@google-cloud/cloud-sql-connector": "npm:^1.3.3"
@@ -5716,7 +5716,7 @@ __metadata:
     cjson: "npm:^0.3.1"
     cli-table: "npm:0.3.11"
     colorette: "npm:^2.0.19"
-    commander: "npm:^4.0.1"
+    commander: "npm:^5.1.0"
     configstore: "npm:^5.0.1"
     cors: "npm:^2.8.5"
     cross-env: "npm:^5.1.3"
@@ -5772,7 +5772,7 @@ __metadata:
     yaml: "npm:^2.4.1"
   bin:
     firebase: lib/bin/firebase.js
-  checksum: 10c0/cba3e7f965cdeff8a141db0aa2d4afdd7f13b9501950ca1bb02d320aa1d41ce1355ee7f981fcb2c5f370a32cbd32e100af2412c82c92ccb52fbdd11aee712349
+  checksum: 10c0/9eaeaf34c8e09c32a3efc6897e761a7dc546aa0310322ed812a389e77823be1f3ea458898ff728a9e296b05f0fcfae7293738a8f07ce1bba0bc5b833dc7996c4
   languageName: node
   linkType: hard
 
@@ -10794,10 +10794,10 @@ __metadata:
   resolution: "vueflix@workspace:."
   dependencies:
     "@vitejs/plugin-vue": "npm:^5.2.0"
-    "@vueuse/core": "npm:^11.2.0"
+    "@vueuse/core": "npm:^11.3.0"
     dayjs: "npm:^1.11.13"
     firebase: "npm:^11.0.2"
-    firebase-tools: "npm:^13.25.0"
+    firebase-tools: "npm:^13.27.0"
     gsap: "npm:^3.12.5"
     pinia: "npm:^2.2.6"
     sass: "npm:^1.81.0"
