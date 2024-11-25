@@ -11,8 +11,8 @@
         <EditBar
           :editmode
           :toggle
+          :all
           :remove
-          :all="all"
           class="inner Basket__EditBar"
           v-if="[0, 3].includes(tab.index)"
         />
@@ -81,6 +81,7 @@ const {
   changeTab,
   editmode,
   toggleEditmode: toggle,
+  selectAll: all,
   removeItem: remove,
 } = useHistory();
 </script>
@@ -124,6 +125,7 @@ const {
   }
   &__EditBar {
     position: fixed;
+    height: 4.8rem;
     bottom: calc(
       var(--bottom-tab-height) + var(--bottom-tab-safe-margin) + 0.8rem
     );
@@ -178,18 +180,16 @@ const {
 
 @media screen and (min-width: 769px) {
   .Basket {
-    &__Button--Toggle {
-      right: 0;
-    }
     &__Tabs {
       flex-grow: 0;
       justify-content: space-between;
       width: 50rem;
-      margin: 1.2rem auto 0;
+      margin: 0.8rem auto 0;
     }
     &__EditBar {
-      top: calc(var(--header-height) + 4.8rem + 2rem);
+      top: calc(var(--header-height) + 0.8rem);
       bottom: auto;
+      right: var(--inner-padding);
     }
     &__List {
       margin: 2rem auto;

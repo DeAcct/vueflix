@@ -1,5 +1,5 @@
 <template>
-  <div class="MultiSelector" ref="$MultiSeletor">
+  <div class="MultiSelector" ref="$MultiSeletor" @keydown="arrowMove">
     <button
       v-for="({ key, text }, index) in data"
       :key
@@ -37,6 +37,20 @@ const {
   to,
   move: indicatorMove,
 } = useIndicatorAnimation(selected.value);
+
+function arrowMove(event) {
+  const index = $Items.value.findIndex(
+    (item) => item === document.activeElement
+  );
+  if (index === -1) return;
+  if (index === 0 && event.key === "ArrowLeft") return;
+  if (index === $Items.value.length - 1 && event.key === "ArrowRight") return;
+  if (event.key === "ArrowLeft") {
+    $Items.value[index - 1].focus();
+  } else if (event.key === "ArrowRight") {
+    $Items.value[index + 1].focus();
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -53,7 +67,6 @@ const {
     height: var(--item-height);
     font-size: 1.6rem;
     font-weight: 700;
-    line-height: 4rem;
     border-radius: var(--indicator-radius, 9999px);
     transition: color 150ms ease-out;
     border: 1px solid transparent;

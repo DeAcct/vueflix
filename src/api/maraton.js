@@ -87,7 +87,7 @@ export function useMaratonData() {
         // progress에 신규 아이템 생성
         return {
           aniTitle,
-          episodes: [...item.episodes, newItem],
+          episodes: [newItem, ...item.episodes],
           lastUpdate: newItem.time,
         };
       }
@@ -157,7 +157,7 @@ export function useMaratonData() {
     const sortLatest = maraton.value.toSorted((a, b) => {
       const prev = a.lastUpdate.toDate().getTime();
       const next = b.lastUpdate.toDate().getTime();
-      return prev - next;
+      return next - prev;
     });
     // 평탄화
     const flatten = sortLatest.map((log) => {

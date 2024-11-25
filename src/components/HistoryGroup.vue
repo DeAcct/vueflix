@@ -101,13 +101,13 @@ function itemToggle(aniTitle) {
   &__Item {
     width: calc(var(--thumbnail-units) * 1px * var(--vw));
     flex-direction: column;
-    border: 0 solid transparent;
+    border: 1px solid transparent;
     transition: 150ms ease-out;
     &--Selected {
-      padding: 2rem;
+      padding: 1rem;
       border-color: hsl(var(--theme-500));
-      border-width: 2px;
-      border-radius: calc(var(--global-radius) + 2rem);
+      // border-width: 1ch;
+      border-radius: calc(var(--global-radius) + 1rem);
       background-color: hsl(var(--theme-100));
     }
   }

@@ -18,7 +18,7 @@
         type="button"
         component="button"
         @click="toggle"
-        class="EditBar__Button EditBar__Button--Cancel"
+        class="EditBar__Button"
       >
         <template #text>취소</template>
       </VueflixBtn>
@@ -33,7 +33,8 @@
         type="button"
         component="button"
         @click="remove"
-        class="EditBar__Button"
+        class="EditBar__Button EditBar__Button--Remove"
+        :disabled="!editmode.selected.size"
         ><template #text>삭제</template></VueflixBtn
       >
     </template>
@@ -64,17 +65,36 @@ const props = defineProps({
   padding: 0.4rem;
   border-radius: 9999px;
 
+  &__Counter {
+    text-wrap: nowrap;
+    font-size: 1.2rem;
+    font-variant-numeric: tabular-nums;
+    margin: {
+      left: 0.8rem;
+      right: 0.8rem;
+    }
+  }
+
   &__Button {
     font-size: 1.6rem;
-    height: 4.6rem;
+    height: 100%;
     box-shadow: none;
     border-radius: 9999px;
-    background-color: hsl(var(--bg-300));
+    background-color: transparent;
     border: 1px solid hsl(var(--bg-300));
     text-wrap: nowrap;
-    &--Cancel {
-      background-color: transparent;
-      border-color: hsl(var(--bg-300));
+    background-color: hsl(var(--bg-300));
+    border-color: hsl(var(--bg-300));
+    transition: 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    &--Remove {
+      background-color: hsl(var(--theme-500));
+      border-color: hsl(var(--theme-500));
+      color: #fff;
+      &:disabled {
+        background-color: hsl(var(--bg-300));
+        border-color: hsl(var(--bg-300));
+        color: hsl(var(--text-400));
+      }
     }
   }
 }

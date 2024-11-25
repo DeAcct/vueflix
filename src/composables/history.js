@@ -82,8 +82,24 @@ export function useHistory(select = "all") {
     }
     toggleEditmode();
   }
+  function selectAll() {
+    if (editmode.value.selected.size === list.value.length) {
+      editmode.value.selected.clear();
+      return;
+    }
+    editmode.value.selected = new Set(list.value.map((item) => item.aniTitle));
+  }
 
-  return { tabs, tab, list, changeTab, editmode, toggleEditmode, removeItem };
+  return {
+    tabs,
+    tab,
+    list,
+    changeTab,
+    editmode,
+    toggleEditmode,
+    selectAll,
+    removeItem,
+  };
 }
 
 export function useParser(type) {
