@@ -7,7 +7,7 @@
       <template v-if="type === 'arrow'">
         <button
           class="VueflixCarousel__Button VueflixCarousel__Button--prev"
-          v-if="prevActive"
+          v-if="active.prev"
           @click="prev"
           type="button"
         >
@@ -18,7 +18,7 @@
         </button>
         <button
           class="VueflixCarousel__Button VueflixCarousel__Button--next"
-          v-if="nextActive"
+          v-if="active.next"
           @click="next"
           type="button"
         >
@@ -104,8 +104,10 @@ const shownItems = computed(() => {
 const carouselLimit = computed(() =>
   props.length ? Math.floor(props.length / shownItems.value) : 0
 );
-const prevActive = computed(() => carouselNumber.value > 0);
-const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
+const active = computed(() => ({
+  prev: carouselNumber.value > 0,
+  next: carouselNumber.value < carouselLimit.value,
+}));
 </script>
 
 <style lang="scss" scoped>
@@ -128,15 +130,18 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
     display: flex;
     flex-direction: v-bind("direction");
     gap: var(--carousel-gap, 1rem);
-    width: fit-content;
+    width: max-content;
     padding: 0 var(--carousel-padding, var(--inner-padding));
     overflow: var(--carousel-overflow);
 
     &--arrow {
       transition: 300ms ease-out;
-      transform: translate(
-        calc(v-bind(carouselNumber) * -1px * v-bind(resolution))
-      );
+      // padding을 제외한 너비 * carouselNumber
+      translate: calc(
+          ((100dvw - var(--inner-padding) * 2) + var(--carousel-gap)) * -1 *
+            v-bind(carouselNumber)
+        )
+        0;
     }
   }
   &__Button {
@@ -151,9 +156,6 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
   .VueflixCarousel {
     &__Track {
       width: 100%;
-    }
-    &__Body {
-      padding: 0 var(--carousel-padding, var(--inner-padding));
     }
   }
 }
@@ -173,6 +175,7 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
       }
     }
     &__Body {
+      width: auto;
       &--break {
         flex-wrap: wrap;
       }
@@ -181,7 +184,7 @@ const nextActive = computed(() => carouselNumber.value < carouselLimit.value);
     &__Button {
       position: absolute;
       top: 0;
-      width: 12rem;
+      width: 5rem;
       height: 100%;
       background: linear-gradient(
         calc(var(--direction) * 90deg),

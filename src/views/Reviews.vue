@@ -10,13 +10,14 @@
       </template>
       <template v-slot:login-state-text>로그인</template>
     </LoginWidget>
-    <!-- <KeywordReviews class="AnimeReviews__Method" /> -->
+    <!-- <KeywordReviews class="AnimeReviews__Write" /> -->
     <ReactionCombo
-      class="AnimeReviews__Method AnimeReviews__Method--Review"
+      class="AnimeReviews__Write"
       type="review"
       title-tag="h3"
       :parent="{ title: route.query.modal }"
     >
+      <KeywordGenerator :user class="AnimeReviews__Keyword" />
       <template #title>리뷰</template>
     </ReactionCombo>
   </div>
@@ -30,6 +31,7 @@ import { useAuth } from "@/store/auth";
 
 import { useHead } from "@/composables/head";
 
+import KeywordGenerator from "@/components/KeywordGenerator.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
 import LoginWidget from "@/components/LoginWidget.vue";
 
@@ -64,11 +66,7 @@ const user = computed(() => auth.user);
     border-radius: calc(var(--global-radius) * 6 - 2rem);
   }
 
-  &__Method {
-    margin-top: 0;
-  }
-
-  &__Method--Review {
+  &__Write {
     font-size: 1.5rem;
     --body-radius: var(--global-radius);
     background-color: transparent;

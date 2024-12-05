@@ -107,9 +107,21 @@ const notTouch = useMediaQuery("(hover: hover) and (pointer: fine)");
     font-weight: 800;
     line-height: 1.3;
   }
+  &__Carousel {
+    --carousel-gap: 0.8rem;
+  }
   &__Item {
     display: flex;
-    width: var(--thumbnail-width, 55vw);
+    --items: 2;
+    width: var(
+      --thumbnail-width,
+      calc(
+        (
+            100vw - 2 * var(--inner-padding) - var(--carousel-gap) *
+              (var(--items) - 1)
+          ) / var(--items)
+      )
+    );
     flex-direction: column;
     &:has(:focus-visible),
     &:has(:hover) {
@@ -148,9 +160,9 @@ const notTouch = useMediaQuery("(hover: hover) and (pointer: fine)");
     display: flex;
     gap: 0.5rem;
     flex-direction: column;
-    &:focus-visible {
-      color: var(--curation-accent);
-    }
+    // &:focus-visible {
+    //   color: var(--curation-accent);
+    // }
   }
   &__AniTitle {
     display: -webkit-box;
@@ -174,7 +186,8 @@ const notTouch = useMediaQuery("(hover: hover) and (pointer: fine)");
 @media screen and (min-width: 768px) {
   .CurationGroup {
     &__Item {
-      width: var(--thumbnail-width, 32vw);
+      --items: 3;
+      // width: var(--thumbnail-width, 32vw);
     }
     &__AniTitle {
       font-size: 1.6rem;
@@ -195,7 +208,8 @@ const notTouch = useMediaQuery("(hover: hover) and (pointer: fine)");
 @media screen and (min-width: 1080px) {
   .CurationGroup {
     &__Item {
-      width: var(--thumbnail-width, 28vw);
+      --items: 4;
+      // width: var(--thumbnail-width, 28vw);
     }
     &__Subject {
       font-size: 3rem;
@@ -216,7 +230,15 @@ const notTouch = useMediaQuery("(hover: hover) and (pointer: fine)");
       font-size: 2rem;
     }
     &__Item {
-      width: var(--thumbnail-width, 15vw);
+      --items: 5;
+    }
+  }
+}
+
+@media not (pointer: fine) {
+  .CurationGroup {
+    &__Item {
+      width: 55dvw;
     }
   }
 }

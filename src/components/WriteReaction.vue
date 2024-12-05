@@ -1,6 +1,6 @@
 <template>
   <form class="WriteReaction" @submit.prevent>
-    <KeywordGenerator :user v-if="type === 'review'" />
+    <!-- <KeywordGenerator :user v-if="type === 'review'" /> -->
     <div class="WriteReaction__TextReview">
       <textarea
         :placeholder="placeholder"
@@ -138,8 +138,6 @@ function addTime() {
 <style lang="scss" scoped>
 .WriteReaction {
   width: 100%;
-  border-radius: var(--global-radius);
-  background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
 
   &__InputArea {
     width: 100%;
@@ -157,19 +155,6 @@ function addTime() {
     }
   }
 
-  &__TextReview {
-    border: 2px solid transparent;
-    background-color: hsl(var(--bg-100));
-    border-radius: var(--global-radius);
-    box-shadow: 0 0.1rem 0.2rem hsl(var(--bg-900) / 0.1),
-      0 0.2rem 0.4rem hsl(var(--bg-900) / 0.1);
-    &:focus-within {
-      border-color: hsl(var(--theme-500));
-      box-shadow: 0 0.2rem 0.4rem hsl(var(--bg-900) / 0.1),
-        0 0.4rem 0.8rem hsl(var(--bg-900) / 0.1),
-        0 0.8rem 1.6rem hsl(var(--bg-900) / 0.1);
-    }
-  }
   &__Interaction {
     display: flex;
     justify-content: space-between;

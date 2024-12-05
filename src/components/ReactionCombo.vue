@@ -7,10 +7,11 @@
         ><span class="ReactionCombo__BetaLabel">Beta</span></component
       >
     </template>
-    <slot name="description"></slot>
-    <div class="ReactionCombo__Body">
+    <div class="ReactionCombo__Write">
+      <slot name="description"></slot>
+      <slot name="default"></slot>
       <WriteReaction
-        class="ReactionCombo__Write"
+        class="ReactionCombo__TextArea"
         @mutate="onRequestModal"
         :user
         :type
@@ -19,6 +20,8 @@
         :time
         v-if="writeable"
       />
+    </div>
+    <div class="ReactionCombo__List">
       <TransitionGroup
         tag="ul"
         name="reaction-list"
@@ -325,6 +328,7 @@ useIntersection($ReadMore, async () => {
   width: 100%;
   max-width: 1080px;
   position: relative;
+
   &__Title {
     font-size: inherit;
     font-weight: 700;
@@ -341,19 +345,15 @@ useIntersection($ReadMore, async () => {
   &__description {
     font-size: 1.3rem;
   }
-  &__Body {
+  &__Write {
     display: flex;
     flex-direction: column;
-    border-radius: var(--global-radius);
     width: 100%;
     margin: 0 auto;
-  }
-  &__Write {
     background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
-
-    margin: 0 auto;
-    &:last-child {
-      border-radius: var(--global-radius);
+    border-radius: var(--global-radius);
+    > * + * {
+      border-top: 1px solid hsl(var(--bg-300));
     }
   }
   &__List {
@@ -447,7 +447,6 @@ useIntersection($ReadMore, async () => {
   &__CloseBtn {
     margin-top: 0.8rem;
     margin-left: auto;
-    box-shadow: none !important;
   }
 }
 

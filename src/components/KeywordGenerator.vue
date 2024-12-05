@@ -3,26 +3,28 @@
     <p class="KeywordGenerator__Info">
       작품의 장/단점, 특징 등을 내 리뷰 위쪽에 표시할 수 있어요
     </p>
-    <input
-      type="text"
-      :placeholder
-      class="KeywordGenerator__Input"
-      @input="onChange"
-      :value="newKeyword"
-      :disabled
-    />
-    <VueflixBtn
-      type="button"
-      component="button"
-      class="KeywordGenerator__NewButton"
-      @click="onNewKeyword"
-    >
-      <template #icon>
-        <IconBase>
-          <IconPlus />
-        </IconBase>
-      </template>
-    </VueflixBtn>
+    <div class="KeywordGenerator__Write">
+      <input
+        type="text"
+        :placeholder
+        class="KeywordGenerator__Input"
+        @input="onChange"
+        :value="newKeyword"
+        :disabled
+      />
+      <VueflixBtn
+        type="button"
+        component="button"
+        class="KeywordGenerator__NewButton"
+        @click="onNewKeyword"
+      >
+        <template #icon>
+          <IconBase>
+            <IconPlus />
+          </IconBase>
+        </template>
+      </VueflixBtn>
+    </div>
     <VueflixCarousel class="KeywordGenerator__Carousel">
       <TransitionGroup
         tag="ul"
@@ -188,15 +190,21 @@ function onNewKeyword() {
   display: flex;
   flex-wrap: wrap;
   gap: 1.2rem;
-  padding: 2rem;
+  padding: 2rem 0;
   &__Info {
     width: 100%;
     font-size: 1.4rem;
     line-height: 1.3;
     text-align: center;
   }
+  &__Write {
+    display: flex;
+    padding: 0 2rem;
+    flex-grow: 1;
+    gap: 0.8rem;
+  }
   &__Input {
-    // flex-grow: 1;
+    flex-grow: 1;
     width: calc(100% - 4.8rem);
     height: 3.6rem;
     font-size: 1.4rem;
@@ -224,12 +232,12 @@ function onNewKeyword() {
     color: #fff;
   }
   &__Carousel {
-    --carousel-padding: 0;
+    --carousel-padding: 2rem;
   }
   &__List {
     display: flex;
     flex-wrap: nowrap;
-    width: 100%;
+    // width: fit-content;
     gap: 0.8rem;
   }
 }

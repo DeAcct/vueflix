@@ -218,7 +218,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   min-height: calc(var(--vh) * 1px * 90);
-  padding-bottom: 2rem;
+  padding-bottom: calc(4.6rem + var(--bottom-tab-safe-margin) * 2);
   position: relative;
   &__Fanfare {
     position: absolute;
@@ -330,6 +330,7 @@ onUnmounted(() => {
 
 @media screen and (min-width: 1080px) {
   .AnimeLayout {
+    padding-bottom: 2rem;
     &__Head {
       height: 50vh;
       border-radius: 0;

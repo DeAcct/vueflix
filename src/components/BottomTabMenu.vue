@@ -1,6 +1,6 @@
 <template>
   <TransitionGroup tag="nav" class="BottomTabMenu" name="bottom-tab">
-    <div class="BottomTabMenu__Items">
+    <div class="BottomTabMenu__Items" key="items">
       <div v-for="({ to, name, icon }, index) in items" :key="index">
         <RouterLink
           class="BottomTabMenu__Item"
@@ -26,7 +26,7 @@
         />
       </li> -->
     </div>
-    <div v-if="scrollState !== 'top'">
+    <div v-if="scrollState !== 'top'" key="to-top">
       <ToTop class="BottomTabMenu__ToTop" />
     </div>
   </TransitionGroup>
