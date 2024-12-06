@@ -9,7 +9,7 @@
         />
       </template>
     </TasogareSlide>
-    <div class="AppHome__Curator">
+    <div class="AppHome__Curator" ref="$Curator">
       <CurationGroup
         class="AppHome__Item"
         :list="selectedDailyAnime"

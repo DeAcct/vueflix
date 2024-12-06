@@ -5,66 +5,69 @@
     </h2>
     <slot name="list-changer"></slot>
     <VueflixCarousel
+      :media
       :length="list.length"
       class="CurationGroup__Carousel"
       type="arrow"
     >
-      <ThumbnailSet
-        v-for="{ aniTitle, part, index, progress } in list"
-        class="CurationGroup__Item"
-        :key="`${subject}-${aniTitle}`"
-      >
-        <template #image>
-          <div class="CurationGroup__Thumbnail">
-            <RouterLink
-              :to="
-                part
-                  ? `/anime-play/${aniTitle}/${part}/${index}`
-                  : { query: { modal: aniTitle, route: 'episodes' } }
-              "
-              exact-active-class="CurationGroup__Thumbnail--Selected"
-            >
-              <OptimizedMedia
-                :src="`/anime/${escaper(aniTitle)}/${escaper(aniTitle)}.webp`"
-                :alt="`${aniTitle} 포스터`"
-                class="CurationGroup__Image"
-                skelleton
+      <ul class="CurationGroup__List">
+        <ThumbnailSet
+          v-for="{ aniTitle, part, index, progress } in list"
+          class="CurationGroup__Item"
+          :key="`${subject}-${aniTitle}`"
+        >
+          <template #image>
+            <div class="CurationGroup__Thumbnail">
+              <RouterLink
+                :to="
+                  part
+                    ? `/anime-play/${aniTitle}/${part}/${index}`
+                    : { query: { modal: aniTitle, route: 'episodes' } }
+                "
+                exact-active-class="CurationGroup__Thumbnail--Selected"
+              >
+                <OptimizedMedia
+                  :src="`/anime/${escaper(aniTitle)}/${escaper(aniTitle)}.webp`"
+                  :alt="`${aniTitle} 포스터`"
+                  class="CurationGroup__Image"
+                  skelleton
+                />
+              </RouterLink>
+              <div class="CurationGroup__SnackBar" v-if="notTouch">
+                <slot
+                  name="snack-bar"
+                  v-bind="{
+                    aniTitle,
+                    part,
+                    index,
+                    progress,
+                  }"
+                ></slot>
+              </div>
+              <SlimProgress
+                v-else
+                class="CurationGroup__Progress"
+                :progress="`${(progress?.current / progress?.max) * 100}%`"
               />
-            </RouterLink>
-            <div class="CurationGroup__SnackBar" v-if="notTouch">
-              <slot
-                name="snack-bar"
-                v-bind="{
-                  aniTitle,
-                  part,
-                  index,
-                  progress,
-                }"
-              ></slot>
             </div>
-            <SlimProgress
-              v-else
-              class="CurationGroup__Progress"
-              :progress="`${(progress?.current / progress?.max) * 100}%`"
-            />
-          </div>
-        </template>
-        <template #text>
-          <RouterLink
-            :to="{
-              query: { modal: aniTitle, route: 'episodes' },
-            }"
-            class="CurationGroup__TextLink"
-          >
-            <span class="CurationGroup__AniTitle">
-              {{ aniTitle }}
-            </span>
-            <strong class="CurationGroup__PartIndex" v-if="part && index">
-              {{ part }} {{ index }}
-            </strong>
-          </RouterLink>
-        </template>
-      </ThumbnailSet>
+          </template>
+          <template #text>
+            <RouterLink
+              :to="{
+                query: { modal: aniTitle, route: 'episodes' },
+              }"
+              class="CurationGroup__TextLink"
+            >
+              <span class="CurationGroup__AniTitle">
+                {{ aniTitle }}
+              </span>
+              <strong class="CurationGroup__PartIndex" v-if="part && index">
+                {{ part }} {{ index }}
+              </strong>
+            </RouterLink>
+          </template>
+        </ThumbnailSet>
+      </ul>
     </VueflixCarousel>
   </div>
 </template>
@@ -93,6 +96,13 @@ const props = defineProps({
   },
 });
 
+const media = {
+  default: 2,
+  768: 3,
+  1080: 4,
+  1920: 6,
+};
+
 function escaper(str) {
   return str.replaceAll(/:|\./g, "_").replaceAll(/\?/g, "");
 }
@@ -110,9 +120,13 @@ const notTouch = useMediaQuery("(hover: hover) and (pointer: fine)");
   &__Carousel {
     --carousel-gap: 0.8rem;
   }
+  &__List {
+    display: flex;
+    gap: var(--carousel-gap);
+  }
   &__Item {
     display: flex;
-    --items: 2;
+    --items: v-bind(media.default);
     width: var(
       --thumbnail-width,
       calc(
@@ -186,7 +200,7 @@ const notTouch = useMediaQuery("(hover: hover) and (pointer: fine)");
 @media screen and (min-width: 768px) {
   .CurationGroup {
     &__Item {
-      --items: 3;
+      --items: v-bind(media[768]);
       // width: var(--thumbnail-width, 32vw);
     }
     &__AniTitle {
@@ -207,8 +221,11 @@ const notTouch = useMediaQuery("(hover: hover) and (pointer: fine)");
 
 @media screen and (min-width: 1080px) {
   .CurationGroup {
+    &__Carousel {
+      --carousel-gap: 1.2rem;
+    }
     &__Item {
-      --items: 4;
+      --items: v-bind(media[1080]);
       // width: var(--thumbnail-width, 28vw);
     }
     &__Subject {
@@ -223,14 +240,14 @@ const notTouch = useMediaQuery("(hover: hover) and (pointer: fine)");
 
 @media screen and (min-width: 1920px) {
   .CurationGroup {
+    &__Item {
+      --items: v-bind(media[1920]);
+    }
     &__AniTitle {
       font-size: 2rem;
     }
     &__PartIndex {
       font-size: 2rem;
-    }
-    &__Item {
-      --items: 5;
     }
   }
 }

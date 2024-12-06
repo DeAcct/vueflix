@@ -73,6 +73,7 @@
 <script setup>
 import { onMounted, onUnmounted, ref, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useEventListener } from "@vueuse/core";
 
 import { useMediaQuery } from "@/composables/device";
 
@@ -113,24 +114,21 @@ const gnbItems = [
 
 const scrollPercent = ref(0);
 function handleScroll() {
+  const slideHeight =
+    window.innerWidth * (window.innerWidth > 768 ? 1043 / 2560 : 1.33) - 60;
+
   if (
-    window.scrollY >= 500 ||
+    window.scrollY >= slideHeight ||
     activity.value !== "Logo" ||
     route.name === "anime-play"
   ) {
     scrollPercent.value = 1;
     return;
   }
-  scrollPercent.value = window.scrollY / 500;
+  scrollPercent.value = window.scrollY / slideHeight;
 }
-
-onMounted(() => {
-  handleScroll();
-  window.addEventListener("scroll", handleScroll);
-});
-onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
-});
+onMounted(handleScroll);
+useEventListener(window, "scroll", handleScroll);
 
 const router = useRouter();
 function back() {
@@ -145,6 +143,8 @@ function toggleSearchMode() {
 const backbuttonBlank = computed(
   () => route.meta.appBar.backButton && "2.4rem"
 );
+
+const iconColor = computed(() => (route.name === "home" ? "#fff" : "inherit"));
 </script>
 
 <style lang="scss" scoped>
@@ -155,7 +155,7 @@ const backbuttonBlank = computed(
   left: env(titlebar-area-x, 0);
   z-index: var(--z-index-2);
   background-color: hsl(var(--bg-100) / calc(v-bind(scrollPercent)));
-  --icon-color: #fff;
+  // --icon-color: #fff;
 
   &__Inner {
     display: flex;
@@ -186,7 +186,7 @@ const backbuttonBlank = computed(
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--icon-color);
+    color: v-bind(iconColor);
     border-radius: 9999px;
     &--SearchMobileBtn {
       margin-left: auto;
@@ -247,21 +247,21 @@ const backbuttonBlank = computed(
 }
 @media screen and (min-width: 769px) {
   .VueflixHeader {
-    color: hsl(var(--header-content));
+    --icon-color: v-bind(iconColor);
     transition: color 150ms ease-out;
+
     &--Fill {
-      color: hsl(var(--header-content-fill));
+      // color: hsl(var(--header-content-fill));
+      --icon-color: inherit;
     }
     &__Activity {
       opacity: 1;
-      color: inherit;
-      a {
-        color: inherit;
-        transition: 100ms ease-out;
-      }
       &:hover {
         color: hsl(var(--text-600));
       }
+    }
+    &__Logo {
+      color: var(--icon-color);
     }
   }
 }
@@ -269,7 +269,8 @@ const backbuttonBlank = computed(
 @media screen and (min-width: 1080px) {
   .VueflixHeader {
     background-color: hsl(var(--bg-100));
-    color: inherit;
+    --icon-color: inherit;
+
     &__Logo {
       align-items: center;
       height: 4.8rem;

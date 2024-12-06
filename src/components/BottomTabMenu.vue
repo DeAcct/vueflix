@@ -18,13 +18,6 @@
           <span class="blind">{{ name }}</span>
         </RouterLink>
       </div>
-      <!-- <li>
-        <ProfileCombo
-          to="/my"
-          class="BottomTabMenu__Profile"
-          exact-active-class="BottomTabMenu__Profile--Active"
-        />
-      </li> -->
     </div>
     <div v-if="scrollState !== 'top'" key="to-top">
       <ToTop class="BottomTabMenu__ToTop" />

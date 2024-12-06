@@ -1,7 +1,10 @@
 <template>
   <div class="VueflixCarousel">
     <div :class="['VueflixCarousel__Track', `VueflixCarousel__Track--${type}`]">
-      <div :class="['VueflixCarousel__Body', `VueflixCarousel__Body--${type}`]">
+      <div
+        :class="['VueflixCarousel__Body', `VueflixCarousel__Body--${type}`]"
+        ref="$ScrollBody"
+      >
         <slot></slot>
       </div>
       <template v-if="type === 'arrow'">
@@ -33,14 +36,22 @@
 </template>
 
 <script setup>
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { useEventListener, useDebounceFn } from "@vueuse/core";
+
 import IconBase from "./IconBase.vue";
 import IconArrowNext from "./icons/IconArrowNext.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 
 const props = defineProps({
   length: {
     type: Number,
+  },
+  media: {
+    type: Object,
+    validator(value) {
+      return Object.keys(value).includes("default");
+    },
   },
   type: {
     validator(value) {
@@ -50,37 +61,9 @@ const props = defineProps({
       return "nobutton";
     },
   },
-  direction: {
-    type: String,
-    default: "row",
-    validator(value) {
-      return ["column", "row"].includes(value);
-    },
-  },
-});
-
-const resolution = ref(window.innerWidth);
-
-onMounted(() => {
-  if (props.type === "break") return;
-  window.addEventListener("resize", () => {
-    resolution.value = window.innerWidth;
-  });
-});
-onUnmounted(() => {
-  if (props.type === "break") return;
-  window.addEventListener("resize", () => {
-    resolution.value = window.innerWidth;
-  });
 });
 
 const carouselNumber = ref(0);
-watch(
-  () => props.length,
-  () => {
-    carouselNumber.value = 0;
-  }
-);
 
 function next() {
   carouselNumber.value++;
@@ -89,21 +72,27 @@ function prev() {
   carouselNumber.value--;
 }
 
-const shownItems = computed(() => {
-  if (resolution.value >= 1920) {
-    return 7;
-  }
-  if (resolution.value >= 1080) {
-    return 4;
-  }
-  if (resolution.value >= 768) {
-    return 3;
-  }
-  return 2;
+const resolution = ref(window.innerWidth);
+useEventListener("resize", () => {
+  useDebounceFn(() => {
+    resolution.value = window.innerWidth;
+    carouselNumber.value = 0;
+  });
 });
-const carouselLimit = computed(() =>
-  props.length ? Math.floor(props.length / shownItems.value) : 0
-);
+const carouselLimit = computed(() => {
+  if (!props.media) {
+    return 0;
+  }
+
+  const shownItems = Object.keys(props.media).reduce((acc, key) => {
+    if (resolution.value >= key) {
+      acc = props.media[key];
+    }
+    return acc;
+  }, props.media.default);
+
+  return Math.ceil(props.length / shownItems) - 1;
+});
 const active = computed(() => ({
   prev: carouselNumber.value > 0,
   next: carouselNumber.value < carouselLimit.value,
@@ -127,9 +116,10 @@ const active = computed(() => ({
     }
   }
   &__Body {
-    display: flex;
-    flex-direction: v-bind("direction");
-    gap: var(--carousel-gap, 1rem);
+    // display: block;
+    // display: flex;
+    // flex-direction: row;
+    // gap: var(--carousel-gap, 1rem);
     width: max-content;
     padding: 0 var(--carousel-padding, var(--inner-padding));
     overflow: var(--carousel-overflow);
