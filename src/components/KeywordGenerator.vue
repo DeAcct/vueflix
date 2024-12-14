@@ -11,12 +11,13 @@
         @input="onChange"
         :value="newKeyword"
         :disabled
+        @keyup.enter="addNewKeyword"
       />
       <VueflixBtn
         type="button"
         component="button"
-        class="KeywordGenerator__NewButton"
-        @click="onNewKeyword"
+        class="KeywordGenerator__Button KeywordGenerator__Button--Plus"
+        @click="addNewKeyword"
       >
         <template #icon>
           <IconBase>
@@ -24,19 +25,31 @@
           </IconBase>
         </template>
       </VueflixBtn>
+      <VueflixBtn
+        type="button"
+        component="button"
+        class="KeywordGenerator__Button KeywordGenerator__Button--Save"
+        v-if="editmode"
+      >
+        <template #text>저장</template>
+      </VueflixBtn>
     </div>
-    <VueflixCarousel class="KeywordGenerator__Carousel">
+    <VueflixCarousel
+      class="KeywordGenerator__Carousel"
+      :class="keywordItems.length > 0 && 'KeywordGenerator__Carousel--Show'"
+    >
       <TransitionGroup
         tag="ul"
         name="keyword-list"
         class="KeywordGenerator__List"
       >
         <KeywordItem
-          v-for="{ text, state } in dummyItems"
+          v-for="{ text, state } in keywordItems"
           :key="text"
           :state
           @update:state="onUpdateState($event, text)"
           @request-delete="onDelete(text)"
+          class="KeywordGenerator__Item"
         >
           <template #text>{{ text }}</template>
         </KeywordItem>
@@ -57,64 +70,77 @@ import KeywordItem from "@/components/KeywordItem.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconPlus from "./icons/IconPlus.vue";
 
-const dummyItems = ref([
-  { text: "그림체", state: "none" },
-  { text: "배경음악", state: "none" },
-  { text: "성우 연기", state: "none" },
-  { text: "스토리", state: "none" },
-  { text: "연출", state: "none" },
-  { text: "캐릭터", state: "none" },
-  { text: "작화(움직임)", state: "none" },
-]);
+// const keywordItems = ref([
+//   { text: "그림체", state: "none" },
+//   { text: "배경음악", state: "none" },
+//   { text: "성우 연기", state: "none" },
+//   { text: "스토리", state: "none" },
+//   { text: "연출", state: "none" },
+//   { text: "캐릭터", state: "none" },
+//   { text: "작화(움직임)", state: "none" },
+// ]);
+const keywordItems = defineModel("keywords");
 
 function onUpdateState(state, text) {
-  dummyItems.value = dummyItems.value.map((item) => ({
+  keywordItems.value = keywordItems.value.map((item) => ({
     ...item,
     state: item.text === text ? state : item.state,
   }));
 }
 function onDelete(text) {
-  dummyItems.value = dummyItems.value.filter((item) => item.text !== text);
+  keywordItems.value = keywordItems.value.filter((item) => item.text !== text);
 }
 
 const props = defineProps({
   user: {
     type: Object,
   },
+  editmode: {
+    type: Boolean,
+  },
 });
 
 const disabled = computed(
-  () => dummyItems.value.length >= 10 || props.user === null
+  () => keywordItems.value.length >= 10 || props.user === null
 );
 const placeholder = computed(() => {
   if (props.user === null) {
     return "키워드를 편집하려면 먼저 로그인을 해주세요";
   }
-  if (dummyItems.value.length >= 10) {
+  if (keywordItems.value.length >= 10) {
     return "최대 10개까지 입력 가능해요";
   }
-  return "원하는 단어를 입력하세요";
+  return "원하는 키워드를 입력하세요";
 });
 
 const newKeyword = ref("");
 function onChange(e) {
   newKeyword.value = e.target.value;
 }
-function onNewKeyword() {
-  if (!newKeyword.value) {
-    return;
-  }
-  if (dummyItems.value.length >= 10) {
-    return;
-  }
-  if (newKeyword.value.length >= 10) {
+// Mapping of Korean state keywords to their English equivalents
+const STATE_MAP = {
+  긍정: "positive",
+  부정: "negative",
+};
+function addNewKeyword() {
+  if (!newKeyword.value || !newKeyword.value.trim()) {
     return;
   }
   if (useForbiddenFilter("forbidden", newKeyword).length > 0) {
     return;
   }
+  if (keywordItems.value.length >= 10) {
+    return;
+  }
+  if (newKeyword.value.length >= 10) {
+    return;
+  }
   // 한영문, 상태구분자':' 이외 입력 불가
-  if (/[^a-zA-Z가-힣\: ]/.test(newKeyword.value)) {
+  if (/[^a-zA-Z가-힣: ]/.test(newKeyword.value)) {
+    return;
+  }
+  const _keywordItems = keywordItems.value.map(({ text }) => text);
+  if (_keywordItems.includes(newKeyword.value)) {
     return;
   }
 
@@ -123,66 +149,17 @@ function onNewKeyword() {
   }
 
   let [state, text] = newKeyword.value.split(":");
-  const VALID_STATE = [
-    "positive",
-    "neutral",
-    "negative",
-    "긍정",
-    "중립",
-    "부정",
-  ];
+  const VALID_STATE = Object.keys(STATE_MAP);
   if (!VALID_STATE.includes(state)) {
     state = "none";
     text = newKeyword.value;
+  } else {
+    state = STATE_MAP[state];
   }
-  console.log(state, text);
 
-  dummyItems.value = [{ state, text }, ...dummyItems.value];
+  keywordItems.value = [{ state, text }, ...keywordItems.value];
   newKeyword.value = "";
 }
-
-// const reviewItems = [
-//   {
-//     keyword: "그림체",
-//     id: "drawing",
-//   },
-//   {
-//     keyword: "배경음악",
-//     id: "bgm",
-//   },
-//   {
-//     keyword: "성우 연기",
-//     id: "voice",
-//   },
-//   {
-//     keyword: "스토리",
-//     id: "story",
-//   },
-//   {
-//     keyword: "연출",
-//     id: "directing",
-//   },
-//   {
-//     keyword: "캐릭터",
-//     id: "character",
-//   },
-//   {
-//     keyword: "작화(움직임)",
-//     id: "sakuga",
-//   },
-// ];
-
-// // const store = useStore();
-// // const user = computed(() => store.state.auth.user);
-
-// const selected = defineModel("selected", {
-//   type: Array,
-// });
-
-// const emits = defineEmits(["new-check"]);
-// function onChange(e) {
-//   emits("new-check", e);
-// }
 </script>
 
 <style lang="scss" scoped>
@@ -191,6 +168,10 @@ function onNewKeyword() {
   flex-wrap: wrap;
   gap: 1.2rem;
   padding: 2rem 0;
+  --input-box-radius: 2rem;
+  --input-box-shadow: 0 0.1rem 0.2rem hsl(var(--bg-900) / 0.1),
+    0 0.2rem 0.4rem hsl(var(--bg-900) / 0.1);
+
   &__Info {
     width: 100%;
     font-size: 1.4rem;
@@ -201,44 +182,72 @@ function onNewKeyword() {
     display: flex;
     padding: 0 2rem;
     flex-grow: 1;
-    gap: 0.8rem;
   }
   &__Input {
     flex-grow: 1;
-    width: calc(100% - 4.8rem);
-    height: 3.6rem;
+    width: calc(100% - var(--input-box-radius) * 2);
+    height: calc(var(--input-box-radius) * 2);
     font-size: 1.4rem;
     background-color: hsl(var(--bg-100));
-    border-radius: 9999px;
-    border: 2px solid transparent;
+    border-radius: var(--input-box-radius) calc(var(--global-radius) * 2)
+      calc(var(--global-radius) * 2) var(--input-box-radius);
+    border: 1px solid transparent;
     padding: 0 1.6rem;
-    box-shadow: 0 0.1rem 0.2rem hsl(var(--bg-900) / 0.1),
-      0 0.2rem 0.4rem hsl(var(--bg-900) / 0.1);
+    box-shadow: var(--input-box-shadow);
     transition: 150ms ease-out;
 
     &:focus-visible {
-      border-color: hsl(var(--theme-500));
+      border-color: hsl(var(--text-400));
       box-shadow: 0 0.2rem 0.4rem hsl(var(--bg-900) / 0.1),
         0 0.4rem 0.8rem hsl(var(--bg-900) / 0.1),
         0 0.8rem 1.6rem hsl(var(--bg-900) / 0.1);
     }
+    &::placeholder {
+      color: hsl(var(--text-300));
+    }
   }
-  &__NewButton {
-    background-color: hsl(var(--theme-500));
-    padding: 0;
-    width: 3.6rem;
-    height: 3.6rem;
-    border-radius: 50%;
-    color: #fff;
+  &__Button {
+    height: calc(var(--input-box-radius) * 2);
+    flex-shrink: 0;
+    box-shadow: var(--input-box-shadow);
+    &--Plus {
+      color: hsl(var(--text-500));
+      background-color: hsl(var(--bg-100));
+      width: calc(var(--input-box-radius) * 2);
+      border-radius: calc(var(--global-radius) * 2) var(--input-box-radius)
+        var(--input-box-radius) calc(var(--global-radius) * 2);
+      margin-left: 0.4rem;
+      padding: 0;
+      padding-right: 0.2rem;
+    }
+    &--Save {
+      color: #fff;
+      background-color: hsl(var(--theme-500));
+      border-radius: var(--input-box-radius);
+      padding: 0 1.6rem;
+      margin-left: 0.8rem;
+      font-size: 1.6rem;
+    }
   }
   &__Carousel {
     --carousel-padding: 2rem;
+    height: 0;
+    transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1) allow-discrete;
+    display: none;
+
+    &--Show {
+      height: auto;
+      display: block;
+    }
   }
   &__List {
     display: flex;
     flex-wrap: nowrap;
     // width: fit-content;
     gap: 0.8rem;
+  }
+  &__Item {
+    --keyword-radius: var(--input-box-radius);
   }
 }
 @media (hover: hover) and (pointer: fine) {
@@ -250,21 +259,21 @@ function onNewKeyword() {
   }
 }
 
-.keyword-list-move,
-.keyword-list-enter-active,
-.keyword-list-leave-active {
-  transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.keyword-list-enter-active {
-  transition-delay: 150ms;
-}
-
-.keyword-list-enter-from,
-.keyword-list-leave-to {
-  opacity: 0;
-}
-
-.keyword-list-leave-active {
-  position: absolute;
+.keyword-list {
+  &-move,
+  &-enter-active,
+  &-leave-active {
+    transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  &-enter-active {
+    transition-delay: 150ms;
+  }
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+  &-leave-active {
+    position: absolute;
+  }
 }
 </style>

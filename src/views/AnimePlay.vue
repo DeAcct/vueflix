@@ -424,7 +424,6 @@ const { state: scrollState } = useScroll();
     --accordion-sticky-top: 0;
     --accordion-title-weight: 700;
     // --accordion-title-padding: 1.2rem 0;
-    margin-bottom: 1.2rem;
     background-color: hsl(var(--bg-200));
   }
   &__DescList {

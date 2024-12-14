@@ -43,9 +43,11 @@ import { useAuth } from "@/store/auth";
  * }} option 리액션의 내용을 받습니다.
  * @returns {Promise<Reaction>} 작업이 완료되면 생성된 리액션 객체를 반환합니다.
  */
-export async function Create({ content, parent, type }) {
+export async function Create({ keywords, content, parent, type }) {
   const auth = useAuth();
   const user = computed(() => auth.user);
+
+  console.log(keywords);
 
   // 리액션 작성 불가 처리
   // - 로그인하지 않은 경우
@@ -86,7 +88,10 @@ export async function Create({ content, parent, type }) {
     time: new Date(),
     type,
     isEdited: false,
+    keywords,
   };
+
+  console.log(newItem);
 
   // 문서의 이름을 난수로 생성
   const newDoc = doc(collection(db, "reaction"));

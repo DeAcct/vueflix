@@ -1,12 +1,13 @@
 <template>
-  <li class="KeywordItem">
+  <li class="KeywordItem" :class="`KeywordItem--${useFirstCapital(state)}`">
     <button
-      :class="`KeywordItem__TextWithState KeywordItem__TextWithState--${useFirstCapital(
-        state
-      )}`"
+      class="KeywordItem__TextWithState"
       type="button"
       @click="infiniteChange"
     >
+      <IconBase class="KeywordItem__Icon KeywordItem__Icon--Thumbs">
+        <IconThumbs />
+      </IconBase>
       <slot name="text"></slot>
     </button>
     <button class="KeywordItem__Delete" type="button" @click="requestDelete">
@@ -18,14 +19,15 @@
 </template>
 
 <script>
-const VALID_STATE = ["positive", "neutral", "negative", "none"];
+const VALID_STATE = ["positive", "negative", "none"];
 </script>
 
 <script setup>
 import { useFirstCapital } from "../composables/formatter";
 
 import IconBase from "@/components/IconBase.vue";
-import IconClose from "@/components/icons/IconClose.vue";
+import IconThumbs from "./icons/IconThumbs.vue";
+import IconClose from "./icons/IconClose.vue";
 
 const props = defineProps({
   state: {
@@ -42,7 +44,6 @@ function infiniteChange() {
   const currentIndex = VALID_STATE.indexOf(props.state);
   const nextIndex = (currentIndex + 1) % VALID_STATE.length;
   const nextState = VALID_STATE[nextIndex];
-  console.log(nextState);
   emits("update:state", nextState);
 }
 function requestDelete() {
@@ -54,13 +55,21 @@ function requestDelete() {
 .KeywordItem {
   display: flex;
   align-items: center;
-  gap: 0.2rem;
   flex-shrink: 0;
-
-  --keyword-gap-radius: calc(var(--global-radius) * 0.5);
   --animation: none;
+  border-radius: var(--keyword-radius);
+  overflow: hidden;
+  &--Negative {
+    --state-rotate: 180deg;
+  }
+  &--None {
+    --keyword-icon-width: 0;
+  }
 
   &__TextWithState {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
     font-size: 1.4rem;
     font-weight: 700;
     background-color: hsl(var(--bg-300));
@@ -68,37 +77,38 @@ function requestDelete() {
       left: 1.2rem;
       right: 0.8rem;
     }
-    height: 3.6rem;
-    border-radius: 1.8rem var(--keyword-gap-radius) var(--keyword-gap-radius)
-      1.8rem;
+    height: calc(var(--keyword-radius) * 2);
     transition: background-color 150ms ease-out;
-
-    &--Positive {
-      background-color: hsl(var(--positive-color) / 0.1);
-      color: hsl(var(--positive-color));
-    }
-    &--Negative {
-      background-color: hsl(var(--negative-color) / 0.1);
-      color: hsl(var(--negative-color));
-    }
-    &--Neutral {
-      background-color: hsl(var(--neutral-color) / 0.1);
-      color: hsl(var(--neutral-color));
-    }
   }
   &__Delete {
+    display: flex;
+    align-items: center;
     background-color: hsl(var(--bg-300));
-    height: 3.6rem;
+    height: calc(var(--keyword-radius) * 2);
     padding: {
       left: 0.8rem;
       right: 1.2rem;
     }
-    border-radius: var(--keyword-gap-radius) 1.8rem 1.8rem
-      var(--keyword-gap-radius);
+    position: relative;
+    &::before {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      translate: 0 -50%;
+      content: "";
+      width: 0.1rem;
+      height: var(--keyword-radius);
+      background-color: hsl(var(--text-300));
+    }
   }
   &__Icon {
-    width: 1.6rem;
-    height: 1.6rem;
+    width: 2rem;
+    height: 2rem;
+    &--Thumbs {
+      width: var(--keyword-icon-width, 2rem);
+
+      rotate: var(--state-rotate);
+    }
   }
 }
 </style>

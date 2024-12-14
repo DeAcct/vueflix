@@ -57,21 +57,6 @@
         </button>
       </div>
     </div>
-    <!-- <NativeDialog ref="$root" class="ReactionItem__MetaModal" v-if="metaModal">
-      <template #content>
-        <StatCard :uid="reactionData.uid" class="ReactionItem__Data" />
-      </template>
-      <template #control>
-        <VueflixBtn
-          component="button"
-          class="ReactionItem__CloseBtn"
-          @click="$root.close"
-          type="button"
-        >
-          <template #text> 닫기 </template>
-        </VueflixBtn>
-      </template>
-    </NativeDialog> -->
   </component>
 </template>
 
@@ -116,8 +101,6 @@ const props = defineProps({
 const self = computed(() => props.user?.uid === props.reactionData.uid);
 const meta = useUserMeta(props.reactionData.uid);
 const { date: time } = useFormatDate(props.reactionData.time.toDate());
-
-// const $root = ref(null);
 
 const editValue = ref(temporalRemoveTimeFlag());
 function temporalRemoveTimeFlag() {
@@ -195,7 +178,7 @@ onMounted(() => {
     position: relative;
     width: 100%;
     max-width: 80ch;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     &:last-of-type {
       margin-bottom: 0;
     }
@@ -203,7 +186,7 @@ onMounted(() => {
   &__Text {
     white-space: pre-line;
     word-break: break-all;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-weight: 500;
     line-height: 1.5;
     animation: fade 150ms ease-out;

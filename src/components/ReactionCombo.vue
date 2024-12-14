@@ -7,19 +7,30 @@
         ><span class="ReactionCombo__BetaLabel">Beta</span></component
       >
     </template>
-    <div class="ReactionCombo__Write">
-      <slot name="description"></slot>
-      <slot name="default"></slot>
-      <WriteReaction
-        class="ReactionCombo__TextArea"
-        @mutate="onRequestModal"
-        :user
-        :type
-        :parent
-        @interact="setInteract"
-        :time
-        v-if="writeable"
-      />
+    <div class="ReactionCombo__New">
+      <div class="ReactionCombo__Write">
+        <slot name="description"></slot>
+        <slot name="extra-method" :writeable></slot>
+        <LoginWidget
+          v-if="!user"
+          :btn-func="goAuth"
+          class="ReactionCombo__LoginRequired"
+        >
+          <template v-slot:text>
+            <h2>로그인하고 이 작품을 평가해보세요</h2>
+          </template>
+          <template v-slot:login-state-text>로그인</template>
+        </LoginWidget>
+        <WriteReaction
+          class="ReactionCombo__TextArea"
+          :class="writeable && 'ReactionCombo__TextArea--Show'"
+          @mutate="onMutate"
+          :type
+          :parent
+          @interact="setInteract"
+          :time
+        />
+      </div>
     </div>
     <div class="ReactionCombo__List">
       <TransitionGroup
@@ -33,7 +44,7 @@
           :key="reaction._id"
           :reaction-data="reaction"
           :user="user"
-          @mutate="onRequestModal"
+          @mutate="onMutate"
           @interact="setInteract"
           @meta-modal="onMetaModal"
           class="ReactionCombo__Item"
@@ -127,7 +138,8 @@
 // 리뷰는 애니메이션에 작성하는 항목
 // 코멘트는 각 에피소드마다 작성하는 항목
 
-import { computed, ref, watch, onMounted } from "vue";
+import { computed, ref, watch, unref } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { endAt, limit, orderBy, startAfter, where } from "firebase/firestore";
 
 import {
@@ -142,6 +154,7 @@ import { useAuth } from "@/store/auth";
 import { useIntersection } from "@/composables/intersection";
 
 import LoadAnimation from "./LoadAnimation.vue";
+import LoginWidget from "@/components/LoginWidget.vue";
 import NativeDialog from "./NativeDialog.vue";
 import VueflixBtn from "./VueflixBtn.vue";
 import WriteReaction from "./WriteReaction.vue";
@@ -149,7 +162,6 @@ import ReactionItem from "./ReactionItem.vue";
 import ReactionParser from "./ReactionParser.vue";
 import StatCard from "./StatCard.vue";
 import ReactionMeta from "./ReactionMeta.vue";
-import { useRoute } from "vue-router";
 
 const props = defineProps({
   type: {
@@ -180,11 +192,17 @@ const props = defineProps({
     type: [String, Number],
     required: false,
   },
+  once: {
+    type: Boolean,
+  },
+  keywords: {
+    type: Array,
+  },
 });
 
 const route = useRoute();
 
-const emits = defineEmits(["interact", "request-teleport"]);
+const emits = defineEmits(["interact", "request-teleport", "mutate"]);
 function setInteract(e) {
   emits("interact", e);
 }
@@ -192,9 +210,14 @@ function setInteract(e) {
 const auth = useAuth();
 const user = computed(() => auth.user);
 const reactions = ref({ visible: [], allCount: 0 });
+
+const router = useRouter();
+function goAuth() {
+  router.push("/auth");
+}
 const writeable = ref(true);
 async function setWriteable() {
-  if (!user.value) {
+  if (!props.once) {
     return;
   }
   const myReviewCount = await ReadReactionCount(
@@ -220,9 +243,10 @@ watch(
   () => props.parent,
   async () => {
     await sync();
-    if (props.type === "review") {
-      await setWriteable();
-    }
+    setWriteable();
+    // if (props.type === "review") {
+    //   await setWriteable();
+    // }
   },
   { immediate: true }
 );
@@ -274,15 +298,19 @@ const checkModal = ref({
   data: null,
 });
 
-async function onRequestModal(method, data) {
+async function onMutate(method, data) {
   // 일반적인 상황은 아니지만, 로그인하지 않은 상태에서 강제로 사용자가 댓글을 조작하는것을 방지
   if (!user.value) {
     return;
   }
+  const _data = {
+    ...data,
+    keywords: unref(props.keywords),
+  };
   checkModal.value = {
     method,
     text: methodMap[method].text,
-    data,
+    data: _data,
   };
   if (method === "create") {
     await applyMutate();
@@ -294,13 +322,15 @@ async function onRequestModal(method, data) {
 async function applyMutate() {
   const { method, data } = checkModal.value;
   loadState.value = "mutating";
+  console.log(data);
   await methodMap[method].action(data);
   await sync();
   loadState.value = "complete";
   $CheckModal.value.close();
-  if (method !== "update" && props.type === "review") {
-    await setWriteable();
-  }
+  setWriteable();
+  // if (method !== "update" && props.once) {
+  //   await setWriteable();
+  // }
 }
 
 function requestTeleport(e) {
@@ -342,19 +372,37 @@ useIntersection($ReadMore, async () => {
     font-size: 1.3rem;
     color: hsl(var(--theme-500));
   }
-  &__description {
+  &__Description {
     font-size: 1.3rem;
+  }
+  &__New {
+    border-radius: calc(var(--global-radius) + 2rem);
+    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
+    overflow: hidden;
   }
   &__Write {
     display: flex;
     flex-direction: column;
     width: 100%;
     margin: 0 auto;
-    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
-    border-radius: var(--global-radius);
     > * + * {
       border-top: 1px solid hsl(var(--bg-300));
     }
+  }
+  &__TextArea {
+    height: 0;
+    transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1) allow-discrete;
+    overflow: hidden;
+    display: none;
+    opacity: 0;
+    &--Show {
+      height: auto;
+      display: block;
+      opacity: 1;
+    }
+  }
+  &__LoginRequired {
+    padding: 2rem;
   }
   &__List {
     overflow: hidden;

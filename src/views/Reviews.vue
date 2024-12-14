@@ -1,31 +1,30 @@
 <template>
   <div class="AnimeReviews">
-    <LoginWidget
-      v-if="!user"
-      :btn-func="goAuth"
-      class="AnimeReviews__LoginRequired"
-    >
-      <template v-slot:text>
-        <h2>로그인하고 이 작품을 평가해보세요</h2>
-      </template>
-      <template v-slot:login-state-text>로그인</template>
-    </LoginWidget>
     <!-- <KeywordReviews class="AnimeReviews__Write" /> -->
     <ReactionCombo
       class="AnimeReviews__Write"
       type="review"
       title-tag="h3"
       :parent="{ title: route.query.modal }"
+      once
+      :keywords
     >
-      <KeywordGenerator :user class="AnimeReviews__Keyword" />
+      <template #extra-method="{ writeable }">
+        <KeywordGenerator
+          :user
+          class="AnimeReviews__Keyword"
+          v-model:keywords="keywords"
+          :editmode="!writeable"
+        />
+      </template>
       <template #title>리뷰</template>
     </ReactionCombo>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 
 import { useAuth } from "@/store/auth";
 
@@ -33,18 +32,15 @@ import { useHead } from "@/composables/head";
 
 import KeywordGenerator from "@/components/KeywordGenerator.vue";
 import ReactionCombo from "@/components/ReactionCombo.vue";
-import LoginWidget from "@/components/LoginWidget.vue";
 
 const route = useRoute();
 
-const router = useRouter();
-function goAuth() {
-  router.push("/auth");
-}
 // const store = useStore();
 useHead({ title: `${route.query.modal} 리뷰` });
 const auth = useAuth();
 const user = computed(() => auth.user);
+
+const keywords = ref([]);
 </script>
 
 <style lang="scss" scoped>

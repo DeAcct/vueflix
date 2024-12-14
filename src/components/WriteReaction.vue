@@ -3,15 +3,13 @@
     <!-- <KeywordGenerator :user v-if="type === 'review'" /> -->
     <div class="WriteReaction__TextReview">
       <textarea
-        :placeholder="placeholder"
+        :placeholder
         class="WriteReaction__InputArea"
-        :disabled="!user"
         @input="setReviewData"
         @focus="setFocus"
         @blur="setBlur"
         ref="$TextArea"
         :value="reviewData"
-        @keydown="saveAction"
       />
       <div class="WriteReaction__Interaction">
         <div class="WriteReaction__Status">
@@ -50,19 +48,14 @@
 
 <script setup>
 import { ref, computed } from "vue";
-
-import { useAuth } from "@/store/auth";
 import { useSecToFormat } from "@/composables/formatter";
 import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
 
-import KeywordGenerator from "@/components/KeywordGenerator.vue";
+// import KeywordGenerator from "@/components/KeywordGenerator.vue";
 
 const emits = defineEmits(["mutate", "interact"]);
 
 const props = defineProps({
-  user: {
-    type: Object,
-  },
   type: {
     type: String,
     required: true,
@@ -86,34 +79,20 @@ function setFocus() {
   emits("interact", true);
 }
 
-const placeholder = computed(() => {
-  if (!props.user) {
-    return `${
-      REACTION_ENUM_WITH_JOSA[props.type]
-    } 남기려면 먼저 로그인을 해주세요`;
-  }
-  return `여기를 눌러 ${REACTION_ENUM_WITH_JOSA[props.type]} 작성하세요.`;
-});
+const placeholder = computed(
+  () => `여기를 눌러 ${REACTION_ENUM_WITH_JOSA[props.type]} 작성하세요.`
+);
 
 const reviewData = ref("");
 function setReviewData(e) {
   // 한글 특성상 v-model 사용불가
   reviewData.value = e.target.value;
 }
-function saveAction(e) {
-  if (e.key === "s" && e.ctrlKey) {
-    e.preventDefault();
-    forceSave();
-  }
-}
 
-const auth = useAuth();
-const user = computed(() => auth.user);
 function reviewTrigger() {
   emits("mutate", "create", {
     content: reviewData.value,
     parent: props.parent,
-    user,
     type: props.type,
   });
   reviewData.value = "";
@@ -138,6 +117,8 @@ function addTime() {
 <style lang="scss" scoped>
 .WriteReaction {
   width: 100%;
+  --text-area-shadow: 0 0.1rem 0.2rem hsl(var(--bg-900) / 0.1),
+    0 0.2rem 0.4rem hsl(var(--bg-900) / 0.1);
 
   &__InputArea {
     width: 100%;
@@ -185,34 +166,25 @@ function addTime() {
   &__BtnArea {
     display: flex;
     gap: var(--global-radius);
-    border-radius: var(--global-radius);
-    overflow: hidden;
   }
   &__Button {
-    background: linear-gradient(
-      150deg,
-      hsl(var(--bg-900) / 0.2),
-      hsl(var(--bg-900) / 0.025)
-    );
+    background: hsl(var(--bg-400));
     color: hsl(var(--text-900));
     box-shadow: none;
-    font-weight: 500;
-    font-size: 1.5rem;
-    padding: 0.8rem 1.2rem;
+    font-weight: 600;
+    font-size: 1.6rem;
+    padding: 0 1.6rem;
+    border-radius: 9999px;
     position: relative;
+    height: 4rem;
+    box-shadow: var(--text-area-shadow);
     &--Submit {
-      background: linear-gradient(
-        150deg,
-        hsl(var(--theme-500) / 0.5),
-        hsl(var(--theme-500) / 0.025)
-      );
+      background: hsl(var(--theme-500));
+      color: #fff;
     }
     &:disabled {
-      background: linear-gradient(
-        150deg,
-        hsl(var(--bg-900) / 0.2),
-        hsl(var(--bg-900) / 0.025)
-      );
+      box-shadow: none;
+      background: hsl(var(--bg-300));
       color: hsl(var(--bg-900) / 0.3);
     }
   }
