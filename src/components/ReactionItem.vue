@@ -20,6 +20,7 @@
         </template>
       </Transition>
     </div>
+    <slot name="tags"></slot>
     <div class="ReactionItem__Actions" v-if="actions">
       <UpdownReaction
         :parent="reactionData._id"
@@ -174,7 +175,7 @@ onMounted(() => {
   padding: 2rem;
 
   &__Content {
-    // margin: 1.2rem 0;
+    margin: 1.4rem 0 0.4rem;
     position: relative;
     width: 100%;
     max-width: 80ch;
@@ -228,6 +229,7 @@ onMounted(() => {
     justify-content: space-between;
     flex-wrap: wrap;
     flex-grow: 1;
+    margin-top: 1.2rem;
   }
   &__Subreactions {
     display: flex;

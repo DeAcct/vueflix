@@ -3,6 +3,7 @@ import { useRoute } from "vue-router";
 import {
   doc,
   setDoc,
+  updateDoc,
   arrayUnion,
   collection,
   where,
@@ -43,11 +44,9 @@ import { useAuth } from "@/store/auth";
  * }} option 리액션의 내용을 받습니다.
  * @returns {Promise<Reaction>} 작업이 완료되면 생성된 리액션 객체를 반환합니다.
  */
-export async function Create({ keywords, content, parent, type }) {
+export async function Create({ content, parent, type }) {
   const auth = useAuth();
   const user = computed(() => auth.user);
-
-  console.log(keywords);
 
   // 리액션 작성 불가 처리
   // - 로그인하지 않은 경우
@@ -88,7 +87,7 @@ export async function Create({ keywords, content, parent, type }) {
     time: new Date(),
     type,
     isEdited: false,
-    keywords,
+    keywords: [],
   };
 
   console.log(newItem);
@@ -159,18 +158,26 @@ export async function Read({ parent, type }, ...queryOption) {
  *  type: "comment" | "review",
  * }} option 수정할 리액션의 id와 새 내용을 받습니다.
  */
-export async function Update({ id, content, type }) {
+export async function Update({ id, content, type, keywords }) {
   const auth = useAuth();
   const user = computed(() => auth.user);
   if (!user.value) {
     return;
   }
-  const formattedContent =
-    type === "comment" ? useTimeSplit(content) : [content];
+  const _content =
+    type === "comment"
+      ? useTimeSplit(content)
+      : Array.isArray(content)
+      ? content
+      : [content];
 
   await setDoc(
     doc(db, "reaction", id),
-    { content: formattedContent, isEdited: true },
+    {
+      content: _content,
+      isEdited: true,
+      keywords,
+    },
     { merge: true }
   );
   await auth.syncUser();

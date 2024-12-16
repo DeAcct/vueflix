@@ -7,7 +7,7 @@
     :fill="iconColor"
     role="presentation"
   >
-    <title lang="ko">{{ iconName }}</title>
+    <title lang="ko"><slot name="icon-name"> </slot></title>
     <slot></slot>
   </svg>
 </template>

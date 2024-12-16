@@ -16,10 +16,10 @@
           :btn-func="goAuth"
           class="ReactionCombo__LoginRequired"
         >
-          <template v-slot:text>
+          <template #text>
             <h2>로그인하고 이 작품을 평가해보세요</h2>
           </template>
-          <template v-slot:login-state-text>로그인</template>
+          <template #login-state-text>로그인</template>
         </LoginWidget>
         <WriteReaction
           class="ReactionCombo__TextArea"
@@ -62,6 +62,11 @@
               </template>
               <template #time>{{ time }}</template>
             </ReactionMeta>
+          </template>
+          <template #tags>
+            <template v-if="reaction.keywords">
+              <KeywordFilter :keywords="reaction.keywords" />
+            </template>
           </template>
           <template #content>
             <ReactionParser
@@ -153,15 +158,17 @@ import { useAuth } from "@/store/auth";
 
 import { useIntersection } from "@/composables/intersection";
 
-import LoadAnimation from "./LoadAnimation.vue";
+import LoadAnimation from "@/components/LoadAnimation.vue";
 import LoginWidget from "@/components/LoginWidget.vue";
-import NativeDialog from "./NativeDialog.vue";
-import VueflixBtn from "./VueflixBtn.vue";
-import WriteReaction from "./WriteReaction.vue";
-import ReactionItem from "./ReactionItem.vue";
-import ReactionParser from "./ReactionParser.vue";
-import StatCard from "./StatCard.vue";
-import ReactionMeta from "./ReactionMeta.vue";
+import NativeDialog from "@/components/NativeDialog.vue";
+import VueflixBtn from "@/components/VueflixBtn.vue";
+import WriteReaction from "@/components/WriteReaction.vue";
+import ReactionItem from "@/components/ReactionItem.vue";
+import ReactionParser from "@/components/ReactionParser.vue";
+import StatCard from "@/components/StatCard.vue";
+import ReactionMeta from "@/components/ReactionMeta.vue";
+import KeywordItem from "@/components/KeywordItem.vue";
+import KeywordFilter from "./KeywordFilter.vue";
 
 const props = defineProps({
   type: {
@@ -202,9 +209,9 @@ const props = defineProps({
 
 const route = useRoute();
 
-const emits = defineEmits(["interact", "request-teleport", "mutate"]);
+const emit = defineEmits(["interact", "request-teleport", "mutate", "delete"]);
 function setInteract(e) {
-  emits("interact", e);
+  emit("interact", e);
 }
 
 const auth = useAuth();
@@ -250,6 +257,9 @@ watch(
   },
   { immediate: true }
 );
+defineExpose({
+  sync,
+});
 async function sync() {
   const { reactions: data, lastDoc: last } = await Read(
     { parent: props.parent, type: props.type },
@@ -312,6 +322,7 @@ async function onMutate(method, data) {
     text: methodMap[method].text,
     data: _data,
   };
+  console.log(_data);
   if (method === "create") {
     await applyMutate();
     return;
@@ -322,19 +333,21 @@ async function onMutate(method, data) {
 async function applyMutate() {
   const { method, data } = checkModal.value;
   loadState.value = "mutating";
-  console.log(data);
   await methodMap[method].action(data);
   await sync();
   loadState.value = "complete";
   $CheckModal.value.close();
   setWriteable();
+  if (method === "delete") {
+    emit("delete");
+  }
   // if (method !== "update" && props.once) {
   //   await setWriteable();
   // }
 }
 
 function requestTeleport(e) {
-  emits("request-teleport", e);
+  emit("request-teleport", e);
 }
 
 const $MetaModal = ref(null);
@@ -395,6 +408,7 @@ useIntersection($ReadMore, async () => {
     overflow: hidden;
     display: none;
     opacity: 0;
+    margin-top: 2rem;
     &--Show {
       height: auto;
       display: block;
@@ -420,9 +434,7 @@ useIntersection($ReadMore, async () => {
       animation: comment-blink 5s ease-out;
     }
   }
-  &__Content {
-    margin: 1.2rem 0;
-  }
+
   &__End {
     display: flex;
     justify-content: center;

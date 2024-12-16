@@ -41,9 +41,7 @@ const props = defineProps({
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  margin-bottom: 0.8rem;
   gap: 0.6rem;
-  margin-left: -0.2rem;
   &__ProfileImgWrap {
     width: 3.6rem;
     height: 3.6rem;

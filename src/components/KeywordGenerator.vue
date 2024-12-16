@@ -1,7 +1,7 @@
 <template>
   <div class="KeywordGenerator">
     <p class="KeywordGenerator__Info">
-      작품의 장/단점, 특징 등을 내 리뷰 위쪽에 표시할 수 있어요
+      작품의 장/단점, 특징 등을 내 리뷰에 표시할 수 있어요
     </p>
     <div class="KeywordGenerator__Write">
       <input
@@ -30,6 +30,7 @@
         component="button"
         class="KeywordGenerator__Button KeywordGenerator__Button--Save"
         v-if="editmode"
+        @click="updateKeywords"
       >
         <template #text>저장</template>
       </VueflixBtn>
@@ -50,11 +51,21 @@
           @update:state="onUpdateState($event, text)"
           @request-delete="onDelete(text)"
           class="KeywordGenerator__Item"
+          icon
         >
           <template #text>{{ text }}</template>
         </KeywordItem>
       </TransitionGroup>
     </VueflixCarousel>
+    <VueflixBtn
+      type="button"
+      component="button"
+      @click="revertKeywords"
+      v-if="editmode"
+      class="KeywordGenerator__Reset"
+    >
+      <template #text>되돌리기</template>
+    </VueflixBtn>
   </div>
 </template>
 
@@ -70,15 +81,6 @@ import KeywordItem from "@/components/KeywordItem.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconPlus from "./icons/IconPlus.vue";
 
-// const keywordItems = ref([
-//   { text: "그림체", state: "none" },
-//   { text: "배경음악", state: "none" },
-//   { text: "성우 연기", state: "none" },
-//   { text: "스토리", state: "none" },
-//   { text: "연출", state: "none" },
-//   { text: "캐릭터", state: "none" },
-//   { text: "작화(움직임)", state: "none" },
-// ]);
 const keywordItems = defineModel("keywords");
 
 function onUpdateState(state, text) {
@@ -89,6 +91,14 @@ function onUpdateState(state, text) {
 }
 function onDelete(text) {
   keywordItems.value = keywordItems.value.filter((item) => item.text !== text);
+}
+
+const emit = defineEmits(["save", "revert"]);
+function updateKeywords() {
+  emit("save");
+}
+function revertKeywords() {
+  emit("revert");
 }
 
 const props = defineProps({
@@ -167,7 +177,7 @@ function addNewKeyword() {
   display: flex;
   flex-wrap: wrap;
   gap: 1.2rem;
-  padding: 2rem 0;
+  padding: 2rem 0 0;
   --input-box-radius: 2rem;
   --input-box-shadow: 0 0.1rem 0.2rem hsl(var(--bg-900) / 0.1),
     0 0.2rem 0.4rem hsl(var(--bg-900) / 0.1);
@@ -248,6 +258,15 @@ function addNewKeyword() {
   }
   &__Item {
     --keyword-radius: var(--input-box-radius);
+    font-size: 1.4rem;
+  }
+
+  &__Reset {
+    width: 100%;
+    height: 4rem;
+    box-shadow: none;
+    border-top: 1px solid hsl(var(--text-100));
+    margin-top: 1rem;
   }
 }
 @media (hover: hover) and (pointer: fine) {

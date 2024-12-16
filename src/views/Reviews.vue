@@ -8,6 +8,8 @@
       :parent="{ title: route.query.modal }"
       once
       :keywords
+      ref="$ReactionCombo"
+      @delete="clearKeywords"
     >
       <template #extra-method="{ writeable }">
         <KeywordGenerator
@@ -15,6 +17,8 @@
           class="AnimeReviews__Keyword"
           v-model:keywords="keywords"
           :editmode="!writeable"
+          @save="updateKeywords"
+          @revert="revertKeywords"
         />
       </template>
       <template #title>리뷰</template>
@@ -23,10 +27,13 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 
+import { where } from "firebase/firestore";
+
 import { useAuth } from "@/store/auth";
+import { Read, Update } from "@/api/reaction";
 
 import { useHead } from "@/composables/head";
 
@@ -41,6 +48,42 @@ const auth = useAuth();
 const user = computed(() => auth.user);
 
 const keywords = ref([]);
+const myDoc = ref(null);
+watchEffect(
+  async () => {
+    if (!user.value) return;
+
+    myDoc.value = await Read(
+      { parent: { title: route.query.modal }, type: "review" },
+      where("uid", "==", user.value?.uid)
+    );
+    if (myDoc.value.reactions.length === 0) return;
+
+    const { keywords: _keywords } = myDoc.value.reactions[0];
+    keywords.value = _keywords;
+  },
+  { immediate: true }
+);
+
+const $ReactionCombo = ref(null);
+async function updateKeywords() {
+  const { _id, content } = myDoc.value.reactions[0];
+  await Update({
+    id: _id,
+    type: "review",
+    keywords: keywords.value,
+    content,
+  });
+  await $ReactionCombo.value.sync();
+}
+
+function revertKeywords() {
+  keywords.value = myDoc.value.reactions[0].keywords;
+}
+
+function clearKeywords() {
+  keywords.value = [];
+}
 </script>
 
 <style lang="scss" scoped>

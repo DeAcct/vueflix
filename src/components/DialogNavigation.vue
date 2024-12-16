@@ -23,6 +23,7 @@
         type="button"
       >
         <IconBase icon-name="공유">
+          <template #icon-name="">공유</template>
           <IconShare />
         </IconBase>
       </button>
