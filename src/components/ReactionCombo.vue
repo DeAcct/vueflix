@@ -10,7 +10,7 @@
     <div class="ReactionCombo__New">
       <div class="ReactionCombo__Write">
         <slot name="description"></slot>
-        <slot name="extra-method" :writeable></slot>
+        <slot name="extra-method"></slot>
         <LoginWidget
           v-if="!user"
           :btn-func="goAuth"
@@ -322,7 +322,7 @@ async function onMutate(method, data) {
     text: methodMap[method].text,
     data: _data,
   };
-  console.log(_data);
+
   if (method === "create") {
     await applyMutate();
     return;

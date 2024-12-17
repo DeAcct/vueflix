@@ -1,7 +1,7 @@
 <template>
   <svg viewBox="0 0 24 24" class="ProgressCircle">
-    <circle class="ProgressCircle__Track" cx="12" cy="12" r="11" />
-    <circle class="ProgressCircle__Body" cx="12" cy="12" r="11" ref="$body" />
+    <circle class="ProgressCircle__Track" cx="12" cy="12" r="11.5" />
+    <circle class="ProgressCircle__Body" cx="12" cy="12" r="11.5" ref="$body" />
   </svg>
 </template>
 
@@ -33,12 +33,12 @@ const { $body, trackLength, bodyLength } = usePercentToSVGRound(props.progress);
   &__Track {
     fill: none;
     stroke: var(--progress-circle-track-color, hsl(0 0% 100% / 0.5));
-    stroke-width: 2px;
+    stroke-width: 1px;
   }
   &__Body {
     fill: none;
     stroke: var(--progress-circle-body-color, hsl(var(--theme-500)));
-    stroke-width: 2px;
+    stroke-width: 1px;
     stroke-linecap: round;
     stroke-dasharray: calc(v-bind(trackLength) * 1px);
     stroke-dashoffset: calc(v-bind(bodyLength) * 1px);

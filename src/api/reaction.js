@@ -44,7 +44,7 @@ import { useAuth } from "@/store/auth";
  * }} option 리액션의 내용을 받습니다.
  * @returns {Promise<Reaction>} 작업이 완료되면 생성된 리액션 객체를 반환합니다.
  */
-export async function Create({ content, parent, type }) {
+export async function Create({ content, parent, type, keywords }) {
   const auth = useAuth();
   const user = computed(() => auth.user);
 
@@ -56,9 +56,9 @@ export async function Create({ content, parent, type }) {
   }
 
   // - 내용이 없는 경우
-  if (!content) {
-    console.error("리액션 내용이 없습니다.");
-    return { error: "no-content" };
+  if (!(content || keywords.length > 0)) {
+    console.error("저장할 키워드나 내용이 없습니다.");
+    return { error: "no-keywords-or-content" };
   }
 
   // - 이미 해당 애니의 리뷰를 작성한 적이 있는 경우
@@ -77,7 +77,7 @@ export async function Create({ content, parent, type }) {
   // 시간 부분은 <time>시간 형식으로 저장
   // comment인 경우에만 적용, 아닌 경우에는 원본 문자열을 배열에 그대로 담음
   const formattedContent =
-    type === "comment" ? useTimeSplit(content) : [content];
+    type === "comment" ? useTimeSplit(content) : content ? [content] : [];
 
   const newItem = {
     uid: user.value.uid,
@@ -87,7 +87,7 @@ export async function Create({ content, parent, type }) {
     time: new Date(),
     type,
     isEdited: false,
-    keywords: [],
+    keywords: keywords || [],
   };
 
   console.log(newItem);

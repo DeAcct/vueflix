@@ -33,7 +33,7 @@ const props = defineProps({
     width: 100%;
     height: 100%;
     font-size: 1.3rem;
-    color: #fff;
+    color: hsl(var(--bg-100) / 0.5);
     border-radius: var(--global-radius);
   }
   &__PlayIcon {

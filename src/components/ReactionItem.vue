@@ -4,14 +4,12 @@
     <div class="ReactionItem__Content">
       <Transition name="down-fade">
         <template v-if="mode === 'edit'">
-          <div class="ReactionItem__EditWrap">
-            <textarea
-              class="ReactionItem__EditInput"
-              :placeholder="placeholder"
-              :value="editValue"
-              @input="editValueChange"
-            />
-          </div>
+          <textarea
+            class="ReactionItem__EditInput"
+            :placeholder="placeholder"
+            :value="editValue"
+            @input="editValueChange"
+          />
         </template>
       </Transition>
       <Transition name="fade">
@@ -192,29 +190,18 @@ onMounted(() => {
     line-height: 1.5;
     animation: fade 150ms ease-out;
   }
-  &__EditWrap {
-    margin: 1.2rem 0;
-    height: 9rem;
-    padding: 1px;
-    background: linear-gradient(
-      150deg,
-      hsl(var(--bg-900) / 0.2),
-      hsl(var(--bg-900) / 0.025)
-    );
-    border-radius: var(--global-radius);
-    animation: down-fade 150ms ease-out;
-  }
   &__EditInput {
     overflow-y: scroll;
     line-height: 1.5;
     width: 100%;
-    height: 100%;
+    height: 12rem;
     font-size: 1.4rem;
     font-weight: 500;
     color: inherit;
-    background-color: hsl(var(--bg-200) / 0.5);
+    background-color: hsl(var(--bg-200));
     border-radius: calc(var(--global-radius) - 1px);
     padding: 1.2rem 1.6rem;
+    margin-bottom: 0.6rem;
     &::placeholder {
       font-size: 1.4rem;
       color: hsl(var(--bg-700));
@@ -238,31 +225,23 @@ onMounted(() => {
     display: flex;
     align-items: center;
     overflow: hidden;
-    gap: 0.2rem;
+    gap: 0.4rem;
     align-self: flex-end;
-    border-radius: var(--global-radius);
-    overflow: hidden;
   }
   &__ActionItem {
-    font-size: 1.5rem;
-    font-weight: 500;
+    font-size: 1.6rem;
+    font-weight: 600;
     box-shadow: none;
-    padding: 0.8rem 1.2rem;
-    background: linear-gradient(
-      150deg,
-      hsl(var(--bg-900) / 0.2),
-      hsl(var(--bg-900) / 0.025)
-    );
+    padding: 0 1.6rem;
+    border-radius: 9999px;
+    height: 4rem;
+    background-color: hsl(var(--bg-300));
     &:disabled {
       background-color: hsl(var(--text-900) / 0.05);
       color: hsl(var(--text-300));
     }
     &--Submit {
-      background: linear-gradient(
-        150deg,
-        hsl(var(--theme-500) / 0.5),
-        hsl(var(--theme-500) / 0.025)
-      );
+      background-color: hsl(var(--theme-500));
       color: #fff;
     }
   }

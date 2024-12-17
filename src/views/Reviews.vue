@@ -1,6 +1,5 @@
 <template>
   <div class="AnimeReviews">
-    <!-- <KeywordReviews class="AnimeReviews__Write" /> -->
     <ReactionCombo
       class="AnimeReviews__Write"
       type="review"
@@ -11,14 +10,14 @@
       ref="$ReactionCombo"
       @delete="clearKeywords"
     >
-      <template #extra-method="{ writeable }">
+      <template #extra-method>
         <KeywordGenerator
           :user
           class="AnimeReviews__Keyword"
           v-model:keywords="keywords"
-          :editmode="!writeable"
-          @save="updateKeywords"
+          @save="saveKeywords"
           @revert="revertKeywords"
+          :reset-disabled
         />
       </template>
       <template #title>리뷰</template>
@@ -33,7 +32,7 @@ import { useRoute } from "vue-router";
 import { where } from "firebase/firestore";
 
 import { useAuth } from "@/store/auth";
-import { Read, Update } from "@/api/reaction";
+import { Read, Update, Create } from "@/api/reaction";
 
 import { useHead } from "@/composables/head";
 
@@ -49,31 +48,36 @@ const user = computed(() => auth.user);
 
 const keywords = ref([]);
 const myDoc = ref(null);
-watchEffect(
-  async () => {
-    if (!user.value) return;
+watchEffect(async () => {
+  if (!user.value) return;
 
-    myDoc.value = await Read(
-      { parent: { title: route.query.modal }, type: "review" },
-      where("uid", "==", user.value?.uid)
-    );
-    if (myDoc.value.reactions.length === 0) return;
+  myDoc.value = await Read(
+    { parent: { title: route.query.modal }, type: "review" },
+    where("uid", "==", user.value?.uid)
+  );
+  if (myDoc.value.reactions.length === 0) return;
 
-    const { keywords: _keywords } = myDoc.value.reactions[0];
-    keywords.value = _keywords;
-  },
-  { immediate: true }
-);
+  const { keywords: _keywords } = myDoc.value.reactions[0];
+  keywords.value = _keywords;
+});
 
 const $ReactionCombo = ref(null);
-async function updateKeywords() {
-  const { _id, content } = myDoc.value.reactions[0];
-  await Update({
-    id: _id,
-    type: "review",
-    keywords: keywords.value,
-    content,
-  });
+async function saveKeywords() {
+  if (myDoc.value.reactions.length === 0) {
+    await Create({
+      parent: { title: route.query.modal },
+      type: "review",
+      keywords: keywords.value,
+    });
+  } else {
+    const { _id, content } = myDoc.value.reactions[0];
+    await Update({
+      id: _id,
+      type: "review",
+      keywords: keywords.value,
+      content,
+    });
+  }
   await $ReactionCombo.value.sync();
 }
 
@@ -84,6 +88,14 @@ function revertKeywords() {
 function clearKeywords() {
   keywords.value = [];
 }
+
+const resetDisabled = computed(() => {
+  return (
+    !myDoc.value ||
+    myDoc.value.reactions.length === 0 ||
+    keywords.value === myDoc.value.reactions[0].keywords
+  );
+});
 </script>
 
 <style lang="scss" scoped>

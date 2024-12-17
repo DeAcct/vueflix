@@ -29,7 +29,6 @@
         type="button"
         component="button"
         class="KeywordGenerator__Button KeywordGenerator__Button--Save"
-        v-if="editmode"
         @click="updateKeywords"
       >
         <template #text>저장</template>
@@ -61,8 +60,8 @@
       type="button"
       component="button"
       @click="revertKeywords"
-      v-if="editmode"
       class="KeywordGenerator__Reset"
+      :disabled="resetDisabled"
     >
       <template #text>되돌리기</template>
     </VueflixBtn>
@@ -105,7 +104,7 @@ const props = defineProps({
   user: {
     type: Object,
   },
-  editmode: {
+  resetDisabled: {
     type: Boolean,
   },
 });
@@ -267,6 +266,9 @@ function addNewKeyword() {
     box-shadow: none;
     border-top: 1px solid hsl(var(--text-100));
     margin-top: 1rem;
+    &:disabled {
+      color: hsl(var(--bg-400));
+    }
   }
 }
 @media (hover: hover) and (pointer: fine) {

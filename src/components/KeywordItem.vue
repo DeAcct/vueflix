@@ -14,7 +14,8 @@
         <template #icon-name>
           {{ state !== "none" ? STATE_MAP[state] : undefined }}
         </template>
-        <IconThumbs />
+        <IconThumbs v-if="state !== 'none'" />
+        <IconNeutral v-else />
       </IconBase>
       <slot name="text"></slot>
     </component>
@@ -39,8 +40,9 @@ const VALID_STATE = ["positive", "negative", "none"];
 import { useFirstCapital } from "../composables/formatter";
 
 import IconBase from "@/components/IconBase.vue";
-import IconThumbs from "./icons/IconThumbs.vue";
 import IconClose from "./icons/IconClose.vue";
+import IconThumbs from "./icons/IconThumbs.vue";
+import IconNeutral from "./icons/IconNeutral.vue";
 
 const props = defineProps({
   state: {
@@ -88,22 +90,12 @@ function requestDelete() {
   &--Negative {
     --state-rotate: 180deg;
   }
-  &--None {
-    --keyword-icon-width: 0;
-  }
-  &:not(&--None) {
-    --icon-margin: 0.2rem;
-  }
 
   &__TextWithState {
     display: flex;
     align-items: center;
     font-size: inherit;
     font-weight: 700;
-    // padding: {
-    //   left: 1.2rem;
-    //   right: 0.8rem;
-    // }
     color: inherit;
     height: calc(var(--keyword-radius) * 2);
     transition: background-color 150ms ease-out;
@@ -111,12 +103,7 @@ function requestDelete() {
   &__Delete {
     display: flex;
     align-items: center;
-    // background-color: hsl(var(--bg-300));
     height: calc(var(--keyword-radius) * 2);
-    // padding: {
-    //   left: 0.8rem;
-    //   right: 1.2rem;
-    // }
     position: relative;
     &::before {
       content: "";
@@ -129,7 +116,8 @@ function requestDelete() {
   &__Icon {
     width: 2rem;
     height: 2rem;
-    margin-right: var(--icon-margin);
+    margin-right: 0.2rem;
+    transition: none;
     &--Thumbs {
       width: var(--keyword-icon-width, 2rem);
       rotate: var(--state-rotate);

@@ -22,28 +22,6 @@
         </KeywordItem>
       </ul>
     </div>
-    <!-- <ul class="KeywordFilter__List KeywordFilter__List--None">
-      <KeywordItem
-        v-for="{ state, text } of keywordFilter('none', keywords)"
-        :key="text"
-        :state
-        read-only
-        class="KeywordFilter__KeywordItem"
-      >
-        <template #text># {{ text }}</template>
-      </KeywordItem>
-    </ul>
-    <ul class="KeywordFilter__List KeywordFilter__List--Negative">
-      <KeywordItem
-        v-for="{ state, text } of keywordFilter('negative', keywords)"
-        :key="text"
-        :state
-        read-only
-        class="KeywordFilter__KeywordItem"
-      >
-        <template #text># {{ text }}</template>
-      </KeywordItem>
-    </ul> -->
   </div>
 </template>
 
@@ -64,18 +42,19 @@ const props = defineProps({
   },
 });
 
-// {[state]: keywords}
 const _keywords = computed(() => {
-  return props.keywords.reduce((acc, keyword) => {
+  // sort keywords by [positive, none, negative]
+  const order = { positive: 1, none: 2, negative: 3 };
+  const sorted = props.keywords.toSorted(
+    (a, b) => order[a.state] - order[b.state]
+  );
+
+  return sorted.reduce((acc, keyword) => {
     acc[keyword.state] = acc[keyword.state] || [];
     acc[keyword.state].push(keyword);
     return acc;
   }, {});
 });
-
-// function keywordFilter(state, keyword) {
-//   return keyword.filter(({ state: _state }) => _state === state);
-// }
 </script>
 
 <style lang="scss" scoped>
@@ -98,7 +77,7 @@ const _keywords = computed(() => {
   &__List {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    gap: 0.4rem;
   }
   &__Item {
     --keyword-radius: 0;
