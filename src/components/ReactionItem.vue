@@ -18,7 +18,6 @@
         </template>
       </Transition>
     </div>
-    <slot name="tags"></slot>
     <div class="ReactionItem__Actions" v-if="actions">
       <UpdownReaction
         :parent="reactionData._id"
@@ -41,7 +40,7 @@
           v-if="mode === 'edit'"
           @click="updateReaction"
           class="ReactionItem__ActionItem ReactionItem__ActionItem--Submit"
-          :disabled="!editValue || notEdited"
+          :disabled="completlyEmpty || notEdited"
           type="button"
         >
           수정
@@ -111,6 +110,10 @@ function editValueChange(e) {
   editValue.value = e.target.value;
 }
 
+// const disabledEdit = computed(() => {
+//   return !editValue.value || editValue.value.length < 1;
+// });
+
 const mode = ref("show");
 function editTrigger() {
   // 수정을 그냥 취소할 때 키보드단축키 재활성화
@@ -128,14 +131,17 @@ const user = computed(() => auth.user);
 const notEdited = computed(() => {
   return temporalRemoveTimeFlag() === editValue.value;
 });
+const completlyEmpty = computed(() => {
+  return !(editValue.value || props.reactionData.keywords.length > 0);
+});
 async function updateReaction() {
-  if (!editValue.value) {
-    return;
-  }
-  mode.value = "show";
   if (notEdited.value) {
     return;
   }
+  if (completlyEmpty.value) {
+    return;
+  }
+  mode.value = "show";
   emits("mutate", "update", {
     id: props.reactionData._id,
     content: editValue.value,
@@ -170,7 +176,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 2rem;
 
   &__Content {
     margin: 1.4rem 0 0.4rem;
@@ -235,7 +240,7 @@ onMounted(() => {
     padding: 0 1.6rem;
     border-radius: 9999px;
     height: 4rem;
-    background-color: hsl(var(--bg-300));
+    background-color: hsl(var(--bg-200));
     &:disabled {
       background-color: hsl(var(--text-900) / 0.05);
       color: hsl(var(--text-300));

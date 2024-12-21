@@ -153,7 +153,7 @@ const children = [
   },
   {
     name: "reviews",
-    tabName: "사용자 평",
+    tabName: "키워드 & 리뷰",
     component: Reviews,
   },
 ];
@@ -302,6 +302,7 @@ onUnmounted(() => {
   &__TabIndicator {
     width: calc(v-bind("indicatorTo.width") * 1px);
     height: 0.2rem;
+    border-radius: 9999px;
     background-color: hsl(var(--theme-500));
     position: absolute;
     bottom: 0;

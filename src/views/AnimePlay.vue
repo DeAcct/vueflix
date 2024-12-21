@@ -67,9 +67,7 @@
       class="AnimePlay__Parts"
       :class="mode === 'theater' && 'AnimePlay__Parts--Theater'"
     >
-      <h3 class="AnimePlay__EpisodesCounter">
-        {{ episodeCounter }}개의 에피소드
-      </h3>
+      <h3 class="AnimePlay__PartTitle">{{ episodeCounter }}개의 에피소드</h3>
       <div class="AnimePlay__ScrollContainer">
         <Episodes
           :anime-info
@@ -82,7 +80,6 @@
     <ReactionCombo
       class="AnimePlay__Comments"
       type="comment"
-      title-tag="h3"
       :parent="{
         title: route.params.title,
         part: route.params.part,
@@ -93,7 +90,9 @@
       track-target
       :time
     >
-      <template #title>댓글</template>
+      <template #title="{ counter }">
+        <h2 class="AnimePlay__PartTitle">댓글 {{ counter }}개</h2>
+      </template>
       <template #description>
         <div class="AnimePlay__StickyPrevent">
           <AccordionGroup open class="AnimePlay__Description">
@@ -393,7 +392,7 @@ const { state: scrollState } = useScroll();
     border-radius: calc(var(--global-radius) * 4);
     margin-bottom: 4rem;
   }
-  &__EpisodesCounter {
+  &__PartTitle {
     font-size: 1.6rem;
   }
   &__ScrollContainer {
@@ -423,8 +422,9 @@ const { state: scrollState } = useScroll();
     --accordion-bg: transparent;
     --accordion-sticky-top: 0;
     --accordion-title-weight: 700;
-    // --accordion-title-padding: 1.2rem 0;
     background-color: hsl(var(--bg-200));
+    border-radius: 2rem;
+    margin: 1.6rem 0 0.8rem;
   }
   &__DescList {
     display: flex;
@@ -555,7 +555,7 @@ const { state: scrollState } = useScroll();
         margin-top: 2rem;
       }
     }
-    &__EpisodesCounter {
+    &__PartTitle {
       font-size: 1.7rem;
       position: sticky;
       z-index: 2;

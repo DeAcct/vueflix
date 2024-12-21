@@ -44,7 +44,7 @@ import { useAuth } from "@/store/auth";
  * }} option 리액션의 내용을 받습니다.
  * @returns {Promise<Reaction>} 작업이 완료되면 생성된 리액션 객체를 반환합니다.
  */
-export async function Create({ content, parent, type, keywords }) {
+export async function Create({ content, parent, type }) {
   const auth = useAuth();
   const user = computed(() => auth.user);
 
@@ -56,9 +56,9 @@ export async function Create({ content, parent, type, keywords }) {
   }
 
   // - 내용이 없는 경우
-  if (!(content || keywords.length > 0)) {
-    console.error("저장할 키워드나 내용이 없습니다.");
-    return { error: "no-keywords-or-content" };
+  if (!content) {
+    console.error("비어있는 리액션을 생성할 수 없습니다.");
+    return { error: "blank-content" };
   }
 
   // - 이미 해당 애니의 리뷰를 작성한 적이 있는 경우
@@ -87,10 +87,7 @@ export async function Create({ content, parent, type, keywords }) {
     time: new Date(),
     type,
     isEdited: false,
-    keywords: keywords || [],
   };
-
-  console.log(newItem);
 
   // 문서의 이름을 난수로 생성
   const newDoc = doc(collection(db, "reaction"));
@@ -158,7 +155,7 @@ export async function Read({ parent, type }, ...queryOption) {
  *  type: "comment" | "review",
  * }} option 수정할 리액션의 id와 새 내용을 받습니다.
  */
-export async function Update({ id, content, type, keywords }) {
+export async function Update({ id, content, type }) {
   const auth = useAuth();
   const user = computed(() => auth.user);
   if (!user.value) {
@@ -176,7 +173,6 @@ export async function Update({ id, content, type, keywords }) {
     {
       content: _content,
       isEdited: true,
-      keywords,
     },
     { merge: true }
   );

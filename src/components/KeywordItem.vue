@@ -1,24 +1,8 @@
 <template>
-  <li class="KeywordItem" :class="`KeywordItem--${useFirstCapital(state)}`">
-    <component
-      class="KeywordItem__TextWithState"
-      type="button"
-      @click="infiniteChange"
-      :is="readOnly ? 'div' : 'button'"
-    >
-      <IconBase
-        class="KeywordItem__Icon KeywordItem__Icon--Thumbs"
-        role="presentation"
-        v-if="icon"
-      >
-        <template #icon-name>
-          {{ state !== "none" ? STATE_MAP[state] : undefined }}
-        </template>
-        <IconThumbs v-if="state !== 'none'" />
-        <IconNeutral v-else />
-      </IconBase>
+  <li class="KeywordItem">
+    <span class="KeywordItem__Text">
       <slot name="text"></slot>
-    </component>
+    </span>
     <button
       class="KeywordItem__Delete"
       type="button"
@@ -41,8 +25,6 @@ import { useFirstCapital } from "../composables/formatter";
 
 import IconBase from "@/components/IconBase.vue";
 import IconClose from "./icons/IconClose.vue";
-import IconThumbs from "./icons/IconThumbs.vue";
-import IconNeutral from "./icons/IconNeutral.vue";
 
 const props = defineProps({
   state: {
@@ -60,18 +42,8 @@ const props = defineProps({
   },
 });
 
-const STATE_MAP = {
-  positive: "긍정",
-  negative: "부정",
-};
+const emits = defineEmits(["request-delete"]);
 
-const emits = defineEmits(["update:state", "request-delete"]);
-function infiniteChange() {
-  const currentIndex = VALID_STATE.indexOf(props.state);
-  const nextIndex = (currentIndex + 1) % VALID_STATE.length;
-  const nextState = VALID_STATE[nextIndex];
-  emits("update:state", nextState);
-}
 function requestDelete() {
   emits("request-delete");
 }
@@ -87,11 +59,8 @@ function requestDelete() {
   overflow: hidden;
   background-color: hsl(var(--bg-300));
   padding: 0 1.2rem;
-  &--Negative {
-    --state-rotate: 180deg;
-  }
 
-  &__TextWithState {
+  &__Text {
     display: flex;
     align-items: center;
     font-size: inherit;
@@ -111,16 +80,6 @@ function requestDelete() {
       height: var(--keyword-radius);
       background-color: hsl(var(--text-300));
       margin: 0 0.8rem;
-    }
-  }
-  &__Icon {
-    width: 2rem;
-    height: 2rem;
-    margin-right: 0.2rem;
-    transition: none;
-    &--Thumbs {
-      width: var(--keyword-icon-width, 2rem);
-      rotate: var(--state-rotate);
     }
   }
 }

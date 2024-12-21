@@ -167,7 +167,7 @@ function clear() {
 
 <style lang="scss" scoped>
 .AnimeEpisodes {
-  margin-top: 2rem;
+  padding-top: 2rem;
   flex-grow: 1;
   gap: 1.6rem;
   display: flex;
@@ -331,7 +331,6 @@ function clear() {
 
 @media screen and (min-width: 1080px) {
   .AnimeEpisodes {
-    margin-top: 2rem;
     gap: 1.2rem;
   }
   .ClearMaratonAlert {

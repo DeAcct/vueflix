@@ -1,86 +1,67 @@
 <template>
   <section class="ReactionCombo">
-    <template v-if="showTitle">
-      <component :is="titleTag" class="ReactionCombo__Title"
-        ><slot name="title"></slot
-        ><span class="ReactionCombo__Counter">{{ reactions.allCount }}</span
-        ><span class="ReactionCombo__BetaLabel">Beta</span></component
+    <slot name="title" :counter="reactions.allCount"></slot>
+    <slot name="description"></slot>
+    <LoginWidget
+      v-if="!user"
+      :btn-func="goAuth"
+      class="ReactionCombo__LoginRequired"
+    >
+      <template #text>
+        <h2>로그인하고 이 작품을 평가해보세요</h2>
+      </template>
+      <template #login-state-text>로그인</template>
+    </LoginWidget>
+    <WriteReaction
+      class="ReactionCombo__TextArea"
+      :class="writeable && 'ReactionCombo__TextArea--Show'"
+      @mutate="onMutate"
+      :type
+      :parent
+      @interact="setInteract"
+      :time
+    />
+    <TransitionGroup
+      tag="ul"
+      name="reaction-list"
+      class="ReactionCombo__List"
+      :class="reactions.allCount !== 0 && 'ReactionCombo__List--Exist'"
+    >
+      <ReactionItem
+        v-for="reaction in reactions.visible"
+        :key="reaction._id"
+        :reaction-data="reaction"
+        :user="user"
+        @mutate="onMutate"
+        @interact="setInteract"
+        @meta-modal="onMetaModal"
+        class="ReactionCombo__Item"
+        :class="
+          reaction._id === route.query.reaction && 'ReactionCombo__Item--Blink'
+        "
+        actions
+        :track-target="trackTarget && reaction._id === route.query.reaction"
       >
-    </template>
-    <div class="ReactionCombo__New">
-      <div class="ReactionCombo__Write">
-        <slot name="description"></slot>
-        <slot name="extra-method"></slot>
-        <LoginWidget
-          v-if="!user"
-          :btn-func="goAuth"
-          class="ReactionCombo__LoginRequired"
-        >
-          <template #text>
-            <h2>로그인하고 이 작품을 평가해보세요</h2>
-          </template>
-          <template #login-state-text>로그인</template>
-        </LoginWidget>
-        <WriteReaction
-          class="ReactionCombo__TextArea"
-          :class="writeable && 'ReactionCombo__TextArea--Show'"
-          @mutate="onMutate"
-          :type
-          :parent
-          @interact="setInteract"
-          :time
-        />
-      </div>
-    </div>
-    <div class="ReactionCombo__List">
-      <TransitionGroup
-        tag="ul"
-        name="reaction-list"
-        class="ReactionCombo__List"
-        :class="reactions.allCount !== 0 && 'ReactionCombo__List--Exist'"
-      >
-        <ReactionItem
-          v-for="reaction in reactions.visible"
-          :key="reaction._id"
-          :reaction-data="reaction"
-          :user="user"
-          @mutate="onMutate"
-          @interact="setInteract"
-          @meta-modal="onMetaModal"
-          class="ReactionCombo__Item"
-          :class="
-            reaction._id === route.query.reaction &&
-            'ReactionCombo__Item--Blink'
-          "
-          actions
-          :track-target="trackTarget && reaction._id === route.query.reaction"
-        >
-          <template #meta="{ self, data, time }">
-            <ReactionMeta :self :data>
-              <template #edited>
-                {{ reaction.isEdited ? " &middot; 수정됨" : "" }}
-              </template>
-              <template #time>{{ time }}</template>
-            </ReactionMeta>
-          </template>
-          <template #tags>
-            <template v-if="reaction.keywords">
-              <KeywordFilter :keywords="reaction.keywords" />
+        <template #meta="{ self, data, time }">
+          <ReactionMeta :self :data>
+            <template #edited>
+              {{ reaction.isEdited ? " &middot; 수정됨" : "" }}
             </template>
-          </template>
-          <template #content>
-            <ReactionParser
-              :content="reaction.content"
-              @request-teleport="requestTeleport"
-              class="ReactionCombo__Content"
-            />
-          </template>
-          <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
-        </ReactionItem>
-      </TransitionGroup>
-      <div class="ReactionCombo__End" ref="$ReadMore" v-if="!isLastPage">
-        <LoadAnimation class="ReactionCombo__MoreLoadAnimation" />
-      </div>
+            <template #time>{{ time }}</template>
+          </ReactionMeta>
+        </template>
+        <template #content>
+          <ReactionParser
+            :content="reaction.content"
+            @request-teleport="requestTeleport"
+            class="ReactionCombo__Content"
+          />
+        </template>
+        <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
+      </ReactionItem>
+    </TransitionGroup>
+    <div class="ReactionCombo__End" ref="$ReadMore" v-if="!isLastPage">
+      <LoadAnimation class="ReactionCombo__MoreLoadAnimation" />
     </div>
     <Teleport to="#Overay">
       <NativeDialog ref="$CheckModal" class="CheckModal" shade>
@@ -143,7 +124,7 @@
 // 리뷰는 애니메이션에 작성하는 항목
 // 코멘트는 각 에피소드마다 작성하는 항목
 
-import { computed, ref, watch, unref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { endAt, limit, orderBy, startAfter, where } from "firebase/firestore";
 
@@ -167,8 +148,6 @@ import ReactionItem from "@/components/ReactionItem.vue";
 import ReactionParser from "@/components/ReactionParser.vue";
 import StatCard from "@/components/StatCard.vue";
 import ReactionMeta from "@/components/ReactionMeta.vue";
-import KeywordItem from "@/components/KeywordItem.vue";
-import KeywordFilter from "./KeywordFilter.vue";
 
 const props = defineProps({
   type: {
@@ -176,13 +155,6 @@ const props = defineProps({
     required: true,
     validator(value) {
       return ["comment", "review"].includes(value);
-    },
-  },
-  titleTag: {
-    type: String,
-    required: true,
-    validator(value) {
-      return ["h1", "h2", "h3", "h4", "h5", "h6"].includes(value);
     },
   },
   parent: {
@@ -201,9 +173,6 @@ const props = defineProps({
   },
   once: {
     type: Boolean,
-  },
-  keywords: {
-    type: Array,
   },
 });
 
@@ -313,14 +282,10 @@ async function onMutate(method, data) {
   if (!user.value) {
     return;
   }
-  const _data = {
-    ...data,
-    keywords: unref(props.keywords),
-  };
   checkModal.value = {
     method,
     text: methodMap[method].text,
-    data: _data,
+    data,
   };
 
   if (method === "create") {
@@ -373,13 +338,11 @@ useIntersection($ReadMore, async () => {
   position: relative;
 
   &__Title {
-    font-size: inherit;
+    font-size: 1.6rem;
     font-weight: 700;
-    margin-bottom: 1.6rem;
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0 var(--reaction-combo-title-padding, 2rem);
   }
   &__BetaLabel {
     font-size: 1.3rem;
@@ -388,31 +351,26 @@ useIntersection($ReadMore, async () => {
   &__Description {
     font-size: 1.3rem;
   }
-  &__New {
-    border-radius: calc(var(--global-radius) + 2rem);
-    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
-    overflow: hidden;
-  }
   &__Write {
     display: flex;
     flex-direction: column;
     width: 100%;
-    margin: 0 auto;
-    > * + * {
-      border-top: 1px solid hsl(var(--bg-300));
-    }
   }
   &__TextArea {
+    border-radius: calc(var(--global-radius) + 2rem);
+    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
     height: 0;
     transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1) allow-discrete;
-    overflow: hidden;
     display: none;
     opacity: 0;
-    margin-top: 2rem;
+    border: 1px solid var(--reaction-combo-write-bg, hsl(var(--bg-200)));
     &--Show {
       height: auto;
       display: block;
       opacity: 1;
+    }
+    &:focus-within {
+      border-color: hsl(var(--text-400));
     }
   }
   &__LoginRequired {
@@ -421,15 +379,17 @@ useIntersection($ReadMore, async () => {
   &__List {
     overflow: hidden;
     border-radius: 0 0 var(--global-radius) var(--global-radius);
-    &--Exist {
-      margin-top: 1px;
-    }
+    margin-top: 2rem;
   }
   &__Item {
     background-color: transparent;
-    &:not(:last-child) {
-      border-bottom: 1px solid hsl(var(--bg-200));
+    // padding: 2rem 0;
+    & + & {
+      border-top: 1px solid hsl(var(--bg-200));
+      padding-top: 2rem;
+      margin-top: 2rem;
     }
+    // Remove padding from the last item
     &--Blink {
       animation: comment-blink 5s ease-out;
     }

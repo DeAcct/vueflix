@@ -7,103 +7,74 @@ import {
   updateDoc,
   increment,
   arrayUnion,
+  arrayRemove,
+  deleteField,
 } from "firebase/firestore";
 
-export function useKeyword(aniTitle) {}
+export async function ReadShared(aniTitle) {
+  const docRef = doc(db, "anime", aniTitle);
+  const animeDoc = await getDoc(docRef);
+  const keyword = animeDoc.data().keyword;
 
-// export function useKeyword(aniTitle) {
-//   const auth = useAuth();
-//   const user = computed(() => auth.user);
+  return keyword;
+}
 
-//   // bind with input[checkbox] data
-//   const userKeyword = ref([]);
-//   watchEffect(() => {
-//     if (!user.value) {
-//       return;
-//     }
-//     const currentData = user.value.keywordReview.find(
-//       (item) => item.aniTitle === aniTitle
-//     );
-//     userKeyword.value = currentData ? currentData.likes : [];
-//   });
+export async function ReadMine(aniTitle) {
+  const auth = useAuth();
+  const user = computed(() => auth.user);
 
-//   async function setKeywordData(e) {
-//     if (!user.value) {
-//       return;
-//     }
-//     const method = e.currentTarget.checked ? 1 : -1;
-//     await setSharedSide({ target: e.currentTarget.value, method });
-//     await setSharedKeywordData();
-//     await setUserSide();
-//     await auth.syncUser();
-//   }
+  const userRef = doc(db, "user", user.value.uid);
+  const userDoc = await getDoc(userRef);
+  const keyword = userDoc.data().keyword[aniTitle];
 
-//   async function setSharedSide({ target, method }) {
-//     const animeUpdateObj = {};
-//     // animeUpdateObj[`keywordReview.${target}.value`] = increment(method);
-//     await updateDoc(doc(db, "anime", aniTitle), {
-//       ["keywordReview." + target + ".value"]: increment(method),
-//     });
-//   }
+  return keyword;
+}
 
-//   async function setUserSide() {
-//     const userRef = doc(db, "user", user.value.uid);
-//     const current = user.value.keywordReview;
-//     const isExist = current.find((item) => item.aniTitle === aniTitle);
-//     if (!isExist) {
-//       await updateDoc(userRef, {
-//         keywordReview: arrayUnion({ aniTitle, likes: userKeyword.value }),
-//       });
-//     } else {
-//       // 이미 애니 제목이 같은 키워드 평가 항목이 존재하는 경우
-//       await updateDoc(userRef, {
-//         keywordReview: current.map((item) => {
-//           if (item.aniTitle !== aniTitle) {
-//             return item;
-//           }
-//           return { ...item, likes: userKeyword.value };
-//         }),
-//       });
-//     }
-//   }
+export async function Up(aniTitle, text) {
+  const auth = useAuth();
+  const user = computed(() => auth.user);
 
-//   const sharedKeyword = ref([]);
-//   async function setSharedKeywordData() {
-//     const docRef = doc(db, "anime", aniTitle);
-//     const originData = (await getDoc(docRef)).data().keywordReview;
+  if (!user.value) {
+    console.error("로그인하지 않으면 키워드를 생성할 수 없습니다.");
+    return { error: "not-logged-in" };
+  }
 
-//     sharedKeyword.value = Object.keys(originData)
-//       .map((item) => ({
-//         id: item,
-//         ...originData[`${item}`],
-//       }))
-//       .sort(({ keyword: aKeyword }, { keyword: bKeyword }) => {
-//         if (aKeyword > bKeyword) {
-//           return 1;
-//         }
-//         if (aKeyword < bKeyword) {
-//           return -1;
-//         }
-//         return 0;
-//       });
-//   }
-//   const sharedAll = computed(() =>
-//     sharedKeyword.value.reduce((acc, current) => acc + current.value, 0)
-//   );
-//   const sharedMax = computed(
-//     () =>
-//       sharedKeyword.value.reduce(
-//         (acc, now) => (acc.value > now.value ? acc : now),
-//         {}
-//       ).keyword
-//   );
+  if (!text) {
+    console.error("비어있는 키워드를 생성할 수 없습니다.");
+    return { error: "blank-content" };
+  }
 
-//   return {
-//     userKeyword,
-//     setKeywordData,
-//     sharedKeyword,
-//     sharedAll,
-//     sharedMax,
-//     setSharedKeywordData,
-//   };
-// }
+  const docRef = doc(db, "anime", aniTitle);
+  const userRef = doc(db, "user", user.value.uid);
+
+  await updateDoc(docRef, {
+    keyword: {
+      [text]: increment(1),
+    },
+  });
+  await updateDoc(userRef, {
+    keyword: {
+      [aniTitle]: arrayUnion(text),
+    },
+  });
+}
+
+export async function Down(aniTitle, text) {
+  const auth = useAuth();
+  const user = computed(() => auth.user);
+
+  const docRef = doc(db, "anime", aniTitle);
+  const userRef = doc(db, "user", user.value.uid);
+
+  const animeDoc = await getDoc(docRef);
+  const count = animeDoc.data().keyword[text];
+
+  await updateDoc(docRef, {
+    [`keyword.${text}`]: count === 1 ? deleteField() : increment(-1),
+  });
+  await updateDoc(userRef, {
+    keyword: {
+      [aniTitle]: arrayRemove(text),
+    },
+  });
+}
