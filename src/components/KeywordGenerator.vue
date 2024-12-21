@@ -58,7 +58,7 @@ import KeywordItem from "@/components/KeywordItem.vue";
 import IconBase from "@/components/IconBase.vue";
 import IconPlus from "./icons/IconPlus.vue";
 
-const keywordItems = defineModel("keywords");
+const keywordItems = defineModel("keywords", { default: [] });
 
 const emit = defineEmits(["clear", "up", "down"]);
 

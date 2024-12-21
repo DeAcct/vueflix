@@ -1,12 +1,6 @@
 <template>
   <section class="KeywordReviews inner">
     <h3 class="KeywordReviews__Title">키워드</h3>
-    <!-- <KeywordSelector
-        v-if="user"
-        v-model:selected="userKeyword"
-        @new-check="setKeywordData"
-        class="KeywodReviews__My"
-      /> -->
     <div class="KeywordReviews__Chart">
       <template v-if="sharedAll > 0">
         <LinearChart :data="sharedKeyword" class="sub-widget">
