@@ -57,6 +57,7 @@ useHead({ title: `${route.query.modal} 리뷰` });
 
   &__Title {
     font-size: 1.6rem;
+    margin-bottom: 1.2rem;
   }
 
   &__Keyword {

@@ -48,14 +48,10 @@ export async function Up(aniTitle, text) {
   const userRef = doc(db, "user", user.value.uid);
 
   await updateDoc(docRef, {
-    keyword: {
-      [text]: increment(1),
-    },
+    [`keyword.${text}`]: increment(1),
   });
   await updateDoc(userRef, {
-    keyword: {
-      [aniTitle]: arrayUnion(text),
-    },
+    [`keyword.${aniTitle}`]: arrayUnion(text),
   });
 }
 
@@ -73,8 +69,6 @@ export async function Down(aniTitle, text) {
     [`keyword.${text}`]: count === 1 ? deleteField() : increment(-1),
   });
   await updateDoc(userRef, {
-    keyword: {
-      [aniTitle]: arrayRemove(text),
-    },
+    [`keyword.${aniTitle}`]: arrayRemove(text),
   });
 }
