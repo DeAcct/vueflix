@@ -1,7 +1,16 @@
 <template>
   <div class="AnimeReviews">
+    <section class="AnimeReviews__Item" v-if="!user">
+      <LoginWidget :btn-func="goAuth" class="AnimeReviews__LoginRequired">
+        <template #text>
+          <h2>로그인하고 이 작품을 평가해보세요</h2>
+        </template>
+        <template #login-state-text>로그인</template>
+      </LoginWidget>
+    </section>
+
     <KeywordCombo
-      class="AnimeReviews__Method"
+      class="AnimeReviews__Item"
       :parent="{ title: route.query.modal }"
     >
       <template #title>
@@ -10,9 +19,8 @@
     </KeywordCombo>
 
     <ReactionCombo
-      class="AnimeReviews__Method"
+      class="AnimeReviews__Item"
       type="review"
-      title-tag="h3"
       :parent="{ title: route.query.modal }"
       once
     >
@@ -26,15 +34,27 @@
 </template>
 
 <script setup>
-import { useRoute } from "vue-router";
+import { computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+import { useAuth } from "@/store/auth";
 
 import { useHead } from "@/composables/head";
 
-import ReactionCombo from "@/components/ReactionCombo.vue";
 import KeywordCombo from "@/components/KeywordCombo.vue";
+import ReactionCombo from "@/components/ReactionCombo.vue";
+import LoginWidget from "@/components/LoginWidget.vue";
 
 const route = useRoute();
 useHead({ title: `${route.query.modal} 리뷰` });
+
+const router = useRouter();
+function goAuth() {
+  router.push("/auth");
+}
+
+const auth = useAuth();
+const user = computed(() => auth.user);
 </script>
 
 <style lang="scss" scoped>
@@ -51,8 +71,7 @@ useHead({ title: `${route.query.modal} 리뷰` });
       left: 2rem;
       right: 2rem;
     }
-    width: calc(100% - 4rem);
-    border-radius: calc(var(--global-radius) * 6 - 2rem);
+    border-radius: calc(var(--global-radius) + 2rem);
   }
 
   &__Title {
@@ -64,7 +83,8 @@ useHead({ title: `${route.query.modal} 리뷰` });
     border-radius: calc(var(--global-radius) + 2rem);
   }
 
-  &__Method {
+  &__Item {
+    width: 100%;
     padding: 0 2rem;
     & + & {
       border-top: 1px solid hsl(var(--bg-200));

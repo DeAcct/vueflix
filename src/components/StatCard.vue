@@ -15,28 +15,19 @@
       class="StatCard__Image"
       skelleton
     />
-    <section class="StatCard__Membership">
-      <LevelRenderer
-        :init-date="data?.membership?.initDate"
-        to="/my/level"
-        class="StatCard__Item StatCard__Item--Level"
-        :class="{ 'loading-target': loading }"
-      />
-      <slot />
-    </section>
+
+    <MembershipCard :data class="StatCard__Level" />
   </section>
 </template>
 
 <script setup>
-import { watch, ref } from "vue";
-import LevelRenderer from "@/components/LevelRenderer.vue";
-import OptimizedMedia from "@/components/OptimizedMedia.vue";
+import { watch, ref, computed } from "vue";
 import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/utility/firebase";
 
-import { db } from "../utility/firebase";
-import IconBase from "./IconBase.vue";
-import IconArrowNext from "./icons/IconArrowNext.vue";
-import HistoryInfo from "./HistoryInfo.vue";
+import HistoryInfo from "@/components/HistoryInfo.vue";
+import OptimizedMedia from "@/components/OptimizedMedia.vue";
+import MembershipCard from "@/components/membership/MembershipCard.vue";
 
 const props = defineProps({
   uid: {
@@ -74,6 +65,18 @@ watch(
   flex-wrap: wrap;
   justify-content: space-between;
 
+  &__Nickname {
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: 900;
+    &.loading-target {
+      width: 12rem;
+      height: 2rem;
+      text-overflow: hidden;
+      color: transparent;
+    }
+  }
   &__Info {
     flex: 1;
     display: flex;
@@ -85,16 +88,6 @@ watch(
     --radius: 50%;
     width: 8rem;
     height: 8rem;
-  }
-  &__Nickname {
-    font-size: 2rem;
-    font-weight: 900;
-    &.loading-target {
-      width: 12rem;
-      height: 2rem;
-      text-overflow: hidden;
-      color: transparent;
-    }
   }
   &__Email {
     font-size: 1.4rem;
@@ -108,12 +101,16 @@ watch(
     }
   }
 
-  &__Membership {
-    width: 100%;
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
-    gap: 1.2rem;
+  &__Level {
+    flex-basis: 100%;
+    background-color: hsl(var(--bg-200));
+    padding: {
+      left: 1.2rem;
+      right: 2rem;
+    }
+    border-radius: calc(var(--global-radius) + 2rem);
+    height: 6rem;
+    color: hsl(var(--text-700));
   }
 }
 </style>

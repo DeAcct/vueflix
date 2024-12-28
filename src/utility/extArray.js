@@ -29,3 +29,26 @@ export function deepReverse(arr, ...sortKeys) {
 
   return reversedArr;
 }
+
+export function gausArray(obj) {
+  return new Proxy(obj, {
+    get(target, index) {
+      const _index = Number(index);
+
+      if (isNaN(_index)) {
+        throw new Error("숫자 인덱스만 가능합니다.");
+      }
+
+      // 인덱스가 순서대로 되어 있지 않은 경우 대비 정렬
+      const indexes = Object.keys(target)
+        .map(Number)
+        .sort((a, b) => a - b);
+
+      for (const index of indexes) {
+        if (_index < index) {
+          return { value: target[index], key: index };
+        }
+      }
+    },
+  });
+}

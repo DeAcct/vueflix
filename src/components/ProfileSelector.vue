@@ -141,6 +141,7 @@ const preview = ref("");
   &__My {
     display: flex;
     width: 100%;
+    align-items: center;
     justify-content: center;
     gap: 1rem;
     border-top: 1px solid hsl(var(--bg-200));

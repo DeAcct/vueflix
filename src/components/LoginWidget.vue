@@ -34,7 +34,6 @@ defineProps({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: calc(var(--global-radius) * 6);
   padding: {
     top: 2rem;
     bottom: 2rem;
@@ -58,9 +57,11 @@ defineProps({
   }
 
   &__LoginButton {
-    border-radius: var(--global-radius);
+    border-radius: 9999px;
     background-color: hsl(var(--theme-500));
     color: #fff;
+    font-size: 1.6rem;
+    box-shadow: none;
   }
 }
 </style>

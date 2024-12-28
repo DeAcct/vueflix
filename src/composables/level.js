@@ -1,108 +1,118 @@
 import { computed, toValue } from "vue";
 import { useAuth } from "@/store/auth";
+import { gausArray } from "../utility/extArray";
 
-const LEVEL_MAP = [
-  {
-    maxDays: 0,
-    maxLikeit: 0,
-    levelName: "뉴비",
-    styleIdentifier: "baby",
-  },
-  {
-    maxDays: 29,
-    maxLikeit: 39,
-    levelName: "모험가",
-    styleIdentifier: "traveler",
-  },
-  {
-    maxDays: 99,
-    maxLikeit: 49,
-    levelName: "용사",
-    styleIdentifier: "braver",
-  },
-  {
-    maxDays: 282,
-    maxLikeit: 99,
-    levelName: "임팩트",
-    styleIdentifier: "impact",
-  },
-  {
-    maxDays: 345,
-    maxLikeit: 149,
-    levelName: "인플루언서",
-    styleIdentifier: "influencer",
-  },
-  {
-    maxDays: 764,
-    maxLikeit: 299,
-    levelName: "아이돌",
-    styleIdentifier: "idol",
-  },
-  {
-    maxDays: 999,
-    maxLikeit: 999,
-    levelName: "애니필",
-    styleIdentifier: "aniphile",
-  },
-  {
-    maxDays: Infinity,
-    maxLikeit: Infinity,
-    levelName: "전문가",
-    styleIdentifier: "expert",
-  },
-];
+// const LEVEL_MAP = [
+//   {
+//     maxDays: 0,
+//     maxLikeit: 0,
+//     levelName: "사관생도",
+//   },
+//   {
+//     maxDays: 29,
+//     maxLikeit: 39,
+//     levelName: "소위",
+//   },
+//   {
+//     maxDays: 99,
+//     maxLikeit: 49,
+//     levelName: "중위",
+//   },
+//   {
+//     maxDays: 282,
+//     maxLikeit: 99,
+//     levelName: "대위",
+//   },
+//   {
+//     maxDays: 345,
+//     maxLikeit: 149,
+//     levelName: "소령",
+//   },
+//   {
+//     maxDays: 764,
+//     maxLikeit: 299,
+//     levelName: "중령",
+//   },
+//   {
+//     maxDays: 999,
+//     maxLikeit: 399,
+//     levelName: "대령",
+//   },
+//   {
+//     maxDays: 1528,
+//     maxLikeit: 499,
+//     levelName: "준장",
+//   },
+//   {
+//     maxDays: Infinity,
+//     maxLikeit: Infinity,
+//     levelName: "장군",
+//   },
+// ];
 
-export function useUserLevel(date) {
+// const LEVEL_MAP = {
+//   0: "뉴비",
+//   29: "소위",
+//   99: "중위",
+//   282: "대위",
+//   345: "소령",
+//   764: "중령",
+//   999: "대령",
+//   1528: "준장",
+//   Infinity: "장군",
+// };
+const LEVEL_MAP = gausArray({
+  30: "소위",
+  60: "중위",
+  90: "대위",
+  150: "소령",
+  180: "중령",
+  210: "대령",
+  730: "준장",
+  1000: "장군",
+});
+export const KOR_TO_ENG = {
+  사관생도: "SaGwanSengDo",
+  소위: "SoWi",
+  중위: "JungWi",
+  대위: "DaeWi",
+  소령: "SoRyeong",
+  중령: "JungRyeong",
+  대령: "DaeRyoeng",
+  준장: "JunJang",
+  장군: "Jangun",
+};
+const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
+
+export function useUserLevel(startedDate) {
   // const store = useAuth();
   // const user = computed(() => store.user);
 
-  const level = computed(() => {
-    if (!toValue(date))
-      return {
-        number: 0,
-        text: "뉴비",
-        styleIdentifier: "baby",
-      };
+  const days = computed(() => {
+    if (!toValue(startedDate)) {
+      return 0;
+    }
 
-    const currentMonth = new Date();
-    const initMonth = toValue(date).toDate();
-
-    const ONE_DAY_TO_MILLISECOND = 24 * 60 * 60 * 1000;
-
-    // ::기획자의 영역::
-    // 레벨의 기준
-
-    // 일수를 기준으로.
-    // 오차를 최소화하기 위함
-    // 1개월은 며칠일까? 28일? 29일? 30일? 31일?
-    // 개월수를 기준으로 잡을 경우 오차가 발생할 수밖에 없다.
-
-    // 결제 실패가 3회 이상 반복되거나 멤버십을 직접 종료할 경우 0lv로 초기화
-
-    // 밀리세컨드 단위로 가입일부터의 일수를 계산
-    // (현재 - 가입한 시점) / (24 * 60 * 60 * 1000)
-    // 소수점은 모두 버림
-
-    // 0lv(베이비): 0일(가입 당일)
-    // 1lv(모험가): 1 ~ 29일
-    // 2lv(용사): 30 ~ 99일
-    // 3lv(임팩트): 100 ~ 282일
-    // 4lv(인플루언서): 283 ~ 345일
-    // 5lv(아이돌): 346 ~ 764일
-    // 6lv(애니필): 765 ~ 999일
-    // 7lv(전문가): 1000일 이상
-
-    const subscriptionDays = Math.floor(
-      (currentMonth - initMonth) / ONE_DAY_TO_MILLISECOND
+    return Math.floor(
+      (new Date() - toValue(startedDate).toDate()) / ONE_DAY_IN_MILLISECONDS
     );
-
-    return LEVEL_MAP.map(({ maxDays, levelName, styleIdentifier }, i) => ({
-      number: i,
-      text: levelName,
-      styleIdentifier,
-      maxDays,
-    })).find(({ maxDays }) => subscriptionDays <= maxDays);
   });
 
-  return { level };
+  const level = computed(() => {
+    if (!toValue(startedDate)) {
+      return "사관생도";
+    }
+
+    return days.value ? LEVEL_MAP[days.value] : "사관생도";
+    // const levelInfo = LEVEL_MAP.find(
+    //   ({ maxDays }) => subscriptionDays <= maxDays
+    // );
+    // return {
+    //   text: levelInfo.levelName,
+    //   maxDays: levelInfo.maxDays,
+    // };
+    // return date ? LEVEL_MAP[date] : "사관생도";
+  });
+
+  return { level, eng: KOR_TO_ENG[level.value], days };
 }

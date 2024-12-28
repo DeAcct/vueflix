@@ -1,8 +1,6 @@
 <template>
   <main class="MyApp">
-    <StatCard :uid="user?.uid" class="MyApp__Profile" v-if="user">
-      <MembershipLimit :tier="user?.membership?.tier" class="MyApp__Limit" />
-    </StatCard>
+    <StatCard :uid="user?.uid" class="MyApp__Profile" v-if="user" />
     <RecommendCard v-if="showVerify()">
       <template #title>이메일을 인증해주세요</template>
       <template #text>
@@ -98,14 +96,13 @@ import IconLogin from "@/components/icons/IconLogin.vue";
 import IconMembership from "@/components/icons/IconMembership.vue";
 import IconPurchaseHistory from "@/components/icons/IconPurchaseHistory.vue";
 import IconTheme from "@/components/icons/IconTheme.vue";
-import MembershipLimit from "../components/MembershipLimit.vue";
 
 const viewModel = [
   {
     items: [
       {
         icon: IconMembership,
-        text: "데레 멤버십",
+        text: "애니장교",
         to: "/my/membership",
       },
       {

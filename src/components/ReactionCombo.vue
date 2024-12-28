@@ -2,7 +2,7 @@
   <section class="ReactionCombo">
     <slot name="title" :counter="reactions.allCount"></slot>
     <slot name="description"></slot>
-    <LoginWidget
+    <!-- <LoginWidget
       v-if="!user"
       :btn-func="goAuth"
       class="ReactionCombo__LoginRequired"
@@ -11,7 +11,7 @@
         <h2>로그인하고 이 작품을 평가해보세요</h2>
       </template>
       <template #login-state-text>로그인</template>
-    </LoginWidget>
+    </LoginWidget> -->
     <WriteReaction
       class="ReactionCombo__TextArea"
       :class="writeable && 'ReactionCombo__TextArea--Show'"
@@ -20,6 +20,7 @@
       :parent
       @interact="setInteract"
       :time
+      :user
     />
     <TransitionGroup
       tag="ul"
@@ -187,10 +188,6 @@ const auth = useAuth();
 const user = computed(() => auth.user);
 const reactions = ref({ visible: [], allCount: 0 });
 
-const router = useRouter();
-function goAuth() {
-  router.push("/auth");
-}
 const writeable = ref(true);
 async function setWriteable() {
   if (!props.once) {

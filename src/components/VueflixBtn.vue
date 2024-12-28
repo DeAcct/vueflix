@@ -23,7 +23,8 @@ defineProps({
   position: relative;
   overflow: hidden;
   display: flex;
-  padding: 1rem 1.5rem;
+  padding: 0 1.6rem;
+  height: 4rem;
   justify-content: center;
   align-items: center;
   gap: 0.8rem;

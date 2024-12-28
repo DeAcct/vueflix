@@ -10,6 +10,7 @@
         @blur="setBlur"
         ref="$TextArea"
         :value="reviewData"
+        :disabled="!props.user"
       />
       <div class="WriteReaction__Interaction">
         <div class="WriteReaction__Status">
@@ -70,6 +71,10 @@ const props = defineProps({
     type: [String, Number],
     required: false,
   },
+  user: {
+    type: Object,
+    required: false,
+  },
 });
 
 function setBlur() {
@@ -79,8 +84,10 @@ function setFocus() {
   emits("interact", true);
 }
 
-const placeholder = computed(
-  () => `여기를 눌러 ${REACTION_ENUM_WITH_JOSA[props.type]} 작성하세요.`
+const placeholder = computed(() =>
+  props.user
+    ? `여기를 눌러 ${REACTION_ENUM_WITH_JOSA[props.type]} 작성하세요.`
+    : "리뷰를 작성하려면 먼저 로그인을 해주세요"
 );
 
 const reviewData = ref("");
