@@ -183,7 +183,7 @@ function emailVerifyPostpone() {
   gap: 1.2rem;
 
   &__Profile {
-    width: min(calc(100% - 4rem), 1280px);
+    width: min(calc(100% - 4rem), 41.4rem);
     padding: {
       left: 0;
       right: 0;
