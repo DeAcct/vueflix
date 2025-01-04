@@ -12,8 +12,10 @@
 <script setup>
 import { computed } from "vue";
 
+import { useDeviceGesture } from "@/composables/motion";
 import { KOR_TO_ENG } from "@/composables/level";
 
+import Civilian from "./Civilian.vue";
 import SaGwanSengDo from "./SaGwanSengDo.vue";
 import SoWi from "./SoWi.vue";
 import JungWi from "./JungWi.vue";
@@ -28,6 +30,7 @@ const props = defineProps({
   level: {
     validator(value) {
       return [
+        "민간인",
         "사관생도",
         "소위",
         "중위",
@@ -39,11 +42,12 @@ const props = defineProps({
         "장군",
       ].includes(value);
     },
-    default: "사관생도",
+    default: "민간인",
   },
 });
 
 const LEVEL_MAP = {
+  민간인: Civilian,
   사관생도: SaGwanSengDo,
   소위: SoWi,
   중위: JungWi,
@@ -58,6 +62,8 @@ const LEVEL_MAP = {
 //:class="`MembershipSymbol--${_eng}`"
 const _rank = computed(() => LEVEL_MAP[props.level]);
 const _eng = computed(() => KOR_TO_ENG[props.level]);
+
+const { tilt } = useDeviceGesture(0.01);
 </script>
 
 <style lang="scss" scoped>
@@ -65,7 +71,15 @@ const _eng = computed(() => KOR_TO_ENG[props.level]);
   background-color: hsl(var(--membership-symbol-background) / 0.3);
   fill: hsl(var(--membership-symbol-background));
   border-radius: 9999px;
-  &--SaGwanSengDo {
+  * {
+    transform-origin: center;
+    transform: perspective(3px) rotateX(v-bind("tilt.beta"))
+      rotateY(v-bind("tilt.gamma"));
+    transition: transform 150ms ease-out;
+  }
+
+  &--SaGwanSengDo,
+  &--Civilian {
     --membership-symbol-background: 65 34% 38%;
   }
   &--SoWi {

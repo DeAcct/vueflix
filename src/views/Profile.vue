@@ -187,10 +187,11 @@ function onComplete(e) {
   &__Recommend {
     display: block;
     font-size: 1.4rem;
-    margin-bottom: 0.8rem;
+    margin-bottom: 1.2rem;
   }
   &__Button {
     box-shadow: none;
+    height: auto;
     padding: 0;
     color: hsl(var(--theme-500));
     &:not(:last-child) {

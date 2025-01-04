@@ -1,14 +1,31 @@
 <template>
   <section class="MembershipCard">
-    <MembershipSymbol :level="level.value" class="MembershipCard__Icon" />
-    <div class="MembershipCard__Left">
-      <p class="MembershipCard__Title">애니장교 계급</p>
-      <strong class="MembershipCard__Level">{{ level.value }}</strong>
-    </div>
-    <p class="MembershipCard__Started">
-      데레와 함께
-      <span class="MembershipCard__Counter">{{ days }}일</span>
-    </p>
+    <section class="MembershipCard__Content">
+      <MembershipSymbol :level class="MembershipCard__Icon" />
+      <div class="MembershipCard__Left">
+        <p class="MembershipCard__Title">애니장교 계급</p>
+        <strong class="MembershipCard__Level">{{ level }}</strong>
+      </div>
+      <p class="MembershipCard__Started">
+        데레와 함께
+        <span class="MembershipCard__Counter">{{ days }}일</span>
+      </p>
+    </section>
+    <RouterLink
+      to="/subscribe"
+      class="MembershipCard__Sub"
+      v-if="membership?.tier === 'free'"
+    >
+      <p class="MembershipCard__SubCopy">
+        <strong class="MembershipCard__SubCopyStrong"
+          >믿음직스런 애니장교가 되어보세요</strong
+        >
+        더 많은 애니를 전문적으로 탐색할 수 있어요
+      </p>
+      <IconBase class="MembershipCard__SubIcon">
+        <IconArrowNext />
+      </IconBase>
+    </RouterLink>
   </section>
 </template>
 
@@ -17,7 +34,9 @@ import { computed } from "vue";
 
 import { useUserLevel } from "@/composables/level";
 
-import MembershipSymbol from "@/components/membership/MembershipSymbol.vue";
+import IconBase from "@/components/IconBase.vue";
+import MembershipSymbol from "../membership/MembershipSymbol.vue";
+import IconArrowNext from "../icons/IconArrowNext.vue";
 
 const props = defineProps({
   data: {
@@ -26,15 +45,28 @@ const props = defineProps({
   },
 });
 
-const date = computed(() => props.data?.membership?.initDate);
-const { level, days } = useUserLevel(date);
+const membership = computed(() => props.data?.membership);
+const { level, days } = useUserLevel(membership);
 </script>
 
 <style lang="scss" scoped>
 .MembershipCard {
   display: flex;
-  align-items: center;
-  gap: 1.2rem;
+  flex-direction: column;
+  > * + * {
+    border-top: 1px solid hsl(var(--bg-300));
+  }
+  &__Content {
+    gap: 1.2rem;
+    flex-shrink: 0;
+    height: 6rem;
+    display: flex;
+    align-items: center;
+    padding: {
+      left: 1.2rem;
+      right: 1.6rem;
+    }
+  }
   &__Left {
     display: flex;
     flex-direction: column;
@@ -60,6 +92,30 @@ const { level, days } = useUserLevel(date);
   }
   &__Counter {
     font-weight: 900;
+  }
+
+  &__Sub {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.6rem;
+    height: 6rem;
+  }
+  &__SubCopy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 1.2rem;
+    font-weight: 400;
+  }
+  &__SubCopyStrong {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+  &__SubIcon {
+    width: 1.6rem;
+    height: 1.6rem;
   }
 }
 </style>

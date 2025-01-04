@@ -296,7 +296,7 @@ function onClickWannaSee(aniTitle) {
     margin-right: auto;
   }
   &__Button {
-    border-radius: var(--global-radius);
+    border-radius: 9999px;
     font-size: 1.4rem;
     box-shadow: none;
     &--Install {

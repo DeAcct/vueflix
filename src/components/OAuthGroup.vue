@@ -3,19 +3,18 @@
     <template v-for="({ text, icon }, key) in PROVIDERS" :key="`social-${key}`">
       <button
         class="OAuthGroup__Item"
-        :class="`OAuthGroup__Item--${key}`"
+        :class="`OAuthGroup__Item--${key} ${
+          enabled.includes(key) ? 'OAuthGroup__Item--Connected' : ''
+        }`"
         @click="showModal({ service: text, key })"
         type="button"
       >
         <IconBase>
           <component :is="icon" />
         </IconBase>
-        <p class="OAuthGroup__Text">
+        <p class="OAuthGroup__State">
           {{ text }}
         </p>
-        <strong class="OAuthGroup__State">
-          연결{{ enabled.includes(key) ? "됨" : "안됨" }}
-        </strong>
       </button>
     </template>
     <NativeDialog ref="$root" class="OAuthGroupModal" shade>
@@ -46,6 +45,7 @@
             :hide="['nickname', 'profile']"
             submit-text="연결"
             type="connect"
+            class="OAuthGroupModal__Form"
           />
           <VueflixBtn
             type="button"
@@ -142,25 +142,24 @@ async function toggleOAuth() {
 <style lang="scss" scoped>
 .OAuthGroup {
   display: flex;
-  flex-direction: column;
   gap: 0.8rem;
   &__Item {
-    flex-grow: 1;
     display: flex;
     gap: 0.8rem;
     text-wrap: nowrap;
-    height: 3.6rem;
-    padding: {
-      left: 0.8rem;
-      right: 1.2rem;
-    }
+    height: 4rem;
+    padding-right: 1.6rem;
+    padding-left: 0.8rem;
+    justify-content: center;
     align-items: center;
-    border-radius: var(--global-radius);
+    border-radius: calc(var(--global-radius) + 2rem);
     color: #fff;
     box-shadow: 1px 1px 6px hsl(var(--bg-900) / 0.1);
+    filter: grayscale(1);
 
     &--Email {
       background-color: hsl(var(--theme-500));
+      padding-left: 1.2rem;
     }
     &--Google {
       color: hsl(var(--bg-900));
@@ -168,6 +167,10 @@ async function toggleOAuth() {
     }
     &--Facebook {
       background-color: #1977f3;
+    }
+
+    &--Connected {
+      filter: grayscale(0);
     }
   }
   &__State {
@@ -194,6 +197,9 @@ async function toggleOAuth() {
       flex-direction: column;
       width: 100%;
     }
+    &__Form {
+      --factory-bg: hsl(var(--bg-200));
+    }
     &__Text {
       margin-bottom: 1.8rem;
       font-size: 1.6rem;
@@ -205,19 +211,27 @@ async function toggleOAuth() {
     }
     &__Control {
       display: flex;
-      flex-direction: column;
+      justify-content: flex-end;
     }
     &__Button {
       box-shadow: none;
-      border-radius: calc(var(--global-radius) * 2);
-      width: 100%;
-      height: 4.8rem;
-      &:first-child {
+      border-radius: 9999px;
+      &--Accent {
         background-color: hsl(var(--theme-500));
-        margin-left: auto;
         color: #fff;
       }
     }
+    // &__Button {
+    //   box-shadow: none;
+    //   border-radius: calc(var(--global-radius) * 2);
+    //   width: 100%;
+    //   height: 4.8rem;
+    //   &:first-child {
+    //     background-color: hsl(var(--theme-500));
+    //     margin-left: auto;
+    //     color: #fff;
+    //   }
+    // }
   }
 }
 

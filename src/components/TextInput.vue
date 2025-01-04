@@ -70,13 +70,13 @@ function onInput(e) {
     min-width: 0;
     font-size: 1.5rem;
     font-weight: 500;
-    background-color: hsl(var(--bg-100));
+    background-color: var(--input-bg, hsl(var(--bg-100)));
   }
   &__Placeholder {
     position: absolute;
     left: 1rem;
     font-size: 1.3rem;
-    background-color: hsl(var(--bg-100));
+    background-color: var(--input-bg, hsl(var(--bg-100)));
     padding: 0 0.4rem;
     transition: 150ms ease-out;
     &--NotEmpty {

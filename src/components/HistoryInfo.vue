@@ -35,7 +35,7 @@ const props = defineProps({
 <style lang="scss" scoped>
 .HistoryInfo {
   display: flex;
-  gap: 1.2rem;
+  gap: 0.4rem;
   align-items: center;
   &__Item {
     display: flex;
@@ -59,9 +59,8 @@ const props = defineProps({
     color: inherit;
   }
   &__Icon {
-    width: 1.8rem;
-    height: 1.8rem;
-    margin-left: -0.6rem;
+    width: 1.6rem;
+    height: 1.6rem;
   }
 }
 </style>

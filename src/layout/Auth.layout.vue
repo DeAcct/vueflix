@@ -4,7 +4,7 @@
       <div class="Auth__Logo">
         <VueflixLogo />
       </div>
-      <InteractiveVisual class="Auth__Hero" :ani-list></InteractiveVisual>
+      <!-- <InteractiveVisual class="Auth__Hero" :ani-list></InteractiveVisual> -->
     </div>
     <div class="Auth__PageView">
       <div class="Auth__ViewController">
@@ -89,11 +89,19 @@ onMounted(() => {
     left: 50%;
     transform: translate(-3.2rem, -3.2rem);
   }
+  &__Visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(25dvh + 6rem);
+    width: min(calc(100% - 4rem), 1080px);
+  }
   &__PageView {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: 1.8rem;
-    margin-bottom: 8rem;
+    padding-bottom: 4rem;
     width: calc(100% - 4rem);
   }
   &__ViewController {
@@ -105,22 +113,10 @@ onMounted(() => {
     font-size: 2rem;
     font-weight: 900;
   }
-  &__Visual {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10rem;
-    width: min(calc(100% - 4rem), 1080px);
-  }
+
   &__Logo {
     width: 15rem;
-    margin-bottom: 3rem;
     fill: hsl(var(--theme-500));
-  }
-
-  &__Hero {
-    width: 100%;
-    height: 12rem;
   }
 }
 

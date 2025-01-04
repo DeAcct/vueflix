@@ -46,27 +46,8 @@ defineProps({
   &__Icon {
     display: flex;
     align-items: center;
-    width: 1.8rem;
-    height: 1.8rem;
-  }
-}
-@media screen and (min-width: 768px) {
-  .my-cards .my-card .col-left span {
-    font-size: 1.4rem;
-  }
-}
-
-@media screen and (min-width: 1080px) {
-  .arrow-link-btn {
-    .icon {
-      width: 2rem;
-      height: 2rem;
-    }
-    .col-left {
-      span {
-        font-size: 1.5rem;
-      }
-    }
+    width: 1.6rem;
+    height: 1.6rem;
   }
 }
 </style>

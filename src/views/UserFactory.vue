@@ -206,6 +206,7 @@ async function actionByType() {
     --input-padding: 0 1.4rem;
     --input-height: 4rem;
     border-radius: calc(var(--global-radius) * 2);
+    --input-bg: var(--factory-bg);
   }
 
   &__Message {

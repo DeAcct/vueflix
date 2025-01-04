@@ -20,52 +20,27 @@
       </template>
     </RecommendCard>
     <section class="MyApp__FlexWrap">
-      <section class="MyApp__Group">
-        <div class="MyApp__Item MyApp__Item--Social" v-if="user">
-          <strong class="MyApp__ConnectedTitle">이메일 및 소셜 로그인</strong>
-          <p class="MyApp__SubText">
-            각 버튼을 눌러 연결하거나 연결을 해제할 수 있어요
-          </p>
-          <OAuthGroup class="MyApp__OAuthGroup" />
-        </div>
-        <ArrowBtnWidget
-          class="MyApp__Item"
-          component="RouterLink"
-          to="/my/profile"
-          v-if="user"
-        >
-          <template v-slot:icon>
-            <IconBase>
-              <IconAccount />
-            </IconBase>
-          </template>
-          <template v-slot:text>내 정보</template>
-        </ArrowBtnWidget>
-        <ArrowBtnWidget class="MyApp__Item" @click="onLoginButtonClick">
-          <template v-slot:icon>
-            <IconBase>
-              <IconLogin />
-            </IconBase>
-          </template>
-          <template v-slot:text>{{
-            store.user ? "로그아웃" : "로그인"
-          }}</template>
-        </ArrowBtnWidget>
-      </section>
-      <template v-for="({ items, requireLogin }, i) in viewModel" :key="i">
-        <section class="MyApp__Group" v-if="user || !requireLogin">
-          <template v-for="{ icon, text, to } in items" :key="text">
+      <template v-for="(items, i) in viewModel" :key="i">
+        <section class="MyApp__Group">
+          <template
+            v-for="{ icon, text, to, onClick, requireLogin } in items"
+            :key="text"
+          >
             <ArrowBtnWidget
               class="MyApp__Item"
               :component="to ? 'RouterLink' : 'button'"
-              :to="to || null"
+              :to
+              @click="to ? null : onClick()"
+              v-if="!requireLogin || user"
             >
-              <template v-slot:icon>
+              <template #icon>
                 <IconBase>
                   <component :is="icon" />
                 </IconBase>
               </template>
-              <template v-slot:text>{{ text }}</template>
+              <template #text>{{
+                typeof text === "function" ? text() : text
+              }}</template>
             </ArrowBtnWidget>
           </template>
         </section>
@@ -93,58 +68,70 @@ import IconAccount from "@/components/icons/IconAccount.vue";
 import IconCoupon from "@/components/icons/IconCoupon.vue";
 import IconCustomerService from "@/components/icons/IconCustomerService.vue";
 import IconLogin from "@/components/icons/IconLogin.vue";
-import IconMembership from "@/components/icons/IconMembership.vue";
 import IconPurchaseHistory from "@/components/icons/IconPurchaseHistory.vue";
 import IconTheme from "@/components/icons/IconTheme.vue";
-
-const viewModel = [
-  {
-    items: [
-      {
-        icon: IconMembership,
-        text: "애니장교",
-        to: "/my/membership",
-      },
-      {
-        icon: IconCoupon,
-        text: "쿠폰 등록",
-        to: "#none",
-      },
-      {
-        icon: IconPurchaseHistory,
-        text: "결제 내역",
-        to: "#none",
-      },
-    ],
-    requireLogin: true,
-  },
-  {
-    items: [
-      {
-        icon: IconTheme,
-        text: "테마",
-        to: "/my/app-theme",
-      },
-      {
-        icon: IconCustomerService,
-        text: "고객센터",
-        to: "#none",
-      },
-    ],
-    requireLogin: false,
-  },
-];
 
 const router = useRouter();
 const store = useAuth();
 const user = computed(() => store.user);
 
+const viewModel = [
+  [
+    {
+      text: "이메일 및 소셜 로그인",
+      to: "/my/social",
+      requireLogin: true,
+    },
+    {
+      icon: IconAccount,
+      text: "내 정보",
+      to: "/my/profile",
+      requireLogin: true,
+    },
+    {
+      icon: IconLogin,
+      text: () => (user.value ? "로그아웃" : "로그인"),
+      onClick: onLoginButtonClick,
+      requireLogin: false,
+    },
+  ],
+  [
+    {
+      icon: IconCoupon,
+      text: "쿠폰 등록",
+      to: "#none",
+      requireLogin: true,
+    },
+    {
+      icon: IconPurchaseHistory,
+      text: "결제 내역",
+      to: "#none",
+      requireLogin: true,
+    },
+  ],
+  [
+    {
+      icon: IconTheme,
+      text: "테마",
+      to: "/my/app-theme",
+      requireLogin: false,
+    },
+    {
+      icon: IconCustomerService,
+      text: "고객센터",
+      to: "#none",
+      requireLogin: false,
+    },
+  ],
+];
+
 async function onLoginButtonClick() {
+  console.log("??");
   if (!store.user) {
     router.push("auth");
     return;
   }
-  store.logout();
+  await store.logout();
 }
 
 // const { postponed, setExpire, isExpired } = usePostpone("email-verify");
@@ -180,14 +167,11 @@ function emailVerifyPostpone() {
   align-items: center;
   min-height: calc(var(--vh) * 100 * 1px);
   padding: 8rem 0 9rem;
-  gap: 1.2rem;
+  gap: 1.6rem;
 
   &__Profile {
     width: min(calc(100% - 4rem), 41.4rem);
-    padding: {
-      left: 0;
-      right: 0;
-    }
+    padding: 0;
   }
   &__Limit {
     background-color: hsl(var(--bg-200));
@@ -213,20 +197,23 @@ function emailVerifyPostpone() {
 
   &__Group {
     width: calc(100% - 4rem);
-    border: 1px solid hsl(var(--bg-200));
-    border-radius: var(--global-radius);
+    // border: 1px solid hsl(var(--bg-200));
+    // border-radius: calc(var(--global-radius) + 2rem);
+    // background-color: hsl(var(--bg-200));
     margin: 0 auto;
+    &:empty {
+      display: none;
+    }
   }
 
   &__Item {
     width: 100%;
     height: 6rem;
-    padding: 0 var(--inner-padding);
+    // padding: 0 var(--inner-padding);
     font-size: 1.4rem;
     &--Social {
       height: auto;
       padding: {
-        top: 2rem;
         bottom: 2rem;
       }
       display: flex;
@@ -249,10 +236,15 @@ function emailVerifyPostpone() {
   .MyApp {
     height: 100vh;
     margin: 0 auto;
-    padding: 9.2rem 0 0;
     gap: 2rem;
+    &__Item {
+      padding: 2rem;
+      &--Social {
+        border-bottom: 1px solid hsl(var(--bg-100));
+      }
+    }
     &__Profile {
-      padding: 4rem 0;
+      padding: 4rem 0 0;
     }
     &__FlexWrap {
       flex-direction: row;

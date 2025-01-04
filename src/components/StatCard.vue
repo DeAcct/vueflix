@@ -104,12 +104,7 @@ watch(
   &__Level {
     flex-basis: 100%;
     background-color: hsl(var(--bg-200));
-    padding: {
-      left: 1.2rem;
-      right: 2rem;
-    }
     border-radius: calc(var(--global-radius) + 2rem);
-    height: 6rem;
     color: hsl(var(--text-700));
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="Login">
-    <form class="Login__Email">
+    <form class="Login__Form">
       <TextInput type="email" class="Login__Input" v-model="email">
         <template #label>이메일</template>
       </TextInput>
@@ -36,10 +36,7 @@
           type="checkbox"
           class="Login__SaveToggle"
         />
-        로그인 정보 저장
-        <strong class="Login__SaveWarning">
-          저도 몰랐어요, 아무데서나 저장한 나비효과를...
-        </strong>
+        이메일 저장
       </label>
       <div class="Login__ButtonList">
         <VueflixBtn
@@ -50,34 +47,39 @@
         >
           <template #text>로그인</template>
         </VueflixBtn>
-        <VueflixBtn
-          to="/auth/sign-up"
-          class="Login__Button Login__Button--SignUp"
-          component="router-link"
-        >
-          <template #text>회원가입</template>
-        </VueflixBtn>
       </div>
     </form>
     <div class="Login__OAuth">
+      <template v-for="{ name, icon } in oAuthServices">
+        <div class="Login__ServiceCombo">
+          <VueflixBtn
+            component="button"
+            type="button"
+            class="Login__Button"
+            :class="`Login__Button--${name}`"
+            @click="login(name)"
+            :key="name"
+          >
+            <template #icon>
+              <IconBase>
+                <component :is="icon" />
+              </IconBase>
+            </template>
+          </VueflixBtn>
+          <div class="Login__RecentMethod" v-if="recentMethod === name">
+            최근에 사용한
+          </div>
+        </div>
+      </template>
+    </div>
+    <div class="Login__SignUp">
+      <p class="Login__SignUpCopy">아직 회원이 아닌가요?</p>
       <VueflixBtn
-        v-for="{ name, icon } in oAuthServices"
-        component="button"
-        type="button"
-        class="Login__Button"
-        :class="`Login__Button--${name}`"
-        @click="login(name)"
-        :key="name"
+        to="/auth/sign-up"
+        class="Login__Button Login__Button--SignUp"
+        component="router-link"
       >
-        <template #icon>
-          <IconBase>
-            <component :is="icon" />
-          </IconBase>
-        </template>
-        <template #text>
-          {{ recentMethod === name ? "최근에 로그인했던" : "" }}
-          {{ name }}로 계속하기
-        </template>
+        <template #text>회원가입</template>
       </VueflixBtn>
     </div>
     <NativeDialog ref="$root" class="LoginAlert" shade>
@@ -148,7 +150,7 @@ async function login(key = "Email") {
   isLoginWaiting.value = true;
   const result = await auth.continueUser({ key, email, password });
 
-  if (result.code) {
+  if (result?.code) {
     showAlert(result.code);
     return;
   }
@@ -200,31 +202,19 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .Login {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  height: 100%;
+
   &__Form {
     display: flex;
     flex-direction: column;
-    width: calc(100% - 4rem);
-    border-radius: calc(2rem + var(--global-radius));
-  }
-
-  &__Email {
-    display: flex;
-    flex-direction: column;
     gap: 1.2rem;
-    padding: 0 0 2rem;
-    border-bottom: 1px solid hsl(var(--bg-200));
     position: relative;
-    &::after {
-      content: "또는";
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translate(-50%, 50%);
-      background-color: hsl(var(--bg-100));
-      padding: 0 1rem;
-      font-size: 1.2rem;
-    }
+    padding-bottom: 1.6rem;
+    margin-bottom: 1.6rem;
+    border-bottom: 1px solid hsl(var(--bg-200));
   }
   &__Input {
     --input-height: 4rem;
@@ -237,27 +227,62 @@ onMounted(() => {
     align-items: center;
     font-size: 1.2rem;
     gap: 0.4rem;
-    margin-left: calc(var(--global-radius) * 2 - 0.3rem);
   }
   &__SaveWarning {
     color: hsl(var(--theme-500));
   }
 
-  &__OAuth {
-    padding: 2rem 0 0;
+  &__ServiceCombo {
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+  }
+  &__RecentMethod {
+    position: absolute;
+    padding: 0 1.2rem;
+    font-size: 1.2rem;
+    border-radius: 9999px;
+    height: 3rem;
+    background-color: hsl(var(--bg-300));
+    text-align: center;
+    align-content: center;
+    bottom: -4rem;
+    z-index: 2;
+    width: 9rem;
+    animation: floating 1.2s infinite;
+    &::after {
+      content: "";
+      display: block;
+      position: absolute;
+      background-color: hsl(var(--bg-300));
+      width: 1.5rem;
+      height: 1rem;
+      left: 50%;
+      translate: -50% 0;
+      bottom: 3rem;
+      z-index: -1;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+  }
+
+  &__OAuth {
+    display: flex;
+    justify-content: center;
     gap: 1.2rem;
   }
   &__Button {
     display: flex;
     width: 100%;
     background-color: #fff;
-    height: 4.8rem;
+    height: 4rem;
     border-radius: calc(var(--global-radius) * 2);
     color: var(--google-login-text);
     font-size: 1.4rem;
     box-shadow: none;
+    padding: 0;
+    text-wrap: nowrap;
     &--Login {
       background-color: hsl(var(--theme-500));
       color: #fff;
@@ -267,12 +292,12 @@ onMounted(() => {
       color: hsl(var(--text-800));
     }
     &--Google {
+      width: 4rem;
       color: hsl(var(--text-800));
-      justify-content: space-between;
       background-color: hsl(var(--bg-200));
     }
     &--Facebook {
-      justify-content: space-between;
+      width: 4rem;
       background-color: #1977f3;
       color: #fff;
     }
@@ -286,11 +311,20 @@ onMounted(() => {
     }
   }
 
-  &__RecentMethod {
-    position: absolute;
-    top: 50%;
-    right: -6rem;
+  &__SignUp {
+    margin-top: auto;
   }
+  &__SignUpCopy {
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+    text-align: center;
+  }
+
+  // &__RecentMethod {
+  //   position: absolute;
+  //   top: 50%;
+  //   right: -6rem;
+  // }
   &__ButtonList {
     display: flex;
     flex-direction: column;
@@ -350,6 +384,18 @@ onMounted(() => {
 @keyframes text-animation {
   to {
     background-position-x: right;
+  }
+}
+
+@keyframes floating {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(0.2rem);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 </style>
