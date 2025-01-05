@@ -239,7 +239,6 @@ async function actionByType() {
       flex-grow: 1;
       background-color: hsl(var(--theme-500));
       color: #fff;
-      height: 4.8rem;
       border-radius: calc(var(--global-radius) * 2);
     }
     &--OtherAction {

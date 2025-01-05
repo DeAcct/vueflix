@@ -77,11 +77,11 @@ const user = computed(() => store.user);
 
 const viewModel = [
   [
-    {
-      text: "이메일 및 소셜 로그인",
-      to: "/my/social",
-      requireLogin: true,
-    },
+    // {
+    //   text: "이메일 및 소셜 로그인",
+    //   to: "/my/social",
+    //   requireLogin: true,
+    // },
     {
       icon: IconAccount,
       text: "내 정보",

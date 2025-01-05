@@ -5,7 +5,7 @@
         {{ data?.nickname || "아직 로그인하지 않았어요" }}
       </h2>
       <p class="StatCard__Email" :class="{ 'loading-target': loading }">
-        {{ data?.email }}
+        {{ email }}
       </p>
       <HistoryInfo :uid :loading :data />
     </div>
@@ -37,6 +37,17 @@ const props = defineProps({
 
 const data = ref(null);
 const loading = ref(true);
+
+const email = computed(() => {
+  if (!data.value) {
+    return;
+  }
+  if (data.value.email.length < 30) {
+    return data.value.email;
+  }
+  const [id, domain] = data.value.email.split("@");
+  return `${id.slice(0, 5)}...@${domain}`;
+});
 watch(
   () => props.uid,
   async () => {
@@ -66,12 +77,13 @@ watch(
   justify-content: space-between;
 
   &__Nickname {
+    width: auto;
     display: flex;
     align-items: center;
     font-size: 2rem;
     font-weight: 900;
     &.loading-target {
-      width: 12rem;
+      width: 12dvw;
       height: 2rem;
       text-overflow: hidden;
       color: transparent;
@@ -90,13 +102,16 @@ watch(
     height: 8rem;
   }
   &__Email {
+    line-height: 1.3;
     font-size: 1.4rem;
     font-weight: 400;
     margin-bottom: auto;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    width: 50dvw;
     &.loading-target {
-      width: 24rem;
+      width: 35dvw;
       height: 2rem;
-      text-overflow: hidden;
       color: transparent;
     }
   }

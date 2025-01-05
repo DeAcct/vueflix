@@ -15,25 +15,25 @@
   flex-direction: column;
   width: calc(100% - 4rem);
   border: 1px solid hsl(var(--bg-200));
-  padding: var(--inner-padding);
-  border-radius: var(--global-radius);
+  padding: 1.6rem;
+  border-radius: calc(var(--global-radius) + 2rem);
+  overflow: hidden;
 
   &__Title {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     margin-bottom: 0.4rem;
     line-height: 1.3;
   }
   &__Text {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     margin-bottom: 2rem;
     line-height: 1.3;
   }
   &__CTA {
     display: flex;
-    margin: 0 calc(var(--inner-padding) * -1) calc(var(--inner-padding) * -1);
-    height: 4.8rem;
+    margin: 0 -1.6rem -1.6rem;
+    height: 4rem;
     background-color: hsl(var(--bg-200));
-    font-size: 1.4rem;
   }
 }
 

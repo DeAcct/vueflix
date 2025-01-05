@@ -11,7 +11,11 @@
       />
     </section>
     <section class="Profile__Item">
-      <h2 class="Profile__Finding">이 작업을 찾고 있나요?</h2>
+      <h2 class="Profile__Title">연결된 계정</h2>
+      <OAuthGroup class="Profile__OAuthGroup" />
+    </section>
+    <section class="Profile__Item">
+      <h2 class="Profile__Title">이 작업을 찾고 있나요?</h2>
       <div class="Profile__Box">
         <strong class="Profile__Recommend">
           데레와 헤어지고 싶다면 o(TヘTo)
@@ -75,6 +79,7 @@ import { useAuth } from "@/store/auth";
 
 import AutoPop from "@/components/AutoPop.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
+import OAuthGroup from "@/components/OAuthGroup.vue";
 import UserFactory from "@/views/UserFactory.vue";
 import VueflixBtn from "@/components/VueflixBtn.vue";
 
@@ -178,11 +183,8 @@ function onComplete(e) {
   }
   &__Title {
     width: 100%;
-    font-size: 2rem;
-    font-weight: 900;
-  }
-  &__Finding {
     font-size: 1.6rem;
+    font-weight: 700;
   }
   &__Recommend {
     display: block;
