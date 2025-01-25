@@ -66,18 +66,18 @@ const routes = [
       bottomTabMenu: true,
     },
   },
-  {
-    path: "/cocktail",
-    name: "cocktail",
-    component: () => import("@/views/Cocktail.vue"),
-    meta: {
-      title: "칵테일",
-      appBar: {
-        activityContent: "칵테일",
-      },
-      bottomTabMenu: true,
-    },
-  },
+  // {
+  //   path: "/cocktail",
+  //   name: "cocktail",
+  //   component: () => import("@/views/Cocktail.vue"),
+  //   meta: {
+  //     title: "칵테일",
+  //     appBar: {
+  //       activityContent: "칵테일",
+  //     },
+  //     bottomTabMenu: true,
+  //   },
+  // },
   {
     path: "/my",
     name: "my",
@@ -103,19 +103,19 @@ const routes = [
       bottomTabMenu: false,
     },
   },
-  {
-    path: "/my/membership",
-    name: "membership",
-    component: () => import("@/views/VueflixMembership.vue"),
-    meta: {
-      title: "멤버십 및 포인트",
-      appBar: {
-        activityContent: "멤버십 및 포인트",
-        backButton: true,
-      },
-      bottomTabMenu: false,
-    },
-  },
+  // {
+  //   path: "/my/membership",
+  //   name: "membership",
+  //   component: () => import("@/views/VueflixMembership.vue"),
+  //   meta: {
+  //     title: "멤버십 및 포인트",
+  //     appBar: {
+  //       activityContent: "멤버십 및 포인트",
+  //       backButton: true,
+  //     },
+  //     bottomTabMenu: false,
+  //   },
+  // },
   {
     path: "/my/app-theme",
     name: "app-theme",
@@ -188,6 +188,16 @@ const routes = [
         },
       },
     ],
+  },
+  {
+    path: "/subscribe/landing",
+    name: "subscribe",
+    component: () => import("@/views/SubscribeLanding.vue"),
+    meta: {
+      title: "애니장교",
+      appBar: false,
+      bottomTabMenu: false,
+    },
   },
   {
     path: "/isekai-404",

@@ -108,7 +108,6 @@ watch(
     margin-bottom: auto;
     overflow-x: hidden;
     text-overflow: ellipsis;
-    width: 50dvw;
     &.loading-target {
       width: 35dvw;
       height: 2rem;

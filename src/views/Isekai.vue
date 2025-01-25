@@ -57,7 +57,7 @@ import VueflixBtn from "@/components/VueflixBtn.vue";
   }
   &__SubText {
     font-size: 1.4rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.6rem;
   }
   &__CTA {
     display: flex;
@@ -72,29 +72,19 @@ import VueflixBtn from "@/components/VueflixBtn.vue";
       border-radius: 9999px;
     }
   }
-  .btn-area {
-    display: flex;
-    .btn {
-      &--go {
-        background-color: hsl(var(--theme-500));
-        color: #fff;
-      }
-      &--home {
-        background-color: var(--top-item);
-      }
-      &:not(:last-child) {
-        margin-right: 1rem;
-      }
-    }
-  }
 }
 @media screen and (min-width: 768px) {
   .Isekai {
     &__Title {
-      font-size: 3.5rem;
+      font-size: 3.6rem;
     }
-    p {
-      font-size: 2rem;
+    &__Text {
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem;
+    }
+    &__SubText {
+      font-size: 1.6rem;
+      margin-bottom: 2rem;
     }
   }
 }

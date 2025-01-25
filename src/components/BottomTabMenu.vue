@@ -8,12 +8,9 @@
           exact-active-class="BottomTabMenu__Item--Active"
         >
           <i class="BottomTabMenu__Icon">
-            <template v-if="to !== 'my'">
-              <IconBase>
-                <component :is="icon" :key="name" />
-              </IconBase>
-            </template>
-            <template v-else> </template>
+            <IconBase>
+              <component :is="icon" :key="name" />
+            </IconBase>
           </i>
           <span class="blind">{{ name }}</span>
         </RouterLink>
@@ -46,11 +43,11 @@ const items = [
     name: "보관함",
     icon: IconBasket,
   },
-  {
-    to: "cocktail",
-    name: "칵테일",
-    icon: IconCocktail,
-  },
+  // {
+  //   to: "cocktail",
+  //   name: "칵테일",
+  //   icon: IconCocktail,
+  // },
 ];
 
 const { state: scrollState } = useScroll();
@@ -94,29 +91,6 @@ const { state: scrollState } = useScroll();
     background-color: hsl(var(--theme-500));
     flex-shrink: 0;
   }
-  // &__Profile {
-  //   --profile-size: 3.6rem;
-  //   width: 4.8rem;
-  //   gap: 0.3rem;
-  //   height: var(--bottom-tab-height);
-  //   flex-direction: column-reverse;
-  //   justify-content: center;
-  //   border-radius: 9999px;
-  //   font-size: 1.2rem;
-  //   font-weight: 700;
-  //   padding: 0;
-  //   &--Active {
-  //     color: hsl(var(--theme-500));
-  //   }
-  // }
-  // &__ToTop {
-  //   width: 4.6rem;
-  //   height: 4.6rem;
-  //   flex-shrink: 0;
-  //   position: static;
-  //   background-color: hsl(var(--theme-500));
-  //   box-shadow: none;
-  // }
 }
 
 .bottom-tab-move,

@@ -12,7 +12,9 @@
       </p>
     </section>
     <RouterLink
-      to="/subscribe"
+      :to="
+        membership?.tier === 'free' ? `/subscribe/landing` : `/subscribe/manage`
+      "
       class="MembershipCard__Sub"
       v-if="membership?.tier === 'free'"
     >
@@ -22,9 +24,11 @@
         >
         더 많은 애니를 전문적으로 탐색할 수 있어요
       </p>
-      <IconBase class="MembershipCard__SubIcon">
-        <IconArrowNext />
-      </IconBase>
+      <i class="MembershipCard__SubIconBG">
+        <IconBase class="MembershipCard__SubIcon">
+          <IconArrowNext />
+        </IconBase>
+      </i>
     </RouterLink>
   </section>
 </template>
@@ -113,9 +117,19 @@ const { level, days } = useUserLevel(membership);
     font-size: 1.4rem;
     font-weight: 700;
   }
+  &__SubIconBG {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    background-color: hsl(var(--bg-900) / 0.5);
+    border-radius: 50%;
+  }
   &__SubIcon {
     width: 1.6rem;
     height: 1.6rem;
+    color: hsl(var(--bg-100));
   }
 }
 </style>

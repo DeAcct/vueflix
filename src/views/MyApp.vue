@@ -59,7 +59,6 @@ import { useAuth } from "@/store/auth";
 import { usePostpone } from "@/composables/postpone";
 
 import ArrowBtnWidget from "@/components/ArrowBtnWidget.vue";
-import OAuthGroup from "@/components/OAuthGroup.vue";
 import RecommendCard from "@/components/RecommendCard.vue";
 import StatCard from "@/components/StatCard.vue";
 

@@ -307,7 +307,7 @@ onMounted(() => {
       padding: 0;
       box-shadow: none;
       background-color: transparent;
-      color: #fff;
+      margin-right: -1.4rem;
     }
   }
 
@@ -368,7 +368,10 @@ onMounted(() => {
 
 @media screen and (min-width: 1080px) {
   .Login {
-    justify-content: center;
+    height: auto;
+    &__SignUp {
+      margin-top: 10rem;
+    }
   }
 
   .LoginAlert {
