@@ -1,6 +1,6 @@
 import { watch, onUnmounted, unref } from "vue";
 
-export function useIntersection(targetElement, cb) {
+export function useIntersection(targetElement, cb, options = {}) {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -8,7 +8,7 @@ export function useIntersection(targetElement, cb) {
         console.log("intersecting");
       }
     });
-  });
+  }, options);
 
   watch(targetElement, () => {
     if (!targetElement.value) {

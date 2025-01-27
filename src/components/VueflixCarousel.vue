@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useEventListener, useDebounceFn } from "@vueuse/core";
 
 import IconBase from "./IconBase.vue";
@@ -64,6 +64,10 @@ const props = defineProps({
 });
 
 const carouselNumber = ref(0);
+defineExpose({
+  next,
+  prev,
+});
 
 function next() {
   carouselNumber.value++;

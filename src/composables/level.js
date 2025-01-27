@@ -20,7 +20,7 @@ export const KOR_TO_ENG = {
   대위: "DaeWi",
   소령: "SoRyeong",
   중령: "JungRyeong",
-  대령: "DaeRyoeng",
+  대령: "DaeRyeong",
   준장: "JunJang",
   장군: "Jangun",
 };

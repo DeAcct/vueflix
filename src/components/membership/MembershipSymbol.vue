@@ -101,19 +101,12 @@ const { tilt } = useDeviceGesture(0.01);
     --membership-symbol-background: 289 25% 34%;
   }
   &--JunJang {
-    fill: #570549;
+    fill: #ffffff;
     background: conic-gradient(from 45deg, #f0cfde, #ead4ee, #c2e9fb, #f0cfde);
   }
   &--Jangun {
     fill: #ffffff;
-    background: conic-gradient(
-      from 45deg,
-      #ecc7ae,
-      #e4dba8,
-      #bddf97,
-      #cfebf0,
-      #ecc7ae
-    );
+    background: conic-gradient(from 270deg, #a8e2e4, #f0cfde, #cfebf0, #a8e2e4);
   }
 }
 </style>
