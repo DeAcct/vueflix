@@ -44,11 +44,13 @@
       class="Subscribe__Content Subscribe__Content--Welfare"
       id="Welfare"
     >
-      <h2 class="Subscribe__Title">혜택</h2>
-      <p class="Subscribe__Description">장교다운</p>
-      <p class="Subscribe__Description">
-        <span class="Subscribe__Accent">우와-!</span>할 혜택
-      </p>
+      <div class="Subscribe__TextWrap Subscribe__TextWrap--Center">
+        <h2 class="Subscribe__Title">혜택</h2>
+        <p class="Subscribe__Description">장교다운</p>
+        <p class="Subscribe__Description">
+          <span class="Subscribe__Accent">우와-!</span>할 혜택
+        </p>
+      </div>
       <div class="Subscribe__ScrollGroup">
         <div class="Subscribe__YScrollWrap">
           <ul class="Subscribe__Cards">
@@ -79,14 +81,16 @@
       class="Subscribe__Content Subscribe__Content--Speciality"
       id="Speciality"
     >
-      <h2 class="Subscribe__Title">병과</h2>
-      <p class="Subscribe__Description">
-        나의 <span class="Subscribe__Accent">최애 장르</span>가
-      </p>
-      <p class="Subscribe__Description">병과가 된다</p>
-      <p class="Subscribe__Paragraph">
-        병과에 따라 내가 좋아하는 장르가 더 많이 추천되요!
-      </p>
+      <div class="Subscribe__TextWrap">
+        <h2 class="Subscribe__Title">병과</h2>
+        <p class="Subscribe__Description">
+          나의 <span class="Subscribe__Accent">최애 장르</span>가
+        </p>
+        <p class="Subscribe__Description">병과가 된다</p>
+        <p class="Subscribe__Paragraph">
+          병과에 따라 내가 좋아하는 장르가 더 많이 추천되요!
+        </p>
+      </div>
       <div class="Subscribe__ScrollGroup">
         <div class="Subscribe__YScrollWrap Subscribe__YScrollWrap--Animate">
           <ul class="Subscribe__Tags">
@@ -122,14 +126,16 @@
         </div>
       </div>
     </section>
-    <section class="Subscribe__Content Subscribe__Content--Class" id="">
-      <h2 class="Subscribe__Title">계급</h2>
-      <p class="Subscribe__Description">이제 속지도</p>
-      <p class="Subscribe__Description">속이지도</p>
-      <p class="Subscribe__Description">마세요</p>
-      <p class="Subscribe__Paragraph">
-        쓰거나 읽는 리뷰의 신뢰도는 계급으로 보증해요!
-      </p>
+    <section class="Subscribe__Content Subscribe__Content--Class" id="Class">
+      <div class="Subscribe__TextWrap">
+        <h2 class="Subscribe__Title">계급</h2>
+        <p class="Subscribe__Description">이제 속지도</p>
+        <p class="Subscribe__Description">속이지도</p>
+        <p class="Subscribe__Description">마세요</p>
+        <p class="Subscribe__Paragraph">
+          여러분이 쓴 리뷰는 신뢰도가 보증해요!
+        </p>
+      </div>
       <ul class="Subscribe__ClassList">
         <li
           v-for="(level, i) in levels"
@@ -139,6 +145,7 @@
           <MembershipSymbol :level />
         </li>
       </ul>
+      <div class="Subscribe__ClassMouseFollower"></div>
     </section>
     <div class="Subscribe__CTAHold">
       <RouterLink to="/payment" class="Subscribe__CTA"
@@ -226,16 +233,13 @@ const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준
       height: 100dvh;
     }
     &--Welfare {
-      align-items: center;
       margin: 0 auto;
     }
     &--Speciality {
-      align-items: center;
       margin: 0 auto;
     }
     &--Class {
       margin: 0 auto;
-      width: min(calc(100% - 4rem), 1024px);
     }
   }
   &__Visual {
@@ -249,6 +253,16 @@ const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준
     flex-grow: 1;
     width: min(calc(100% - 4rem), 1024px);
     margin: 2.8rem auto 0;
+  }
+
+  &__TextWrap {
+    display: flex;
+    flex-direction: column;
+    width: min(calc(100% - 4rem), 1024px);
+    margin: 0 auto;
+    &--Center {
+      align-items: center;
+    }
   }
   &__Title {
     font-size: 1.6rem;
@@ -367,10 +381,11 @@ const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준
 
   &__ClassList {
     display: grid;
+    width: min(calc(100% - 4rem), 1024px);
     grid: auto-flow / repeat(3, minmax(0, 1fr));
     justify-content: center;
     gap: 1.2rem;
-    margin-top: 4rem;
+    margin: 4rem auto 0;
   }
   &__ClassItem {
     flex-grow: 1;
@@ -398,6 +413,23 @@ const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준
     color: #fff;
   }
 }
+@keyframes slide-left {
+  from {
+    translate: 100%;
+  }
+  to {
+    translate: -100%;
+    // transform: translateY(calc(-100% + 100vh));
+  }
+}
+@keyframes slide-right {
+  from {
+    translate: -200%;
+  }
+  to {
+    translate: 0;
+  }
+}
 
 @media screen and (min-width: 1024px) {
   .Subscribe {
@@ -408,13 +440,25 @@ const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준
     &__Content {
       width: 100dvw;
       flex-direction: row;
+      &--Intro {
+        transition: margin-top 150ms ease-out;
+      }
       &--Welfare,
       &--Speciality,
       &--Class {
         width: 1024px;
         flex-direction: column;
+        padding-top: 12rem;
+      }
+      &--Speciality {
+        align-items: flex-start;
+        width: 100%;
+      }
+      &:last-of-type {
+        padding-bottom: 24rem;
       }
     }
+
     &__Visual {
       width: 50dvw;
       height: 100dvh;
@@ -432,8 +476,77 @@ const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준
     &__Description {
       font-size: 6rem;
     }
-    &__CTAHold {
-      display: none;
+    &__Paragraph {
+      font-size: 1.8rem;
+    }
+
+    &__YScrollWrap {
+      overflow-x: auto;
+    }
+
+    &__Cards {
+      width: 100%;
+    }
+    &__Card {
+      flex-grow: 1;
+      flex-shrink: 0;
+      flex-basis: 0;
+      width: auto;
+    }
+
+    &__Tag {
+      font-size: 8rem;
+      padding: 3.2rem 4.8rem;
+    }
+
+    &__ClassList {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    &__ClassItem {
+      scale: 0.9;
+      transition: scale 150ms ease-out;
+      &:hover {
+        scale: 1;
+      }
+    }
+    &__CTA {
+      height: 6rem;
+      font-size: 2rem;
+    }
+  }
+
+  @keyframes slide-left {
+    from {
+      translate: 50dvw;
+    }
+    to {
+      translate: -50dvw;
+      // transform: translateY(calc(-100% + 100vh));
+    }
+  }
+  @keyframes slide-right {
+    from {
+      translate: -50dvw;
+    }
+    to {
+      translate: 50dvw;
+    }
+  }
+}
+
+@media (display-mode: window-controls-overlay) and (min-width: 1024px) {
+  .Subscribe {
+    &__Header {
+      -webkit-app-region: drag;
+      app-region: drag;
+      --icon-color: inherit;
+      background-color: hsl(var(--bg-100) / 0.8);
+      backdrop-filter: blur(10px);
+    }
+    &__Content {
+      &--Intro {
+        margin-top: var(--header-height);
+      }
     }
   }
 }
@@ -462,24 +575,6 @@ const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준
   }
   to {
     opacity: 1;
-    translate: 0;
-  }
-}
-
-@keyframes slide-left {
-  from {
-    translate: 100%;
-  }
-  to {
-    translate: -100%;
-    // transform: translateY(calc(-100% + 100vh));
-  }
-}
-@keyframes slide-right {
-  from {
-    translate: -200%;
-  }
-  to {
     translate: 0;
   }
 }
