@@ -137,35 +137,71 @@
         </p>
       </div>
       <ul class="Subscribe__ClassList">
-        <li
-          v-for="(level, i) in levels"
-          class="Subscribe__ClassItem"
-          :style="`--wave-delay:${i};`"
-        >
+        <li v-for="level in levels" class="Subscribe__ClassItem">
           <MembershipSymbol :level />
         </li>
       </ul>
       <div class="Subscribe__ClassMouseFollower"></div>
     </section>
     <div class="Subscribe__CTAHold">
-      <RouterLink to="/payment" class="Subscribe__CTA"
-        >30초만에 임관하기</RouterLink
-      >
+      <button class="Subscribe__CTA" @click="openPurchaseDialog">
+        30초만에 시작하기
+      </button>
     </div>
+    <PurchaseModal ref="$PurchaseDialog" class="SubscribeModal">
+      <template #title>구독</template>
+      <template #content>
+        <section class="SubscribeModal__Bubble">
+          <div class="SubscribeModal__Row">
+            <MembershipSymbol
+              level="사관생도"
+              class="SubscribeModal__ProductThumbnail"
+            />
+            <h3 class="SubscribeModal__ProductName">애니장교 임관</h3>
+          </div>
+          <div class="SubscribeModal__Row">
+            <div class="SubscribeModal__Group">
+              <p>매월 결제일</p>
+              <strong>매월 {{ new Date().getDate() }}일</strong>
+            </div>
+            <div class="SubscribeModal__Group">
+              <p>금액</p>
+              <strong>9,900원</strong>
+            </div>
+          </div>
+        </section>
+      </template>
+      <template #cta>구독 시작</template>
+    </PurchaseModal>
   </main>
 </template>
 
 <script setup>
-import Visual from "@/assets/subscribe_visual.mp4";
+import { ref, computed, watchEffect } from "vue";
+import { useRouter } from "vue-router";
+
+import { useAuth } from "@/store/auth";
+
+import { useNumberAnimation } from "@/composables/animate";
+import { useIntersection } from "@/composables/intersection";
+
+import MembershipSymbol from "@/components/membership/MembershipSymbol.vue";
+import PurchaseModal from "@/components/PurchaseModal.vue";
+
 import IconBase from "@/components/IconBase.vue";
 import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
 
-import { useRouter } from "vue-router";
-import { useNumberAnimation } from "@/composables/animate";
-import { ref } from "vue";
-import { useIntersection } from "@/composables/intersection";
-import MembershipSymbol from "../components/membership/MembershipSymbol.vue";
+import Visual from "@/assets/subscribe_visual.mp4";
+
+const auth = useAuth();
+const user = computed(() => auth.user);
+
 const router = useRouter();
+watchEffect(() => {
+  if (user.value?.membership?.tier === "jangyo") {
+    router.replace("/subscribe/manage");
+  }
+});
 
 const $AnimesCounter = ref(null);
 function timingFunction(x) {
@@ -184,6 +220,11 @@ function formatter(value) {
 }
 
 const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준장", "장군"];
+
+const $PurchaseDialog = ref(null);
+function openPurchaseDialog() {
+  $PurchaseDialog.value.show();
+}
 </script>
 
 <style lang="scss" scoped>
@@ -403,8 +444,8 @@ const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준
     display: block;
     margin: 0 auto;
     width: min(calc(100% - 4rem), 512px);
-    height: 4rem;
-    font-size: 1.4rem;
+    height: 4.8rem;
+    font-size: 1.6rem;
     font-weight: 700;
     background-color: hsl(var(--theme-500));
     border-radius: 9999px;
@@ -413,6 +454,54 @@ const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준
     color: #fff;
   }
 }
+
+.SubscribeModal {
+  &__Bubble {
+    border-radius: 1.6rem;
+    width: calc(100% - 2rem);
+    padding: 2rem;
+    background-color: var(--anime-layout-body);
+    margin: 1rem auto 0;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: 1;
+  }
+  &__Product {
+    &Thumbnail {
+      width: 6rem;
+      height: 6rem;
+    }
+    &Name {
+      font-size: 1.8rem;
+      flex-grow: 1;
+      flex-shrink: 0;
+      flex-basis: 0;
+    }
+  }
+  &__Row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.2rem;
+    flex-basis: 100%;
+    justify-content: space-between;
+    & + & {
+      padding-top: 1.8rem;
+      margin-top: 1.8rem;
+      border-top: 1px solid hsl(var(--bg-300));
+    }
+  }
+  &__Group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.6rem;
+    flex-grow: 1;
+    width: 100%;
+    flex-shrink: 0;
+  }
+}
+
 @keyframes slide-left {
   from {
     translate: 100%;

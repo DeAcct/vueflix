@@ -194,8 +194,20 @@ const routes = [
     name: "subscribe",
     component: () => import("@/views/SubscribeLanding.vue"),
     meta: {
-      title: "애니장교",
+      title: "애니장교 임관하기",
       appBar: false,
+      bottomTabMenu: false,
+    },
+  },
+  {
+    path: "/subscribe/manage",
+    name: "subscribe-manage",
+    component: () => import("@/views/SubscribeManage.vue"),
+    meta: {
+      title: "애니장교",
+      appBar: {
+        activityContent: "애니장교",
+      },
       bottomTabMenu: false,
     },
   },

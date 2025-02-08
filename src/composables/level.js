@@ -29,19 +29,18 @@ const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 /**
  * 멤버십 정보를 받아서 사용자의 애니장교 레벨을 계산합니다.
  * @param {{
- *   initDate: Date,
+ *   from: Date,
  *   tier: "free" | "jangyo"
  * }} membership
  * @returns
  */
 export function useUserLevel(membership) {
   const days = computed(() => {
-    if (!membership.value) {
+    if (!membership.value || !membership.value?.from) {
       return 0;
     }
     return Math.floor(
-      (new Date() - toValue(membership.value.initDate).toDate()) /
-        ONE_DAY_IN_MILLISECONDS
+      (new Date() - membership.value.from.toDate()) / ONE_DAY_IN_MILLISECONDS
     );
   });
 

@@ -141,9 +141,11 @@ export const useAuth = defineStore("auth", () => {
         reaction: [],
         keywordReview: [],
         membership: {
-          initDate: new Date(),
+          from: null,
           tier: "free",
+          reserved: false,
         },
+        initDate: new Date(),
       };
 
       //기본정보 업로드

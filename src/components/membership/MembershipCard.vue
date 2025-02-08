@@ -8,7 +8,7 @@
       </div>
       <p class="MembershipCard__Started">
         데레와 함께
-        <span class="MembershipCard__Counter">{{ days }}일</span>
+        <span class="MembershipCard__Counter">{{ initDate }}일</span>
       </p>
     </section>
     <RouterLink
@@ -49,8 +49,14 @@ const props = defineProps({
   },
 });
 
+const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 const membership = computed(() => props.data?.membership);
-const { level, days } = useUserLevel(membership);
+const initDate = computed(() =>
+  Math.floor(
+    (new Date() - props.data?.initDate.toDate()) / ONE_DAY_IN_MILLISECONDS
+  )
+);
+const { level } = useUserLevel(membership);
 </script>
 
 <style lang="scss" scoped>
