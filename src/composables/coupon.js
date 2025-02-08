@@ -5,11 +5,10 @@ export function useCoupon(type) {
   const auth = useAuth();
   const user = computed(() => auth.user);
 
-  if (!user.value) {
-    return;
-  }
-
   const coupons = computed(() => {
+    if (!user.value) {
+      return [];
+    }
     if (type === "all") {
       return user.value.coupons;
     }
@@ -19,4 +18,14 @@ export function useCoupon(type) {
   return {
     coupons,
   };
+}
+
+export function useEnuri(value) {
+  if (!value) {
+    return () => 0;
+  }
+  if (value.includes("%")) {
+    return (regularPrice) => Math.floor((regularPrice * parseInt(value)) / 100);
+  }
+  return (regularPrice) => Math.floor(regularPrice - parseInt(value));
 }

@@ -19,45 +19,47 @@
           class="AnimeEpisodes__Accordion"
           :open="i === 0"
         >
-          <template v-slot:title>
+          <template #title>
             {{ part }}
           </template>
-          <template v-slot:content>
-            <Thumbnailset
-              v-for="{ title, index, thumbnail } in episodes"
-              :key="`episode-${title}-${part}-${index}`"
-              class="AnimeEpisodes__Item"
-            >
-              <template #image>
-                <RouterLink
-                  class="AnimeEpisodes__Thumbnail"
-                  :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
-                >
-                  <OptimizedMedia
-                    :src="`/anime/${animeInfo.name}/${thumbnail}`"
-                    :alt="`${animeInfo.name} ${part} ${index} 미리보기 이미지`"
-                    skelleton
-                  />
-                  <SlimProgress
-                    :progress="
-                      getEpisodeProgress(animeInfo.name, part, index).percent
-                    "
-                    class="AnimeEpisodes__Progress"
-                  />
-                </RouterLink>
-              </template>
-              <template #text>
-                <RouterLink
-                  class="AnimeEpisodes__TextLink"
-                  :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
-                >
-                  <strong class="AnimeEpisodes__PartIndex">
-                    {{ part }} {{ index }}
-                  </strong>
-                  <span class="AnimeEpisodes__Title">{{ title }}</span>
-                </RouterLink>
-              </template>
-            </Thumbnailset>
+          <template #content>
+            <ul class="AnimeEpisodes__List">
+              <Thumbnailset
+                v-for="{ title, index, thumbnail } in episodes"
+                :key="`episode-${title}-${part}-${index}`"
+                class="AnimeEpisodes__Item"
+              >
+                <template #image>
+                  <RouterLink
+                    class="AnimeEpisodes__Thumbnail"
+                    :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
+                  >
+                    <OptimizedMedia
+                      :src="`/anime/${animeInfo.name}/${thumbnail}`"
+                      :alt="`${animeInfo.name} ${part} ${index} 미리보기 이미지`"
+                      skelleton
+                    />
+                    <SlimProgress
+                      :progress="
+                        getEpisodeProgress(animeInfo.name, part, index).percent
+                      "
+                      class="AnimeEpisodes__Progress"
+                    />
+                  </RouterLink>
+                </template>
+                <template #text>
+                  <RouterLink
+                    class="AnimeEpisodes__TextLink"
+                    :to="`/anime-play/${animeInfo.name}/${part}/${index}`"
+                  >
+                    <strong class="AnimeEpisodes__PartIndex">
+                      {{ part }} {{ index }}
+                    </strong>
+                    <span class="AnimeEpisodes__Title">{{ title }}</span>
+                  </RouterLink>
+                </template>
+              </Thumbnailset>
+            </ul>
           </template>
         </AccordionGroup>
       </TransitionGroup>
@@ -216,6 +218,11 @@ function clear() {
       --episodes-z-index,
       calc(var(--z-index-overay-1) + 1)
     );
+  }
+  &__List {
+    display: flex;
+    flex-direction: var(--accordion-direction, column);
+    gap: var(--episode-gap, 1rem);
   }
   &__Item {
     padding: 0;

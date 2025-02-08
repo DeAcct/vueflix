@@ -148,7 +148,12 @@
         30초만에 시작하기
       </button>
     </div>
-    <PurchaseModal ref="$PurchaseDialog" class="SubscribeModal">
+    <PurchaseModal
+      ref="$PurchaseDialog"
+      class="SubscribeModal"
+      type="membership"
+      :product-value="9900"
+    >
       <template #title>구독</template>
       <template #content>
         <section class="SubscribeModal__Bubble">
@@ -458,13 +463,19 @@ function openPurchaseDialog() {
 .SubscribeModal {
   &__Bubble {
     border-radius: 1.6rem;
-    width: calc(100% - 4rem);
+    width: calc(100% - 2rem);
     padding: 2rem;
     background-color: var(--anime-layout-body);
-    margin: 1rem auto 0;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    flex-wrap: 1;
+    & + & {
+      margin-top: 1rem;
+    }
+  }
+
+  &__Title {
+    font-size: 1.8rem;
   }
   &__Product {
     &Thumbnail {

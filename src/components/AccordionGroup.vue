@@ -8,9 +8,9 @@
         </IconBase>
       </i>
     </summary>
-    <ul class="AccordionGroup__Content" ref="$content">
+    <div class="AccordionGroup__Content" ref="$content">
       <slot name="content"></slot>
-    </ul>
+    </div>
   </details>
 </template>
 
@@ -45,7 +45,6 @@ const { $root, $summary, $content } = useAccordion(
     padding: var(--accordion-title-padding, 1.5rem 2rem);
     width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     font-size: 1.4rem;
     font-weight: var(--accordion-title-weight, 900);
@@ -58,12 +57,13 @@ const { $root, $summary, $content } = useAccordion(
     height: 1.8rem;
     transition: calc(1ms * v-bind(ACCORDION_ANIMATION_DURATION)) ease-in-out;
     transform: rotate(-90deg);
+    margin-left: auto;
   }
   &__Content {
-    display: flex;
-    flex-direction: var(--accordion-direction, column);
-    gap: var(--episode-gap, 1rem);
     padding-top: var(--open-top-padding, 1.2rem);
+    // display: flex;
+    // flex-direction: var(--accordion-direction, column);
+    // gap: var(--episode-gap, 1rem);
 
     // height: 0;
     // transition: all calc(1ms * v-bind(ACCORDION_ANIMATION_DURATION)) ease-in-out;
@@ -79,9 +79,6 @@ const { $root, $summary, $content } = useAccordion(
       transform: rotate(90deg);
     }
     .AccordionGroup__Content {
-      padding: {
-        top: var(--open-top-padding, 1.2rem);
-      }
       .episode-card {
         opacity: 1;
       }

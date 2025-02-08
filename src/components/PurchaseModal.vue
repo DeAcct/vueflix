@@ -15,11 +15,31 @@
     </template>
     <template #content>
       <slot name="content"></slot>
-      <CouponList class="PurchaseDialog__Bubble">
-        <template #title>
-          <h2 class="PurchaseDialog__Title">쿠폰</h2>
-        </template>
-      </CouponList>
+      <section class="PurchaseDialog__Bubble">
+        <AccordionGroup class="PurchaseDialog__Coupon" open>
+          <template #title>
+            <h2 class="PurchaseDialog__Title">쿠폰</h2>
+            <span class="PurchaseDialog__EnuriCounter"
+              >{{
+                useEnuri(selectedCoupon?.value)(productValue).toLocaleString()
+              }}원 할인</span
+            >
+          </template>
+          <template #content>
+            <CouponList
+              :type
+              class="PurchaseDialog__CouponList"
+              v-model="selectedCoupon"
+            />
+          </template>
+        </AccordionGroup>
+        <button
+          @click="clearSelectedCoupon"
+          class="PurchaseDialog__BubbleButton"
+        >
+          쿠폰 선택 해제
+        </button>
+      </section>
       <div class="PurchaseDialog__CTAWrap">
         <RouterLink
           to="/subscribe/manage"
@@ -48,8 +68,10 @@
 <script setup>
 import { ref, computed } from "vue";
 
+import { useEnuri } from "@/composables/coupon";
 import { useScroll } from "@/composables/scroll";
 
+import AccordionGroup from "@/components/AccordionGroup.vue";
 import CouponList from "@/components/CouponList.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
 
@@ -66,6 +88,17 @@ defineProps({
     type: Function,
     default: () => {},
   },
+  type: {
+    type: String,
+    validator(value) {
+      return ["membership", "promotion", "all"].includes(value);
+    },
+    default: "all",
+  },
+  productValue: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const $PurchaseDialog = ref(null);
@@ -80,6 +113,11 @@ function close() {
 
 const $body = computed(() => $PurchaseDialog.value?.$body);
 const { state: scrollState } = useScroll($body);
+
+const selectedCoupon = ref({});
+function clearSelectedCoupon() {
+  selectedCoupon.value = {};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -92,10 +130,8 @@ const { state: scrollState } = useScroll($body);
   --dialog-overflow: scroll;
   --dialog-height: calc(var(--vh) * 100 * 1px);
   &__Header {
-    width: calc(100% - 4rem);
+    width: 100%;
     margin: 0 auto;
-    background: var(--anime-layout-body);
-    border-radius: 1.6rem;
     padding: 0 2rem;
     position: sticky;
     top: 0;
@@ -104,7 +140,6 @@ const { state: scrollState } = useScroll($body);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 2rem;
     height: var(--header-height);
 
     &--Scroll {
@@ -112,6 +147,38 @@ const { state: scrollState } = useScroll($body);
         0 2px 8px hsl(var(--bg-900) / 0.1), 0 4px 16px hsl(var(--bg-900) / 0.1);
     }
   }
+  &__Bubble {
+    width: calc(100% - 2rem);
+    border-radius: 1.6rem;
+    background-color: var(--anime-layout-body);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    &Button {
+      width: 100%;
+      height: 4rem;
+      text-align: center;
+      align-content: center;
+      border-top: 1px solid var(--anime-layout-bg);
+    }
+  }
+  &__Coupon {
+    width: 100%;
+    background-color: transparent;
+    --accordion-bg: transparent;
+    --open-top-padding: 0;
+    border-radius: 1.6rem;
+    &List {
+      margin: 0 auto;
+      padding: 0 2rem 1.6rem;
+    }
+  }
+  &__EnuriCounter {
+    font-size: 1.4rem;
+    margin-left: 0.8rem;
+  }
+
   &__Title {
     font-size: 1.8rem;
     font-weight: 700;
@@ -122,17 +189,6 @@ const { state: scrollState } = useScroll($body);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: -0.4rem;
-  }
-  &__Bubble {
-    border-radius: 1.6rem;
-    width: calc(100% - 4rem);
-    padding: 2rem;
-    background-color: var(--anime-layout-body);
-    margin: 1rem auto 0;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: 1;
   }
 
   &__CTAWrap {
@@ -144,7 +200,7 @@ const { state: scrollState } = useScroll($body);
   &__CTA {
     margin: 0 auto;
     display: block;
-    width: calc(100% - 4rem);
+    width: calc(100% - 2rem);
     height: 5rem;
     border-radius: 1.6rem;
     background-color: hsl(var(--theme-500));
