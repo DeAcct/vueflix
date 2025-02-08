@@ -145,7 +145,6 @@ export const useAuth = defineStore("auth", () => {
           tier: "free",
           reserved: false,
         },
-        initDate: new Date(),
       };
 
       //기본정보 업로드

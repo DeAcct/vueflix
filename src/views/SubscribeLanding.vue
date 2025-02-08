@@ -157,11 +157,11 @@
               level="사관생도"
               class="SubscribeModal__ProductThumbnail"
             />
-            <h3 class="SubscribeModal__ProductName">애니장교 임관</h3>
+            <h3 class="SubscribeModal__ProductName">애니장교</h3>
           </div>
           <div class="SubscribeModal__Row">
             <div class="SubscribeModal__Group">
-              <p>매월 결제일</p>
+              <p>결제일</p>
               <strong>매월 {{ new Date().getDate() }}일</strong>
             </div>
             <div class="SubscribeModal__Group">
@@ -458,7 +458,7 @@ function openPurchaseDialog() {
 .SubscribeModal {
   &__Bubble {
     border-radius: 1.6rem;
-    width: calc(100% - 2rem);
+    width: calc(100% - 4rem);
     padding: 2rem;
     background-color: var(--anime-layout-body);
     margin: 1rem auto 0;
@@ -473,7 +473,6 @@ function openPurchaseDialog() {
     }
     &Name {
       font-size: 1.8rem;
-      flex-grow: 1;
       flex-shrink: 0;
       flex-basis: 0;
     }

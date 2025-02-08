@@ -15,6 +15,11 @@
     </template>
     <template #content>
       <slot name="content"></slot>
+      <CouponList class="PurchaseDialog__Bubble">
+        <template #title>
+          <h2 class="PurchaseDialog__Title">쿠폰</h2>
+        </template>
+      </CouponList>
       <div class="PurchaseDialog__CTAWrap">
         <RouterLink
           to="/subscribe/manage"
@@ -26,6 +31,7 @@
             :href
             @click="
               () => {
+                sideEffect();
                 close();
                 navigate();
               }
@@ -44,6 +50,7 @@ import { ref, computed } from "vue";
 
 import { useScroll } from "@/composables/scroll";
 
+import CouponList from "@/components/CouponList.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
 
 import IconBase from "@/components/IconBase.vue";
@@ -52,6 +59,13 @@ import IconClose from "@/components/icons/IconClose.vue";
 defineExpose({
   show,
   close,
+});
+
+defineProps({
+  sideEffect: {
+    type: Function,
+    default: () => {},
+  },
 });
 
 const $PurchaseDialog = ref(null);
@@ -78,19 +92,19 @@ const { state: scrollState } = useScroll($body);
   --dialog-overflow: scroll;
   --dialog-height: calc(var(--vh) * 100 * 1px);
   &__Header {
-    width: calc(100% - 2rem);
+    width: calc(100% - 4rem);
     margin: 0 auto;
     background: var(--anime-layout-body);
     border-radius: 1.6rem;
     padding: 0 2rem;
     position: sticky;
-    top: 1rem;
+    top: 0;
     z-index: calc(var(--z-index-overay-1) + 1);
 
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 1rem;
+    margin-top: 2rem;
     height: var(--header-height);
 
     &--Scroll {
@@ -111,25 +125,28 @@ const { state: scrollState } = useScroll($body);
     margin-right: -0.4rem;
   }
   &__Bubble {
-    width: calc(100% - 2rem);
-    margin: 0 auto;
-    padding: 0 2rem;
     border-radius: 1.6rem;
-    margin-top: 1rem;
-    background: var(--anime-layout-body);
+    width: calc(100% - 4rem);
+    padding: 2rem;
+    background-color: var(--anime-layout-body);
+    margin: 1rem auto 0;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: 1;
   }
+
   &__CTAWrap {
     width: 100%;
     position: fixed;
     bottom: 0;
-    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
   }
   &__CTA {
     margin: 0 auto;
     display: block;
-    width: calc(100% - 2rem);
+    width: calc(100% - 4rem);
     height: 5rem;
-    border-radius: 9999px;
+    border-radius: 1.6rem;
     background-color: hsl(var(--theme-500));
     align-content: center;
     text-align: center;

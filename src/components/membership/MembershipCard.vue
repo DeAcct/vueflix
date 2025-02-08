@@ -6,9 +6,12 @@
         <p class="MembershipCard__Title">애니장교 계급</p>
         <strong class="MembershipCard__Level">{{ level }}</strong>
       </div>
-      <p class="MembershipCard__Started">
-        데레와 함께
-        <span class="MembershipCard__Counter">{{ initDate }}일</span>
+      <p
+        class="MembershipCard__Started"
+        v-if="membership && membership?.tier !== 'free'"
+      >
+        임관 후
+        <span class="MembershipCard__Counter">{{ days }}일</span>
       </p>
     </section>
     <RouterLink
@@ -16,13 +19,18 @@
         membership?.tier === 'free' ? `/subscribe/landing` : `/subscribe/manage`
       "
       class="MembershipCard__Sub"
-      v-if="membership?.tier === 'free'"
     >
-      <p class="MembershipCard__SubCopy">
+      <p class="MembershipCard__SubCopy" v-if="membership?.tier === 'free'">
         <strong class="MembershipCard__SubCopyStrong"
           >믿음직스런 애니장교가 되어보세요</strong
         >
         더 많은 애니를 전문적으로 탐색할 수 있어요
+      </p>
+      <p class="MembershipCard__SubCopy" v-else>
+        <strong class="MembershipCard__SubCopyStrong"
+          >애니장교 멤버십 관리</strong
+        >
+        내 멤버십을 관리하고 혜택을 확인하세요
       </p>
       <i class="MembershipCard__SubIconBG">
         <IconBase class="MembershipCard__SubIcon">
@@ -44,19 +52,13 @@ import IconArrowNext from "../icons/IconArrowNext.vue";
 
 const props = defineProps({
   data: {
-    type: Object,
+    type: [Object, null],
     required: true,
   },
 });
 
-const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 const membership = computed(() => props.data?.membership);
-const initDate = computed(() =>
-  Math.floor(
-    (new Date() - props.data?.initDate.toDate()) / ONE_DAY_IN_MILLISECONDS
-  )
-);
-const { level } = useUserLevel(membership);
+const { level, days } = useUserLevel(membership);
 </script>
 
 <style lang="scss" scoped>

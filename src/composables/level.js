@@ -3,6 +3,7 @@ import { useAuth } from "@/store/auth";
 import { gausArray } from "../utility/extArray";
 
 const LEVEL_MAP = gausArray({
+  0: "사관생도",
   30: "소위",
   60: "중위",
   90: "대위",
@@ -35,12 +36,15 @@ const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
  * @returns
  */
 export function useUserLevel(membership) {
+  console.log(membership);
   const days = computed(() => {
-    if (!membership.value || !membership.value?.from) {
+    if (!membership.value) {
       return 0;
     }
+    console.log(membership.value);
     return Math.floor(
-      (new Date() - membership.value.from.toDate()) / ONE_DAY_IN_MILLISECONDS
+      (new Date() - toValue(membership.value.from).toDate()) /
+        ONE_DAY_IN_MILLISECONDS
     );
   });
 
@@ -48,7 +52,7 @@ export function useUserLevel(membership) {
     if (membership.value?.tier === "free") {
       return "민간인";
     }
-    return days.value ? LEVEL_MAP[days.value] : "사관생도";
+    return days.value ? LEVEL_MAP[days.value].value : "사관생도";
   });
 
   return { level, eng: KOR_TO_ENG[level.value], days };
