@@ -145,6 +145,17 @@ export const useAuth = defineStore("auth", () => {
           tier: "free",
           reserved: false,
         },
+        coupon: [
+          {
+            name: "자진임관을 환영한다 아쎄이!",
+            description: "매월 구독료가 면제되는 수상한 쿠폰",
+            received: new Date(),
+            expire: new Date("9999.12.31 23:59:59"),
+            type: "membership",
+            value: "100%",
+          },
+        ],
+        quickPay: [],
       };
 
       //기본정보 업로드
@@ -154,6 +165,18 @@ export const useAuth = defineStore("auth", () => {
       return { code: error.code, message: error.message };
     }
   }
+  async function subscribe() {
+    const userRef = doc(db, "user", auth.currentUser.uid);
+    await updateDoc(userRef, {
+      membership: {
+        from: new Date(),
+        tier: "premium",
+        reserved: false,
+      },
+    });
+    await syncUser();
+  }
+
   async function editUser({ nickname, profileImg }) {
     const { type, file, name } = unref(profileImg);
     const before = user.value;
@@ -299,6 +322,7 @@ export const useAuth = defineStore("auth", () => {
     profileImg,
     syncUser,
     createUser,
+    subscribe,
     editUser,
     checkEmailDuplicate,
     continueUser,

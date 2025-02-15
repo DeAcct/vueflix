@@ -68,6 +68,10 @@ const modelValue = defineModel();
     display: flex;
     width: 100%;
     height: 100%;
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   }
   &__Skell:checked ~ &__Track {
     background-color: hsl(var(--theme-500));

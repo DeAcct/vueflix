@@ -1,7 +1,7 @@
 <template>
   <ul class="CouponList">
     <li v-for="data in coupons">
-      <label :for="value" class="CouponList__Coupon">
+      <label :for="data.value" class="CouponList__Coupon">
         <input
           type="radio"
           name="coupon"
@@ -9,13 +9,15 @@
           :value="data"
           v-model="selected"
           class="blind"
-          :disabled="presentation"
         />
-        <span class="CouponList__Radio"></span>
-        <div class="CouponList__Text">
-          <strong>{{ data.name }}</strong>
-          <p>{{ data.value }} 할인</p>
+        <div class="CouponList__Row">
+          <span class="CouponList__Radio"></span>
+          <div class="CouponList__Column">
+            <strong class="CouponList__Name">{{ data.name }}</strong>
+            <p class="CouponList__Value">{{ data.value }} 할인</p>
+          </div>
         </div>
+        <p class="CouponList__Description">{{ data.description }}</p>
       </label>
     </li>
   </ul>
@@ -32,9 +34,6 @@ const props = defineProps({
     },
     default: "all",
   },
-  presentation: {
-    type: Boolean,
-  },
 });
 
 const { coupons } = useCoupon(props.type);
@@ -44,18 +43,34 @@ const selected = defineModel();
 
 <style lang="scss" scoped>
 .CouponList {
-  &__Coupon {
+  &__Row {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    border-radius: 0.8rem;
     padding: 1.2rem;
+    border-bottom: 1px dashed hsl(var(--bg-300));
+  }
+  &__Column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  &__Coupon {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.8rem;
     background-color: hsl(var(--bg-200));
     border: 2px solid hsl(var(--bg-300));
     transition: border-color 150ms ease-out;
     font-size: 1.4rem;
+    --radio-bg: hsl(var(--bg-400));
+    --radio-point: hsl(var(--bg-300));
     &:has(input:checked) {
       border-color: hsl(var(--theme-500));
+      --radio-bg: hsl(var(--theme-500));
+      --radio-point: hsl(var(--bg-100));
     }
   }
   &__Radio {
@@ -63,7 +78,7 @@ const selected = defineModel();
     display: block;
     width: 2rem;
     height: 2rem;
-    background-color: hsl(var(--bg-400));
+    background-color: var(--radio-bg);
     border-radius: 50%;
     transition: background-color 150ms ease-out;
     &::after {
@@ -71,19 +86,15 @@ const selected = defineModel();
       position: absolute;
       inset: 25%;
       border-radius: 50%;
-      background-color: hsl(var(--bg-300));
+      background-color: var(--radio-point);
     }
   }
-  input:checked + &__Radio {
-    background-color: hsl(var(--theme-500));
-    &::after {
-      background-color: hsl(var(--bg-100));
-    }
+  &__Name {
+    font-size: 1.4rem;
   }
-  &__Text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+  &__Description {
+    font-size: 1.2rem;
+    padding: 1.2rem;
   }
 
   &__Clear {

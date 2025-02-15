@@ -153,16 +153,17 @@
       class="SubscribeModal"
       type="membership"
       :product-value="9900"
+      :complete-effect="onComplete"
     >
       <template #title>구독</template>
       <template #content>
-        <section class="SubscribeModal__Bubble">
+        <div class="SubscribeModal__Product">
           <div class="SubscribeModal__Row">
             <MembershipSymbol
               level="사관생도"
               class="SubscribeModal__ProductThumbnail"
             />
-            <h3 class="SubscribeModal__ProductName">애니장교</h3>
+            <h2 class="SubscribeModal__ProductName">애니장교</h2>
           </div>
           <div class="SubscribeModal__Row">
             <div class="SubscribeModal__Group">
@@ -174,7 +175,39 @@
               <strong>9,900원</strong>
             </div>
           </div>
-        </section>
+        </div>
+      </template>
+      <template #caution>
+        <div class="SubscribeModal__Caution">
+          <h2 class="SubscribeModal__Title">유의사항</h2>
+          <ul class="SubscribeModal__CautionList">
+            <li
+              class="SubscribeModal__CautionItem SubscribeModal__CautionItem--Important"
+            >
+              이 웹사이트는 실제 구독 서비스를 제공하지 않습니다.
+            </li>
+            <li
+              class="SubscribeModal__CautionItem SubscribeModal__CautionItem--Important"
+            >
+              결제수단은 브라우저에 임시로 저장되고 언제든 삭제할 수 있습니다.
+            </li>
+            <li class="SubscribeModal__CautionItem">
+              구매 후 사용내역이 없는 경우 7일 이내에 고객센터를 통해 결제취소를
+              할 수 있습니다.
+            </li>
+            <li class="SubscribeModal__CautionItem">
+              미성년 회원의 결제는 원칙적으로 법정대리인의 명의 또는 동의 하에
+              이루어져야 합니다.
+            </li>
+            <li class="SubscribeModal__CautionItem">
+              법정대리인은 본인 동의 없이 체결된 자녀(미성년자)의 계약을 취소할
+              수 있습니다.
+            </li>
+            <li class="SubscribeModal__CautionItem">
+              이용에 관한 기타 문의 사항은 1:1 문의로 연락주세요.
+            </li>
+          </ul>
+        </div>
       </template>
       <template #cta>구독 시작</template>
     </PurchaseModal>
@@ -229,6 +262,11 @@ const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준
 const $PurchaseDialog = ref(null);
 function openPurchaseDialog() {
   $PurchaseDialog.value.show();
+}
+
+async function onComplete() {
+  // await auth.subscribe();
+  // router.replace("/subscribe/manage");
 }
 </script>
 
@@ -461,23 +499,13 @@ function openPurchaseDialog() {
 }
 
 .SubscribeModal {
-  &__Bubble {
-    border-radius: 1.6rem;
-    width: calc(100% - 2rem);
-    padding: 2rem;
-    background-color: var(--anime-layout-body);
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    & + & {
-      margin-top: 1rem;
-    }
-  }
-
   &__Title {
     font-size: 1.8rem;
   }
   &__Product {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
     &Thumbnail {
       width: 6rem;
       height: 6rem;
@@ -509,6 +537,24 @@ function openPurchaseDialog() {
     flex-grow: 1;
     width: 100%;
     flex-shrink: 0;
+  }
+  &__Caution {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  &__CautionItem {
+    line-height: 1.4;
+
+    font-size: 1.2rem;
+    &--Important {
+      font-weight: 700;
+      color: hsl(var(--theme-500));
+    }
+    &::before {
+      content: "-";
+    }
   }
 }
 

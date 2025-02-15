@@ -37,7 +37,6 @@ const nickname = computed(() => (store.user ? store.user.nickname : "게스트")
 .ProfileCombo {
   display: flex;
   align-items: center;
-  padding: 0.4rem;
   border-radius: 9999px;
 
   transition: border-color 150ms ease-out;

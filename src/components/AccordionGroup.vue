@@ -41,8 +41,8 @@ const { $root, $summary, $content } = useAccordion(
       linear-gradient(150deg, hsl(var(--bg-200)), hsl(var(--bg-200)))
     );
     backdrop-filter: blur(10px);
-    border-radius: var(--global-radius);
-    padding: var(--accordion-title-padding, 1.5rem 2rem);
+    border-radius: var(--accordion-title-radius, var(--global-radius));
+    padding: var(--accordion-title-padding, 2rem);
     width: 100%;
     display: flex;
     align-items: center;
@@ -61,18 +61,7 @@ const { $root, $summary, $content } = useAccordion(
   }
   &__Content {
     padding-top: var(--open-top-padding, 1.2rem);
-    // display: flex;
-    // flex-direction: var(--accordion-direction, column);
-    // gap: var(--episode-gap, 1rem);
-
-    // height: 0;
-    // transition: all calc(1ms * v-bind(ACCORDION_ANIMATION_DURATION)) ease-in-out;
   }
-  // &::details-content {
-  //   background-color: red;
-  //   block-size: 0;
-  //   transition: calc(1ms * v-bind(ACCORDION_ANIMATION_DURATION)) cubic-bezier(0.83, 0, 0.17, 1);
-  // }
 
   &[open] {
     .AccordionGroup__OpenIcon {
