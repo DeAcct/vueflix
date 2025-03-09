@@ -148,69 +148,13 @@
         30초만에 시작하기
       </button>
     </div>
-    <PurchaseModal
+    <SubscribeModal
       ref="$PurchaseDialog"
       class="SubscribeModal"
-      type="membership"
-      :product-value="9900"
+      :product="{ type: 'subscribe' }"
       :complete-effect="onComplete"
     >
-      <template #title>구독</template>
-      <template #content>
-        <div class="SubscribeModal__Product">
-          <div class="SubscribeModal__Row">
-            <MembershipSymbol
-              level="사관생도"
-              class="SubscribeModal__ProductThumbnail"
-            />
-            <h2 class="SubscribeModal__ProductName">애니장교</h2>
-          </div>
-          <div class="SubscribeModal__Row">
-            <div class="SubscribeModal__Group">
-              <p>결제일</p>
-              <strong>매월 {{ new Date().getDate() }}일</strong>
-            </div>
-            <div class="SubscribeModal__Group">
-              <p>금액</p>
-              <strong>9,900원</strong>
-            </div>
-          </div>
-        </div>
-      </template>
-      <template #caution>
-        <div class="SubscribeModal__Caution">
-          <h2 class="SubscribeModal__Title">유의사항</h2>
-          <ul class="SubscribeModal__CautionList">
-            <li
-              class="SubscribeModal__CautionItem SubscribeModal__CautionItem--Important"
-            >
-              이 웹사이트는 실제 구독 서비스를 제공하지 않습니다.
-            </li>
-            <li
-              class="SubscribeModal__CautionItem SubscribeModal__CautionItem--Important"
-            >
-              결제수단은 브라우저에 임시로 저장되고 언제든 삭제할 수 있습니다.
-            </li>
-            <li class="SubscribeModal__CautionItem">
-              구매 후 사용내역이 없는 경우 7일 이내에 고객센터를 통해 결제취소를
-              할 수 있습니다.
-            </li>
-            <li class="SubscribeModal__CautionItem">
-              미성년 회원의 결제는 원칙적으로 법정대리인의 명의 또는 동의 하에
-              이루어져야 합니다.
-            </li>
-            <li class="SubscribeModal__CautionItem">
-              법정대리인은 본인 동의 없이 체결된 자녀(미성년자)의 계약을 취소할
-              수 있습니다.
-            </li>
-            <li class="SubscribeModal__CautionItem">
-              이용에 관한 기타 문의 사항은 1:1 문의로 연락주세요.
-            </li>
-          </ul>
-        </div>
-      </template>
-      <template #cta>구독 시작</template>
-    </PurchaseModal>
+    </SubscribeModal>
   </main>
 </template>
 
@@ -224,7 +168,7 @@ import { useNumberAnimation } from "@/composables/animate";
 import { useIntersection } from "@/composables/intersection";
 
 import MembershipSymbol from "@/components/membership/MembershipSymbol.vue";
-import PurchaseModal from "@/components/PurchaseModal.vue";
+import SubscribeModal from "@/components/SubscribeModal.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
@@ -262,11 +206,6 @@ const levels = ["소위", "중위", "대위", "소령", "중령", "대령", "준
 const $PurchaseDialog = ref(null);
 function openPurchaseDialog() {
   $PurchaseDialog.value.show();
-}
-
-async function onComplete() {
-  // await auth.subscribe();
-  // router.replace("/subscribe/manage");
 }
 </script>
 
@@ -499,63 +438,6 @@ async function onComplete() {
 }
 
 .SubscribeModal {
-  &__Title {
-    font-size: 1.8rem;
-  }
-  &__Product {
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    &Thumbnail {
-      width: 6rem;
-      height: 6rem;
-    }
-    &Name {
-      font-size: 1.8rem;
-      flex-shrink: 0;
-      flex-basis: 0;
-    }
-  }
-  &__Row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1.2rem;
-    flex-basis: 100%;
-    justify-content: space-between;
-    & + & {
-      padding-top: 1.8rem;
-      margin-top: 1.8rem;
-      border-top: 1px solid hsl(var(--bg-300));
-    }
-  }
-  &__Group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.6rem;
-    flex-grow: 1;
-    width: 100%;
-    flex-shrink: 0;
-  }
-  &__Caution {
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-  &__CautionItem {
-    line-height: 1.4;
-
-    font-size: 1.2rem;
-    &--Important {
-      font-weight: 700;
-      color: hsl(var(--theme-500));
-    }
-    &::before {
-      content: "-";
-    }
-  }
 }
 
 @keyframes slide-left {

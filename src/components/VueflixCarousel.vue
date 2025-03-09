@@ -1,37 +1,32 @@
 <template>
   <div class="VueflixCarousel">
-    <div :class="['VueflixCarousel__Track', `VueflixCarousel__Track--${type}`]">
-      <div
-        :class="['VueflixCarousel__Body', `VueflixCarousel__Body--${type}`]"
-        ref="$ScrollBody"
-      >
-        <slot></slot>
-      </div>
-      <template v-if="type === 'arrow'">
-        <button
-          class="VueflixCarousel__Button VueflixCarousel__Button--prev"
-          v-if="active.prev"
-          @click="prev"
-          type="button"
-        >
-          <IconBase class="VueflixCarousel__Icon">
-            <IconArrowPrev></IconArrowPrev>
-          </IconBase>
-          <span class="blind">이전</span>
-        </button>
-        <button
-          class="VueflixCarousel__Button VueflixCarousel__Button--next"
-          v-if="active.next"
-          @click="next"
-          type="button"
-        >
-          <IconBase class="VueflixCarousel__Icon">
-            <IconArrowNext></IconArrowNext>
-          </IconBase>
-          <span class="blind">다음</span>
-        </button>
-      </template>
+    <div :class="['VueflixCarousel__Body', `VueflixCarousel__Body--${type}`]">
+      <slot></slot>
     </div>
+    <template v-if="type === 'arrow'">
+      <button
+        class="VueflixCarousel__Button VueflixCarousel__Button--prev"
+        v-if="active.prev"
+        @click="prev"
+        type="button"
+      >
+        <IconBase class="VueflixCarousel__Icon">
+          <IconArrowPrev></IconArrowPrev>
+        </IconBase>
+        <span class="blind">이전</span>
+      </button>
+      <button
+        class="VueflixCarousel__Button VueflixCarousel__Button--next"
+        v-if="active.next"
+        @click="next"
+        type="button"
+      >
+        <IconBase class="VueflixCarousel__Icon">
+          <IconArrowNext></IconArrowNext>
+        </IconBase>
+        <span class="blind">다음</span>
+      </button>
+    </template>
   </div>
 </template>
 
@@ -107,12 +102,13 @@ const active = computed(() => ({
 .VueflixCarousel {
   width: 100%;
   height: 100%;
+  overflow-x: scroll;
+  position: relative;
   &__Track {
     width: 100%;
     height: 100%;
     position: relative;
     scrollbar-width: none;
-    overflow-x: scroll;
     border-radius: var(--carousel-clip-radius);
     overflow-y: hidden;
     &::-webkit-scrollbar {
@@ -124,7 +120,7 @@ const active = computed(() => ({
     // display: flex;
     // flex-direction: row;
     // gap: var(--carousel-gap, 1rem);
-    width: max-content;
+    width: var(--carousel-body-width, max-content);
     padding: 0 var(--carousel-padding, var(--inner-padding));
     overflow: var(--carousel-overflow);
 

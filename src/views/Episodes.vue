@@ -323,6 +323,7 @@ function clear() {
     &__Accordion {
       --episode-gap: 1.2rem;
       --thumbnail-width: 23rem;
+      --accordion-title-padding: 1.6rem;
     }
     &__Thumbnail {
       width: 40rem;

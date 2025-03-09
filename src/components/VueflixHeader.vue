@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref, watch, computed } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useEventListener } from "@vueuse/core";
 
@@ -345,6 +345,7 @@ const iconColor = computed(() => (route.name === "home" ? "#fff" : "inherit"));
       --profile-size: 3.6rem;
       height: 4.6rem;
       padding-left: 1rem;
+      padding-right: 0.5rem;
       margin-left: 1.6rem;
     }
     &__UserName {

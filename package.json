@@ -8,21 +8,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vueuse/core": "^12.0.0",
+    "@vueuse/core": "^12.7.0",
     "dayjs": "^1.11.13",
-    "firebase": "^11.0.2",
-    "firebase-tools": "^13.27.0",
-    "gsap": "^3.12.5",
-    "pinia": "^2.2.8",
-    "sass": "^1.81.1",
+    "firebase": "^11.3.1",
+    "firebase-tools": "^13.31.2",
+    "gsap": "^3.12.7",
+    "pinia": "^3.0.1",
+    "sass": "^1.85.0",
     "vite-plugin-pwa": "^0.21.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
-    "vite": "^6.0.2",
-    "vite-plugin-vue-devtools": "^7.6.7"
+    "vite": "^6.1.1",
+    "vite-plugin-vue-devtools": "^7.7.2"
   },
   "packageManager": "yarn@4.5.3"
 }
