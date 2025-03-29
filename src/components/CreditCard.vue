@@ -56,11 +56,11 @@ import IconClose from "@/components/icons/IconClose.vue";
 import { usePurchase } from "@/store/purchase";
 
 const emit = defineEmits(["add-credit-card"]);
-function addCreditCard() {
-  emit("add-credit-card");
-}
 
 const purchase = usePurchase();
+function addCreditCard() {
+  purchase.go("new-card");
+}
 </script>
 
 <style lang="scss" scoped>
