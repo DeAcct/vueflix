@@ -25,7 +25,7 @@ const props = defineProps({
 .fade {
   &-enter-active,
   &-leave-active {
-    transition: opacity 300ms cubic-bezier(0, 0.55, 0.45, 1);
+    transition: opacity 200ms cubic-bezier(0, 0.55, 0.45, 1);
   }
   &-enter-from,
   &-leave-to {
@@ -36,7 +36,7 @@ const props = defineProps({
 .slide {
   &-enter-active,
   &-leave-active {
-    transition: 300ms cubic-bezier(0.83, 0, 0.17, 1);
+    transition: 200ms cubic-bezier(0.83, 0, 0.17, 1);
     transform-origin: center center;
   }
   &-enter-from,

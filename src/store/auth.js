@@ -165,13 +165,14 @@ export const useAuth = defineStore("auth", () => {
       return { code: error.code, message: error.message };
     }
   }
-  async function subscribe() {
+  async function subscribe(data) {
     const userRef = doc(db, "user", auth.currentUser.uid);
     await updateDoc(userRef, {
       membership: {
         from: new Date(),
         tier: "premium",
         reserved: false,
+        ...data,
       },
     });
     await syncUser();

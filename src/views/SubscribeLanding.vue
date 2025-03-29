@@ -148,13 +148,12 @@
         30초만에 시작하기
       </button>
     </div>
-    <SubscribeModal
+    <PurchaseModal
       ref="$PurchaseDialog"
-      class="SubscribeModal"
+      class="PurchaseModal"
       :product="{ type: 'subscribe' }"
-      :complete-effect="onComplete"
     >
-    </SubscribeModal>
+    </PurchaseModal>
   </main>
 </template>
 
@@ -168,7 +167,7 @@ import { useNumberAnimation } from "@/composables/animate";
 import { useIntersection } from "@/composables/intersection";
 
 import MembershipSymbol from "@/components/membership/MembershipSymbol.vue";
-import SubscribeModal from "@/components/SubscribeModal.vue";
+import PurchaseModal from "@/components/PurchaseModal.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
@@ -437,7 +436,7 @@ function openPurchaseDialog() {
   }
 }
 
-.SubscribeModal {
+.PurchaseModal {
 }
 
 @keyframes slide-left {

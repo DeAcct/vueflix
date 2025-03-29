@@ -25,12 +25,8 @@
         </button>
       </section>
       <section class="Purchase__Bubble">
-        <h2 class="Purchase__Title">결제 수단</h2>
-        <CreditCard
-          class="Purchase__CreditCard"
-          v-model="selectedCreditCard"
-          @add-credit-card="onAddCreditCard"
-        />
+        <h2 class="Purchase__Title">결제 카드</h2>
+        <CreditCard class="Purchase__CreditCard" />
       </section>
       <section class="Purchase__Bubble">
         <div class="Purchase__Caution">
@@ -94,6 +90,7 @@ import CreditCard from "@/components/CreditCard.vue";
 import InputBoolean from "@/components/InputBoolean.vue";
 
 import ProductCard from "@/components/ProductCard.vue";
+import { usePurchase } from "@/store/purchase";
 
 const props = defineProps({
   completeEffect: {
@@ -124,22 +121,18 @@ const enuri = computed(() =>
   useEnuri(selectedCoupon.value?.value)(price.value)
 );
 
-const selectedCreditCard = ref(null);
-
 const isAgreed = ref(false);
 
 const emit = defineEmits(["complete", "add-credit-card"]);
 function complete() {
-  emit("complete");
+  emit("complete", result);
 }
 const result = computed(() => ({
   price: price.value - enuri.value,
   // 포트폴리오 사이트이므로 카드 정보를 저장하지 않습니다.
   // creditCard: selectedCreditCard.value,
 }));
-function onAddCreditCard() {
-  emit("add-credit-card", result);
-}
+const purchase = usePurchase();
 </script>
 
 <style lang="scss" scoped>

@@ -5,13 +5,13 @@
         <h2 class="PurchaseDialog__Title">
           <TransitionGroup name="fade">
             <button
-              v-for="(crumb, index) in currentView.crumbs"
+              v-for="(crumb, index) in purchase.router"
               :key="crumb"
               class="PurchaseDialog__TitleCrumb"
-              @click="index === 0 && returnToRoot()"
-              :disabled="index === currentView.crumbs.length - 1"
+              @click="purchase.go(crumb)"
+              :disabled="index === purchase.router.length - 1"
             >
-              {{ crumb }}
+              {{ VIEW_STRING[crumb] }}
             </button>
           </TransitionGroup>
         </h2>
@@ -23,32 +23,31 @@
       </header>
     </template>
     <template #content>
-      <MultiView transition-name="slide" :view-key="currentView.key">
+      <MultiView transition-name="slide" :view-key="purchase.current">
         <Purchase
-          v-if="currentView.key === 'purchase'"
+          v-if="purchase.current === 'purchase'"
           @complete="onComplete"
-          @add-credit-card="addCreditCard"
         />
-        <NewCard
-          v-else-if="currentView.key === 'new-card'"
-          @card-submit="returnToRoot"
-        />
+        <NewCard v-else-if="purchase.current === 'new-card'" />
       </MultiView>
     </template>
   </NativeDialog>
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 
-import Purchase from "./purchase/Purchase.vue";
+import { useRouter } from "vue-router";
+import { useAuth } from "@/store/auth";
 
 import NativeDialog from "@/components/NativeDialog.vue";
 import MultiView from "@/components/MultiView.vue";
+import Purchase from "./purchase/Purchase.vue";
+import NewCard from "./purchase/NewCard.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconClose from "@/components/icons/IconClose.vue";
-import NewCard from "./purchase/NewCard.vue";
+import { usePurchase } from "@/store/purchase";
 
 defineExpose({
   show,
@@ -72,19 +71,33 @@ function close() {
   document.body.style.overflow = "auto";
 }
 
-const currentView = reactive({ key: "purchase", crumbs: ["구독"] });
-function addCreditCard() {
-  currentView.key = "new-card";
-  currentView.crumbs.push("신용카드 추가");
-}
-function returnToRoot() {
-  currentView.key = "purchase";
-  currentView.crumbs.pop();
-}
+const VIEW_STRING = {
+  purchase: "구독",
+  "new-card": "신용카드 추가",
+};
+// const currentView = ref(["purchase"]);
+// function moveTo(crumb) {
+//   const index = currentView.value.indexOf(crumb);
+//   if (index === -1) return;
+//   currentView.value = currentView.value.crumbs.slice(0, index + 1);
+//   console.log(currentView.value);
+// }
+const purchase = usePurchase();
 
-async function onComplete() {
-  // await auth.subscribe();
-  // router.replace("/subscribe/manage");
+// function addCreditCard() {
+//   currentView.key = "new-card";
+//   currentView.crumbs.push("new-card");
+// }
+// function returnToRoot() {
+//   currentView.key = "purchase";
+//   currentView.crumbs.pop();
+// }
+
+const auth = useAuth();
+const router = useRouter();
+async function onComplete(result) {
+  await auth.subscribe(result);
+  router.replace("/subscribe/manage");
 }
 </script>
 
