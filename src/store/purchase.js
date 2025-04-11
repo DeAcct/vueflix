@@ -46,8 +46,11 @@ export const usePurchase = defineStore("purchase", () => {
     selectedCard.value = cards.value[0] || {};
   }
 
+  const isRoot = computed(() => router.value.length === 1);
+
   return {
     cards,
+    isRoot,
     selectedCard,
     router,
     current,

@@ -1,6 +1,6 @@
 <template>
   <form class="NewCard" @submit.prevent>
-    <div class="NewCard__FieldGroup">
+    <div class="NewCard__Col">
       <label
         class="NewCard__Field"
         v-for="(data, title) in newCard"
@@ -45,7 +45,7 @@
         />
       </label>
     </div>
-    <div class="NewCard__CTAHolder">
+    <div class="NewCard__CTAWrap">
       <VueflixBtn
         class="NewCard__Button"
         @click="onCancel"
@@ -162,7 +162,7 @@ function onCancel() {
   max-width: 1080px;
   width: calc(100% - 2rem);
   margin: 0 auto;
-  &__FieldGroup {
+  &__Col {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
@@ -201,7 +201,7 @@ function onCancel() {
     }
   }
 
-  &__CTAHolder {
+  &__CTAWrap {
     position: fixed;
     display: flex;
     width: 100%;
@@ -228,6 +228,30 @@ function onCancel() {
     }
     &:disabled {
       background-color: hsl(var(--bg-300));
+    }
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .NewCard {
+    display: flex;
+    gap: 1rem;
+    &__Col {
+      width: calc(50% - 0.5rem);
+      flex-shrink: 0;
+    }
+    &__CTAWrap {
+      position: static;
+      display: flex;
+      gap: 0.8rem;
+      bottom: auto;
+      top: 0;
+      width: calc(50% - 0.5rem);
+      margin: 0;
+      padding: 0;
+    }
+    &__Button {
+      margin: 0;
     }
   }
 }

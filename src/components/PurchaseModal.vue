@@ -1,7 +1,20 @@
 <template>
   <NativeDialog class="PurchaseDialog" shade ref="$PurchaseDialog">
     <template #title>
-      <header class="PurchaseDialog__Header">
+      <header
+        class="PurchaseDialog__Header"
+        :class="purchase.isRoot && 'PurchaseDialog__Header--Root'"
+      >
+        <button
+          class="PurchaseDialog__Back"
+          type="button"
+          @click="purchase.back"
+          v-if="!purchase.isRoot"
+        >
+          <IconBase class="PurchaseDialog__BackIcon">
+            <IconArrowPrev />
+          </IconBase>
+        </button>
         <h2 class="PurchaseDialog__Title">
           <TransitionGroup name="fade">
             <button
@@ -23,7 +36,11 @@
       </header>
     </template>
     <template #content>
-      <MultiView transition-name="slide" :view-key="purchase.current">
+      <MultiView
+        transition-name="slide"
+        :view-key="purchase.current"
+        class="PurchaseDialog__Main"
+      >
         <Purchase
           v-if="purchase.current === 'purchase'"
           @complete="onComplete"
@@ -46,6 +63,7 @@ import Purchase from "./purchase/Purchase.vue";
 import NewCard from "./purchase/NewCard.vue";
 
 import IconBase from "@/components/IconBase.vue";
+import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";
 import IconClose from "@/components/icons/IconClose.vue";
 import { usePurchase } from "@/store/purchase";
 
@@ -85,7 +103,7 @@ const VIEW_STRING = {
 const purchase = usePurchase();
 
 // function addCreditCard() {
-//   currentView.key = "new-card";
+//   currentView.key = "new-card";`
 //   currentView.crumbs.push("new-card");
 // }
 // function returnToRoot() {
@@ -121,10 +139,14 @@ async function onComplete(result) {
     z-index: calc(var(--z-index-overay-1) + 1);
 
     display: flex;
-    justify-content: space-between;
     align-items: center;
     height: var(--header-height);
     background-color: var(--anime-layout-bg);
+    --title-left: calc(2.4rem + 0.8rem);
+
+    &--Root {
+      --title-left: 0;
+    }
     &::before,
     &::after {
       content: "";
@@ -134,7 +156,7 @@ async function onComplete(result) {
       background-color: transparent;
       position: absolute;
 
-      bottom: -3.2rem;
+      bottom: -1.6rem;
       border-radius: 50%;
     }
     &::before {
@@ -146,10 +168,16 @@ async function onComplete(result) {
       box-shadow: 1.6rem -1.6rem 0 var(--anime-layout-bg);
     }
   }
-
+  &__Back {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
   &__Title {
+    position: absolute;
+    translate: var(--title-left) 0;
     display: flex;
     overflow: hidden;
+    transition: 150ms ease-out;
     &:has(+ .PurchaseDialog__CreditCard) {
       padding: 2rem 0 2rem 2rem;
       position: sticky;
@@ -168,6 +196,7 @@ async function onComplete(result) {
     }
   }
   &__CloseButton {
+    margin-left: auto;
     width: 3rem;
     height: 3rem;
     display: flex;

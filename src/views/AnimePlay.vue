@@ -293,6 +293,9 @@ onUnmounted(async () => {
   saveAndCleanUp();
 });
 function onRequestTeleport(e) {
+  if (e > TRIAL_TIME_LIMIT && !user.value) {
+    return;
+  }
   $player.value.$video.currentTime = e;
 }
 

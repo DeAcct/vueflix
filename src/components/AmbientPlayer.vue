@@ -40,8 +40,6 @@
           :volume="volume"
           :meta="meta"
           v-if="controlShow"
-          @mouseenter="pointerOver"
-          @mouseout="pointerOut"
         >
           <template #time>{{ time.current }} / {{ time.duration }}</template>
         </VideoControlBar>
@@ -174,8 +172,8 @@ function onMouseMove() {
   delayVanish();
 }
 function delayVanish() {
+  clearTimeout(timer);
   if (!controlShow.value) {
-    clearTimeout(timer);
     controlShow.value = true;
   }
   timer = setTimeout(() => {
