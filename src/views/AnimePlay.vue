@@ -4,36 +4,37 @@
       class="AnimePlay__Frame"
       :class="mode === 'theater' && 'AnimePlay__Frame--Theater'"
     >
-      <AmbientPlayer
-        class="AnimePlay__Video"
-        @toggle-theater="toggleTheater"
-        @time-update="updateTime"
-        :src="videoSrc"
-        :time
-        :next-episode="nextEpisode"
-        :prev-episode="prevEpisode"
-        :ambient="mode !== 'theater'"
-        :prevent-key-binding="isInteracting"
-        :meta="{
-          episode: `${route.params.title} ${route.params.part} ${route.params.index}`,
-          title: nowEpisode?.title,
-        }"
-        ref="$player"
-      >
-        <template #time-limit>
-          <Transition name="limit-fade">
-            <div class="AnimePlay__TimeLimit" v-if="showLimitAlert">
-              <strong class="AnimePlay__LimitTitle"
-                >1분 미리보기가 끝났어요ㅠㅠ</strong
-              >
-              <p class="AnimePlay__LimitExplain">
-                더 보고싶다면 로그인해주세요!
-              </p>
-              <RouterLink to="/auth" class="AnimePlay__CTA">로그인</RouterLink>
-            </div>
-          </Transition>
-        </template>
-      </AmbientPlayer>
+      <Transition name="limit-fade">
+        <AmbientPlayer
+          class="AnimePlay__Video"
+          @toggle-theater="toggleTheater"
+          @time-update="updateTime"
+          :src="videoSrc"
+          :time
+          :next-episode="nextEpisode"
+          :prev-episode="prevEpisode"
+          :ambient="mode !== 'theater'"
+          :prevent-key-binding="isInteracting"
+          :meta="{
+            episode: `${route.params.title} ${route.params.part} ${route.params.index}`,
+            title: nowEpisode?.title,
+          }"
+          ref="$player"
+          controls
+          v-if="!limit.show"
+        >
+          <template #time-limit> </template>
+        </AmbientPlayer>
+        <div class="AnimePlay__TimeLimit" v-else>
+          <strong class="AnimePlay__LimitTitle">{{
+            limit.title /*1분 미리보기가 끝났어요ㅠㅠ*/
+          }}</strong>
+          <p class="AnimePlay__LimitExplain">
+            {{ limit.subParagraph /*더 보고싶다면 로그인해주세요!*/ }}
+          </p>
+          <RouterLink to="/auth" class="AnimePlay__CTA">로그인</RouterLink>
+        </div>
+      </Transition>
     </div>
     <section class="AnimePlay__TitleRenderer">
       <div class="AnimePlay__Titles">
@@ -134,7 +135,7 @@
 
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 
-import { onMounted, onUnmounted, ref, computed } from "vue";
+import { onMounted, onUnmounted, ref, computed, watch } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { useAuth } from "@/store/auth";
 
@@ -153,22 +154,21 @@ import IconShare from "@/components/icons/IconShare.vue";
 import AccordionGroup from "../components/AccordionGroup.vue";
 
 const mode = ref("normal");
-const area = computed(() => {
-  if (mode.value === "normal") {
-    return {
-      video: "1 / 1 / 2 / 2",
-      parts: "1 / 2 / 2 / 3",
-      title: "2 / 1 / 3 / 2",
-      comments: "3 / 1 / 4 / 2",
-    };
-  }
-  return {
+const VIEW_MODE = {
+  normal: {
+    video: "1 / 1 / 2 / 2",
+    parts: "1 / 2 / 2 / 3",
+    title: "2 / 1 / 3 / 2",
+    comments: "3 / 1 / 4 / 2",
+  },
+  theater: {
     video: "1 / 1 / 2 / 3",
     parts: "2 / 2 / 4 / 3",
     title: "2 / 1 / 3 / 2",
     comments: "3 / 1 / 4 / 2",
-  };
-});
+  },
+};
+const area = computed(() => VIEW_MODE[mode.value]);
 function toggleTheater() {
   mode.value = mode.value === "normal" ? "theater" : "normal";
 }
@@ -197,14 +197,29 @@ const { getEpisodeProgress, updateMaraton } = useMaratonData(
 const TRIAL_TIME_LIMIT = 60;
 const time = ref(0);
 const $player = ref(null);
-const showLimitAlert = ref(false);
+const limit = ref({ show: false, title: "", subParagraph: "" });
 function updateTime(e) {
   time.value = e;
-  showLimitAlert.value = e > TRIAL_TIME_LIMIT && !user.value;
-  if (showLimitAlert.value) {
+  limit.value = {
+    show: e > TRIAL_TIME_LIMIT && !user.value,
+    title: "1분 미리보기가 끝났어요ㅠㅠ",
+    subParagraph: "더 보고싶다면 로그인해주세요!",
+  };
+  if (limit.value.show) {
     $player.value.$video.pause();
   }
 }
+watch(
+  () => time.value,
+  (newTime) => {
+    if (newTime > TRIAL_TIME_LIMIT && !user.value) {
+      limit.value.show = true;
+      $player.value.$video.pause();
+    } else {
+      limit.value.show = false;
+    }
+  }
+);
 
 const {
   animeInfo,
@@ -259,6 +274,9 @@ const saveAndCleanUp = router.beforeEach(async (to, from) => {
   if (to.name === "anime-play") {
     await getAnimeData();
   }
+  if (!user.value) {
+    return;
+  }
   await updateMaraton({
     part: from.params.part,
     index: from.params.index,
@@ -284,7 +302,6 @@ function setInteract(e) {
 }
 
 async function openSystemShare() {
-  console.log(window.location);
   const { origin, pathname } = window.location;
   const shareData = {
     title: `${route.params.title} ${route.params.part} ${route.params.index}`,
@@ -307,12 +324,13 @@ const { state: scrollState } = useScroll();
     position: sticky;
     top: 6rem;
     z-index: 100;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
   }
   &__TimeLimit {
     position: absolute;
     inset: 0;
     backdrop-filter: blur(10px);
-    background-color: hsl(0 0% 100% / 0.5);
     display: flex;
     flex-direction: column;
     padding: var(--inner-padding);

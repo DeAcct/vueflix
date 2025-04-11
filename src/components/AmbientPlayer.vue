@@ -156,35 +156,31 @@ const props = defineProps({
   },
   controls: {
     type: Boolean,
-    default: true,
   },
 });
 
-const controlShow = ref(props.controls);
-const isPointerOverControl = ref(false);
-function pointerOver() {
-  isPointerOverControl.value = true;
-}
-function pointerOut() {
-  isPointerOverControl.value = false;
-}
-function onMouseMove() {
-  if (!props.controls && controlShow.value) {
-    return;
-  }
-  controlShow.value = true;
-  delayVanish(1500);
-}
+const controlShow = ref(false);
+let timer = null;
 onMounted(() => {
-  delayVanish(1500);
-});
-function delayVanish(ms) {
-  if (isPointerOverControl.value) {
+  if (!props.controls) {
     return;
   }
-  setTimeout(() => {
+  delayVanish();
+});
+function onMouseMove() {
+  if (!props.controls) {
+    return;
+  }
+  delayVanish();
+}
+function delayVanish() {
+  if (!controlShow.value) {
+    clearTimeout(timer);
+    controlShow.value = true;
+  }
+  timer = setTimeout(() => {
     controlShow.value = false;
-  }, ms);
+  }, 1500);
 }
 
 const keyBinding = {

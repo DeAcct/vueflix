@@ -342,11 +342,11 @@ useIntersection($ReadMore, async () => {
     gap: 0.4rem;
   }
   &__BetaLabel {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     color: hsl(var(--theme-500));
   }
   &__Description {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
   &__Write {
     display: flex;

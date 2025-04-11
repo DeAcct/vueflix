@@ -60,6 +60,8 @@ const { $root, $summary, $content } = useAccordion(
     margin-left: auto;
   }
   &__Content {
+    display: flex;
+    flex-direction: column;
     padding-top: var(--open-top-padding, 1.2rem);
   }
 
