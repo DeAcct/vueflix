@@ -67,7 +67,7 @@ import { useAuth } from "@/store/auth";
 import { useUserMeta } from "@/api/userMeta";
 import { useFormatDate } from "@/composables/formatter";
 
-import UpdownReaction from "./UpdownReaction.vue";
+import UpdownReaction from "@/components/UpdownReaction.vue";
 
 const placeholder = computed(
   () =>
@@ -181,19 +181,13 @@ onMounted(() => {
     margin: 1.4rem 0 0.4rem;
     position: relative;
     width: 100%;
-    max-width: 80ch;
     font-size: 1.4rem;
+
     &:last-of-type {
       margin-bottom: 0;
     }
   }
   &__Text {
-    white-space: pre-line;
-    word-break: break-all;
-    font-size: 1.6rem;
-    font-weight: 500;
-    line-height: 1.5;
-    animation: fade 150ms ease-out;
   }
   &__EditInput {
     overflow-y: scroll;

@@ -15,8 +15,6 @@
       class="StatCard__Image"
       skelleton
     />
-
-    <MembershipCard :data class="StatCard__Level" />
   </section>
 </template>
 
@@ -27,7 +25,6 @@ import { db } from "@/utility/firebase";
 
 import HistoryInfo from "@/components/HistoryInfo.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
-import MembershipCard from "@/components/membership/MembershipCard.vue";
 
 const props = defineProps({
   uid: {
@@ -113,13 +110,6 @@ watch(
       height: 2rem;
       color: transparent;
     }
-  }
-
-  &__Level {
-    flex-basis: 100%;
-    background-color: hsl(var(--bg-200));
-    border-radius: calc(var(--global-radius) + 2rem);
-    color: hsl(var(--text-700));
   }
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <main class="MyApp">
     <StatCard :uid="user?.uid" class="MyApp__Profile" v-if="user" />
+    <MembershipCard :uid="user?.uid" class="MyApp__Membership" promotion />
     <RecommendCard v-if="showVerify()">
       <template #title>이메일을 인증해주세요</template>
       <template #text>
@@ -61,6 +62,7 @@ import { usePostpone } from "@/composables/postpone";
 import ArrowBtnWidget from "@/components/ArrowBtnWidget.vue";
 import RecommendCard from "@/components/RecommendCard.vue";
 import StatCard from "@/components/StatCard.vue";
+import MembershipCard from "@/components/membership/MembershipCard.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconAccount from "@/components/icons/IconAccount.vue";
@@ -175,6 +177,12 @@ function emailVerifyPostpone() {
   &__Limit {
     background-color: hsl(var(--bg-200));
     border-radius: var(--global-radius);
+  }
+  &__Membership {
+    width: min(calc(100% - 4rem), 41.4rem);
+    background-color: hsl(var(--bg-200));
+    border-radius: calc(var(--global-radius) + 2rem);
+    color: hsl(var(--text-700));
   }
 
   &__Button {

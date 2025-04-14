@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { useFormatToSec } from '../composables/formatter';
+import { useFormatToSec } from '../../composables/formatter';
 
 const props = defineProps({
   content:{
@@ -36,7 +36,11 @@ function teleport(time){
 <style lang="scss" scoped>
 .ReactionParser{
   font-size: inherit;
+  white-space: pre-line;
+  word-break: break-all;
+  font-weight: 500;
   line-height: 1.5;
+  animation: fade 150ms ease-out;
   &__TimeButton{
     font-size: inherit;
     color: hsl(var(--theme-500));

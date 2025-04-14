@@ -24,7 +24,7 @@
 <script setup>
 import Aqua from "@/assets/aqua.svg";
 
-import OptimizedMedia from "./OptimizedMedia.vue";
+import OptimizedMedia from "@/components/OptimizedMedia.vue";
 
 const props = defineProps({
   self: {

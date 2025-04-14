@@ -2,26 +2,28 @@
   <section class="ReactionCombo">
     <slot name="title" :counter="reactions.allCount"></slot>
     <slot name="description"></slot>
-    <!-- <LoginWidget
-      v-if="!user"
-      :btn-func="goAuth"
-      class="ReactionCombo__LoginRequired"
+    <div
+      class="ReactionCombo__WriteBox"
+      :class="writeable && 'ReactionCombo__WriteBox--Show'"
     >
-      <template #text>
-        <h2>로그인하고 이 작품을 평가해보세요</h2>
-      </template>
-      <template #login-state-text>로그인</template>
-    </LoginWidget> -->
-    <WriteReaction
-      class="ReactionCombo__TextArea"
-      :class="writeable && 'ReactionCombo__TextArea--Show'"
-      @mutate="onMutate"
-      :type
-      :parent
-      @interact="setInteract"
-      :time
-      :user
-    />
+      <!-- <WriteReaction
+        class="ReactionCombo__ToDirect"
+        @mutate="onMutate"
+        :type="props.type"
+        :parent="props.parent"
+        @interact="setInteract"
+        :time="props.time"
+        :user
+        v-if="isDirectWriteMode"
+      /> -->
+      <button
+        class="ReactionCombo__ToModalButton"
+        @click="openWriteModal"
+        type="button"
+      >
+        리뷰와 별점 남기기
+      </button>
+    </div>
     <TransitionGroup
       tag="ul"
       name="reaction-list"
@@ -35,7 +37,6 @@
         :user="user"
         @mutate="onMutate"
         @interact="setInteract"
-        @meta-modal="onMetaModal"
         class="ReactionCombo__Item"
         :class="
           reaction._id === route.query.reaction && 'ReactionCombo__Item--Blink'
@@ -44,12 +45,18 @@
         :track-target="trackTarget && reaction._id === route.query.reaction"
       >
         <template #meta="{ self, data, time }">
-          <ReactionMeta :self :data>
-            <template #edited>
-              {{ reaction.isEdited ? " &middot; 수정됨" : "" }}
-            </template>
-            <template #time>{{ time }}</template>
-          </ReactionMeta>
+          <button>
+            <ReactionMeta
+              :self
+              :data
+              @click="data?.uid && onMetaModal({ uid: data.uid })"
+            >
+              <template #edited>
+                {{ reaction.isEdited ? " &middot; 수정됨" : "" }}
+              </template>
+              <template #time>{{ time }}</template>
+            </ReactionMeta>
+          </button>
         </template>
         <template #content>
           <ReactionParser
@@ -102,13 +109,50 @@
       </NativeDialog>
       <NativeDialog ref="$MetaModal" class="MetaModal" shade>
         <template #content>
-          <StatCard :uid class="MetaModal__Data" />
+          <div class="MetaModal__Body">
+            <StatCard :uid class="MetaModal__Bubble" />
+            <MembershipCard
+              :uid
+              class="MetaModal__Bubble MetaModal__Bubble--Membership"
+            />
+          </div>
         </template>
         <template #control>
           <VueflixBtn
             component="button"
             class="MetaModal__CloseBtn"
             @click="$MetaModal.close"
+            type="button"
+          >
+            <template #text>닫기</template>
+          </VueflixBtn>
+        </template>
+      </NativeDialog>
+      <NativeDialog ref="$WriteModal" class="WriteModal" shade>
+        <template #content>
+          <div class="WriteModal__Body">
+            <WriteReaction
+              class="WriteModal__Bubble"
+              @mutate="onMutate"
+              :type="props.type"
+              :parent="props.parent"
+              @interact="setInteract"
+              :time="props.time"
+              :user="user"
+            />
+            <StarCombo
+              star-uid="write-reaction"
+              class="WriteModal__Bubble"
+              @mutate="onStarMutate"
+              :stars
+            ></StarCombo>
+          </div>
+        </template>
+        <template #control>
+          <VueflixBtn
+            component="button"
+            class="WriteModal__CloseBtn"
+            @click="$WriteModal.close"
             type="button"
           >
             <template #text>닫기</template>
@@ -126,7 +170,7 @@
 // 코멘트는 각 에피소드마다 작성하는 항목
 
 import { computed, ref, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 import { endAt, limit, orderBy, startAfter, where } from "firebase/firestore";
 
 import {
@@ -141,14 +185,15 @@ import { useAuth } from "@/store/auth";
 import { useIntersection } from "@/composables/intersection";
 
 import LoadAnimation from "@/components/LoadAnimation.vue";
-import LoginWidget from "@/components/LoginWidget.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import WriteReaction from "@/components/WriteReaction.vue";
-import ReactionItem from "@/components/ReactionItem.vue";
-import ReactionParser from "@/components/ReactionParser.vue";
 import StatCard from "@/components/StatCard.vue";
-import ReactionMeta from "@/components/ReactionMeta.vue";
+import StarCombo from "@/components/star/StarCombo.vue";
+import ReactionItem from "./ReactionItem.vue";
+import ReactionParser from "./ReactionParser.vue";
+import ReactionMeta from "./ReactionMeta.vue";
+import MembershipCard from "../membership/MembershipCard.vue";
 
 const props = defineProps({
   type: {
@@ -287,6 +332,7 @@ async function onMutate(method, data) {
 
   if (method === "create") {
     await applyMutate();
+    $WriteModal.value.close();
     return;
   }
   $CheckModal.value.show();
@@ -326,6 +372,16 @@ useIntersection($ReadMore, async () => {
   }
   await readMore();
 });
+
+const $WriteModal = ref(null);
+function openWriteModal() {
+  $WriteModal.value.show();
+}
+const stars = ref(5);
+function onStarMutate(e) {
+  stars.value = e;
+  console.log(stars.value);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -348,28 +404,37 @@ useIntersection($ReadMore, async () => {
   &__Description {
     font-size: 1.4rem;
   }
-  &__Write {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-  &__TextArea {
-    border-radius: calc(var(--global-radius) + 2rem);
-    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
-    height: 0;
-    transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1) allow-discrete;
-    display: none;
+
+  &__WriteBox {
+    border-radius: var(--global-radius);
+
     opacity: 0;
-    border: 1px solid var(--reaction-combo-write-bg, hsl(var(--bg-200)));
+    height: 0;
+    display: none;
     &--Show {
       height: auto;
       display: block;
       opacity: 1;
     }
+
     &:focus-within {
       border-color: hsl(var(--text-400));
     }
   }
+  &__ToDirect {
+    transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1) allow-discrete;
+    border: 1px solid var(--reaction-combo-write-bg, hsl(var(--bg-200)));
+    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
+  }
+  &__ToModalButton {
+    width: 100%;
+    text-align: center;
+    padding: 1.6rem;
+    font-size: 1.4rem;
+    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
+    border-radius: 9999px;
+  }
+
   &__LoginRequired {
     padding: 2rem;
   }
@@ -457,13 +522,60 @@ useIntersection($ReadMore, async () => {
   }
 }
 .MetaModal {
-  --dialog-padding: 2rem;
-  &__Data {
-    padding: 0;
+  --dialog-bg: transparent;
+  &__Body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  &__Bubble {
+    background-color: hsl(var(--bg-100));
+    border-radius: calc(var(--global-radius) + 2rem);
+    box-shadow: 0 1px 1px hsl(var(--bg-900) / 0.1),
+      0 2px 4px hsl(var(--bg-900) / 0.1), 0 4px 8px hsl(var(--bg-900) / 0.1),
+      0 8px 16px hsl(var(--bg-900) / 0.1);
+    padding: 2rem;
+    &--Membership {
+      padding: 0;
+    }
   }
   &__CloseBtn {
     margin-top: 0.8rem;
     margin-left: auto;
+    background-color: hsl(var(--bg-300));
+    border-radius: 9999px;
+    height: 4rem;
+  }
+}
+.WriteModal {
+  --dialog-padding: 2rem;
+  --dialog-bg: transparent;
+  --dialog-border-radius: 0;
+
+  --star-combo-bg: hsl(var(--bg-200));
+  --star-combo-filled: hsl(var(--bg-300));
+  --star-combo-handler: hsl(var(--bg-100));
+  --star-combo-handle-radius: var(--global-radius);
+  --stars-bg: hsl(var(--text-100));
+  &__Body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  &__Bubble {
+    background-color: hsl(var(--bg-100));
+    border-radius: calc(var(--global-radius) + 2rem);
+    box-shadow: 0 1px 1px hsl(var(--bg-900) / 0.1),
+      0 2px 4px hsl(var(--bg-900) / 0.1), 0 4px 8px hsl(var(--bg-900) / 0.1),
+      0 8px 16px hsl(var(--bg-900) / 0.1);
+  }
+  &__CloseBtn {
+    margin-top: 0.8rem;
+    margin-left: auto;
+    background-color: hsl(var(--bg-300));
+    border-radius: 9999px;
+    height: 4rem;
+    font-size: 1.6rem;
   }
 }
 
@@ -506,6 +618,9 @@ useIntersection($ReadMore, async () => {
   }
   .MetaModal {
     --dialog-max-width: 50rem;
+  }
+  .WriteModal {
+    --dialog-max-width: 100ch;
   }
 }
 </style>

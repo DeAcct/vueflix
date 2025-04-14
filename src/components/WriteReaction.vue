@@ -124,8 +124,6 @@ function addTime() {
 <style lang="scss" scoped>
 .WriteReaction {
   width: 100%;
-  --text-area-shadow: 0 0.1rem 0.2rem hsl(var(--bg-900) / 0.1),
-    0 0.2rem 0.4rem hsl(var(--bg-900) / 0.1);
 
   &__InputArea {
     width: 100%;
@@ -184,13 +182,11 @@ function addTime() {
     border-radius: 9999px;
     position: relative;
     height: 4rem;
-    box-shadow: var(--text-area-shadow);
     &--Submit {
       background: hsl(var(--theme-500));
       color: #fff;
     }
     &:disabled {
-      box-shadow: none;
       background: hsl(var(--bg-300));
       color: hsl(var(--bg-900) / 0.3);
     }

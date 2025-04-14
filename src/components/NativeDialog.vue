@@ -55,6 +55,7 @@ const {
 });
 function close() {
   _close();
+  console.log("close");
   props.closeSideEffect();
 }
 const $body = ref(null);

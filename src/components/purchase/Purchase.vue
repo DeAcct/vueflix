@@ -85,8 +85,8 @@ import { db } from "@/utility/firebase";
 import { useEnuri } from "@/composables/coupon";
 
 import AccordionGroup from "@/components/AccordionGroup.vue";
-import CouponList from "@/components/CouponList.vue";
-import CreditCard from "@/components/CreditCard.vue";
+import CouponList from "./CouponList.vue";
+import CreditCard from "./CreditCard.vue";
 import InputBoolean from "@/components/InputBoolean.vue";
 
 import ProductCard from "@/components/ProductCard.vue";

@@ -9,14 +9,16 @@
       </LoginWidget>
     </section>
 
-    <KeywordCombo
+    <!-- <KeywordCombo
       class="AnimeReviews__Item"
       :parent="{ title: route.query.modal }"
     >
       <template #title>
         <h3 class="AnimeReviews__Title">키워드</h3>
       </template>
-    </KeywordCombo>
+    </KeywordCombo> -->
+
+    <!-- <button class="AnimeReviews__Item" type="button">리뷰 작성하기</button> -->
 
     <ReactionCombo
       class="AnimeReviews__Item"
@@ -41,8 +43,8 @@ import { useAuth } from "@/store/auth";
 
 import { useHead } from "@/composables/head";
 
-import KeywordCombo from "@/components/KeywordCombo.vue";
-import ReactionCombo from "@/components/ReactionCombo.vue";
+// import KeywordCombo from "@/components/KeywordCombo.vue";
+import ReactionCombo from "@/components/reaction/ReactionCombo.vue";
 import LoginWidget from "@/components/LoginWidget.vue";
 
 const route = useRoute();

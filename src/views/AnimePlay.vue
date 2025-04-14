@@ -146,7 +146,7 @@ import { useHead } from "@/composables/head";
 
 import AmbientPlayer from "@/components/AmbientPlayer.vue";
 import Episodes from "@/views/Episodes.vue";
-import ReactionCombo from "@/components/ReactionCombo.vue";
+import ReactionCombo from "@/components/reaction/ReactionCombo.vue";
 import ToTop from "@/components/ToTop.vue";
 
 import IconBase from "@/components/IconBase.vue";

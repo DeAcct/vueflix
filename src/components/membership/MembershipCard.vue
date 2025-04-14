@@ -19,6 +19,7 @@
         membership?.tier === 'free' ? `/subscribe/landing` : `/subscribe/manage`
       "
       class="MembershipCard__Sub"
+      v-if="promotion"
     >
       <p class="MembershipCard__SubCopy" v-if="membership?.tier === 'free'">
         <strong class="MembershipCard__SubCopyStrong"
@@ -42,7 +43,9 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/utility/firebase";
 
 import { useUserLevel } from "@/composables/level";
 
@@ -51,14 +54,41 @@ import MembershipSymbol from "../membership/MembershipSymbol.vue";
 import IconArrowNext from "../icons/IconArrowNext.vue";
 
 const props = defineProps({
-  data: {
-    type: [Object, null],
+  // data: {
+  //   type: [Object, null],
+  //   required: true,
+  // },
+  uid: {
+    type: String,
     required: true,
+  },
+  promotion: {
+    type: Boolean,
   },
 });
 
-const membership = computed(() => props.data?.membership);
+const data = ref(null);
+const loading = ref(true);
+const membership = computed(() => data.value?.membership);
 const { level, days } = useUserLevel(membership);
+
+watch(
+  () => props.uid,
+  async () => {
+    if (!props.uid) {
+      loading.value = false;
+      return;
+    }
+
+    const docRef = doc(db, "user", props.uid);
+    const user = await getDoc(docRef);
+    if (!user.exists()) return;
+
+    data.value = user.data();
+    loading.value = false;
+  },
+  { immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>
