@@ -190,10 +190,10 @@ import VueflixBtn from "@/components/VueflixBtn.vue";
 import WriteReaction from "@/components/WriteReaction.vue";
 import StatCard from "@/components/StatCard.vue";
 import StarCombo from "@/components/star/StarCombo.vue";
+import MembershipCard from "@/components/membership/MembershipCard.vue";
 import ReactionItem from "./ReactionItem.vue";
 import ReactionParser from "./ReactionParser.vue";
 import ReactionMeta from "./ReactionMeta.vue";
-import MembershipCard from "../membership/MembershipCard.vue";
 
 const props = defineProps({
   type: {

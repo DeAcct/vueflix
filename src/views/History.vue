@@ -51,7 +51,7 @@ import { useWannaSee } from "@/api/wannaSee";
 import { getNickname } from "@/api/userMeta";
 import { ReadByUid as getReactions } from "@/api/reaction";
 
-import ReactionItem from "@/components/ReactionItem.vue";
+import ReactionItem from "@/components/reaction/ReactionItem.vue";
 import ReactionParser from "@/components/ReactionParser.vue";
 import OptimizedMedia from "@/components/OptimizedMedia.vue";
 
