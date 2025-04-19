@@ -33,14 +33,6 @@
           >
             재생 위치 추가
           </button>
-          <button
-            :disabled="reviewData.length > 1000 || reviewData.length === 0"
-            @click="reviewTrigger"
-            class="WriteReaction__Button WriteReaction__Button--Submit"
-            type="button"
-          >
-            등록
-          </button>
         </div>
       </div>
     </div>
@@ -51,8 +43,6 @@
 import { ref, computed } from "vue";
 import { useSecToFormat } from "@/composables/formatter";
 import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
-
-// import KeywordGenerator from "@/components/KeywordGenerator.vue";
 
 const emits = defineEmits(["mutate", "interact"]);
 
@@ -90,19 +80,11 @@ const placeholder = computed(() =>
     : "리뷰를 작성하려면 먼저 로그인을 해주세요"
 );
 
-const reviewData = ref("");
+const reviewData = defineModel();
+
 function setReviewData(e) {
   // 한글 특성상 v-model 사용불가
   reviewData.value = e.target.value;
-}
-
-function reviewTrigger() {
-  emits("mutate", "create", {
-    content: reviewData.value,
-    parent: props.parent,
-    type: props.type,
-  });
-  reviewData.value = "";
 }
 
 const $TextArea = ref(null);
@@ -127,7 +109,7 @@ function addTime() {
 
   &__InputArea {
     width: 100%;
-    height: 9rem;
+    min-height: 9rem;
     resize: none;
     font-family: inherit;
     line-height: 1.5;
@@ -135,6 +117,7 @@ function addTime() {
     font-weight: 500;
     margin: 2rem 0 1rem;
     padding: 0 2rem 0;
+    field-sizing: content;
     &::placeholder {
       color: hsl(var(--bg-700));
       font-weight: 500;
@@ -150,19 +133,17 @@ function addTime() {
 
   &__Status {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    gap: 1.2rem;
   }
   &__Length {
     display: block;
     color: hsl(var(--bg-500));
     font-size: 1.4rem;
     font-weight: 500;
-    margin-bottom: 0.5rem;
   }
   &__TooLongAlert {
     color: hsl(var(--theme-500));
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 700;
     animation: blink 500ms ease-out 3;
     transform-origin: left;

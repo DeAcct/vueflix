@@ -11,8 +11,8 @@
           @time-update="updateTime"
           :src="videoSrc"
           :time
-          :next-episode="nextEpisode"
-          :prev-episode="prevEpisode"
+          :next-episode
+          :prev-episode
           :ambient="mode !== 'theater'"
           :prevent-key-binding="isInteracting"
           :meta="{
@@ -221,6 +221,11 @@ watch(
   }
 );
 
+// const meta = computed(() => ({
+//   aniTitle: route.params.title,
+//   part: Number(route.params.part),
+//   index: Number(route.params.index),
+// }));
 const {
   animeInfo,
   getAnimeData,
@@ -228,11 +233,7 @@ const {
   nextEpisode,
   prevEpisode,
   episodeCounter,
-} = useEpisode({
-  aniTitle: route.params.title,
-  part: route.params.part,
-  index: route.params.index,
-});
+} = useEpisode();
 const sortBase = ref("asc");
 function toggleSort() {
   sortBase.value = sortBase.value === "asc" ? "desc" : "asc";

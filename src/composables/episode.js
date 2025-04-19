@@ -1,25 +1,33 @@
 import { doc, getDoc } from "firebase/firestore";
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import { db } from "@/utility/firebase";
 
-export function useEpisode(meta) {
+export function useEpisode() {
   const animeInfo = ref({});
-  onMounted(async () => {
-    await getAnimeData();
-  });
+  const route = useRoute();
+  watch(
+    () => route.params,
+    async () => {
+      await getAnimeData();
+    },
+    { immediate: true }
+  );
 
   async function getAnimeData() {
-    animeInfo.value = (await getDoc(doc(db, "anime", meta.aniTitle))).data();
+    animeInfo.value = (
+      await getDoc(doc(db, "anime", route.params.title))
+    ).data();
   }
 
   const nowEpisode = computed(() => {
     if (!animeInfo.value.parts) {
       return undefined;
     }
-    const currentPart = animeInfo.value.parts.find(
-      ({ part }) => meta.part === part
-    ).episodes;
-    return currentPart.find(({ index }) => meta.index === index);
+    const currentPart = animeInfo.value.parts?.find(
+      ({ part }) => route.params.part === part
+    )?.episodes;
+    return currentPart?.find(({ index }) => route.params.index === index);
   });
 
   const nextEpisode = computed(() => {
@@ -27,22 +35,25 @@ export function useEpisode(meta) {
       return undefined;
     }
     const lastEpisode = animeInfo.value.parts
-      .find(({ part }) => meta.part === part)
+      .find(({ part }) => route.params.part === part)
       .episodes.at(-1);
     const lastPart = animeInfo.value.parts.at(-1);
 
     // 현재 에피소드로 초기화한 후 작업
     let nextPart = animeInfo.value.parts.findIndex(
-      ({ part }) => meta.part === part
+      ({ part }) => route.params.part === part
     );
     let nextIndex = animeInfo.value.parts[nextPart].episodes.findIndex(
-      ({ index }) => meta.index === index
+      ({ index }) => route.params.index === index
     );
 
-    if (lastPart.part === meta.part && lastEpisode.index === meta.index) {
+    if (
+      lastPart.part === route.params.part &&
+      lastEpisode.index === route.params.index
+    ) {
       return "다음 화 없음";
     }
-    if (lastEpisode.index === meta.index) {
+    if (lastEpisode.index === route.params.index) {
       nextIndex = 0;
       nextPart++;
     } else {
@@ -60,34 +71,47 @@ export function useEpisode(meta) {
     if (!animeInfo.value.parts) {
       return undefined;
     }
-    const firstEpisode = animeInfo.value.parts
-      .find(({ part }) => meta.part === part)
-      .episodes.at(0);
+
+    const currentPart = animeInfo.value.parts.find(
+      ({ part }) => route.params.part === part
+    );
     const firstPart = animeInfo.value.parts.at(0);
+    const firstEpisode = currentPart?.episodes?.at(0);
 
-    // 현재 에피소드로 초기화한 후 작업
+    if (!currentPart || !firstEpisode || !firstPart) return undefined;
+
+    // 현재 파트/인덱스 찾기
     let prevPart = animeInfo.value.parts.findIndex(
-      ({ part }) => meta.part === part
+      ({ part }) => route.params.part === part
     );
-    let prevIndex = animeInfo.value.parts[prevPart].episodes.findIndex(
-      ({ index }) => meta.index === index
+    let prevIndex = currentPart.episodes.findIndex(
+      ({ index }) => route.params.index === index
     );
 
-    if (firstPart.part === meta.part && firstEpisode.index === meta.index) {
+    // 첫화면인지 확인
+    if (
+      firstPart.part === route.params.part &&
+      firstEpisode.index === route.params.index
+    ) {
       return "이전 화 없음";
     }
-    if (firstEpisode.index === meta.index) {
-      prevIndex = animeInfo.value.parts.find(({ part }) => meta.part === part)
-        .episodes.length;
+
+    // 파트 이동할 경우
+    if (firstEpisode.index === route.params.index) {
       prevPart--;
+      const newPart = animeInfo.value.parts[prevPart];
+      if (!newPart) return undefined;
+      prevIndex = newPart.episodes.length - 1;
     } else {
       prevIndex--;
     }
 
-    const { part, episodes } = animeInfo.value.parts[prevPart];
+    const partData = animeInfo.value.parts[prevPart];
+    if (!partData || !partData.episodes[prevIndex]) return undefined;
+
     return {
-      part,
-      ...episodes[prevIndex],
+      part: partData.part,
+      ...partData.episodes[prevIndex],
     };
   });
 

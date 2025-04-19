@@ -18,7 +18,11 @@
       /> -->
       <button
         class="ReactionCombo__ToModalButton"
-        @click="openWriteModal"
+        @click="
+          openEditorModal({
+            method: 'create',
+          })
+        "
         type="button"
       >
         리뷰와 별점 남기기
@@ -35,7 +39,14 @@
         :key="reaction._id"
         :reaction-data="reaction"
         :user="user"
-        @mutate="onMutate"
+        @edit="
+          openEditorModal({
+            method: 'update',
+            id: reaction._id,
+            content: { ...reaction.content },
+          })
+        "
+        @delete="deleteReaction(reaction._id)"
         @interact="setInteract"
         class="ReactionCombo__Item"
         :class="
@@ -60,7 +71,7 @@
         </template>
         <template #content>
           <ReactionParser
-            :content="reaction.content"
+            :content="reaction.content.text"
             @request-teleport="requestTeleport"
             class="ReactionCombo__Content"
           />
@@ -84,7 +95,14 @@
               component="button"
               type="button"
               class="CheckModal__Button CheckModal__Button--Accent"
-              @click="applyMutate"
+              @click="
+                () => {
+                  methodMap.delete.action({ id: checkModal.id });
+                  $CheckModal.close();
+                  sync();
+                  emit('interact', false);
+                }
+              "
             >
               <template #icon>
                 <LoadAnimation
@@ -120,7 +138,7 @@
         <template #control>
           <VueflixBtn
             component="button"
-            class="MetaModal__CloseBtn"
+            class="MetaModal__Button"
             @click="$MetaModal.close"
             type="button"
           >
@@ -128,35 +146,60 @@
           </VueflixBtn>
         </template>
       </NativeDialog>
-      <NativeDialog ref="$WriteModal" class="WriteModal" shade>
+      <NativeDialog ref="$EditorModal" class="EditorModal" shade>
         <template #content>
-          <div class="WriteModal__Body">
+          <div class="EditorModal__Body">
             <WriteReaction
-              class="WriteModal__Bubble"
-              @mutate="onMutate"
+              class="EditorModal__Bubble"
+              v-model="editorModalData.content.text"
               :type="props.type"
               :parent="props.parent"
-              @interact="setInteract"
               :time="props.time"
-              :user="user"
+              :user
             />
             <StarCombo
               star-uid="write-reaction"
-              class="WriteModal__Bubble"
+              class="EditorModal__Bubble"
               @mutate="onStarMutate"
-              :stars
+              v-model="editorModalData.content.stars"
+              v-if="props.type === 'review'"
             ></StarCombo>
           </div>
         </template>
         <template #control>
-          <VueflixBtn
-            component="button"
-            class="WriteModal__CloseBtn"
-            @click="$WriteModal.close"
-            type="button"
-          >
-            <template #text>닫기</template>
-          </VueflixBtn>
+          <div class="EditorModal__Row">
+            <VueflixBtn
+              component="button"
+              class="EditorModal__Button"
+              @click="
+                $EditorModal.close();
+                emit('interact', false);
+              "
+              type="button"
+            >
+              <template #text>취소</template>
+            </VueflixBtn>
+            <VueflixBtn
+              component="button"
+              class="EditorModal__Button EditorModal__Button--Submit"
+              @click="
+                methodMap[editorModalData.method].action({
+                  ...editorModalData,
+                  parent: props.parent,
+                  type,
+                });
+                $EditorModal.close();
+                sync();
+                emit('interact', false);
+              "
+              :disabled="editDisabled"
+              type="button"
+            >
+              <template #text>{{
+                editorModalData.method === "create" ? "등록" : "수정"
+              }}</template>
+            </VueflixBtn>
+          </div>
         </template>
       </NativeDialog>
     </Teleport>
@@ -262,9 +305,6 @@ watch(
   async () => {
     await sync();
     setWriteable();
-    // if (props.type === "review") {
-    //   await setWriteable();
-    // }
   },
   { immediate: true }
 );
@@ -316,42 +356,54 @@ const $CheckModal = ref(null);
 const checkModal = ref({
   method: "",
   text: "",
-  data: null,
 });
-
-async function onMutate(method, data) {
-  // 일반적인 상황은 아니지만, 로그인하지 않은 상태에서 강제로 사용자가 댓글을 조작하는것을 방지
-  if (!user.value) {
-    return;
-  }
+function deleteReaction(id) {
   checkModal.value = {
-    method,
-    text: methodMap[method].text,
-    data,
+    method: "delete",
+    text: "삭제",
+    id,
   };
-
-  if (method === "create") {
-    await applyMutate();
-    $WriteModal.value.close();
-    return;
-  }
   $CheckModal.value.show();
 }
 
-async function applyMutate() {
-  const { method, data } = checkModal.value;
-  loadState.value = "mutating";
-  await methodMap[method].action(data);
-  await sync();
-  loadState.value = "complete";
-  $CheckModal.value.close();
-  setWriteable();
-  if (method === "delete") {
-    emit("delete");
-  }
-  // if (method !== "update" && props.once) {
-  //   await setWriteable();
-  // }
+// async function onMutate(method, data) {
+//   // 일반적인 상황은 아니지만, 로그인하지 않은 상태에서 강제로 사용자가 댓글을 조작하는것을 방지
+//   if (!user.value) {
+//     return;
+//   }
+//   checkModal.value = {
+//     method,
+//     text: methodMap[method].text,
+//     data,
+//   };
+
+//   if (method === "create") {
+//     await applyMutate();
+//     $EditorModal.value.close();
+//     return;
+//   }
+//   $CheckModal.value.show();
+// }
+
+// async function applyMutate() {
+//   const { method, data } = checkModal.value;
+//   loadState.value = "mutating";
+//   await methodMap[method].action(data);
+//   await sync();
+//   loadState.value = "complete";
+//   $CheckModal.value.close();
+//   setWriteable();
+//   if (method === "delete") {
+//     emit("delete");
+//   }
+//   // if (method !== "update" && props.once) {
+//   //   await setWriteable();
+//   // }
+// }
+function closeAndSync(target) {
+  target.value.close();
+  sync();
+  emit("interact", false);
 }
 
 function requestTeleport(e) {
@@ -373,14 +425,35 @@ useIntersection($ReadMore, async () => {
   await readMore();
 });
 
-const $WriteModal = ref(null);
-function openWriteModal() {
-  $WriteModal.value.show();
+const $EditorModal = ref(null);
+const editorModalData = ref({
+  text: "",
+  stars: 2.5,
+});
+const editDisabled = computed(() => {
+  const { text } = editorModalData.value.content;
+  return !text || text.length > 1000;
+});
+function removeTimeflag(origin) {
+  return origin.map((item) => item.replace("<time>", "")).join("");
 }
-const stars = ref(5);
+function openEditorModal({ method, id, content = { text: "", stars: 2.5 } }) {
+  emit("interact", true);
+  editorModalData.value = {
+    method,
+    id,
+    content: {
+      text: method === "update" ? removeTimeflag(content.text) : "",
+    },
+  };
+  if (props.type === "review") {
+    editorModalData.value.content.stars = content.stars;
+  }
+  $EditorModal.value.show();
+}
+// const stars = ref(5);
 function onStarMutate(e) {
-  stars.value = e;
-  console.log(stars.value);
+  editorModalData.value.stars = e;
 }
 </script>
 
@@ -441,7 +514,9 @@ function onStarMutate(e) {
   &__List {
     overflow: hidden;
     border-radius: 0 0 var(--global-radius) var(--global-radius);
-    margin-top: 2rem;
+    &--Exist {
+      margin-top: 2rem;
+    }
   }
   &__Item {
     background-color: transparent;
@@ -510,7 +585,7 @@ function onStarMutate(e) {
     flex-direction: row-reverse;
     gap: 0.4rem;
     box-shadow: none;
-    border-radius: var(--global-radius);
+    border-radius: 9999px;
     &:first-child {
       background-color: hsl(var(--theme-500));
       margin-left: auto;
@@ -539,7 +614,7 @@ function onStarMutate(e) {
       padding: 0;
     }
   }
-  &__CloseBtn {
+  &__Button {
     margin-top: 0.8rem;
     margin-left: auto;
     background-color: hsl(var(--bg-300));
@@ -547,16 +622,16 @@ function onStarMutate(e) {
     height: 4rem;
   }
 }
-.WriteModal {
+.EditorModal {
   --dialog-padding: 2rem;
   --dialog-bg: transparent;
   --dialog-border-radius: 0;
 
-  --star-combo-bg: hsl(var(--bg-200));
+  --star-combo-bg: hsl(var(--bg-100));
   --star-combo-filled: hsl(var(--bg-300));
   --star-combo-handler: hsl(var(--bg-100));
   --star-combo-handle-radius: var(--global-radius);
-  --stars-bg: hsl(var(--text-100));
+  --stars-bg: hsl(var(--text-900) / 0.1);
   &__Body {
     display: flex;
     flex-direction: column;
@@ -569,13 +644,28 @@ function onStarMutate(e) {
       0 2px 4px hsl(var(--bg-900) / 0.1), 0 4px 8px hsl(var(--bg-900) / 0.1),
       0 8px 16px hsl(var(--bg-900) / 0.1);
   }
-  &__CloseBtn {
-    margin-top: 0.8rem;
-    margin-left: auto;
-    background-color: hsl(var(--bg-300));
+
+  &__Row {
+    display: flex;
+    align-self: flex-end;
+    gap: 0.6rem;
+  }
+  &__Button {
+    margin-top: 1rem;
+    background-color: hsl(var(--bg-400));
     border-radius: 9999px;
     height: 4rem;
     font-size: 1.6rem;
+    box-shadow: 0 1px 1px hsl(var(--bg-900) / 0.1),
+      0 2px 4px hsl(var(--bg-900) / 0.1), 0 4px 8px hsl(var(--bg-900) / 0.1);
+    &:disabled {
+      background-color: hsl(var(--bg-300));
+      color: hsl(var(--bg-500));
+    }
+    &--Submit {
+      background-color: hsl(var(--theme-500));
+      color: #fff;
+    }
   }
 }
 
@@ -619,7 +709,7 @@ function onStarMutate(e) {
   .MetaModal {
     --dialog-max-width: 50rem;
   }
-  .WriteModal {
+  .EditorModal {
     --dialog-max-width: 100ch;
   }
 }

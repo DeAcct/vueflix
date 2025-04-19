@@ -56,7 +56,7 @@ export async function Create({ content, parent, type }) {
   }
 
   // - 내용이 없는 경우
-  if (!content) {
+  if (!content.text) {
     console.error("비어있는 리액션을 생성할 수 없습니다.");
     return { error: "blank-content" };
   }
@@ -76,8 +76,11 @@ export async function Create({ content, parent, type }) {
   // 숫자 부분을 기준으로 잘라 배열 생성
   // 시간 부분은 <time>시간 형식으로 저장
   // comment인 경우에만 적용, 아닌 경우에는 원본 문자열을 배열에 그대로 담음
-  const formattedContent =
-    type === "comment" ? useTimeSplit(content) : content ? [content] : [];
+  const { text, stars } = content;
+  const formattedContent = {
+    ...content,
+    text: type === "comment" ? useTimeSplit(text) : text ? [text] : [],
+  };
 
   const newItem = {
     uid: user.value.uid,
@@ -88,6 +91,7 @@ export async function Create({ content, parent, type }) {
     type,
     isEdited: false,
   };
+  console.log(newItem);
 
   // 문서의 이름을 난수로 생성
   const newDoc = doc(collection(db, "reaction"));
@@ -143,7 +147,6 @@ export async function Read({ parent, type }, ...queryOption) {
       }
     });
   }
-
   return { reactions, lastDoc };
 }
 
@@ -161,12 +164,16 @@ export async function Update({ id, content, type }) {
   if (!user.value) {
     return;
   }
-  const _content =
-    type === "comment"
-      ? useTimeSplit(content)
-      : Array.isArray(content)
-      ? content
-      : [content];
+  const { text, stars } = content;
+  const _content = {
+    stars,
+    text:
+      type === "comment"
+        ? useTimeSplit(text)
+        : Array.isArray(text)
+        ? text
+        : [text],
+  };
 
   await setDoc(
     doc(db, "reaction", id),

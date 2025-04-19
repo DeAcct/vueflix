@@ -1,5 +1,13 @@
 <template>
-  <div class="StarCombo">
+  <div
+    class="StarCombo"
+    @click="onClick"
+    @mousedown="onMousedown"
+    @mousemove="onTouchmove"
+    @mouseup="onTouchend"
+    @touchmove="onTouchmove"
+    @touchend="onTouchend"
+  >
     <div class="StarCombo__Row">
       <svg class="StarCombo__Stars" viewBox="0 0 280 48">
         <clipPath :id="`StarCombo-${starUid}`">
@@ -13,20 +21,20 @@
           <rect
             x="0"
             y="0"
-            :width="`${realProgress}%`"
+            :width="`${renderedProgress}%`"
             height="100%"
             class="StarCombo__Progress"
           />
         </g>
       </svg>
-      <p class="StarCombo__Number">{{ stars }} / 5.0</p>
-      <button class="StarCombo__Reset" type="button">
+      <p class="StarCombo__Number">{{ modelValue.toFixed(1) }} / 5.0</p>
+      <button class="StarCombo__Reset" type="button" @click="onDelete">
         <IconBase>
           <IconRemove />
         </IconBase>
       </button>
     </div>
-    <div
+    <!-- <div
       class="StarCombo__Handle"
       @click="onClick"
       @mousedown="onMousedown"
@@ -34,7 +42,7 @@
       @mouseup="onTouchend"
       @touchmove="onTouchmove"
       @touchend="onTouchend"
-    ></div>
+    ></div> -->
   </div>
 </template>
 
@@ -44,11 +52,13 @@ import IconBase from "@/components/IconBase.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
 import { useMediaQuery } from "../../composables/device";
 
+const modelValue = defineModel({ default: 5 }); // v-model로 받아올 값
+
+const STARS = 5;
+const STAR_GAP = 10;
+const STAR_WIDTH = 48;
+
 const props = defineProps({
-  stars: {
-    type: Number,
-    default: 5,
-  },
   starUid: {
     type: String,
     default: "",
@@ -59,40 +69,67 @@ const props = defineProps({
   },
 });
 
-const STARS = 5;
-const STAR_GAP = 10;
-const STAR_WIDTH = 48;
-
-const emit = defineEmits(["mutate"]);
-const realProgress = computed(() => {
+const renderedProgress = computed(() => {
   const total = STARS * STAR_WIDTH + (STARS - 1) * STAR_GAP;
-  const filled = props.stars * STAR_WIDTH + (props.stars - 1) * STAR_GAP;
+
+  const fullStars = Math.floor(modelValue.value);
+  const halfStar = modelValue.value % 1 >= 0.5 ? 1 : 0;
+
+  const filledGaps = fullStars + halfStar - 1;
+  const filledGapWidth = filledGaps > 0 ? filledGaps * STAR_GAP : 0;
+
+  const filled = modelValue.value * STAR_WIDTH + filledGapWidth;
   return (filled / total) * 100;
 });
 
 const media = useMediaQuery("(hover: hover) and (pointer: fine)");
 const isMouseDown = ref(!media.value);
-const internalProgress = ref(`${(props.stars / 5) * 100}%`);
+const internalProgress = ref(`${(modelValue.value / 5) * 100}%`);
+
 function onClick(e) {
   if (!media.value) return;
   onMousedown();
   onTouchmove(e);
   onTouchend(e);
 }
+
 function onMousedown() {
   isMouseDown.value = media.value;
 }
+
 function onTouchmove(e) {
   if (!isMouseDown.value) return;
-  const { clientX } = e.type !== "touchmove" ? e : e.touches[0];
+  const clientX = getClientX(e);
   const { left, width } = e.currentTarget.getBoundingClientRect();
   internalProgress.value = `${
     (Math.min(Math.max(clientX - left, 0), width) / width) * 100
   }%`;
 }
+
+function getClientX(e) {
+  if (e.touches && e.touches[0]) return e.touches[0].clientX;
+  if (e.changedTouches && e.changedTouches[0])
+    return e.changedTouches[0].clientX;
+  return e.clientX;
+}
+
 function onTouchend() {
   isMouseDown.value = !media.value;
-  emit("mutate", ((parseInt(internalProgress.value) / 100) * STARS).toFixed(1));
+  const raw = (parseFloat(internalProgress.value) / 100) * STARS;
+  const rounded = Math.round(raw * 2) / 2;
+
+  // 값이 바뀔 때만 반영
+  if (rounded !== modelValue.value) {
+    modelValue.value = rounded;
+  }
+
+  internalProgress.value = `${(rounded / STARS) * 100}%`;
+}
+
+function onDelete(e) {
+  e.stopPropagation();
+  modelValue.value = 0;
+  internalProgress.value = "0%";
 }
 </script>
 
@@ -102,14 +139,20 @@ function onTouchend() {
   flex-direction: column;
   padding: 1.6rem 2rem;
   gap: 0.8rem;
+  background: linear-gradient(
+    90deg,
+    var(--star-combo-bg),
+    var(--star-combo-filled) v-bind(internalProgress),
+    var(--star-combo-bg) v-bind(internalProgress)
+  );
+  user-select: none;
+  --progress: calc(v-bind(score) / 5 * 100 * 1%);
 
   &__Row {
     display: flex;
     align-items: center;
     gap: 0.8rem;
   }
-
-  --progress: calc(v-bind(score) / 5 * 100 * 1%);
 
   &__Stars {
     height: 2rem;

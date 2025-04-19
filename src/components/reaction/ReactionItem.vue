@@ -2,21 +2,7 @@
   <component :is="component" class="ReactionItem" ref="$Item">
     <slot name="meta" :self :data="meta" :time></slot>
     <div class="ReactionItem__Content">
-      <Transition name="down-fade">
-        <template v-if="mode === 'edit'">
-          <textarea
-            class="ReactionItem__EditInput"
-            :placeholder="placeholder"
-            :value="editValue"
-            @input="editValueChange"
-          />
-        </template>
-      </Transition>
-      <Transition name="fade">
-        <template v-if="mode === 'show'">
-          <slot name="content"></slot>
-        </template>
-      </Transition>
+      <slot name="content"></slot>
     </div>
     <div class="ReactionItem__Actions" v-if="actions">
       <UpdownReaction
@@ -28,31 +14,22 @@
         <button v-if="!self" class="ReactionItem__ActionItem" type="button">
           신고
         </button>
-        <button
-          v-if="self"
-          @click="editTrigger"
-          class="ReactionItem__ActionItem"
-          type="button"
-        >
-          {{ mode === "show" ? "수정" : "취소" }}
-        </button>
-        <button
-          v-if="mode === 'edit'"
-          @click="updateReaction"
-          class="ReactionItem__ActionItem ReactionItem__ActionItem--Submit"
-          :disabled="completlyEmpty || notEdited"
-          type="button"
-        >
-          수정
-        </button>
-        <button
-          v-if="self && mode === 'show'"
-          @click="deleteTrigger"
-          class="ReactionItem__ActionItem"
-          type="button"
-        >
-          삭제
-        </button>
+        <template v-else>
+          <button
+            @click="editTrigger"
+            class="ReactionItem__ActionItem"
+            type="button"
+          >
+            {{ mode === "show" ? "수정" : "취소" }}
+          </button>
+          <button
+            @click="deleteTrigger"
+            class="ReactionItem__ActionItem"
+            type="button"
+          >
+            삭제
+          </button>
+        </template>
       </div>
     </div>
   </component>
@@ -100,62 +77,16 @@ const self = computed(() => props.user?.uid === props.reactionData.uid);
 const meta = useUserMeta(props.reactionData.uid);
 const { date: time } = useFormatDate(props.reactionData.time.toDate());
 
-const editValue = ref(temporalRemoveTimeFlag());
-function temporalRemoveTimeFlag() {
-  return props.reactionData.content
-    .map((item) => item.replace("<time>", ""))
-    .join("");
-}
-function editValueChange(e) {
-  editValue.value = e.target.value;
-}
-
-// const disabledEdit = computed(() => {
-//   return !editValue.value || editValue.value.length < 1;
-// });
-
 const mode = ref("show");
 function editTrigger() {
-  // 수정을 그냥 취소할 때 키보드단축키 재활성화
-  if (mode.value === "edit") {
-    editValue.value = temporalRemoveTimeFlag();
-  }
-  mode.value = mode.value === "edit" ? "show" : "edit";
-  emits("interact", mode.value === "edit");
+  emits("edit");
 }
-const emits = defineEmits(["mutate", "interact", "meta-modal"]);
+function deleteTrigger() {
+  emits("delete");
+}
+const emits = defineEmits(["edit", "meta-modal"]);
 
 const auth = useAuth();
-const user = computed(() => auth.user);
-
-const notEdited = computed(() => {
-  return temporalRemoveTimeFlag() === editValue.value;
-});
-const completlyEmpty = computed(() => {
-  return !(editValue.value || props.reactionData.keywords.length > 0);
-});
-async function updateReaction() {
-  if (notEdited.value) {
-    return;
-  }
-  if (completlyEmpty.value) {
-    return;
-  }
-  mode.value = "show";
-  emits("mutate", "update", {
-    id: props.reactionData._id,
-    content: editValue.value,
-    user,
-    type: props.reactionData.type,
-  });
-  emits("interact", false);
-}
-async function deleteTrigger() {
-  emits("mutate", "delete", {
-    id: props.reactionData._id,
-    user,
-  });
-}
 
 // query에 있는 댓글의 id를 통헤 해당 위치로 바로 이동
 const $Item = ref(null);
@@ -186,8 +117,6 @@ onMounted(() => {
     &:last-of-type {
       margin-bottom: 0;
     }
-  }
-  &__Text {
   }
   &__EditInput {
     overflow-y: scroll;
