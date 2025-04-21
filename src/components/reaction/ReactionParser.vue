@@ -18,33 +18,32 @@
 </template>
 
 <script setup>
-import { useFormatToSec } from '../../composables/formatter';
+import { useFormatToSec } from "../../composables/formatter";
 
 const props = defineProps({
-  content:{
-    type: Array
-  }
-})
+  content: {
+    type: Array,
+  },
+});
 
-const emit = defineEmits(["request-teleport"])
-function teleport(time){
+const emit = defineEmits(["request-teleport"]);
+function teleport(time) {
   const sec = useFormatToSec(time);
-  emit("request-teleport", sec)
+  emit("request-teleport", sec);
 }
 </script>
 
 <style lang="scss" scoped>
-.ReactionParser{
+.ReactionParser {
   font-size: inherit;
   white-space: pre-line;
   word-break: break-all;
   font-weight: 500;
   line-height: 1.5;
   animation: fade 150ms ease-out;
-  &__TimeButton{
+  &__TimeButton {
     font-size: inherit;
     color: hsl(var(--theme-500));
   }
 }
 </style>
-

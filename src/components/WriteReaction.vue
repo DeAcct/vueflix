@@ -42,21 +42,10 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useSecToFormat } from "@/composables/formatter";
-import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
 
 const emits = defineEmits(["mutate", "interact"]);
 
 const props = defineProps({
-  type: {
-    type: String,
-    required: true,
-    validator(value) {
-      return ["comment", "review"].includes(value);
-    },
-  },
-  parent: {
-    type: Object,
-  },
   time: {
     type: [String, Number],
     required: false,
@@ -76,7 +65,7 @@ function setFocus() {
 
 const placeholder = computed(() =>
   props.user
-    ? `여기를 눌러 ${REACTION_ENUM_WITH_JOSA[props.type]} 작성하세요.`
+    ? "여기를 눌러 작성하세요"
     : "리뷰를 작성하려면 먼저 로그인을 해주세요"
 );
 

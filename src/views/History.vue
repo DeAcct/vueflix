@@ -33,7 +33,7 @@
           </div>
         </template>
         <template #content>
-          <ReactionParser :content="reaction.content" />
+          <ReactionParser :content="reaction.content.text" />
         </template>
         <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
       </ReactionItem>

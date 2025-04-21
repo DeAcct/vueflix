@@ -22,6 +22,7 @@ import {
 import { db } from "@/utility/firebase";
 import { useTimeSplit } from "@/composables/formatter";
 import { useAuth } from "@/store/auth";
+import objToQuery from "../utility/helper";
 
 /**
  * 사용자가 생성한 리액션을 나타내는 객체입니다.
@@ -106,11 +107,12 @@ export async function Create({ content, parent, type }) {
   return newItem;
 }
 
-export async function ReadReactionCount({ parent, type }, ...queryOption) {
+export async function ReadReactionCount(queryObj, ...queryOption) {
   const q = query(
     collection(db, "reaction"),
-    where("parent", "==", parent),
-    where("type", "==", type),
+    // where("parent", "==", parent),
+    // where("type", "==", type),
+    ...objToQuery(queryObj),
     ...queryOption
   );
   const countResponse = await getCountFromServer(q);
@@ -126,12 +128,13 @@ export async function ReadReactionCount({ parent, type }, ...queryOption) {
  * }} option 부모 문서의 id와 리액션 타입, 필요시 페이지 사이즈와 페이지를 받습니다.
  * @returns {Promise<{reactions: Array<Reaction>, lastDoc: Reaction}>}
  */
-export async function Read({ parent, type }, ...queryOption) {
+export async function Read(queryObj, ...options) {
   const q = query(
     collection(db, "reaction"),
-    where("parent", "==", parent),
-    where("type", "==", type),
-    ...queryOption
+    ...objToQuery(queryObj),
+    // where("parent", "==", parent),
+    // where("type", "==", type),
+    ...options
   );
   const docs = (await getDocs(q)).docs;
   let reactions = docs.map((reaction) => reaction.data());
@@ -147,6 +150,7 @@ export async function Read({ parent, type }, ...queryOption) {
       }
     });
   }
+  console.log(reactions);
   return { reactions, lastDoc };
 }
 

@@ -6,16 +6,6 @@
       class="ReactionCombo__WriteBox"
       :class="writeable && 'ReactionCombo__WriteBox--Show'"
     >
-      <!-- <WriteReaction
-        class="ReactionCombo__ToDirect"
-        @mutate="onMutate"
-        :type="props.type"
-        :parent="props.parent"
-        @interact="setInteract"
-        :time="props.time"
-        :user
-        v-if="isDirectWriteMode"
-      /> -->
       <button
         class="ReactionCombo__ToModalButton"
         @click="
@@ -38,7 +28,7 @@
         v-for="reaction in reactions.visible"
         :key="reaction._id"
         :reaction-data="reaction"
-        :user="user"
+        :user
         @edit="
           openEditorModal({
             method: 'update',
@@ -152,9 +142,7 @@
             <WriteReaction
               class="EditorModal__Bubble"
               v-model="editorModalData.content.text"
-              :type="props.type"
-              :parent="props.parent"
-              :time="props.time"
+              :time
               :user
             />
             <StarCombo
@@ -162,7 +150,7 @@
               class="EditorModal__Bubble"
               @mutate="onStarMutate"
               v-model="editorModalData.content.stars"
-              v-if="props.type === 'review'"
+              v-if="stars"
             ></StarCombo>
           </div>
         </template>
@@ -239,16 +227,16 @@ import ReactionParser from "./ReactionParser.vue";
 import ReactionMeta from "./ReactionMeta.vue";
 
 const props = defineProps({
-  type: {
-    type: String,
-    required: true,
-    validator(value) {
-      return ["comment", "review"].includes(value);
-    },
-  },
-  parent: {
-    type: Object,
-  },
+  // type: {
+  //   type: String,
+  //   required: true,
+  //   validator(value) {
+  //     return ["comment", "review"].includes(value);
+  //   },
+  // },
+  // parent: {
+  //   type: Object,
+  // },
   showTitle: {
     type: Boolean,
     default: true,
@@ -260,7 +248,15 @@ const props = defineProps({
     type: [String, Number],
     required: false,
   },
+  // 한 번만 작성할 수 있는 리액션인지
   once: {
+    type: Boolean,
+  },
+  query: {
+    type: Object,
+    required: true,
+  },
+  stars: {
     type: Boolean,
   },
 });
@@ -282,10 +278,7 @@ async function setWriteable() {
     return;
   }
   const myReviewCount = await ReadReactionCount(
-    {
-      parent: props.parent,
-      type: props.type,
-    },
+    props.query,
     where("uid", "==", user.value?.uid)
   );
   writeable.value = myReviewCount === 0;
@@ -313,31 +306,22 @@ defineExpose({
 });
 async function sync() {
   const { reactions: data, lastDoc: last } = await Read(
-    { parent: props.parent, type: props.type },
+    // { parent: props.parent, type: props.type },
+    //     where("parent", "==", props.parent),
+    // where("type", "==", props.type),
+    props.query,
     orderBy("time", "desc"),
     lastDoc.value ? endAt(lastDoc.value) : limit(10)
   );
   reactions.value.visible = data;
-  reactions.value.allCount = await ReadReactionCount({
-    parent: props.parent,
-    type: props.type,
-  });
+  // reactions.value.allCount = await ReadReactionCount({
+  //   parent: props.parent,
+  //   type: props.type,
+  // });
+  reactions.value.allCount = await ReadReactionCount(props.query);
   lastDoc.value = last;
 }
 
-async function readMore() {
-  const { reactions: data, lastDoc: last } = await Read(
-    {
-      parent: props.parent,
-      type: props.type,
-    },
-    orderBy("time", "desc"),
-    startAfter(lastDoc.value),
-    limit(10)
-  );
-  reactions.value.visible.push(...data);
-  lastDoc.value = last;
-}
 const methodMap = {
   create: {
     action: Create,
@@ -424,6 +408,20 @@ useIntersection($ReadMore, async () => {
   }
   await readMore();
 });
+async function readMore() {
+  const { reactions: data, lastDoc: last } = await Read(
+    // {
+    //   parent: props.parent,
+    //   type: props.type,
+    // },
+    props.query,
+    orderBy("time", "desc"),
+    startAfter(lastDoc.value),
+    limit(10)
+  );
+  reactions.value.visible.push(...data);
+  lastDoc.value = last;
+}
 
 const $EditorModal = ref(null);
 const editorModalData = ref({
@@ -446,7 +444,7 @@ function openEditorModal({ method, id, content = { text: "", stars: 2.5 } }) {
       text: method === "update" ? removeTimeflag(content.text) : "",
     },
   };
-  if (props.type === "review") {
+  if (props.stars) {
     editorModalData.value.content.stars = content.stars;
   }
   $EditorModal.value.show();

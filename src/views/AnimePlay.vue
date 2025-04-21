@@ -80,11 +80,13 @@
     </section>
     <ReactionCombo
       class="AnimePlay__Comments"
-      type="comment"
-      :parent="{
-        title: route.params.title,
-        part: route.params.part,
-        index: route.params.index,
+      :query="{
+        parent: {
+          title: route.params.title,
+          part: route.params.part,
+          index: route.params.index,
+        },
+        type: 'comment',
       }"
       @interact="setInteract"
       @request-teleport="onRequestTeleport"

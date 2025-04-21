@@ -20,11 +20,17 @@
 
     <!-- <button class="AnimeReviews__Item" type="button">리뷰 작성하기</button> -->
 
-    <ReactionCombo
+    <!-- <ReactionCombo
       class="AnimeReviews__Item"
       type="review"
       :parent="{ title: route.query.modal }"
       once
+    > -->
+    <ReactionCombo
+      class="AnimeReviews__Item"
+      :query="{ parent: { title: route.query.modal }, type: 'review' }"
+      once
+      stars
     >
       <template #title="{ counter }">
         <h3 class="AnimeReviews__Title">
