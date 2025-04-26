@@ -269,7 +269,7 @@ function clear() {
 .ClearMaratonAlert {
   --dialog-max-width: 100%;
   --dialog-translate: 0;
-  --dialog-inset: auto auto 0 auto;
+  --dialog-inset: auto auto 0 0;
   --dialog-starting-translate: 0 100%;
   --dialog-border-radius: calc(var(--global-radius) * 2)
     calc(var(--global-radius) * 2) 0 0;

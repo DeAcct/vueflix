@@ -85,7 +85,7 @@ function onInput(e) {
   }
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .TextInput {
     &__Input {
       &:focus {

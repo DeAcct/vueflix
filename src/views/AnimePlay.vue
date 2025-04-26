@@ -124,6 +124,15 @@
           </AccordionGroup>
         </div>
       </template>
+      <template #open-editor="{ openEditor }">
+        <button
+          class="AnimePlay__OpenEditorButton"
+          @click="openEditor"
+          type="button"
+        >
+          리뷰와 별점 남기기
+        </button>
+      </template>
     </ReactionCombo>
     <ToTop
       class="AnimePlay__ToTop"
@@ -409,7 +418,6 @@ const { state: scrollState } = useScroll();
   }
 
   &__Parts {
-    padding: 0 2rem;
     display: flex;
     flex-direction: column;
     gap: 1.6rem;
@@ -418,16 +426,19 @@ const { state: scrollState } = useScroll();
   }
   &__PartTitle {
     font-size: 1.6rem;
+    padding: 0 2rem;
   }
   &__ScrollContainer {
     overflow: scroll;
     border-radius: var(--global-radius);
     height: 30rem;
+    padding: 0 2rem;
   }
   &__Episodes {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+    padding: 0;
 
     --accordion-sticky-top: 0;
     --episodes-z-index: var(--z-index-s1);
@@ -439,8 +450,9 @@ const { state: scrollState } = useScroll();
   &__Comments {
     z-index: 6;
     font-size: 1.6rem;
-    max-width: unset;
+    width: 100%;
     margin: 0 auto;
+    --open-top-padding: 0;
   }
   &__Description {
     --accordion-bg: transparent;
@@ -448,7 +460,17 @@ const { state: scrollState } = useScroll();
     --accordion-title-weight: 700;
     background-color: hsl(var(--bg-200));
     border-radius: 2rem;
-    margin: 1.6rem 0 0.8rem;
+    margin: 1.6rem auto 0.8rem;
+    width: calc(100% - 4rem);
+  }
+  &__OpenEditorButton {
+    width: calc(100% - 4rem);
+    margin: 0 auto;
+    text-align: center;
+    padding: 1.6rem;
+    font-size: 1.4rem;
+    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
+    border-radius: 9999px;
   }
   &__DescList {
     display: flex;
@@ -507,7 +529,7 @@ const { state: scrollState } = useScroll();
   }
 }
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: 1080px) {
   .AnimePlay {
     display: grid;
     padding: 9.2rem 2rem 2rem;
@@ -587,11 +609,13 @@ const { state: scrollState } = useScroll();
       height: 2rem;
       display: flex;
       align-items: center;
+      padding: 0;
     }
     &__ScrollContainer {
       width: 100%;
       flex-grow: 1;
       position: relative;
+      padding: 0;
     }
     &__Episodes {
       width: 100%;
@@ -604,6 +628,12 @@ const { state: scrollState } = useScroll();
       grid-area: v-bind("area.comments");
       padding: 0;
       --reaction-combo-title-padding: 0;
+    }
+    &__Description {
+      width: 100%;
+    }
+    &__OpenEditorButton {
+      width: 100%;
     }
 
     &__ToTop {

@@ -2,22 +2,15 @@
   <section class="ReactionCombo">
     <slot name="title" :counter="reactions.allCount"></slot>
     <slot name="description"></slot>
-    <div
-      class="ReactionCombo__WriteBox"
-      :class="writeable && 'ReactionCombo__WriteBox--Show'"
-    >
-      <button
-        class="ReactionCombo__ToModalButton"
-        @click="
+    <slot
+      name="open-editor"
+      :open-editor="
+        () =>
           openEditorModal({
             method: 'create',
           })
-        "
-        type="button"
-      >
-        리뷰와 별점 남기기
-      </button>
-    </div>
+      "
+    ></slot>
     <TransitionGroup
       tag="ul"
       name="reaction-list"
@@ -25,25 +18,23 @@
       :class="reactions.allCount !== 0 && 'ReactionCombo__List--Exist'"
     >
       <ReactionItem
-        v-for="reaction in reactions.visible"
-        :key="reaction._id"
-        :reaction-data="reaction"
+        v-for="{ _id, content, isEdited, time, uid } in reactions.visible"
+        :key="_id"
+        v-bind="{ _id, uid, time }"
         :user
         @edit="
           openEditorModal({
             method: 'update',
-            id: reaction._id,
-            content: { ...reaction.content },
+            id: _id,
+            content: { ...content },
           })
         "
-        @delete="deleteReaction(reaction._id)"
+        @delete="deleteReaction(_id)"
         @interact="setInteract"
         class="ReactionCombo__Item"
-        :class="
-          reaction._id === route.query.reaction && 'ReactionCombo__Item--Blink'
-        "
+        :class="_id === route.query.reaction && 'ReactionCombo__Item--Blink'"
         actions
-        :track-target="trackTarget && reaction._id === route.query.reaction"
+        :track-target="trackTarget && _id === route.query.reaction"
       >
         <template #meta="{ self, data, time }">
           <button>
@@ -53,20 +44,21 @@
               @click="data?.uid && onMetaModal({ uid: data.uid })"
             >
               <template #edited>
-                {{ reaction.isEdited ? " &middot; 수정됨" : "" }}
+                {{ isEdited ? " &middot; 수정됨" : "" }}
               </template>
               <template #time>{{ time }}</template>
             </ReactionMeta>
           </button>
         </template>
         <template #content>
+          <StarRenderer :progress="content.stars" v-if="content.stars" />
           <ReactionParser
-            :content="reaction.content.text"
+            :content="content.text"
             @request-teleport="requestTeleport"
             class="ReactionCombo__Content"
           />
         </template>
-        <template #edited>{{ reaction.isEdited ? "(수정됨)" : "" }}</template>
+        <template #edited>{{ isEdited ? "(수정됨)" : "" }}</template>
       </ReactionItem>
     </TransitionGroup>
     <div class="ReactionCombo__End" ref="$ReadMore" v-if="!isLastPage">
@@ -142,6 +134,7 @@
             <WriteReaction
               class="EditorModal__Bubble"
               v-model="editorModalData.content.text"
+              :type="query.type"
               :time
               :user
             />
@@ -173,8 +166,8 @@
               @click="
                 methodMap[editorModalData.method].action({
                   ...editorModalData,
-                  parent: props.parent,
-                  type,
+                  parent: query.parent,
+                  type: query.type,
                 });
                 $EditorModal.close();
                 sync();
@@ -225,18 +218,9 @@ import MembershipCard from "@/components/membership/MembershipCard.vue";
 import ReactionItem from "./ReactionItem.vue";
 import ReactionParser from "./ReactionParser.vue";
 import ReactionMeta from "./ReactionMeta.vue";
+import StarRenderer from "../star/StarRenderer.vue";
 
 const props = defineProps({
-  // type: {
-  //   type: String,
-  //   required: true,
-  //   validator(value) {
-  //     return ["comment", "review"].includes(value);
-  //   },
-  // },
-  // parent: {
-  //   type: Object,
-  // },
   showTitle: {
     type: Boolean,
     default: true,
@@ -256,7 +240,16 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  orderBy: {
+    type: Object,
+    default: () => ({
+      time: "desc",
+    }),
+  },
   stars: {
+    type: Boolean,
+  },
+  readonly: {
     type: Boolean,
   },
 });
@@ -292,9 +285,9 @@ const lastDoc = ref(null);
 const isLastPage = computed(() => {
   return reactions.value.visible.length === reactions.value.allCount;
 });
-// const isLastPage = ref(false);
+
 watch(
-  () => props.parent,
+  [() => props.query, () => props.orderBy],
   async () => {
     await sync();
     setWriteable();
@@ -306,18 +299,11 @@ defineExpose({
 });
 async function sync() {
   const { reactions: data, lastDoc: last } = await Read(
-    // { parent: props.parent, type: props.type },
-    //     where("parent", "==", props.parent),
-    // where("type", "==", props.type),
     props.query,
-    orderBy("time", "desc"),
+    props.orderBy,
     lastDoc.value ? endAt(lastDoc.value) : limit(10)
   );
   reactions.value.visible = data;
-  // reactions.value.allCount = await ReadReactionCount({
-  //   parent: props.parent,
-  //   type: props.type,
-  // });
   reactions.value.allCount = await ReadReactionCount(props.query);
   lastDoc.value = last;
 }
@@ -350,46 +336,6 @@ function deleteReaction(id) {
   $CheckModal.value.show();
 }
 
-// async function onMutate(method, data) {
-//   // 일반적인 상황은 아니지만, 로그인하지 않은 상태에서 강제로 사용자가 댓글을 조작하는것을 방지
-//   if (!user.value) {
-//     return;
-//   }
-//   checkModal.value = {
-//     method,
-//     text: methodMap[method].text,
-//     data,
-//   };
-
-//   if (method === "create") {
-//     await applyMutate();
-//     $EditorModal.value.close();
-//     return;
-//   }
-//   $CheckModal.value.show();
-// }
-
-// async function applyMutate() {
-//   const { method, data } = checkModal.value;
-//   loadState.value = "mutating";
-//   await methodMap[method].action(data);
-//   await sync();
-//   loadState.value = "complete";
-//   $CheckModal.value.close();
-//   setWriteable();
-//   if (method === "delete") {
-//     emit("delete");
-//   }
-//   // if (method !== "update" && props.once) {
-//   //   await setWriteable();
-//   // }
-// }
-function closeAndSync(target) {
-  target.value.close();
-  sync();
-  emit("interact", false);
-}
-
 function requestTeleport(e) {
   emit("request-teleport", e);
 }
@@ -410,12 +356,8 @@ useIntersection($ReadMore, async () => {
 });
 async function readMore() {
   const { reactions: data, lastDoc: last } = await Read(
-    // {
-    //   parent: props.parent,
-    //   type: props.type,
-    // },
     props.query,
-    orderBy("time", "desc"),
+    props.orderBy,
     startAfter(lastDoc.value),
     limit(10)
   );
@@ -460,6 +402,8 @@ function onStarMutate(e) {
   width: 100%;
   max-width: 1080px;
   position: relative;
+  display: flex;
+  flex-direction: column;
 
   &__Title {
     font-size: 1.6rem;
@@ -476,53 +420,18 @@ function onStarMutate(e) {
     font-size: 1.4rem;
   }
 
-  &__WriteBox {
-    border-radius: var(--global-radius);
-
-    opacity: 0;
-    height: 0;
-    display: none;
-    &--Show {
-      height: auto;
-      display: block;
-      opacity: 1;
-    }
-
-    &:focus-within {
-      border-color: hsl(var(--text-400));
-    }
-  }
-  &__ToDirect {
-    transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1) allow-discrete;
-    border: 1px solid var(--reaction-combo-write-bg, hsl(var(--bg-200)));
-    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
-  }
-  &__ToModalButton {
-    width: 100%;
-    text-align: center;
-    padding: 1.6rem;
-    font-size: 1.4rem;
-    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
-    border-radius: 9999px;
-  }
-
-  &__LoginRequired {
-    padding: 2rem;
-  }
   &__List {
     overflow: hidden;
     border-radius: 0 0 var(--global-radius) var(--global-radius);
-    &--Exist {
-      margin-top: 2rem;
-    }
   }
   &__Item {
     background-color: transparent;
-    // padding: 2rem 0;
+    // padding: 0 2rem;
+    padding: 2rem;
     & + & {
       border-top: 1px solid hsl(var(--bg-200));
-      padding-top: 2rem;
-      margin-top: 2rem;
+      // padding-top: 2rem;
+      // margin-top: 2rem;
     }
     // Remove padding from the last item
     &--Blink {

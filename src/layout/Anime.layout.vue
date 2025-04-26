@@ -277,7 +277,6 @@ onUnmounted(() => {
     flex-direction: column;
     flex-grow: 1;
     background-color: var(--anime-layout-body);
-    padding-bottom: 2rem;
     --episodes-sticky-top: var(--header-height);
   }
   &__TabSelector {

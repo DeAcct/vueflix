@@ -457,7 +457,7 @@ function openPurchaseDialog() {
   }
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .Subscribe {
     &__HeaderWrap {
       width: calc(100% - 4rem);
@@ -560,7 +560,7 @@ function openPurchaseDialog() {
   }
 }
 
-@media (display-mode: window-controls-overlay) and (min-width: 1024px) {
+@media (display-mode: window-controls-overlay) and (min-width: 1080px) {
   .Subscribe {
     &__Header {
       -webkit-app-region: drag;

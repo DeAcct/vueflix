@@ -337,7 +337,7 @@ function onClickWannaSee(aniTitle) {
     }
   }
 }
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1080px) {
   .AppHome {
     &__Item {
       &:has(.AppHome__DaySelector) {

@@ -6,8 +6,8 @@
     </div>
     <div class="ReactionItem__Actions" v-if="actions">
       <UpdownReaction
-        :parent="reactionData._id"
-        :writer="reactionData.uid"
+        :parent="_id"
+        :writer="uid"
         class="ReactionItem__Updown"
       />
       <div class="ReactionItem__SubActions">
@@ -38,25 +38,22 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 
-import { REACTION_ENUM_WITH_JOSA } from "@/enums/Reaction";
-
-import { useAuth } from "@/store/auth";
 import { useUserMeta } from "@/api/userMeta";
 import { useFormatDate } from "@/composables/formatter";
 
 import UpdownReaction from "@/components/UpdownReaction.vue";
 
-const placeholder = computed(
-  () =>
-    `수정할 ${REACTION_ENUM_WITH_JOSA[props.reactionData.type]} 입력해 주세요.${
-      props.reactionData.type === "comment"
-        ? "\n시간:분:초 형식으로 작성하면 애니 시간을 첨부할 수 있어요!"
-        : ""
-    }`
-);
-
 const props = defineProps({
   reactionData: {
+    type: Object,
+  },
+  _id: {
+    type: String,
+  },
+  uid: {
+    type: String,
+  },
+  time: {
     type: Object,
   },
   component: {
@@ -73,9 +70,9 @@ const props = defineProps({
     type: Boolean,
   },
 });
-const self = computed(() => props.user?.uid === props.reactionData.uid);
-const meta = useUserMeta(props.reactionData.uid);
-const { date: time } = useFormatDate(props.reactionData.time.toDate());
+const self = computed(() => props.user?.uid === props.uid);
+const meta = useUserMeta(props.uid);
+const { date: time } = useFormatDate(props.time.toDate());
 
 const mode = ref("show");
 function editTrigger() {
@@ -85,8 +82,6 @@ function deleteTrigger() {
   emits("delete");
 }
 const emits = defineEmits(["edit", "meta-modal"]);
-
-const auth = useAuth();
 
 // query에 있는 댓글의 id를 통헤 해당 위치로 바로 이동
 const $Item = ref(null);
@@ -109,6 +104,9 @@ onMounted(() => {
   justify-content: space-between;
 
   &__Content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
     margin: 1.4rem 0 0.4rem;
     position: relative;
     width: 100%;
@@ -190,9 +188,6 @@ onMounted(() => {
   .ReactionItem {
     &__Content {
       font-size: 1.5rem;
-    }
-    .row-top {
-      margin-bottom: 0.5rem;
     }
   }
 }

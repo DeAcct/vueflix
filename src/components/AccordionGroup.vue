@@ -63,6 +63,7 @@ const { $root, $summary, $content } = useAccordion(
     display: flex;
     flex-direction: column;
     padding-top: var(--open-top-padding, 1.2rem);
+    gap: var(--content-gap, 1.2rem);
   }
 
   &[open] {

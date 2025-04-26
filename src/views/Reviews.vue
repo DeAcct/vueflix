@@ -1,6 +1,6 @@
 <template>
   <div class="AnimeReviews">
-    <section class="AnimeReviews__Item" v-if="!user">
+    <section class="AnimeReviews__Login" v-if="!user">
       <LoginWidget :btn-func="goAuth" class="AnimeReviews__LoginRequired">
         <template #text>
           <h2>로그인하고 이 작품을 평가해보세요</h2>
@@ -32,6 +32,15 @@
       once
       stars
     >
+      <template #open-editor="{ openEditor }">
+        <button
+          class="AnimeReviews__OpenEditorButton"
+          @click="openEditor"
+          type="button"
+        >
+          리뷰와 별점 남기기
+        </button>
+      </template>
       <template #title="{ counter }">
         <h3 class="AnimeReviews__Title">
           리뷰<span class="AnimeReviews__Counter">({{ counter }})</span>
@@ -71,6 +80,7 @@ const user = computed(() => auth.user);
   flex-direction: column;
   align-items: center;
   margin-top: 2rem;
+  gap: 2rem;
 
   &__LoginRequired {
     background-color: hsl(var(--bg-200));
@@ -85,20 +95,29 @@ const user = computed(() => auth.user);
   &__Title {
     font-size: 1.6rem;
     margin-bottom: 1.2rem;
+    padding: 0 2rem;
   }
 
   &__Keyword {
     border-radius: calc(var(--global-radius) + 2rem);
   }
 
+  &__Login {
+    width: calc(100% - 4rem);
+  }
+
+  &__OpenEditorButton {
+    width: calc(100% - 4rem);
+    margin: 0 auto;
+    text-align: center;
+    padding: 1.6rem;
+    font-size: 1.4rem;
+    background-color: var(--reaction-combo-write-bg, hsl(var(--bg-200)));
+    border-radius: 9999px;
+  }
+
   &__Item {
     width: 100%;
-    padding: 0 2rem;
-    & + & {
-      border-top: 1px solid hsl(var(--bg-200));
-      padding-top: 2rem;
-      margin-top: 2rem;
-    }
   }
 }
 </style>

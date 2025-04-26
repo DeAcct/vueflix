@@ -22,7 +22,7 @@ import {
 import { db } from "@/utility/firebase";
 import { useTimeSplit } from "@/composables/formatter";
 import { useAuth } from "@/store/auth";
-import objToQuery from "../utility/helper";
+import { objToOrder, objToQuery } from "../utility/helper";
 
 /**
  * 사용자가 생성한 리액션을 나타내는 객체입니다.
@@ -113,6 +113,7 @@ export async function ReadReactionCount(queryObj, ...queryOption) {
     // where("parent", "==", parent),
     // where("type", "==", type),
     ...objToQuery(queryObj),
+
     ...queryOption
   );
   const countResponse = await getCountFromServer(q);
@@ -128,10 +129,12 @@ export async function ReadReactionCount(queryObj, ...queryOption) {
  * }} option 부모 문서의 id와 리액션 타입, 필요시 페이지 사이즈와 페이지를 받습니다.
  * @returns {Promise<{reactions: Array<Reaction>, lastDoc: Reaction}>}
  */
-export async function Read(queryObj, ...options) {
+export async function Read(queryObj, queryOrder, ...options) {
+  console.log(queryOrder);
   const q = query(
     collection(db, "reaction"),
     ...objToQuery(queryObj),
+    ...objToOrder(queryOrder),
     // where("parent", "==", parent),
     // where("type", "==", type),
     ...options
@@ -150,7 +153,6 @@ export async function Read(queryObj, ...options) {
       }
     });
   }
-  console.log(reactions);
   return { reactions, lastDoc };
 }
 

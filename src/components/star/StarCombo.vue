@@ -9,9 +9,8 @@
     @touchend="onTouchend"
   >
     <div class="StarCombo__Row">
-      <svg class="StarCombo__Stars" viewBox="0 0 280 48">
+      <!-- <svg class="StarCombo__Stars" viewBox="0 0 280 48">
         <clipPath :id="`StarCombo-${starUid}`">
-          <!--별 gap은 10px-->
           <path
             d="M47.19,20.86l-9.68,9.96,2.25,13.88c.38,2.34-2.09,4.09-4.16,2.94l-11.62-6.45-11.62,6.45c-2.06,1.15-4.54-.6-4.16-2.94l2.25-13.88L.81,20.86c-1.61-1.65-.68-4.44,1.6-4.79l13.24-2.03L21.44,1.63c.51-1.09,1.54-1.63,2.56-1.63s2.05.54,2.56,1.63l5.8,12.4,13.24,2.03c2.27.35,3.2,3.13,1.6,4.79h0ZM105.19,20.86l-9.68,9.96,2.25,13.88c.38,2.34-2.09,4.09-4.16,2.94l-11.62-6.45-11.62,6.45c-2.06,1.15-4.54-.6-4.16-2.94l2.25-13.88-9.64-9.96c-1.61-1.65-.68-4.44,1.6-4.79l13.24-2.03,5.79-12.41c.51-1.09,1.54-1.63,2.56-1.63s2.05.54,2.56,1.63l5.8,12.4,13.24,2.03c2.27.35,3.2,3.13,1.6,4.79h0ZM163.19,20.86l-9.68,9.96,2.25,13.88c.38,2.34-2.09,4.09-4.16,2.94l-11.62-6.45-11.62,6.45c-2.06,1.15-4.54-.6-4.16-2.94l2.25-13.88-9.64-9.96c-1.61-1.65-.68-4.44,1.6-4.79l13.24-2.03,5.79-12.41c.51-1.09,1.54-1.63,2.56-1.63s2.05.54,2.56,1.63l5.8,12.4,13.24,2.03c2.27.35,3.2,3.13,1.6,4.79h0ZM221.19,20.86l-9.68,9.96,2.25,13.88c.38,2.34-2.09,4.09-4.16,2.94l-11.62-6.45-11.62,6.45c-2.06,1.15-4.54-.6-4.16-2.94l2.25-13.88-9.64-9.96c-1.61-1.65-.68-4.44,1.6-4.79l13.24-2.03,5.79-12.41c.51-1.09,1.54-1.63,2.56-1.63s2.05.54,2.56,1.63l5.8,12.4,13.24,2.03c2.27.35,3.2,3.13,1.6,4.79h0ZM279.19,20.86l-9.68,9.96,2.25,13.88c.38,2.34-2.09,4.09-4.16,2.94l-11.62-6.45-11.62,6.45c-2.06,1.15-4.54-.6-4.16-2.94l2.25-13.88-9.64-9.96c-1.61-1.65-.68-4.44,1.6-4.79l13.24-2.03,5.79-12.41c.51-1.09,1.54-1.63,2.56-1.63s2.05.54,2.56,1.63l5.8,12.4,13.24,2.03c2.27.35,3.2,3.13,1.6,4.79h0Z"
           />
@@ -26,37 +25,25 @@
             class="StarCombo__Progress"
           />
         </g>
-      </svg>
-      <p class="StarCombo__Number">{{ modelValue.toFixed(1) }} / 5.0</p>
+      </svg> -->
+      <StarRenderer :star-uid :progress="modelValue" class="StarCombo__Stars" />
       <button class="StarCombo__Reset" type="button" @click="onDelete">
         <IconBase>
           <IconRemove />
         </IconBase>
       </button>
     </div>
-    <!-- <div
-      class="StarCombo__Handle"
-      @click="onClick"
-      @mousedown="onMousedown"
-      @mousemove="onTouchmove"
-      @mouseup="onTouchend"
-      @touchmove="onTouchmove"
-      @touchend="onTouchend"
-    ></div> -->
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import IconBase from "@/components/IconBase.vue";
 import IconRemove from "@/components/icons/IconRemove.vue";
-import { useMediaQuery } from "../../composables/device";
+import { useMediaQuery } from "@/composables/device";
+import StarRenderer from "./StarRenderer.vue";
 
 const modelValue = defineModel({ default: 5 }); // v-model로 받아올 값
-
-const STARS = 5;
-const STAR_GAP = 10;
-const STAR_WIDTH = 48;
 
 const props = defineProps({
   starUid: {
@@ -67,19 +54,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-});
-
-const renderedProgress = computed(() => {
-  const total = STARS * STAR_WIDTH + (STARS - 1) * STAR_GAP;
-
-  const fullStars = Math.floor(modelValue.value);
-  const halfStar = modelValue.value % 1 >= 0.5 ? 1 : 0;
-
-  const filledGaps = fullStars + halfStar - 1;
-  const filledGapWidth = filledGaps > 0 ? filledGaps * STAR_GAP : 0;
-
-  const filled = modelValue.value * STAR_WIDTH + filledGapWidth;
-  return (filled / total) * 100;
 });
 
 const media = useMediaQuery("(hover: hover) and (pointer: fine)");
@@ -94,10 +68,12 @@ function onClick(e) {
 }
 
 function onMousedown() {
+  if (props.readOnly) return;
   isMouseDown.value = media.value;
 }
 
 function onTouchmove(e) {
+  if (props.readOnly) return;
   if (!isMouseDown.value) return;
   const clientX = getClientX(e);
   const { left, width } = e.currentTarget.getBoundingClientRect();
@@ -113,7 +89,9 @@ function getClientX(e) {
   return e.clientX;
 }
 
+const STARS = 5;
 function onTouchend() {
+  if (props.readOnly) return;
   isMouseDown.value = !media.value;
   const raw = (parseFloat(internalProgress.value) / 100) * STARS;
   const rounded = Math.round(raw * 2) / 2;
@@ -154,57 +132,8 @@ function onDelete(e) {
     gap: 0.8rem;
   }
 
-  &__Stars {
-    height: 2rem;
-  }
-  &__BG {
-    fill: var(--stars-bg, transparent);
-  }
-  &__Progress {
-    fill: var(--stars-progress, hsl(var(--theme-500)));
-    animation: filling 500ms cubic-bezier(0.83, 0, 0.17, 1);
-  }
-
-  &__Number {
-    font-size: 1.4rem;
-    z-index: 2;
-  }
   &__Reset {
     margin-left: auto;
-  }
-
-  &__Handle {
-    align-content: center;
-    text-align: center;
-    height: 3rem;
-    background: linear-gradient(
-      90deg,
-      var(--star-combo-bg),
-      var(--star-combo-filled) v-bind(internalProgress),
-      var(--star-combo-bg) v-bind(internalProgress)
-    );
-    border-radius: var(--star-combo-handle-radius);
-    position: relative;
-    &::before {
-      position: absolute;
-      z-index: 1;
-      top: 50%;
-      left: v-bind(internalProgress);
-      translate: -50% -50%;
-      content: "";
-      width: 6px;
-      height: 50%;
-      border-radius: 9999px;
-      background-color: var(--star-combo-handler);
-      box-shadow: 0 0 4px hsl(var(--bg-900) / 0.1),
-        0 0 2px hsl(var(--bg-900) / 0.1);
-    }
-  }
-}
-
-@keyframes filling {
-  from {
-    scale: 0 1;
   }
 }
 </style>
