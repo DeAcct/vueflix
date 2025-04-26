@@ -1,7 +1,9 @@
 <template>
   <main class="MyApp">
-    <StatCard :uid="user?.uid" class="MyApp__Profile" v-if="user" />
-    <MembershipCard :uid="user?.uid" class="MyApp__Membership" promotion />
+    <template v-if="user">
+      <StatCard :uid="user?.uid" class="MyApp__Profile" />
+      <MembershipCard :uid="user?.uid" class="MyApp__Membership" promotion />
+    </template>
     <RecommendCard v-if="showVerify()">
       <template #title>이메일을 인증해주세요</template>
       <template #text>
