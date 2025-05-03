@@ -153,7 +153,7 @@ const children = [
   },
   {
     name: "reviews",
-    tabName: "키워드 & 리뷰",
+    tabName: "별점 & 리뷰",
     component: Reviews,
   },
 ];

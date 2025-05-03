@@ -22,6 +22,7 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useIndicatorAnimation } from "@/composables/indicator";
 const props = defineProps({
   data: {
@@ -30,13 +31,17 @@ const props = defineProps({
 });
 
 const selected = defineModel();
+const selectedIndex = computed(() => {
+  if (!selected.value) return 0;
+  return props.data.findIndex((item) => item.key === selected.value);
+});
 
 const {
   selector: $MultiSeletor,
   items: $Items,
   to,
   move: indicatorMove,
-} = useIndicatorAnimation(selected.value);
+} = useIndicatorAnimation(selectedIndex.value);
 
 function arrowMove(event) {
   const index = $Items.value.findIndex(
@@ -65,7 +70,8 @@ function arrowMove(event) {
     z-index: var(--z-index-s2);
     width: var(--item-width);
     height: var(--item-height);
-    font-size: 1.6rem;
+    padding: var(--item-padding);
+    font-size: inherit;
     font-weight: 700;
     border-radius: var(--indicator-radius, 9999px);
     transition: color 150ms ease-out;
@@ -73,7 +79,7 @@ function arrowMove(event) {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: hsl(var(--bg-600));
+    color: inherit;
     &--Active {
       color: hsl(var(--text-800));
     }

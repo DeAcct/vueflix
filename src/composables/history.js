@@ -1,47 +1,47 @@
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { useMaratonData } from "@/api/maraton";
 import { useWannaSee } from "@/api/wannaSee";
 
-const { latest, removeMaraton } = useMaratonData();
-const { wannaSee, removeWannaSee } = useWannaSee();
-
-const HISTORY_GROUP = [
-  {
-    text: "최근 본",
-    key: "recent-watched",
-    parser: useParser("episode"),
-    progressBar: true,
-    remove: removeMaraton,
-    list: latest(6),
-  },
-  {
-    text: "보고싶다",
-    key: "wanna-see",
-    parser: useParser("anime"),
-    progressBar: false,
-    remove: removeWannaSee,
-    list: wannaSee.value,
-  },
-  {
-    text: "소장한",
-    key: "purchased",
-    parser: useParser("anime"),
-    progressBar: false,
-    remove: () => {},
-    list: [],
-  },
-  {
-    text: "관심없음",
-    key: "not-interested",
-    parser: useParser("anime"),
-    progressBar: false,
-    remove: () => {},
-    list: [],
-  },
-];
-
 export function useHistory(select = "all") {
+  const { latest, removeMaraton } = useMaratonData();
+  const { wannaSee, removeWannaSee } = useWannaSee();
+
+  const HISTORY_GROUP = [
+    {
+      text: "최근 본",
+      key: "recent-watched",
+      parser: useParser("episode"),
+      progressBar: true,
+      remove: removeMaraton,
+      list: latest(6),
+    },
+    {
+      text: "보고싶다",
+      key: "wanna-see",
+      parser: useParser("anime"),
+      progressBar: false,
+      remove: removeWannaSee,
+      list: wannaSee,
+    },
+    {
+      text: "소장한",
+      key: "purchased",
+      parser: useParser("anime"),
+      progressBar: false,
+      remove: () => {},
+      list: [],
+    },
+    {
+      text: "관심없음",
+      key: "not-interested",
+      parser: useParser("anime"),
+      progressBar: false,
+      remove: () => {},
+      list: [],
+    },
+  ];
+
   const tabs =
     select === "all"
       ? HISTORY_GROUP
@@ -58,7 +58,7 @@ export function useHistory(select = "all") {
   }
   const list = computed(() => {
     const listMap = {
-      "recent-watched": latest(6),
+      "recent-watched": latest(),
       "wanna-see": wannaSee.value,
       purchased: [],
       "not-interested": [],
@@ -89,6 +89,13 @@ export function useHistory(select = "all") {
     }
     editmode.value.selected = new Set(list.value.map((item) => item.aniTitle));
   }
+
+  watch(
+    () => tab.value,
+    () => {
+      console.log(list);
+    }
+  );
 
   return {
     tabs,

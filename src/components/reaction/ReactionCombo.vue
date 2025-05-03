@@ -1,6 +1,6 @@
 <template>
   <section class="ReactionCombo">
-    <slot name="title" :counter="reactions.allCount"></slot>
+    <slot name="title" :counter="allCount"></slot>
     <slot name="description"></slot>
     <slot
       name="open-editor"
@@ -10,60 +10,63 @@
             method: 'create',
           })
       "
+      v-if="writeable"
     ></slot>
-    <TransitionGroup
-      tag="ul"
-      name="reaction-list"
+    <InfiniteList
       class="ReactionCombo__List"
-      :class="reactions.allCount !== 0 && 'ReactionCombo__List--Exist'"
+      :class="allCount === 0 && 'ReactionCombo__List--Empty'"
+      :query="props.query"
+      :limit="10"
+      :read="Read"
+      :counter="ReadReactionCount"
+      :order-options
     >
-      <ReactionItem
-        v-for="{ _id, content, isEdited, time, uid } in reactions.visible"
-        :key="_id"
-        v-bind="{ _id, uid, time }"
-        :user
-        @edit="
-          openEditorModal({
-            method: 'update',
-            id: _id,
-            content: { ...content },
-          })
-        "
-        @delete="deleteReaction(_id)"
-        @interact="setInteract"
-        class="ReactionCombo__Item"
-        :class="_id === route.query.reaction && 'ReactionCombo__Item--Blink'"
-        actions
-        :track-target="trackTarget && _id === route.query.reaction"
-      >
-        <template #meta="{ self, data, time }">
-          <button>
-            <ReactionMeta
-              :self
-              :data
-              @click="data?.uid && onMetaModal({ uid: data.uid })"
-            >
-              <template #edited>
-                {{ isEdited ? " &middot; 수정됨" : "" }}
-              </template>
-              <template #time>{{ time }}</template>
-            </ReactionMeta>
-          </button>
-        </template>
-        <template #content>
-          <StarRenderer :progress="content.stars" v-if="content.stars" />
-          <ReactionParser
-            :content="content.text"
-            @request-teleport="requestTeleport"
-            class="ReactionCombo__Content"
-          />
-        </template>
-        <template #edited>{{ isEdited ? "(수정됨)" : "" }}</template>
-      </ReactionItem>
-    </TransitionGroup>
-    <div class="ReactionCombo__End" ref="$ReadMore" v-if="!isLastPage">
-      <LoadAnimation class="ReactionCombo__MoreLoadAnimation" />
-    </div>
+      <template #content="{ list }">
+        <ReactionItem
+          v-for="{ _id, content, isEdited, time, uid } in list.visible"
+          :key="_id"
+          v-bind="{ _id, uid, time }"
+          :user
+          @edit="
+            openEditorModal({
+              method: 'update',
+              id: _id,
+              content: { ...content },
+            })
+          "
+          @delete="deleteReaction(_id)"
+          @interact="setInteract"
+          class="ReactionCombo__Item"
+          :class="_id === route.query.reaction && 'ReactionCombo__Item--Blink'"
+          actions
+          :track-target="trackTarget && _id === route.query.reaction"
+        >
+          <template #meta="{ self, data, time }">
+            <button>
+              <ReactionMeta
+                :self
+                :data
+                @click="data?.uid && onMetaModal({ uid: data.uid })"
+              >
+                <template #edited>
+                  {{ isEdited ? " &middot; 수정됨" : "" }}
+                </template>
+                <template #time>{{ time }}</template>
+              </ReactionMeta>
+            </button>
+          </template>
+          <template #content>
+            <StarRenderer :progress="content.stars" v-if="content.stars" />
+            <ReactionParser
+              :content="content.text"
+              @request-teleport="requestTeleport"
+              class="ReactionCombo__Content"
+            />
+          </template>
+          <template #edited>{{ isEdited ? "(수정됨)" : "" }}</template>
+        </ReactionItem>
+      </template>
+    </InfiniteList>
     <Teleport to="#Overay">
       <NativeDialog ref="$CheckModal" class="CheckModal" shade>
         <template #title>
@@ -193,9 +196,9 @@
 // 리뷰는 애니메이션에 작성하는 항목
 // 코멘트는 각 에피소드마다 작성하는 항목
 
-import { computed, ref, watch } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
-import { endAt, limit, orderBy, startAfter, where } from "firebase/firestore";
+import { where } from "firebase/firestore";
 
 import {
   Create,
@@ -205,8 +208,6 @@ import {
   Delete,
 } from "@/api/reaction";
 import { useAuth } from "@/store/auth";
-
-import { useIntersection } from "@/composables/intersection";
 
 import LoadAnimation from "@/components/LoadAnimation.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
@@ -219,6 +220,7 @@ import ReactionItem from "./ReactionItem.vue";
 import ReactionParser from "./ReactionParser.vue";
 import ReactionMeta from "./ReactionMeta.vue";
 import StarRenderer from "../star/StarRenderer.vue";
+import InfiniteList from "../InfiniteList.vue";
 
 const props = defineProps({
   showTitle: {
@@ -232,19 +234,9 @@ const props = defineProps({
     type: [String, Number],
     required: false,
   },
-  // 한 번만 작성할 수 있는 리액션인지
-  once: {
-    type: Boolean,
-  },
   query: {
     type: Object,
     required: true,
-  },
-  orderBy: {
-    type: Object,
-    default: () => ({
-      time: "desc",
-    }),
   },
   stars: {
     type: Boolean,
@@ -261,52 +253,46 @@ function setInteract(e) {
   emit("interact", e);
 }
 
+const ORDER_OPTIONS = [
+  {
+    text: "시간",
+    value: "time",
+  },
+  {
+    text: "공감",
+    value: "updown",
+  },
+  {
+    text: "별점",
+    value: "content.stars",
+  },
+];
+
+const orderOptions = computed(() =>
+  ORDER_OPTIONS.filter(({ value }) => {
+    if (props.query.type !== "review") {
+      return value !== "content.stars";
+    }
+    return true;
+  })
+);
+
 const auth = useAuth();
 const user = computed(() => auth.user);
-const reactions = ref({ visible: [], allCount: 0 });
-
-const writeable = ref(true);
-async function setWriteable() {
-  if (!props.once) {
+const allCount = ref(0);
+watchEffect(async () => {
+  if (!user.value) {
+    allCount.value = 0;
     return;
   }
-  const myReviewCount = await ReadReactionCount(
+  allCount.value = await ReadReactionCount(
     props.query,
     where("uid", "==", user.value?.uid)
   );
-  writeable.value = myReviewCount === 0;
-}
-
-/**
- * @type { import("vue").Ref<"complete" | "loading" | "mutating">}
- */
-const loadState = ref("complete");
-const lastDoc = ref(null);
-const isLastPage = computed(() => {
-  return reactions.value.visible.length === reactions.value.allCount;
 });
-
-watch(
-  [() => props.query, () => props.orderBy],
-  async () => {
-    await sync();
-    setWriteable();
-  },
-  { immediate: true }
-);
-defineExpose({
-  sync,
+const writeable = computed(() => {
+  return allCount.value === 0 && !props.readonly;
 });
-async function sync() {
-  const { reactions: data, lastDoc: last } = await Read(
-    props.query,
-    props.orderBy,
-    lastDoc.value ? endAt(lastDoc.value) : limit(10)
-  );
-  reactions.value.visible = data;
-  reactions.value.allCount = await ReadReactionCount(props.query);
-  lastDoc.value = last;
-}
 
 const methodMap = {
   create: {
@@ -322,6 +308,7 @@ const methodMap = {
     text: "삭제",
   },
 };
+
 const $CheckModal = ref(null);
 const checkModal = ref({
   method: "",
@@ -345,24 +332,6 @@ const uid = ref(null);
 function onMetaModal({ uid: _uid }) {
   uid.value = _uid;
   $MetaModal.value.show();
-}
-
-const $ReadMore = ref(null);
-useIntersection($ReadMore, async () => {
-  if (isLastPage.value) {
-    return;
-  }
-  await readMore();
-});
-async function readMore() {
-  const { reactions: data, lastDoc: last } = await Read(
-    props.query,
-    props.orderBy,
-    startAfter(lastDoc.value),
-    limit(10)
-  );
-  reactions.value.visible.push(...data);
-  lastDoc.value = last;
 }
 
 const $EditorModal = ref(null);
@@ -423,6 +392,9 @@ function onStarMutate(e) {
   &__List {
     overflow: hidden;
     border-radius: 0 0 var(--global-radius) var(--global-radius);
+    &--Empty {
+      padding-bottom: 2rem;
+    }
   }
   &__Item {
     background-color: transparent;
@@ -444,10 +416,6 @@ function onStarMutate(e) {
     justify-content: center;
     padding: 2rem;
     height: 20rem;
-  }
-  &__MoreLoadAnimation {
-    display: block;
-    width: 4rem;
   }
 }
 @keyframes comment-blink {
@@ -574,24 +542,6 @@ function onStarMutate(e) {
       color: #fff;
     }
   }
-}
-
-.reaction-list-move,
-.reaction-list-enter-active,
-.reaction-list-leave-active {
-  transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.reaction-list-enter-active {
-  transition-delay: 150ms;
-}
-
-.reaction-list-enter-from,
-.reaction-list-leave-to {
-  opacity: 0;
-}
-
-.reaction-list-leave-active {
-  position: absolute;
 }
 
 @media screen and (min-width: 1080px) {

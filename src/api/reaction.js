@@ -130,7 +130,6 @@ export async function ReadReactionCount(queryObj, ...queryOption) {
  * @returns {Promise<{reactions: Array<Reaction>, lastDoc: Reaction}>}
  */
 export async function Read(queryObj, queryOrder, ...options) {
-  console.log(queryOrder);
   const q = query(
     collection(db, "reaction"),
     ...objToQuery(queryObj),

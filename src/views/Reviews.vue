@@ -8,30 +8,17 @@
         <template #login-state-text>로그인</template>
       </LoginWidget>
     </section>
-
-    <!-- <KeywordCombo
-      class="AnimeReviews__Item"
-      :parent="{ title: route.query.modal }"
-    >
-      <template #title>
-        <h3 class="AnimeReviews__Title">키워드</h3>
-      </template>
-    </KeywordCombo> -->
-
-    <!-- <button class="AnimeReviews__Item" type="button">리뷰 작성하기</button> -->
-
-    <!-- <ReactionCombo
-      class="AnimeReviews__Item"
-      type="review"
-      :parent="{ title: route.query.modal }"
-      once
-    > -->
     <ReactionCombo
       class="AnimeReviews__Item"
       :query="{ parent: { title: route.query.modal }, type: 'review' }"
       once
       stars
     >
+      <template #title="{ counter }">
+        <h3 class="AnimeReviews__Title">
+          리뷰<span class="AnimeReviews__Counter">({{ counter }})</span>
+        </h3>
+      </template>
       <template #open-editor="{ openEditor }">
         <button
           class="AnimeReviews__OpenEditorButton"
@@ -40,11 +27,6 @@
         >
           리뷰와 별점 남기기
         </button>
-      </template>
-      <template #title="{ counter }">
-        <h3 class="AnimeReviews__Title">
-          리뷰<span class="AnimeReviews__Counter">({{ counter }})</span>
-        </h3>
       </template>
     </ReactionCombo>
   </div>
@@ -94,7 +76,6 @@ const user = computed(() => auth.user);
 
   &__Title {
     font-size: 1.6rem;
-    margin-bottom: 1.2rem;
     padding: 0 2rem;
   }
 
@@ -108,7 +89,7 @@ const user = computed(() => auth.user);
 
   &__OpenEditorButton {
     width: calc(100% - 4rem);
-    margin: 0 auto;
+    margin: 1rem auto 0;
     text-align: center;
     padding: 1.6rem;
     font-size: 1.4rem;

@@ -19,7 +19,6 @@
           <MultiSelector
             class="AppHome__DaySelector"
             v-model="selectedDay"
-            @update:model-value="onDayChange"
             :data="DAYS"
           />
         </template>
@@ -155,14 +154,15 @@ import WatchContinue from "@/components/WatchContinue.vue";
 import WannaSeeMotion from "@/components/WannaSeeMotion.vue";
 
 const now = new Date();
-const selectedDay = ref(now.getDay());
+const selectedDay = ref(DAYS[now.getDay()].key);
 const selectedDailyAnime = ref([]);
 async function getSelectedDayList() {
-  const docReference = doc(db, "daily", DAYS[selectedDay.value].key);
+  const docReference = doc(db, "daily", selectedDay.value);
   const docSnap = await getDoc(docReference);
   selectedDailyAnime.value = docSnap.data().data;
 }
 function onDayChange(e) {
+  console.log(e);
   selectedDay.value = DAYS.map(({ key }) => key).findIndex(
     (item) => item === e
   );
@@ -228,6 +228,8 @@ function onClickWannaSee(aniTitle) {
     margin: 0 auto 1.6rem;
     --item-width: 4rem;
     --item-height: 4rem;
+    font-size: 1.6rem;
+    color: hsl(var(--bg-600));
   }
   &__Item {
     &:has(.AppHome__DaySelector) {

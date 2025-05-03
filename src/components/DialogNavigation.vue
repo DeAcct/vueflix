@@ -29,7 +29,7 @@
       </button>
       <RouterLink
         class="DialogNavigation__Button DialogNavigation__Button--Close desktop"
-        to="/"
+        :to="{ query: {} }"
       >
         <IconBase>
           <IconClose />
