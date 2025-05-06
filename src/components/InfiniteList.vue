@@ -7,7 +7,7 @@
         class="InfiniteList__By"
       ></SelectOption>
       <MultiSelector
-        :data="ORDER"
+        :data="orderString"
         v-model="order"
         class="InfiniteList__Order"
       />
@@ -66,11 +66,14 @@ const isLastPage = computed(() => {
 
 const by = ref("time");
 const order = ref("desc");
-const ORDER = [
-  { text: "내림차순", key: "desc" },
-  { text: "오름차순", key: "asc" },
-];
+// const ORDER = [
+//   { text: "내림차순", key: "desc" },
+//   { text: "오름차순", key: "asc" },
+// ];
 const orderBy = computed(() => ({ [by.value]: order.value }));
+const orderString = computed(
+  () => props.orderOptions.find(({ value }) => value === by.value).direction
+);
 
 watch(
   [() => props.query, () => orderBy.value],

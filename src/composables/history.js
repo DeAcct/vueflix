@@ -90,13 +90,6 @@ export function useHistory(select = "all") {
     editmode.value.selected = new Set(list.value.map((item) => item.aniTitle));
   }
 
-  watch(
-    () => tab.value,
-    () => {
-      console.log(list);
-    }
-  );
-
   return {
     tabs,
     tab,

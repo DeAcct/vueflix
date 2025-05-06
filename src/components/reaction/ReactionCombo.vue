@@ -31,7 +31,7 @@
             openEditorModal({
               method: 'update',
               id: _id,
-              content: { ...content },
+              content,
             })
           "
           @delete="deleteReaction(_id)"
@@ -244,6 +244,9 @@ const props = defineProps({
   readonly: {
     type: Boolean,
   },
+  once: {
+    type: Boolean,
+  },
 });
 
 const route = useRoute();
@@ -257,14 +260,26 @@ const ORDER_OPTIONS = [
   {
     text: "시간",
     value: "time",
+    direction: [
+      { text: "최신순", key: "desc" },
+      { text: "오래된순", key: "asc" },
+    ],
   },
   {
     text: "공감",
     value: "updown",
+    direction: [
+      { text: "많은순", key: "desc" },
+      { text: "적은순", key: "asc" },
+    ],
   },
   {
     text: "별점",
     value: "content.stars",
+    direction: [
+      { text: "높은순", key: "desc" },
+      { text: "낮은순", key: "asc" },
+    ],
   },
 ];
 
@@ -280,18 +295,20 @@ const orderOptions = computed(() =>
 const auth = useAuth();
 const user = computed(() => auth.user);
 const allCount = ref(0);
+const mine = ref(0);
 watchEffect(async () => {
   if (!user.value) {
     allCount.value = 0;
     return;
   }
-  allCount.value = await ReadReactionCount(
+  allCount.value = await ReadReactionCount(props.query);
+  mine.value = await ReadReactionCount(
     props.query,
-    where("uid", "==", user.value?.uid)
+    where("uid", "==", user.value.uid)
   );
 });
 const writeable = computed(() => {
-  return allCount.value === 0 && !props.readonly;
+  return !props.readonly && !(props.once && mine.value > 0);
 });
 
 const methodMap = {

@@ -3,7 +3,7 @@
     <template v-if="user">
       <MultiSelector
         class="Basket__Tabs"
-        v-model="tab.index"
+        v-model="tab.key"
         @update:model-value="changeTab"
         :data="tabs"
       />
@@ -117,6 +117,8 @@ const {
     padding: 0.6rem;
     width: calc(100% - var(--inner-padding) * 2);
     margin: 0 auto;
+    font-size: 1.6rem;
+    color: hsl(var(--bg-500));
   }
   &__Button {
     height: 4.8rem;

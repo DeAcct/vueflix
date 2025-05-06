@@ -4,11 +4,12 @@
       v-for="({ key, text }, index) in data"
       :key
       class="MultiSelector__Item"
-      :class="index === selected && 'MultiSelector__Item--Active'"
+      :class="index === selectedIndex && 'MultiSelector__Item--Active'"
       @click="
-        () => {
-          indicatorMove(index);
+        (e) => {
           selected = key;
+          indicatorMove(index);
+          console.log(selected, key, selectedIndex, index);
         }
       "
       @focus="() => false && indicatorMove(index)"
@@ -81,7 +82,7 @@ function arrowMove(event) {
     align-items: center;
     color: inherit;
     &--Active {
-      color: hsl(var(--text-800));
+      color: var(--multi-selector-accent, hsl(var(--text-900)));
     }
     &:focus-visible {
       border-color: currentColor;

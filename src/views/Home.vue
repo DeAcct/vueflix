@@ -161,12 +161,7 @@ async function getSelectedDayList() {
   const docSnap = await getDoc(docReference);
   selectedDailyAnime.value = docSnap.data().data;
 }
-function onDayChange(e) {
-  console.log(e);
-  selectedDay.value = DAYS.map(({ key }) => key).findIndex(
-    (item) => item === e
-  );
-}
+
 watch(
   selectedDay,
   async () => {
