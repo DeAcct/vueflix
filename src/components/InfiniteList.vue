@@ -1,6 +1,9 @@
 <template>
   <div class="InfiniteList">
-    <div class="InfiniteList__Controller" v-if="list.allCount !== 0">
+    <div
+      class="InfiniteList__Controller"
+      v-if="list.allCount !== 0 && controller"
+    >
       <SelectOption
         :options="props.orderOptions"
         v-model="by"
@@ -26,7 +29,6 @@
 </template>
 
 <script setup>
-// infinite scroll
 import { ref, computed, watch } from "vue";
 import { useIntersection } from "@/composables/intersection";
 
@@ -55,6 +57,16 @@ const props = defineProps({
   },
   orderOptions: {
     type: Array,
+  },
+  controller: {
+    type: Boolean,
+  },
+  listTag: {
+    type: String,
+    default: "div",
+    validator(value) {
+      return ["ul", "ol", "div"].includes(value);
+    },
   },
 });
 
@@ -105,7 +117,7 @@ async function readMore() {
     props.query,
     orderBy.value,
     startAfter(lastDoc.value),
-    limit(10)
+    limit(props.limit)
   );
   list.value.visible.push(...data);
   lastDoc.value = last;

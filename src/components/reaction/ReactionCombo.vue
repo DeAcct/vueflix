@@ -20,6 +20,8 @@
       :read="Read"
       :counter="ReadReactionCount"
       :order-options
+      controller
+      list-tag="ul"
     >
       <template #content="{ list }">
         <ReactionItem

@@ -124,8 +124,8 @@ export async function ReadReactionCount(queryObj, ...queryOption) {
 /**
  * 리액션(리뷰, 댓글) 목록을 새로 고칩니다.
  * @param {{
- *  parent: string,
- *  type: "comment" | "review",
+ *  queryObj: {parent?: string, type?: "comment" | "review",}
+ *  queryOrder: {Record<"" | "time" | "updown" | "stars", "asc" | "desc">}
  * }} option 부모 문서의 id와 리액션 타입, 필요시 페이지 사이즈와 페이지를 받습니다.
  * @returns {Promise<{reactions: Array<Reaction>, lastDoc: Reaction}>}
  */

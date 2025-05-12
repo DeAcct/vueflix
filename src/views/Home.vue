@@ -9,69 +9,75 @@
         />
       </template>
     </TasogareSlide>
-    <div class="AppHome__Curator" ref="$Curator">
-      <CurationGroup
-        class="AppHome__Item"
-        :list="selectedDailyAnime"
-        subject="요일별 신작"
-      >
-        <template #list-changer>
-          <MultiSelector
-            class="AppHome__DaySelector"
-            v-model="selectedDay"
-            :data="DAYS"
-          />
-        </template>
-        <template #snack-bar="{ aniTitle }">
-          <button
-            class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
-            @click="onClickWannaSee(aniTitle)"
-            type="button"
-          >
-            <WannaSeeMotion :ani-title />
-          </button>
-        </template>
-      </CurationGroup>
-      <CurationGroup
-        :list="latest(6)"
-        subject="최근 본 작품"
-        class="AppHome__Item"
-        v-if="maraton.length"
-      >
-        <template #snack-bar="{ aniTitle, part, index, progress }">
-          <RouterLink
-            :to="`/anime-play/${aniTitle}/${part}/${index}`"
-            class="AppHome__SnackBarButton"
-          >
-            <WatchContinue :progress />
-          </RouterLink>
-          <button
-            class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
-            @click="onClickWannaSee(aniTitle)"
-            type="button"
-          >
-            <WannaSeeMotion :ani-title />
-          </button>
-        </template>
-      </CurationGroup>
-      <CurationGroup
-        class="AppHome__Item"
-        v-for="curation in curatedList"
-        :key="curation.subject"
-        :list="curation.list"
-        :subject="curation.subject"
-      >
-        <template #snack-bar="{ aniTitle }">
-          <button
-            class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
-            @click="onClickWannaSee(aniTitle)"
-            type="button"
-          >
-            <WannaSeeMotion :ani-title />
-          </button>
-        </template>
-      </CurationGroup>
-    </div>
+    <CurationGroup class="AppHome__Item" :list="selectedDailyAnime">
+      <template #title>요일별 신작</template>
+      <template #list-changer>
+        <MultiSelector
+          class="AppHome__DaySelector"
+          v-model="selectedDay"
+          :data="DAYS"
+        />
+      </template>
+      <template #snack-bar="{ aniTitle }">
+        <button
+          class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
+          @click="onClickWannaSee(aniTitle)"
+          type="button"
+        >
+          <WannaSeeMotion :ani-title />
+        </button>
+      </template>
+    </CurationGroup>
+    <CurationGroup
+      :list="latest(6)"
+      class="AppHome__Item"
+      v-if="maraton.length"
+    >
+      <template #title>최근 본 작품</template>
+      <template #snack-bar="{ aniTitle, part, index, progress }">
+        <RouterLink
+          :to="`/anime-play/${aniTitle}/${part}/${index}`"
+          class="AppHome__SnackBarButton"
+        >
+          <WatchContinue :progress />
+        </RouterLink>
+        <button
+          class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
+          @click="onClickWannaSee(aniTitle)"
+          type="button"
+        >
+          <WannaSeeMotion :ani-title />
+        </button>
+      </template>
+    </CurationGroup>
+    <Transition>
+      <div v-if="!listLoading" class="AppHome__Curation">
+        <CurationGroup
+          class="AppHome__Item"
+          v-for="{ subject, list } in curatedList"
+          :key="subject"
+          :list
+        >
+          <template #title>{{ subject }}</template>
+          <template #snack-bar="{ aniTitle }">
+            <button
+              class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
+              @click="onClickWannaSee(aniTitle)"
+              type="button"
+            >
+              <WannaSeeMotion :ani-title />
+            </button>
+          </template>
+        </CurationGroup>
+      </div>
+    </Transition>
+    <button
+      class="AppHome__NewCuration"
+      type="button"
+      @click="getCuratedList()"
+    >
+      새로운 추천
+    </button>
     <NativeDialog ref="$PWAModal" class="PWAModal" shade>
       <template #title>
         <strong class="PWAModal__Title">
@@ -127,7 +133,7 @@
 <script setup>
 import { onMounted, ref, watch, computed } from "vue";
 import { useRouter } from "vue-router";
-import { getDocs, collection, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 import { useAuth } from "@/store/auth";
 import { db } from "@/utility/firebase";
@@ -135,6 +141,7 @@ import { db } from "@/utility/firebase";
 import { DAYS } from "@/enums/Days";
 import { useMaratonData } from "@/api/maraton";
 import { useWannaSee } from "@/api/wannaSee";
+import { Read } from "@/api/curation";
 import { useCarouselList } from "@/composables/carousel";
 import { usePWA, useRandomPWAPromotionCopy } from "@/composables/pwa";
 
@@ -171,14 +178,18 @@ watch(
     immediate: true,
   }
 );
-
-const curatedList = ref({});
-onMounted(async () => {
+onMounted(() => {
   pwaCopy.value = useRandomPWAPromotionCopy();
-  const qSnapshot = await getDocs(collection(db, "recommend"));
-  const data = qSnapshot.docs.map((doc) => doc.data());
-  curatedList.value = data;
 });
+
+const curatedList = ref([]);
+const listLoading = ref(false);
+async function getCuratedList() {
+  listLoading.value = true;
+  curatedList.value = await Read(3, curatedList.value);
+  listLoading.value = false;
+}
+onMounted(getCuratedList);
 
 const pwaCopy = ref("");
 const $PWAModal = ref(null);
@@ -203,14 +214,12 @@ function onClickWannaSee(aniTitle) {
 
 <style lang="scss" scoped>
 .AppHome {
-  &__Curator {
-    display: flex;
-    flex-direction: column;
-    padding: 3.2rem 0
-      calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin) + 3rem);
-    background-color: hsl(var(--bg-100));
-    gap: 3rem;
-  }
+  display: flex;
+  flex-direction: column;
+  padding: 3.2rem 0
+    calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin) + 3rem);
+  background-color: hsl(var(--bg-100));
+  gap: 3rem;
   &__Title {
     font-size: 2rem;
     margin-bottom: 2rem;
@@ -231,8 +240,26 @@ function onClickWannaSee(aniTitle) {
       min-height: 31rem;
     }
   }
+  &__NewCuration {
+    position: fixed;
+    bottom: calc(var(--bottom-tab-safe-margin) + 6rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    padding: 1.6rem 2rem;
+    font-size: 1.4rem;
+    color: hsl(var(--bg-100));
+    background-color: hsl(var(--theme-500));
+    border-radius: calc(var(--global-radius) + 2rem);
+  }
   &__Carousel {
     margin-top: 1.6rem;
+  }
+  &__Curation {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
   }
   &__SnackBarButton {
     width: 4.8rem;
@@ -246,6 +273,16 @@ function onClickWannaSee(aniTitle) {
       align-items: center;
     }
   }
+}
+
+.curation-list-move,
+.curation-list-enter-active,
+.curation-list-leave-active {
+  transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.curation-list-enter-from,
+.curation-list-leave-to {
+  opacity: 0;
 }
 
 .PWAModal {

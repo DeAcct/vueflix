@@ -1,7 +1,7 @@
 <template>
   <div class="CurationGroup">
     <h2 class="CurationGroup__Subject inner">
-      {{ subject }}
+      <slot name="title"></slot>
     </h2>
     <slot name="list-changer"></slot>
     <VueflixCarousel
@@ -91,9 +91,9 @@ const props = defineProps({
       );
     },
   },
-  subject: {
-    type: String,
-  },
+  // subject: {
+  //   type: String,
+  // },
 });
 
 const media = {
