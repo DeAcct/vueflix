@@ -50,34 +50,41 @@
         </button>
       </template>
     </CurationGroup>
-    <Transition>
-      <div v-if="!listLoading" class="AppHome__Curation">
-        <CurationGroup
-          class="AppHome__Item"
-          v-for="{ subject, list } in curatedList"
-          :key="subject"
-          :list
-        >
-          <template #title>{{ subject }}</template>
-          <template #snack-bar="{ aniTitle }">
-            <button
-              class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
-              @click="onClickWannaSee(aniTitle)"
-              type="button"
-            >
-              <WannaSeeMotion :ani-title />
-            </button>
-          </template>
-        </CurationGroup>
-      </div>
-    </Transition>
+    <div v-if="!listLoading" class="AppHome__Curation">
+      <CurationGroup
+        class="AppHome__Item"
+        v-for="{ subject, list } in curatedList"
+        :key="subject"
+        :list
+      >
+        <template #title>{{ subject }}</template>
+        <template #snack-bar="{ aniTitle }">
+          <button
+            class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
+            @click="onClickWannaSee(aniTitle)"
+            type="button"
+          >
+            <WannaSeeMotion :ani-title />
+          </button>
+        </template>
+      </CurationGroup>
+    </div>
     <button
       class="AppHome__NewCuration"
+      :class="listLoading && 'AppHome__NewCuration--Loading'"
       type="button"
-      @click="getCuratedList()"
+      @click="getCuratedList"
+      :disabled="listLoading"
     >
-      새로운 추천
+      <Transition name="curation-button-move" mode="out-in">
+        <span :key="curationButtonString" class="AppHome__NewCurationText">
+          {{ curationButtonString }}
+        </span>
+      </Transition>
     </button>
+    <Transition name="loaded-animation">
+      <div class="AppHome__LoadedAnimation" v-if="loadedAnimation"></div>
+    </Transition>
     <NativeDialog ref="$PWAModal" class="PWAModal" shade>
       <template #title>
         <strong class="PWAModal__Title">
@@ -184,10 +191,17 @@ onMounted(() => {
 
 const curatedList = ref([]);
 const listLoading = ref(false);
+const curationButtonString = ref("새로운 추천");
+const LOADED_ANIMATION_DURATION = 1200;
 async function getCuratedList() {
   listLoading.value = true;
+  curationButtonString.value = "내 맘에 쏙 드는 리스트 가져오는 중";
   curatedList.value = await Read(3, curatedList.value);
+  curationButtonString.value = "리스트를 가져왔어요!";
   listLoading.value = false;
+  setTimeout(() => {
+    curationButtonString.value = "새로운 추천";
+  }, LOADED_ANIMATION_DURATION);
 }
 onMounted(getCuratedList);
 
@@ -216,8 +230,7 @@ function onClickWannaSee(aniTitle) {
 .AppHome {
   display: flex;
   flex-direction: column;
-  padding: 3.2rem 0
-    calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin) + 3rem);
+  padding: 0 0 calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin));
   background-color: hsl(var(--bg-100));
   gap: 3rem;
   &__Title {
@@ -241,8 +254,6 @@ function onClickWannaSee(aniTitle) {
     }
   }
   &__NewCuration {
-    position: fixed;
-    bottom: calc(var(--bottom-tab-safe-margin) + 6rem);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -252,6 +263,22 @@ function onClickWannaSee(aniTitle) {
     color: hsl(var(--bg-100));
     background-color: hsl(var(--theme-500));
     border-radius: calc(var(--global-radius) + 2rem);
+    overflow: hidden;
+    &Text {
+      color: inherit;
+    }
+    &--Loading {
+      background-color: transparent;
+      background-image: linear-gradient(
+        90deg,
+        hsl(var(--theme-400) / 0.5),
+        hsl(var(--theme-500) / 0.5),
+        hsl(var(--theme-400) / 0.5)
+      );
+      backdrop-filter: blur(3px);
+      background-size: 200% 100%;
+      animation: 900ms infinite button-loading linear;
+    }
   }
   &__Carousel {
     margin-top: 1.6rem;
@@ -282,6 +309,27 @@ function onClickWannaSee(aniTitle) {
 }
 .curation-list-enter-from,
 .curation-list-leave-to {
+  opacity: 0;
+}
+
+@keyframes button-loading {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 0%;
+  }
+}
+.curation-button-move-enter-active,
+.curation-button-move-leave-active {
+  transition: all 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.curation-button-move-enter-from {
+  translate: 0 -200%;
+  opacity: 0;
+}
+.curation-button-move-leave-to {
+  translate: 0 200%;
   opacity: 0;
 }
 
