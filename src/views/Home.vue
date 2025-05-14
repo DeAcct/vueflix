@@ -86,34 +86,36 @@
       <div class="AppHome__LoadedAnimation" v-if="loadedAnimation"></div>
     </Transition>
     <NativeDialog ref="$PWAModal" class="PWAModal" shade>
-      <template #title>
-        <strong class="PWAModal__Title">
-          {{ pwaCopy }}
-        </strong>
-      </template>
+      <template #title> </template>
       <template #content>
-        <p class="PWAModal__Introduce">
-          나에게 딱 맞게 설계된 앱을 사용할 수 있어요!
-          <i class="PWAModal__HowTo">
-            <template v-if="isDeviceIOS">
-              애플 기기를 사용하시네요! 하단의
-              <IconBase class="PWAModal__IOSIcon"> <IconIOSInstall /> </IconBase
-              >을 누르면 앱을 설치할 수 있어요!
-            </template>
-            <template v-else>앱을 설치해보실래요?</template>
-          </i>
-        </p>
+        <div class="PWAModal__Main">
+          <strong class="PWAModal__Title">
+            {{ pwaCopy }}
+          </strong>
+          <p class="PWAModal__Introduce">
+            나에게 딱 맞게 설계된 앱을 사용할 수 있어요!
+            <i class="PWAModal__HowTo">
+              <template v-if="isDeviceIOS">
+                애플 기기를 사용하시네요! 하단의
+                <IconBase class="PWAModal__IOSIcon">
+                  <IconIOSInstall /> </IconBase
+                >을 누르면 앱을 설치할 수 있어요!
+              </template>
+              <template v-else>앱을 설치해보실래요?</template>
+            </i>
+          </p>
+        </div>
+        <label class="PWAModal__Postpone">
+          <InputBoolean
+            v-model="hideModal"
+            type="checkbox"
+            class="PWAModal__Checkbox"
+          />
+          30일 동안 보지 않음
+        </label>
       </template>
       <template #control>
         <div class="PWAModal__Control">
-          <label class="PWAModal__Postpone">
-            <InputBoolean
-              v-model="hideModal"
-              type="checkbox"
-              class="PWAModal__Checkbox"
-            />
-            30일 동안 보지 않음
-          </label>
           <VueflixBtn
             type="submit"
             component="button"
@@ -185,9 +187,9 @@ watch(
     immediate: true,
   }
 );
-onMounted(() => {
-  pwaCopy.value = useRandomPWAPromotionCopy();
-});
+// onMounted(() => {
+//   pwaCopy.value = useRandomPWAPromotionCopy();
+// });
 
 const curatedList = ref([]);
 const listLoading = ref(false);
@@ -203,7 +205,10 @@ async function getCuratedList() {
     curationButtonString.value = "새로운 추천";
   }, LOADED_ANIMATION_DURATION);
 }
-onMounted(getCuratedList);
+onMounted(() => {
+  getCuratedList();
+  pwaCopy.value = useRandomPWAPromotionCopy();
+});
 
 const pwaCopy = ref("");
 const $PWAModal = ref(null);
@@ -230,7 +235,8 @@ function onClickWannaSee(aniTitle) {
 .AppHome {
   display: flex;
   flex-direction: column;
-  padding: 0 0 calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin));
+  padding: 0 0
+    calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin) + 3.6rem);
   background-color: hsl(var(--bg-100));
   gap: 3rem;
   &__Title {
@@ -341,7 +347,21 @@ function onClickWannaSee(aniTitle) {
   --dialog-border-radius: calc(var(--global-radius) * 2)
     calc(var(--global-radius) * 2) 0 0;
   --dialog-z-index: var(--z-index-overay-2);
+  --dialog-bg: transparent;
+  position: fixed;
+  z-index: 1000;
+
+  &__Main {
+    margin-bottom: 0.8rem;
+    padding: 2rem;
+    background: hsl(var(--bg-200));
+    border-radius: 2rem;
+    box-shadow: 0 1px 1px hsl(var(--bg-900) / 0.1),
+      0 2px 4px hsl(var(--bg-900) / 0.1), 0 4px 8px hsl(var(--bg-900) / 0.1),
+      0 8px 16px hsl(var(--bg-900) / 0.1);
+  }
   &__Title {
+    display: block;
     font-size: 2rem;
     margin-bottom: 1.2rem;
     text-wrap: pretty;
@@ -351,7 +371,6 @@ function onClickWannaSee(aniTitle) {
     display: flex;
     flex-direction: column;
     font-size: 1.6rem;
-    margin-bottom: 2rem;
     line-height: 1.5;
     text-wrap: pretty;
   }
@@ -368,19 +387,31 @@ function onClickWannaSee(aniTitle) {
   }
   &__Control {
     display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
   }
   &__Postpone {
     display: flex;
     align-items: center;
+    width: 100%;
     gap: 0.4rem;
     font-size: 1.4rem;
     font-weight: 700;
     margin-right: auto;
+    height: 4.8rem;
+    padding: 0 2rem;
+    background: hsl(var(--bg-200));
+    border-radius: 2rem;
+    box-shadow: 0 1px 1px hsl(var(--bg-900) / 0.1),
+      0 2px 4px hsl(var(--bg-900) / 0.1), 0 4px 8px hsl(var(--bg-900) / 0.1),
+      0 8px 16px hsl(var(--bg-900) / 0.1);
+    margin-bottom: 0.8rem;
   }
   &__Button {
     border-radius: 9999px;
     font-size: 1.4rem;
     box-shadow: none;
+    background-color: hsl(var(--bg-200));
     &--Install {
       background-color: hsl(var(--theme-500));
       color: #fff;

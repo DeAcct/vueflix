@@ -68,6 +68,7 @@ const modelValue = defineModel();
     display: flex;
     width: 100%;
     height: 100%;
+    color: inherit;
     svg {
       width: 100%;
       height: 100%;
