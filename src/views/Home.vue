@@ -50,25 +50,23 @@
         </button>
       </template>
     </CurationGroup>
-    <div v-if="!listLoading" class="AppHome__Curation">
-      <CurationGroup
-        class="AppHome__Item"
-        v-for="{ subject, list } in curatedList"
-        :key="subject"
-        :list
-      >
-        <template #title>{{ subject }}</template>
-        <template #snack-bar="{ aniTitle }">
-          <button
-            class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
-            @click="onClickWannaSee(aniTitle)"
-            type="button"
-          >
-            <WannaSeeMotion :ani-title />
-          </button>
-        </template>
-      </CurationGroup>
-    </div>
+    <CurationGroup
+      class="AppHome__Item"
+      v-for="{ subject, list } in curatedList"
+      :key="subject"
+      :list
+    >
+      <template #title>{{ subject }}</template>
+      <template #snack-bar="{ aniTitle }">
+        <button
+          class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
+          @click="onClickWannaSee(aniTitle)"
+          type="button"
+        >
+          <WannaSeeMotion :ani-title />
+        </button>
+      </template>
+    </CurationGroup>
     <button
       class="AppHome__NewCuration"
       :class="listLoading && 'AppHome__NewCuration--Loading'"
@@ -288,11 +286,6 @@ function onClickWannaSee(aniTitle) {
   }
   &__Carousel {
     margin-top: 1.6rem;
-  }
-  &__Curation {
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
   }
   &__SnackBarButton {
     width: 4.8rem;
