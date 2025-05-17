@@ -6,10 +6,8 @@
     >
       <picture>
         <source media="(max-width: 767px)" :srcset="slideData.mWebpBg" />
-        <source media="(max-width: 767px)" :srcset="slideData.mJpegBg" />
-        <source media="(min-width: 768px)" :srcset="slideData.pcWebpBg" />
         <img
-          :src="slideData.pcJpegBg"
+          :src="slideData.pcWebpBg"
           :alt="`${slideData.name} 배너`"
           class="SlideContent__Image"
           @load="bgComplete"
@@ -35,7 +33,6 @@
             class="SlideContent__AniLogo"
             :class="loaded.bg && 'SlideContent__AniLogo--Loaded'"
             @load="logoComplete"
-            loading="lazy"
           />
           <strong class="SlideContent__Copy">{{ slideData.copy }}</strong>
         </div>
@@ -71,9 +68,7 @@ onMounted(async () => {
 
   const storage = getStorage();
   const EXTENSIONS = {
-    pcJpgBg: "_banner.jpg",
     pcWebpBg: "_banner.webp",
-    mJpgBg: "_banner_m.jpg",
     mWebpBg: "_banner_m.webp",
     logo: ".png",
   };
