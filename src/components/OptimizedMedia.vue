@@ -9,7 +9,6 @@
         :class="isLoaded && 'OptimizedMedia__Body--Loaded'"
         :poster
         @load="loadTrigger"
-        loading="lazy"
       />
     </span>
   </span>

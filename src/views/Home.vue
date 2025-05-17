@@ -185,9 +185,9 @@ watch(
     immediate: true,
   }
 );
-// onMounted(() => {
-//   pwaCopy.value = useRandomPWAPromotionCopy();
-// });
+onMounted(() => {
+  pwaCopy.value = useRandomPWAPromotionCopy();
+});
 
 const curatedList = ref([]);
 const listLoading = ref(false);
@@ -205,7 +205,6 @@ async function getCuratedList() {
 }
 onMounted(() => {
   getCuratedList();
-  pwaCopy.value = useRandomPWAPromotionCopy();
 });
 
 const pwaCopy = ref("");
