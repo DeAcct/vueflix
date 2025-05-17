@@ -13,7 +13,6 @@
           :alt="`${slideData.name} 배너`"
           class="SlideContent__Image"
           @load="bgComplete"
-          loading="lazy"
         />
       </picture>
       <RouterLink
