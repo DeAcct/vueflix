@@ -1,6 +1,6 @@
 <template>
   <main class="AppHome">
-    <TasogareSlide class="AppHome__Slide" autoplay>
+    <!-- <TasogareSlide class="AppHome__Slide" autoplay>
       <template #items>
         <SlideContent
           v-for="animeId in carouselList"
@@ -8,7 +8,10 @@
           :key="animeId"
         />
       </template>
-    </TasogareSlide>
+    </TasogareSlide> -->
+    <PosterHero class="AppHome__PosterBack" ani-title="코바야시네 메이드래곤">
+      <template #floats> </template>
+    </PosterHero>
     <CurationGroup class="AppHome__Item" :list="selectedDailyAnime">
       <template #title>요일별 신작</template>
       <template #list-changer>
@@ -166,6 +169,7 @@ import IconIOSInstall from "@/components/icons/IconIOSInstall.vue";
 import CurationGroup from "@/components/CurationGroup.vue";
 import WatchContinue from "@/components/WatchContinue.vue";
 import WannaSeeMotion from "@/components/WannaSeeMotion.vue";
+import PosterHero from "@/components/PosterHero.vue";
 
 const now = new Date();
 const selectedDay = ref(DAYS[now.getDay()].key);
@@ -236,6 +240,11 @@ function onClickWannaSee(aniTitle) {
     calc(var(--bottom-tab-height) + var(--bottom-tab-safe-margin) + 3.6rem);
   background-color: hsl(var(--bg-100));
   gap: 3rem;
+
+  &__PosterBack {
+    width: 100%;
+  }
+
   &__Title {
     font-size: 2rem;
     margin-bottom: 2rem;

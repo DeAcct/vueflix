@@ -36,6 +36,7 @@ import { useMediaQuery } from "@/composables/device";
 
 import AnimeActions from "./AnimeActions.vue";
 import OptimizedMedia from "./OptimizedMedia.vue";
+import useContinue from "../composables/continue";
 
 const props = defineProps({
   animeInfo: Object,
@@ -65,33 +66,35 @@ function purchase() {
 
 const gradientPercent = computed(() => (!isSmall.value ? "90%" : "80%"));
 
-const continueData = computed(() => {
-  if (!user.value) {
-    return {
-      link: `/anime-play/${route.query.modal}/1기/1화`,
-      text: "1화 1분 미리보기",
-    };
-  }
-  const currentAnime = user.value.maraton.find(
-    (anime) => anime.aniTitle === route.query.modal
-  );
+// const continueData = computed(() => {
+//   if (!user.value) {
+//     return {
+//       link: `/anime-play/${route.query.modal}/1기/1화`,
+//       text: "1화 1분 미리보기",
+//     };
+//   }
+//   const currentAnime = user.value.maraton.find(
+//     (anime) => anime.aniTitle === route.query.modal
+//   );
 
-  if (!currentAnime) {
-    return {
-      link: `/anime-play/${route.query.modal}/1기/1화`,
-      text: "정주행 시작",
-    };
-  }
-  const latestUpdate = currentAnime.lastUpdate.toDate().getTime();
-  const { part, index, progress } = currentAnime.episodes.find(
-    (log) => log.time.toDate().getTime() === latestUpdate
-  );
-  return {
-    link: `/anime-play/${route.query.modal}/${part}/${index}`,
-    text: `${part} ${index}부터 이어보기`,
-    progress,
-  };
-});
+//   if (!currentAnime) {
+//     return {
+//       link: `/anime-play/${route.query.modal}/1기/1화`,
+//       text: "정주행 시작",
+//     };
+//   }
+//   const latestUpdate = currentAnime.lastUpdate.toDate().getTime();
+//   const { part, index, progress } = currentAnime.episodes.find(
+//     (log) => log.time.toDate().getTime() === latestUpdate
+//   );
+//   return {
+//     link: `/anime-play/${route.query.modal}/${part}/${index}`,
+//     text: `${part} ${index}부터 이어보기`,
+//     progress,
+//   };
+// });
+
+const continueData = useContinue(route.query.modal);
 
 // const component = computed(() => (deviceInfo.isMobile ? "header" : "div"));
 </script>

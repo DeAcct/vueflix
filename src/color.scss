@@ -119,6 +119,9 @@
 
   --toast-bg: var(--bg-900);
   --toast-text: var(--text-100);
+
+  --poster-color-base-light: var(--bg-100);
+  --poster-color-base-dark: var(--bg-900);
 }
 
 #app[data-theme="dark"],
@@ -181,4 +184,7 @@
 
   --toast-bg: var(--bg-300);
   --toast-text: var(--text-900);
+
+  --poster-color-base-light: var(--bg-900);
+  --poster-color-base-dark: var(--bg-100);
 }

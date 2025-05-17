@@ -143,8 +143,6 @@ function toggleSearchMode() {
 const backbuttonBlank = computed(
   () => route.meta.appBar.backButton && "2.4rem"
 );
-
-const iconColor = computed(() => (route.name === "home" ? "#fff" : "inherit"));
 </script>
 
 <style lang="scss" scoped>
@@ -186,7 +184,7 @@ const iconColor = computed(() => (route.name === "home" ? "#fff" : "inherit"));
     display: flex;
     align-items: center;
     justify-content: center;
-    color: v-bind(iconColor);
+    color: inherit;
     border-radius: 9999px;
     &--SearchMobileBtn {
       margin-left: auto;
@@ -238,30 +236,19 @@ const iconColor = computed(() => (route.name === "home" ? "#fff" : "inherit"));
   &__UserName {
     display: none;
   }
-  &--Fill {
-    --icon-color: inherit;
-  }
   &__GNB {
     display: none;
   }
 }
 @media screen and (min-width: 769px) {
   .VueflixHeader {
-    --icon-color: v-bind(iconColor);
     transition: color 150ms ease-out;
 
-    &--Fill {
-      // color: hsl(var(--header-content-fill));
-      --icon-color: inherit;
-    }
     &__Activity {
       opacity: 1;
       &:hover {
         color: hsl(var(--text-600));
       }
-    }
-    &__Logo {
-      color: var(--icon-color);
     }
   }
 }
@@ -269,7 +256,6 @@ const iconColor = computed(() => (route.name === "home" ? "#fff" : "inherit"));
 @media screen and (min-width: 1080px) {
   .VueflixHeader {
     background-color: hsl(var(--bg-100));
-    --icon-color: inherit;
 
     &__Logo {
       align-items: center;
@@ -359,7 +345,6 @@ const iconColor = computed(() => (route.name === "home" ? "#fff" : "inherit"));
   .VueflixHeader {
     -webkit-app-region: drag;
     app-region: drag;
-    --icon-color: inherit;
     background-color: hsl(var(--bg-100));
   }
 }
