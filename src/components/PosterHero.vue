@@ -58,7 +58,7 @@ const props = defineProps({
   },
 });
 
-const { toggleWannaSee, wannaSee } = useWannaSee(props.aniTitle);
+const { toggleWannaSee } = useWannaSee(props.aniTitle);
 const { url, themeColor, loaded } = POSTER(props.aniTitle);
 
 const auth = useAuth();

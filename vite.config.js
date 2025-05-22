@@ -74,11 +74,6 @@ export default defineConfig({
             type: "image/webp",
             purpose: "maskable",
           },
-          {
-            src: "favicon.svg",
-            sizes: "512x512",
-            type: "image/svg",
-          },
         ],
         screenshots: [
           {
@@ -97,18 +92,18 @@ export default defineConfig({
             type: "image/webp",
           },
         ],
-        shortcuts: [
-          {
-            name: "요일별 신작",
-            url: "/daily",
-            description: "이번 분기 애니 편성표",
-          },
-          {
-            name: "보관함",
-            url: "/basket",
-            description: "슬기로운 애니생활을 위한 나만의 공간",
-          },
-        ],
+        // shortcuts: [
+        //   {
+        //     name: "요일별 신작",
+        //     url: "/daily",
+        //     description: "이번 분기 애니 편성표",
+        //   },
+        //   {
+        //     name: "보관함",
+        //     url: "/basket",
+        //     description: "슬기로운 애니생활을 위한 나만의 공간",
+        //   },
+        // ],
       },
     }),
   ],
