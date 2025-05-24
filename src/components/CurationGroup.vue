@@ -14,7 +14,7 @@
         <ThumbnailSet
           v-for="{ aniTitle, part, index, progress } in list"
           class="CurationGroup__Item"
-          :key="`${subject}-${aniTitle}`"
+          :key="aniTitle"
         >
           <template #image>
             <div class="CurationGroup__Thumbnail">

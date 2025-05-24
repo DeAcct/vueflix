@@ -1,14 +1,5 @@
 <template>
   <main class="AppHome">
-    <!-- <TasogareSlide class="AppHome__Slide" autoplay>
-      <template #items>
-        <SlideContent
-          v-for="animeId in carouselList"
-          :anime-id
-          :key="animeId"
-        />
-      </template>
-    </TasogareSlide> -->
     <PosterHero class="AppHome__PosterBack" ani-title="코바야시네 메이드래곤">
       <template #floats> </template>
     </PosterHero>
@@ -83,9 +74,6 @@
         </span>
       </Transition>
     </button>
-    <Transition name="loaded-animation">
-      <div class="AppHome__LoadedAnimation" v-if="loadedAnimation"></div>
-    </Transition>
     <NativeDialog ref="$PWAModal" class="PWAModal" shade>
       <template #title> </template>
       <template #content>
@@ -341,10 +329,10 @@ function onClickWannaSee(aniTitle) {
 }
 
 .PWAModal {
-  --dialog-max-width: 100%;
   --dialog-translate: 0;
-  --dialog-inset: auto auto 0 auto;
-  --dialog-starting-translate: 0 100%;
+  --dialog-inset: auto auto 0 50%;
+  --dialog-translate: -50% 0;
+  --dialog-starting-translate: -50% 3rem;
   --dialog-border-radius: calc(var(--global-radius) * 2)
     calc(var(--global-radius) * 2) 0 0;
   --dialog-z-index: var(--z-index-overay-2);
@@ -450,6 +438,9 @@ function onClickWannaSee(aniTitle) {
       }
     }
   }
+  .PWAModal {
+    --dialog-max-width: 40rem;
+  }
 }
 @media screen and (min-width: 1080px) {
   .AppHome {
@@ -484,7 +475,6 @@ function onClickWannaSee(aniTitle) {
     --dialog-starting-translate: -50% 3rem;
     --dialog-border-radius: calc(var(--global-radius) * 2);
     --dialog-padding: 3rem;
-    --dialog-max-width: 50rem;
   }
 }
 @media screen and (min-width: 1920px) {

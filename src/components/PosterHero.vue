@@ -7,7 +7,7 @@
       <RouterLink
         :to="`/?modal=${aniTitle}&route=episodes`"
         class="PosterHero__ToEpisodes"
-        :style
+        :style="posterStyle"
         ><span class="blind">에피소드 목록 보기</span></RouterLink
       >
       <div class="PosterHero__Floats">
@@ -44,6 +44,7 @@ import { useAuth } from "@/store/auth";
 
 import { useWannaSee } from "@/api/wannaSee";
 import POSTER from "@/api/poster";
+import { useMediaQuery } from "@/composables/device";
 
 import WannaSeeMotion from "@/components/WannaSeeMotion.vue";
 
@@ -72,11 +73,13 @@ function onClickWannaSee() {
   toggleWannaSee();
 }
 
-const style = computed(() => ({
-  background: `
-    linear-gradient(to top, ${themeColor.value} 15%, transparent), 
-    url(${url.value}) center/cover
-  `,
+const media = useMediaQuery("(min-width: 768px)");
+const posterStyle = computed(() => ({
+  backgroundImage: `${
+    media.value
+      ? `linear-gradient(to right, ${themeColor.value} 70%, transparent),`
+      : `linear-gradient(to top, ${themeColor.value} 10%, transparent),`
+  } url(${url.value})`,
 }));
 
 const continueData = useContinue(props.aniTitle);
@@ -84,7 +87,8 @@ const continueData = useContinue(props.aniTitle);
 
 <style lang="scss" scoped>
 .PosterHero {
-  padding: calc(var(--header-height) + 1rem) 2rem 1rem;
+  padding: calc(var(--header-height) + 1rem) 2rem 2rem;
+  margin-bottom: -2rem;
   background: linear-gradient(to bottom, v-bind(themeColor) 50%, transparent);
   &__Poster {
     display: flex;
@@ -120,13 +124,12 @@ const continueData = useContinue(props.aniTitle);
   }
   &__Floats {
     position: absolute;
-    inset: auto 0;
+    inset: auto 1.6rem 3.2rem 1.6rem;
     display: flex;
-    align-items: center;
     flex-direction: column;
-    justify-content: flex-end;
-    gap: 2rem;
-    padding: 3.2rem 1.6rem;
+    align-items: center;
+    gap: 1.6rem;
+    pointer-events: none;
   }
   &__Title {
     font-size: 2.4rem;
@@ -138,6 +141,7 @@ const continueData = useContinue(props.aniTitle);
     gap: 0.4rem;
   }
   &__Button {
+    pointer-events: auto;
     flex-grow: 1;
     flex-shrink: 0;
     flex-basis: 0;
@@ -160,6 +164,38 @@ const continueData = useContinue(props.aniTitle);
   &__Icon {
     color: inherit;
     font-size: 1.4rem;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .PosterHero {
+    padding-top: calc(var(--header-height) + 2rem);
+    &__Poster {
+      aspect-ratio: 21 / 9;
+      // padding: 2rem;
+      padding: 0.2rem;
+      // align-items: center;
+    }
+    &__ToEpisodes {
+      aspect-ratio: 3 / 4;
+      position: static;
+      width: 100%;
+      height: 100%;
+      background-position: right;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    &__Floats {
+      width: 100%;
+      inset: auto 3.2rem 3.2rem;
+      align-items: flex-start;
+    }
+    &__Buttons {
+      width: auto;
+    }
+    &__Button {
+      padding: 0 2rem;
+    }
   }
 }
 </style>

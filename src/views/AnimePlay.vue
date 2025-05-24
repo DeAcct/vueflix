@@ -603,7 +603,6 @@ const { state: scrollState } = useScroll();
     }
     &__PartTitle {
       font-size: 1.7rem;
-      position: sticky;
       z-index: 2;
       top: 0;
       height: 2rem;

@@ -1,71 +1,69 @@
 <template>
   <header
     class="VueflixHeader"
-    :class="scrollPercent > 0 && 'VueflixHeader--Fill'"
+    :class="scrollPercent > 0 && 'VueflixHeader--Scrolled'"
   >
-    <div class="VueflixHeader__Inner">
-      <h1 class="blind">데레</h1>
-      <p class="VueflixHeader__Activity">
-        <template v-if="activity !== 'Logo' && !isPC">
-          {{ activity }}
-        </template>
-        <template v-else>
-          <RouterLink to="/" class="VueflixHeader__Logo">
-            <VueflixLogo />
-          </RouterLink>
-        </template>
-      </p>
-      <ul class="VueflixHeader__GNB">
-        <li v-for="{ text, to } in gnbItems" :key="text">
-          <RouterLink class="VueflixHeader__GNBLink" :to>
-            {{ text }}
-          </RouterLink>
-        </li>
-      </ul>
-      <button
-        class="VueflixHeader__Action"
-        v-if="route.meta.appBar.backButton && isSmall"
-        @click="back"
-        type="button"
-      >
-        <IconBase>
-          <IconArrowPrev />
-        </IconBase>
-      </button>
-      <button
-        type="button"
-        class="VueflixHeader__Action VueflixHeader__Action--SearchMobileBtn"
-        @click="toggleSearchMode"
-      >
-        <IconBase>
-          <IconSearch></IconSearch>
-        </IconBase>
-      </button>
-      <SearchBar
-        class="VueflixHeader__SearchBar VueflixHeader__SearchBar--PCOnly"
-      />
-      <ProfileCombo to="/my" class="VueflixHeader__ProfileCombo">
-        <template #text="nickname">
-          <span class="VueflixHeader__UserName">{{ nickname }}</span>
-        </template>
-      </ProfileCombo>
+    <h1 class="blind">데레</h1>
+    <p class="VueflixHeader__Activity">
+      <template v-if="activity !== 'Logo' && !isPC">
+        {{ activity }}
+      </template>
+      <template v-else>
+        <RouterLink to="/" class="VueflixHeader__Logo">
+          <VueflixLogo />
+        </RouterLink>
+      </template>
+    </p>
+    <ul class="VueflixHeader__GNB">
+      <li v-for="{ text, to } in gnbItems" :key="text">
+        <RouterLink class="VueflixHeader__GNBLink" :to>
+          {{ text }}
+        </RouterLink>
+      </li>
+    </ul>
+    <button
+      class="VueflixHeader__Action"
+      v-if="route.meta.appBar.backButton && isSmall"
+      @click="back"
+      type="button"
+    >
+      <IconBase>
+        <IconArrowPrev />
+      </IconBase>
+    </button>
+    <button
+      type="button"
+      class="VueflixHeader__Action VueflixHeader__Action--SearchMobileBtn"
+      @click="toggleSearchMode"
+    >
+      <IconBase>
+        <IconSearch></IconSearch>
+      </IconBase>
+    </button>
+    <SearchBar
+      class="VueflixHeader__SearchBar VueflixHeader__SearchBar--PCOnly"
+    />
+    <ProfileCombo to="/my" class="VueflixHeader__ProfileCombo">
+      <template #text="nickname">
+        <span class="VueflixHeader__UserName">{{ nickname }}</span>
+      </template>
+    </ProfileCombo>
 
-      <div
-        class="VueflixHeader__SearchCombo"
-        :class="searchMode && 'VueflixHeader__SearchCombo--Open'"
+    <div
+      class="VueflixHeader__SearchCombo"
+      :class="searchMode && 'VueflixHeader__SearchCombo--Open'"
+    >
+      <SearchBar class="VueflixHeader__SearchBar" />
+      <button
+        @click="toggleSearchMode"
+        class="VueflixHeader__SearchCloseBtn"
+        type="button"
       >
-        <SearchBar class="VueflixHeader__SearchBar" />
-        <button
-          @click="toggleSearchMode"
-          class="VueflixHeader__SearchCloseBtn"
-          type="button"
-        >
-          <span class="blind">닫기</span>
-          <IconBase>
-            <IconClose />
-          </IconBase>
-        </button>
-      </div>
+        <span class="blind">닫기</span>
+        <IconBase>
+          <IconClose />
+        </IconBase>
+      </button>
     </div>
   </header>
 </template>
@@ -106,16 +104,12 @@ const gnbItems = [
     text: "보관함",
     to: "/basket",
   },
-  {
-    text: "칵테일",
-    to: "/cocktail",
-  },
 ];
 
 const scrollPercent = ref(0);
 function handleScroll() {
   const slideHeight =
-    window.innerWidth * (window.innerWidth > 768 ? 1043 / 2560 : 1.33) - 60;
+    window.innerWidth * (window.innerWidth > 768 ? 4 / 3 : 9 / 21) - 60;
 
   if (
     window.scrollY >= slideHeight ||
@@ -153,16 +147,16 @@ const backbuttonBlank = computed(
   left: env(titlebar-area-x, 0);
   z-index: var(--z-index-2);
   background-color: hsl(var(--bg-100) / calc(v-bind(scrollPercent)));
+  padding: 0 var(--inner-padding);
+  display: flex;
+  align-items: center;
+  height: var(--header-height);
   // --icon-color: #fff;
 
-  &__Inner {
-    display: flex;
-    align-items: center;
-    height: var(--header-height);
-    width: env(titlebar-area-width, 100%);
-    padding: 0 var(--inner-padding);
-    // transition: width 150ms ease-out;
-  }
+  // &__Inner {
+  //   width: env(titlebar-area-width, 100%);
+  //   // transition: width 150ms ease-out;
+  // }
 
   &__Activity {
     font-size: 1.7rem;
@@ -202,7 +196,7 @@ const backbuttonBlank = computed(
     left: 0;
     background-color: hsl(var(--bg-100) / 0.8);
     backdrop-filter: blur(10px);
-    translate: 0 -6rem;
+    translate: 0 calc(var(--header-height) * -1);
     transition: translate 150ms ease-in-out;
     &--Open {
       translate: 0 0;
@@ -240,10 +234,8 @@ const backbuttonBlank = computed(
     display: none;
   }
 }
-@media screen and (min-width: 769px) {
+@media screen and (min-width: 768px) {
   .VueflixHeader {
-    transition: color 150ms ease-out;
-
     &__Activity {
       opacity: 1;
       &:hover {
@@ -255,7 +247,13 @@ const backbuttonBlank = computed(
 
 @media screen and (min-width: 1080px) {
   .VueflixHeader {
-    background-color: hsl(var(--bg-100));
+    transition: 150ms ease-out;
+    background-color: transparent;
+    --elements-text-color: hsl(var(--text-800));
+    &--Scrolled {
+      background-color: hsl(var(--bg-100));
+      --elements-color: hsl(var(--bg-200));
+    }
 
     &__Logo {
       align-items: center;
@@ -264,7 +262,7 @@ const backbuttonBlank = computed(
       border: 2px solid transparent;
       transition: 150ms ease-out;
       &:hover {
-        background-color: hsl(var(--bg-200));
+        background-color: var(--elements-color, hsl(var(--bg-100) / 0.2));
       }
       &:focus-visible {
         border-color: hsl(var(--theme-500));
@@ -313,7 +311,8 @@ const backbuttonBlank = computed(
         width: 30rem;
         height: 4.6rem;
         padding: 0 1.2rem;
-        background-color: hsl(var(--bg-200));
+        background-color: var(--elements-color, hsl(var(--bg-100) / 0.3));
+        --searchbar-placeholder-color: var(--elements-text-color, inherit);
         border-radius: 9999px;
         border: 2px solid transparent;
         transition: border-color 150ms ease-out;
@@ -327,7 +326,8 @@ const backbuttonBlank = computed(
       translate: none;
       display: flex;
       gap: 0.8rem;
-      background-color: hsl(var(--bg-200));
+      background-color: var(--elements-color, hsl(var(--bg-100) / 0.3));
+      color: var(--elements-text-color, inherit);
       --profile-size: 3.6rem;
       height: 4.6rem;
       padding-left: 1rem;
