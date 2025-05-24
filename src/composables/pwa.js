@@ -46,7 +46,7 @@ export function usePWA($root) {
   });
   onUnmounted(() => {
     if (isDeviceIOS) {
-      $root.value.close();
+      $root.value?.close();
       return;
     }
     window.removeEventListener("beforeinstallprompt", show);

@@ -87,14 +87,12 @@ const isPC = useMediaQuery("(hover: hover) and (pointer: fine)");
 const isSmall = useMediaQuery("(max-width: 1080px)");
 
 const route = useRoute();
-const activity = ref(route.meta.appBar.activityContent);
-const actions = ref(route.meta.appBar.actions);
+const activity = computed(() => route.meta.appBar?.activityContent);
+const actions = computed(() => route.meta.appBar?.actions);
 watch(
   () => route.meta,
   () => {
     scrollPercent.value = 0;
-    activity.value = route.meta.appBar?.activityContent;
-    actions.value = route.meta.appBar?.actions;
     handleScroll();
   }
 );
