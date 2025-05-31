@@ -74,6 +74,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useEventListener } from "@vueuse/core";
 
 import { useMediaQuery } from "@/composables/device";
+import { switcher } from "@/utility/extArray";
 
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
@@ -88,7 +89,6 @@ const isSmall = useMediaQuery("(max-width: 1080px)");
 
 const route = useRoute();
 const activity = computed(() => route.meta.appBar?.activityContent);
-const actions = computed(() => route.meta.appBar?.actions);
 watch(
   () => route.meta,
   () => {
@@ -105,19 +105,24 @@ const gnbItems = [
 ];
 
 const scrollPercent = ref(0);
+const elementColor = computed(() => {
+  return `color-mix(in srgb, hsl(var(--bg-100)), hsl(var(--text-800)) ${
+    scrollPercent.value * 100
+  }%)`;
+});
 function handleScroll() {
-  const slideHeight =
-    window.innerWidth * (window.innerWidth > 768 ? 4 / 3 : 9 / 21) - 60;
-
-  if (
-    window.scrollY >= slideHeight ||
-    activity.value !== "Logo" ||
-    route.name === "anime-play"
-  ) {
+  if (activity.value !== "Logo" || route.name === "anime-play") {
     scrollPercent.value = 1;
     return;
   }
-  scrollPercent.value = window.scrollY / slideHeight;
+  const slideHeight = switcher(window.innerWidth)
+    .case(
+      (w) => w <= 768,
+      (w) => (w * 4) / 3 - 90
+    )
+    .default((w) => (w * 9) / 21 - 90);
+
+  scrollPercent.value = Math.min(window.scrollY / slideHeight, 1);
 }
 onMounted(handleScroll);
 useEventListener(window, "scroll", handleScroll);
@@ -149,17 +154,10 @@ const backbuttonBlank = computed(
   display: flex;
   align-items: center;
   height: var(--header-height);
-  // --icon-color: #fff;
-
-  // &__Inner {
-  //   width: env(titlebar-area-width, 100%);
-  //   // transition: width 150ms ease-out;
-  // }
 
   &__Activity {
     font-size: 1.7rem;
     font-weight: 700;
-    opacity: v-bind(scrollPercent);
     position: absolute;
     left: 50%;
     translate: -50%;
@@ -168,6 +166,7 @@ const backbuttonBlank = computed(
     display: flex;
     width: 10rem;
     flex-shrink: 0;
+    color: v-bind(elementColor);
   }
 
   &__Action {
@@ -180,6 +179,7 @@ const backbuttonBlank = computed(
     border-radius: 9999px;
     &--SearchMobileBtn {
       margin-left: auto;
+      color: v-bind(elementColor);
     }
   }
 

@@ -52,3 +52,20 @@ export function gausArray(obj) {
     },
   });
 }
+
+export const switcher = (value) => {
+  const cases = [];
+
+  const chain = {
+    case(predicate, action) {
+      cases.push({ predicate, action });
+      return chain; // 같은 객체 리턴해서 체이닝 유지
+    },
+    default(fallback) {
+      const match = cases.find(({ predicate }) => predicate(value));
+      return match ? match.action(value) : fallback(value);
+    },
+  };
+
+  return chain;
+};

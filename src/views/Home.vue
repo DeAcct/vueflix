@@ -337,6 +337,7 @@ function onClickWannaSee(aniTitle) {
     calc(var(--global-radius) * 2) 0 0;
   --dialog-z-index: var(--z-index-overay-2);
   --dialog-bg: transparent;
+  --dialog-max-width: 100%;
   position: fixed;
   z-index: 1000;
 

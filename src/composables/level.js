@@ -1,18 +1,19 @@
 import { computed, toValue } from "vue";
 import { useAuth } from "@/store/auth";
-import { gausArray } from "../utility/extArray";
+import { switcher } from "@/utility/extArray";
+// import { gausArray } from "../utility/extArray";
 
-const LEVEL_MAP = gausArray({
-  0: "사관생도",
-  30: "소위",
-  60: "중위",
-  90: "대위",
-  150: "소령",
-  180: "중령",
-  210: "대령",
-  730: "준장",
-  1000: "장군",
-});
+// const LEVEL_MAP = gausArray({
+//   0: "사관생도",
+//   30: "소위",
+//   60: "중위",
+//   90: "대위",
+//   150: "소령",
+//   180: "중령",
+//   210: "대령",
+//   730: "준장",
+//   1000: "장군",
+// });
 export const KOR_TO_ENG = {
   민간인: "Civilian",
   사관생도: "SaGwanSengDo",
@@ -52,7 +53,41 @@ export function useUserLevel(membership) {
     if (membership.value?.tier === "free") {
       return "민간인";
     }
-    return days.value ? LEVEL_MAP[days.value].value : "사관생도";
+    const _level = switcher(days.value ? days.value : 0)
+      .case(
+        (v) => v >= 0 && v < 30,
+        () => "사관생도"
+      )
+      .case(
+        (v) => v >= 30 && v < 60,
+        () => "소위"
+      )
+      .case(
+        (v) => v >= 60 && v < 90,
+        () => "중위"
+      )
+      .case(
+        (v) => v >= 90 && v < 150,
+        () => "대위"
+      )
+      .case(
+        (v) => v >= 150 && v < 180,
+        () => "소령"
+      )
+      .case(
+        (v) => v >= 180 && v < 210,
+        () => "중령"
+      )
+      .case(
+        (v) => v >= 210 && v < 730,
+        () => "대령"
+      )
+      .case(
+        (v) => v >= 730 && v < 1000,
+        () => "준장"
+      )
+      .default(() => "장군");
+    return _level;
   });
 
   return { level, eng: KOR_TO_ENG[level.value], days };
