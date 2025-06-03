@@ -32,8 +32,7 @@ export default function Hero() {
     const countResponse = await getCountFromServer(q);
     const count = countResponse.data().count;
     const randomId = Math.floor(Math.random() * count + 1);
-    // return randomId;
-    return 6;
+    return randomId;
   }
 
   async function getRandomAnime() {

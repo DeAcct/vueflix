@@ -1,6 +1,5 @@
 <template>
   <section class="PosterHero">
-    {{ posterUrl }}
     <div
       class="PosterHero__Poster"
       :class="loaded && 'PosterHero__Poster--Loaded'"
