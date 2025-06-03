@@ -37,12 +37,10 @@ const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
  * @returns
  */
 export function useUserLevel(membership) {
-  console.log(membership);
   const days = computed(() => {
     if (!membership.value) {
       return 0;
     }
-    console.log(membership.value);
     return Math.floor(
       (new Date() - toValue(membership.value.from).toDate()) /
         ONE_DAY_IN_MILLISECONDS
@@ -55,35 +53,35 @@ export function useUserLevel(membership) {
     }
     const _level = switcher(days.value ? days.value : 0)
       .case(
-        (v) => v >= 0 && v < 30,
+        (v) => v < 30,
         () => "사관생도"
       )
       .case(
-        (v) => v >= 30 && v < 60,
+        (v) => v < 60,
         () => "소위"
       )
       .case(
-        (v) => v >= 60 && v < 90,
+        (v) => v < 90,
         () => "중위"
       )
       .case(
-        (v) => v >= 90 && v < 150,
+        (v) => v < 150,
         () => "대위"
       )
       .case(
-        (v) => v >= 150 && v < 180,
+        (v) => v < 180,
         () => "소령"
       )
       .case(
-        (v) => v >= 180 && v < 210,
+        (v) => v < 210,
         () => "중령"
       )
       .case(
-        (v) => v >= 210 && v < 730,
+        (v) => v < 730,
         () => "대령"
       )
       .case(
-        (v) => v >= 730 && v < 1000,
+        (v) => v < 1000,
         () => "준장"
       )
       .default(() => "장군");

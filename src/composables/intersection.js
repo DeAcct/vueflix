@@ -5,7 +5,6 @@ export function useIntersection(targetElement, cb, options = {}) {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         cb();
-        console.log("intersecting");
       }
     });
   }, options);

@@ -1,4 +1,4 @@
-import { computed } from "vue";
+import { computed, unref } from "vue";
 
 import { useAuth } from "@/store/auth";
 export default function useContinue(aniTitle) {
@@ -7,17 +7,17 @@ export default function useContinue(aniTitle) {
   const continueData = computed(() => {
     if (!user.value) {
       return {
-        link: `/anime-play/${aniTitle}/1기/1화`,
+        link: `/anime-play/${unref(aniTitle)}/1기/1화`,
         text: "1화 1분 미리보기",
       };
     }
     const currentAnime = user.value.maraton.find(
-      (anime) => anime.aniTitle === aniTitle
+      (anime) => anime.aniTitle === unref(aniTitle)
     );
 
     if (!currentAnime) {
       return {
-        link: `/anime-play/${aniTitle}/1기/1화`,
+        link: `/anime-play/${unref(aniTitle)}/1기/1화`,
         text: "정주행 시작",
       };
     }
@@ -26,7 +26,7 @@ export default function useContinue(aniTitle) {
       (log) => log.time.toDate().getTime() === latestUpdate
     );
     return {
-      link: `/anime-play/${aniTitle}/${part}/${index}`,
+      link: `/anime-play/${unref(aniTitle)}/${part}/${index}`,
       text: `${part} ${index}부터 이어보기`,
       progress,
     };

@@ -4,7 +4,7 @@
       <WatchContinue :progress class="AnimeActions__ContinueIcon" />
       <span class="AnimeActions__ContinueText">{{ text }}</span>
     </RouterLink>
-    <button
+    <!-- <button
       class="AnimeActions__Button AnimeActions__Button--WannaSee"
       @click="toggleWannaSee()"
       :disabled="!user"
@@ -12,7 +12,14 @@
     >
       <WannaSeeMotion :ani-title="route.query.modal" />
       <span class="AnimeActions__ButtonText">보고싶다</span>
-    </button>
+    </button> -->
+    <WannaSeeButton
+      :ani-title="route.query.modal"
+      class="AnimeActions__Button AnimeActions__Button--WannaSee"
+      :disabled="!user"
+    >
+      <template #text>보고싶다!</template>
+    </WannaSeeButton>
     <button
       class="AnimeActions__Button AnimeActions__Button--Purchase"
       @click="purchase"
@@ -30,11 +37,10 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 import { useAuth } from "@/store/auth";
-import { useWannaSee } from "@/api/wannaSee";
 
-import WannaSeeMotion from "@/components/WannaSeeMotion.vue";
 import WatchContinue from "@/components/WatchContinue.vue";
 import PurchaseMotion from "@/components/PurchaseMotion.vue";
+import WannaSeeButton from "@/components/WannaSeeButton.vue";
 
 const auth = useAuth();
 const user = computed(() => auth.user);
@@ -54,17 +60,13 @@ const props = defineProps({
   },
 });
 
-const route = useRoute();
-
 const emits = defineEmits(["wanna-see-toggle", "purchase"]);
-const { toggleWannaSee } = useWannaSee(route.query.modal);
 
-// function wannaSeeToggle() {
-//   emits("wanna-see-toggle");
-// }
 function purchase() {
   emits("purchase");
 }
+
+const route = useRoute();
 </script>
 
 <style lang="scss" scoped>

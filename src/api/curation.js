@@ -16,11 +16,8 @@ export async function Read(amount, before) {
   while (indices.size < amount) {
     const randomIndex = Math.floor(Math.random() * docLength);
     if (_before.includes(randomIndex)) continue;
-    console.log(randomIndex, before);
     indices.add(randomIndex);
   }
-
-  console.log(indices);
 
   const promises = [...indices].map(async (index) => {
     const q = query(collection(db, "recommend"), where("id", "==", index));

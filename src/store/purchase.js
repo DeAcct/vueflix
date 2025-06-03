@@ -15,7 +15,6 @@ export const usePurchase = defineStore("purchase", () => {
 
   function go(to) {
     if (to === "purchase") {
-      console.log(to, router.value);
       router.value = ["purchase"];
       return;
     }
@@ -42,7 +41,6 @@ export const usePurchase = defineStore("purchase", () => {
   function deleteCard(card) {
     const result = cards.value.filter((item) => item.name !== card.name);
     setData(result);
-    console.log(cards.value[0]);
     selectedCard.value = cards.value[0] || {};
   }
 

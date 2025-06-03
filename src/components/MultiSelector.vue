@@ -9,7 +9,6 @@
         (e) => {
           selected = key;
           indicatorMove(index);
-          console.log(selected, key, selectedIndex, index);
         }
       "
       @focus="() => false && indicatorMove(index)"

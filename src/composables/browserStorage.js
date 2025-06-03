@@ -26,7 +26,6 @@ export function useBrowserStorage(key, initValue = null) {
   function deleteData(filterCallback) {
     const filteredData = data.value.filter(filterCallback);
     setData(filteredData);
-    console.log(this);
     return this;
   }
 

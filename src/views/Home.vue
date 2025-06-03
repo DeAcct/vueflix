@@ -1,8 +1,6 @@
 <template>
   <main class="AppHome">
-    <PosterHero class="AppHome__PosterBack" ani-title="코바야시네 메이드래곤">
-      <template #floats> </template>
-    </PosterHero>
+    <PosterHero class="AppHome__PosterBack"> </PosterHero>
     <CurationGroup class="AppHome__Item" :list="selectedDailyAnime">
       <template #title>요일별 신작</template>
       <template #list-changer>
@@ -13,13 +11,10 @@
         />
       </template>
       <template #snack-bar="{ aniTitle }">
-        <button
+        <WannaSeeButton
+          :ani-title
           class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
-          @click="onClickWannaSee(aniTitle)"
-          type="button"
-        >
-          <WannaSeeMotion :ani-title />
-        </button>
+        />
       </template>
     </CurationGroup>
     <CurationGroup
@@ -35,13 +30,10 @@
         >
           <WatchContinue :progress />
         </RouterLink>
-        <button
+        <WannaSeeButton
+          :ani-title
           class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
-          @click="onClickWannaSee(aniTitle)"
-          type="button"
-        >
-          <WannaSeeMotion :ani-title />
-        </button>
+        />
       </template>
     </CurationGroup>
     <CurationGroup
@@ -52,13 +44,10 @@
     >
       <template #title>{{ subject }}</template>
       <template #snack-bar="{ aniTitle }">
-        <button
+        <WannaSeeButton
+          :ani-title
           class="AppHome__SnackBarButton AppHome__SnackBarButton--WannaSee"
-          @click="onClickWannaSee(aniTitle)"
-          type="button"
-        >
-          <WannaSeeMotion :ani-title />
-        </button>
+        />
       </template>
     </CurationGroup>
     <button
@@ -129,8 +118,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch, computed } from "vue";
-import { useRouter } from "vue-router";
+import { onMounted, ref, watch } from "vue";
+// import { useRouter } from "vue-router";
 import { doc, getDoc } from "firebase/firestore";
 
 import { useAuth } from "@/store/auth";
@@ -138,7 +127,7 @@ import { db } from "@/utility/firebase";
 
 import { DAYS } from "@/enums/Days";
 import { useMaratonData } from "@/api/maraton";
-import { useWannaSee } from "@/api/wannaSee";
+// import { useWannaSee } from "@/api/wannaSee";
 import { Read } from "@/api/curation";
 import { useCarouselList } from "@/composables/carousel";
 import { usePWA, useRandomPWAPromotionCopy } from "@/composables/pwa";
@@ -149,14 +138,11 @@ import MultiSelector from "@/components/MultiSelector.vue";
 import VueflixBtn from "@/components/VueflixBtn.vue";
 import NativeDialog from "@/components/NativeDialog.vue";
 
-import TasogareSlide from "@/components/TasogareSlide.vue";
-import SlideContent from "@/components/SlideContent.vue";
-
 import IconBase from "@/components/IconBase.vue";
 import IconIOSInstall from "@/components/icons/IconIOSInstall.vue";
 import CurationGroup from "@/components/CurationGroup.vue";
 import WatchContinue from "@/components/WatchContinue.vue";
-import WannaSeeMotion from "@/components/WannaSeeMotion.vue";
+import WannaSeeButton from "@/components/WannaSeeButton.vue";
 import PosterHero from "@/components/PosterHero.vue";
 
 const now = new Date();
@@ -207,17 +193,17 @@ const { latest, maraton } = useMaratonData();
 
 const { idArray: carouselList } = useCarouselList();
 
-const auth = useAuth();
-const user = computed(() => auth.user);
-const router = useRouter();
-function onClickWannaSee(aniTitle) {
-  if (!user.value) {
-    router.push("/auth");
-    return;
-  }
-  const { toggleWannaSee } = useWannaSee(aniTitle);
-  toggleWannaSee();
-}
+// const auth = useAuth();
+// const user = computed(() => auth.user);
+// const router = useRouter();
+// function onClickWannaSee(aniTitle) {
+//   if (!user.value) {
+//     router.push("/auth");
+//     return;
+//   }
+//   const { toggleWannaSee } = useWannaSee(aniTitle);
+//   toggleWannaSee();
+// }
 </script>
 
 <style lang="scss" scoped>
@@ -337,7 +323,8 @@ function onClickWannaSee(aniTitle) {
     calc(var(--global-radius) * 2) 0 0;
   --dialog-z-index: var(--z-index-overay-2);
   --dialog-bg: transparent;
-  --dialog-max-width: 100%;
+  --dialog-max-width: min(100% - 4rem, 40rem);
+  --dialog-padding: 0 0 2rem;
   position: fixed;
   z-index: 1000;
 

@@ -117,7 +117,7 @@ function handleScroll() {
   }
   const slideHeight = switcher(window.innerWidth)
     .case(
-      (w) => w <= 768,
+      (w) => w < 768,
       (w) => (w * 4) / 3 - 90
     )
     .default((w) => (w * 9) / 21 - 90);

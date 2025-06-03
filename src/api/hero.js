@@ -1,35 +1,66 @@
 import { ref, watchEffect } from "vue";
 
 import { db } from "@/utility/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  where,
+  getCountFromServer,
+  query,
+  collection,
+} from "firebase/firestore";
 import { getStorage, ref as fireRef, getDownloadURL } from "firebase/storage";
 
-export default function POSTER(aniTitle) {
-  const url = ref("");
+export default function Hero() {
+  const posterUrl = ref("");
+  const logoUrl = ref("");
   const themeColor = ref("");
   const loaded = ref(false);
+  const animeData = ref(null);
+
   watchEffect(async () => {
-    url.value = await getURL();
-    themeColor.value = await getThemeColorFromImage(url.value);
+    animeData.value = await getRandomAnime();
+    posterUrl.value = await getPoster();
+    logoUrl.value = await getLogo();
+    themeColor.value = await getThemeColorFromImage(posterUrl.value);
     loaded.value = true;
-    console.log({ url, themeColor });
   });
 
-  const _animeData = ref(null);
-  async function getURL() {
-    const animeRef = doc(db, "anime", aniTitle);
-    const animeDoc = await getDoc(animeRef);
-    if (!animeDoc.exists()) {
-      throw new Error("No such document!");
-    }
-    _animeData.value = animeDoc.data();
-    const href = `/anime/${aniTitle}/${_animeData.value.poster}`;
+  async function getRandomId() {
+    const q = query(collection(db, "anime"));
+    const countResponse = await getCountFromServer(q);
+    const count = countResponse.data().count;
+    const randomId = Math.floor(Math.random() * count + 1);
+    // return randomId;
+    return 6;
+  }
+
+  async function getRandomAnime() {
+    const randomId = await getRandomId();
+    const animeRef = query(
+      collection(db, "anime"),
+      where("idNumber", "==", randomId)
+    );
+    const {
+      docs: [doc],
+    } = await getDocs(animeRef);
+
+    return doc.data();
+  }
+  async function getPoster() {
+    const href = `/anime/${animeData.value.name}/${animeData.value.poster}`;
     const posterStorage = getStorage();
     const url = await getDownloadURL(fireRef(posterStorage, href));
     return url;
   }
 
-  async function getLogo() {}
+  async function getLogo() {
+    const href = `/anime/${animeData.value.name}/${animeData.value.shortName}.png`;
+    const posterStorage = getStorage();
+    const url = await getDownloadURL(fireRef(posterStorage, href));
+    return url;
+  }
 
   function getThemeColorFromImage(url) {
     return new Promise((resolve, reject) => {
@@ -70,5 +101,5 @@ export default function POSTER(aniTitle) {
     });
   }
 
-  return { url, themeColor, loaded };
+  return { logoUrl, posterUrl, themeColor, loaded, animeData };
 }

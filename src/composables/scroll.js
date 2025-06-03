@@ -1,32 +1,6 @@
 import { useEventListener } from "@vueuse/core";
 import { computed, ref, unref } from "vue";
 
-// export function useScroll() {
-//   let lastScroll = 0;
-//   const state = ref("top");
-//   const max = document.body.offsetHeight - window.innerHeight;
-
-//   useEventListener(window, "scroll", () => {
-//     const current = window.scrollY;
-//     if (current === 0) {
-//       state.value = "top";
-//       return;
-//     }
-//     if (current === max) {
-//       state.value = "bottom";
-//       return;
-//     }
-//     if (lastScroll < current) {
-//       // console.log("current is bigger");
-//       state.value = "down";
-//     } else {
-//       // console.log("last was bigger");
-//       state.value = "up";
-//     }
-//     lastScroll = current;
-//   });
-//   return { state };
-// }
 export function useScroll(target = window) {
   let lastScroll = ref(0);
   const state = ref("top");
@@ -52,10 +26,8 @@ export function useScroll(target = window) {
       return;
     }
     if (lastScroll.value < current) {
-      // console.log("current is bigger");
       state.value = "down";
     } else {
-      // console.log("last was bigger");
       state.value = "up";
     }
     lastScroll.value = current;

@@ -85,7 +85,6 @@ export function useFormatToSec(origin) {
     result += Number(item) * Math.pow(60, i);
     i++;
   }
-  console.log(result);
   return result;
 }
 

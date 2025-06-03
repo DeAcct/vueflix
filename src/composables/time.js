@@ -51,10 +51,3 @@ export function useTime2Next(dayOfWeek, when) {
 // const alarmTime = "08:00:00"; // 알람 시간 (24시간 형식)
 
 // const timeUntilNextAlarm = getNextAlarmTime(dayOfWeek, alarmTime);
-
-// // 시간을 시, 분, 초 단위로 변환
-// const hours = Math.floor(timeUntilNextAlarm / (1000 * 60 * 60));
-// const minutes = Math.floor((timeUntilNextAlarm % (1000 * 60 * 60)) / (1000 * 60));
-// const seconds = Math.floor((timeUntilNextAlarm % (1000 * 60)) / 1000);
-
-// console.log(`다음 알람까지 남은 시간: ${hours}시간 ${minutes}분 ${seconds}초`);

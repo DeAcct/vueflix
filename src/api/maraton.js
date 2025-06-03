@@ -109,9 +109,7 @@ export function useMaratonData() {
       await updateDoc(myDoc, {
         maraton,
       });
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
 
     await auth.syncUser();
   }

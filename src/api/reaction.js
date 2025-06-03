@@ -92,7 +92,6 @@ export async function Create({ content, parent, type }) {
     type,
     isEdited: false,
   };
-  console.log(newItem);
 
   // 문서의 이름을 난수로 생성
   const newDoc = doc(collection(db, "reaction"));

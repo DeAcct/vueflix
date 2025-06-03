@@ -93,23 +93,7 @@ const VIEW_STRING = {
   purchase: "구독",
   "new-card": "신용카드 추가",
 };
-// const currentView = ref(["purchase"]);
-// function moveTo(crumb) {
-//   const index = currentView.value.indexOf(crumb);
-//   if (index === -1) return;
-//   currentView.value = currentView.value.crumbs.slice(0, index + 1);
-//   console.log(currentView.value);
-// }
 const purchase = usePurchase();
-
-// function addCreditCard() {
-//   currentView.key = "new-card";`
-//   currentView.crumbs.push("new-card");
-// }
-// function returnToRoot() {
-//   currentView.key = "purchase";
-//   currentView.crumbs.pop();
-// }
 
 const auth = useAuth();
 const router = useRouter();

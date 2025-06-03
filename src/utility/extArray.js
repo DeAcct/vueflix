@@ -30,40 +30,25 @@ export function deepReverse(arr, ...sortKeys) {
   return reversedArr;
 }
 
-export function gausArray(obj) {
-  return new Proxy(obj, {
-    get(target, index) {
-      const _index = Number(index);
-
-      if (isNaN(_index)) {
-        throw new Error("숫자 인덱스만 가능합니다.");
-      }
-
-      // 인덱스가 순서대로 되어 있지 않은 경우 대비 정렬
-      const indexes = Object.keys(target)
-        .map(Number)
-        .sort((a, b) => a - b);
-
-      for (const index of indexes) {
-        if (_index < index) {
-          return { value: target[index], key: index };
-        }
-      }
-    },
-  });
-}
-
 export const switcher = (value) => {
+  const toFn = (maybeFn) =>
+    typeof maybeFn === "function" ? maybeFn : () => maybeFn;
+
   const cases = [];
 
   const chain = {
-    case(predicate, action) {
-      cases.push({ predicate, action });
-      return chain; // 같은 객체 리턴해서 체이닝 유지
+    case(predicate, actionOrValue) {
+      cases.push({ predicate, action: toFn(actionOrValue) });
+      return chain;
     },
-    default(fallback) {
-      const match = cases.find(({ predicate }) => predicate(value));
-      return match ? match.action(value) : fallback(value);
+    default(fallbackOrValue) {
+      return (this._match?.action ?? toFn(fallbackOrValue))(value);
+    },
+    exec() {
+      return this._match?.action(value);
+    },
+    get _match() {
+      return cases.find(({ predicate }) => predicate(value));
     },
   };
 

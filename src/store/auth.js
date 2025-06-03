@@ -264,7 +264,6 @@ export const useAuth = defineStore("auth", () => {
   async function connectAuth({ key = "Email", email, password }) {
     const auth = getAuth();
     if (key === "Email") {
-      console.log(unref(email), unref(password));
       const credential = EmailAuthProvider.credential(
         unref(email),
         unref(password)

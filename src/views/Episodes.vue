@@ -77,11 +77,12 @@
       </VueflixBtn>
     </div>
     <NativeDialog ref="$clearMaratonAlertRoot" class="ClearMaratonAlert" shade>
-      <template #title>
-        <strong class="ClearMaratonAlert__Title">시청기록 삭제</strong>
-      </template>
+      <template #title> </template>
       <template #content>
-        <p class="ClearMaratonAlert__Info">정말 삭제하시겠어요?</p>
+        <div class="ClearMaratonAlert__Bubble">
+          <strong class="ClearMaratonAlert__Title">시청기록 삭제</strong>
+          <p class="ClearMaratonAlert__Info">정말 삭제하시겠어요?</p>
+        </div>
       </template>
       <template #control>
         <div class="ClearMaratonAlert__Control">
@@ -267,38 +268,48 @@ function clear() {
 }
 
 .ClearMaratonAlert {
-  --dialog-max-width: 100%;
-  --dialog-translate: 0;
-  --dialog-inset: auto auto 0 0;
-  --dialog-starting-translate: 0 100%;
+  --dialog-max-width: min(100% - 4rem, 40rem);
+  --dialog-translate: -50% 0;
+  --dialog-inset: auto auto 0 50%;
+  --dialog-starting-translate: -50% 100%;
   --dialog-border-radius: calc(var(--global-radius) * 2)
     calc(var(--global-radius) * 2) 0 0;
   --dialog-z-index: var(--z-index-overay-2);
   --dialog-height: auto;
-  --dialog-padding: 2rem;
-  --dialog-bg: hsl(var(--bg-200));
-  margin-bottom: -1.2rem;
+  // --dialog-bg: hsl(var(--bg-200));
+  --dialog-bg: transparent;
+  --dialog-padding: 0 0 2rem;
+
+  &__Bubble {
+    border-radius: 2rem;
+    background-color: hsl(var(--bg-200));
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
   &__Title {
     font-size: 2rem;
-    margin-bottom: 1.2rem;
     text-wrap: pretty;
     line-height: 1.3;
   }
   &__Info {
     font-size: 1.6rem;
-    margin-bottom: 2rem;
     line-height: 1.5;
     text-wrap: pretty;
   }
   &__Control {
     display: flex;
     justify-content: flex-end;
+    gap: 0.4rem;
   }
   &__Button {
     box-shadow: none;
+    border-radius: 9999px;
+    background-color: hsl(var(--bg-100));
     &--Accent {
       background-color: hsl(var(--theme-500));
-      border-radius: var(--global-radius);
       color: #fff;
     }
   }

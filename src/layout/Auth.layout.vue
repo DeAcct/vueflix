@@ -4,7 +4,6 @@
       <div class="Auth__Logo">
         <VueflixLogo />
       </div>
-      <!-- <InteractiveVisual class="Auth__Hero" :ani-list></InteractiveVisual> -->
     </div>
     <div class="Auth__PageView">
       <div class="Auth__ViewController">
@@ -35,7 +34,6 @@
 import { useRoute, useRouter } from "vue-router";
 
 import VueflixLogo from "@/components/VueflixLogo.vue";
-import InteractiveVisual from "@/components/InteractiveVisual.vue";
 
 import IconBase from "@/components/IconBase.vue";
 import IconArrowPrev from "@/components/icons/IconArrowPrev.vue";

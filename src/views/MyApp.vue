@@ -129,7 +129,6 @@ const viewModel = [
 ];
 
 async function onLoginButtonClick() {
-  console.log("??");
   if (!store.user) {
     router.push("auth");
     return;
@@ -153,7 +152,6 @@ async function sendEmail() {
   }
   try {
     await sendEmailVerification(auth.currentUser);
-    console.log("Email verification sent successfully.");
   } catch (error) {
     console.error("Failed to send email verification:", error);
   }

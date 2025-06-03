@@ -1,17 +1,21 @@
 <template>
   <section class="PosterHero">
+    {{ posterUrl }}
     <div
       class="PosterHero__Poster"
       :class="loaded && 'PosterHero__Poster--Loaded'"
     >
       <RouterLink
-        :to="`/?modal=${aniTitle}&route=episodes`"
+        :to="`/?modal=${_animeData}&route=episodes`"
         class="PosterHero__ToEpisodes"
         :style="posterStyle"
+        v-if="posterUrl"
         ><span class="blind">에피소드 목록 보기</span></RouterLink
       >
       <div class="PosterHero__Floats">
-        <h2 class="PosterHero__Title">{{ aniTitle }}</h2>
+        <strong class="PosterHero__TitleHolder">
+          <img :src="logoUrl" :alt="_animeData" class="PosterHero__Title" />
+        </strong>
         <div class="PosterHero__Buttons">
           <RouterLink
             class="PosterHero__Button PosterHero__Button--Play"
@@ -22,14 +26,12 @@
             </IconBase>
             <span class="PosterHero__Text">재생</span>
           </RouterLink>
-          <button
+          <WannaSeeButton
+            :ani-title="animeData?.name"
             class="PosterHero__Button"
-            @click="onClickWannaSee(aniTitle)"
-            type="button"
           >
-            <WannaSeeMotion :ani-title />
-            <span class="PosterHero__Text">보고싶다!</span>
-          </button>
+            <template #text>보고싶다!</template>
+          </WannaSeeButton>
         </div>
       </div>
     </div>
@@ -37,41 +39,19 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { useRouter } from "vue-router";
-
-import { useAuth } from "@/store/auth";
-
-import { useWannaSee } from "@/api/wannaSee";
-import POSTER from "@/api/poster";
+import { computed, onMounted } from "vue";
+import Hero from "@/api/hero";
 import { useMediaQuery } from "@/composables/device";
 
-import WannaSeeMotion from "@/components/WannaSeeMotion.vue";
+import { db } from "@/utility/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 import IconBase from "@/components/IconBase.vue";
 import IconPlay from "@/components/icons/IconPlay.vue";
-import useContinue from "../composables/continue";
+import useContinue from "@/composables/continue";
+import WannaSeeButton from "./WannaSeeButton.vue";
 
-const props = defineProps({
-  aniTitle: {
-    type: String,
-    required: true,
-  },
-});
-
-const { toggleWannaSee } = useWannaSee(props.aniTitle);
-const { url, themeColor, loaded } = POSTER(props.aniTitle);
-
-const auth = useAuth();
-const user = computed(() => auth.user);
-const router = useRouter();
-function onClickWannaSee() {
-  if (!user.value) {
-    router.push("/auth");
-    return;
-  }
-  toggleWannaSee();
-}
+const { logoUrl, posterUrl, themeColor, loaded, animeData } = Hero();
 
 const media = useMediaQuery("(min-width: 768px)");
 const posterStyle = computed(() => ({
@@ -79,10 +59,22 @@ const posterStyle = computed(() => ({
     media.value
       ? `linear-gradient(to right, ${themeColor.value} 70%, transparent),`
       : `linear-gradient(to top, ${themeColor.value} 10%, transparent),`
-  } url(${url.value})`,
+  } url(${posterUrl.value})`,
 }));
 
-const continueData = useContinue(props.aniTitle);
+const _animeData = computed(() => animeData.value?.name);
+const continueData = useContinue(_animeData);
+
+onMounted(async () => {
+  const docRef = doc(db, "anime", "패배 히로인이 너무 많아");
+  const docSnap = await getDoc(docRef);
+
+  // reupload in firestore with new Title "패배 히로인이 너무 많아"
+  await setDoc(doc(db, "anime", "패배 히로인이 너무 많아"), {
+    ...docSnap.data(),
+    name: "패배 히로인이 너무 많아",
+  });
+});
 </script>
 
 <style lang="scss" scoped>
@@ -128,12 +120,16 @@ const continueData = useContinue(props.aniTitle);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.6rem;
+    gap: 2rem;
     pointer-events: none;
   }
-  &__Title {
-    font-size: 2.4rem;
+  &__TitleHolder {
     color: #fff;
+    width: min(calc(100% - 4rem), 30rem);
+  }
+  &__Title {
+    width: 100%;
+    filter: drop-shadow(0 0.1rem 0.3rem rgba(0, 0, 0, 0.3));
   }
   &__Buttons {
     width: 100%;
@@ -189,6 +185,10 @@ const continueData = useContinue(props.aniTitle);
       width: 100%;
       inset: auto 3.2rem 3.2rem;
       align-items: flex-start;
+      gap: 3rem;
+    }
+    &__TitleHolder {
+      width: 25dvw;
     }
     &__Buttons {
       width: auto;

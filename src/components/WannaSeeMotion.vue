@@ -1,28 +1,26 @@
 <template>
-  <i class="WannaSeeMotion" :class="wannaSee && 'WannaSeeMotion--Checked'">
+  <i class="WannaSeeMotion" :class="checked && 'WannaSeeMotion--Checked'">
     <IconBase class="WannaSeeMotion__Icon WannaSeeMotion__Icon--Added">
       <IconWannaSeeAdded />
     </IconBase>
     <IconBase class="WannaSeeMotion__Icon WannaSeeMotion__Icon--Add">
       <IconWannaSeeAdd />
     </IconBase>
+    {{ wannaSee }}
   </i>
 </template>
 
 <script setup>
-import { useWannaSee } from "@/api/wannaSee";
-
 import IconBase from "@/components/IconBase.vue";
 import IconWannaSeeAdd from "@/components/icons/IconWannaSeeAdd.vue";
 import IconWannaSeeAdded from "@/components/icons/IconWannaSeeAdded.vue";
 
 const props = defineProps({
-  aniTitle: {
-    type: String,
+  checked: {
+    type: Boolean,
     required: true,
   },
 });
-const { wannaSee } = useWannaSee(props.aniTitle);
 </script>
 
 <style lang="scss" scoped>
