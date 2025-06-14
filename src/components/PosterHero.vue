@@ -1,5 +1,8 @@
 <template>
-  <section class="PosterHero">
+  <section
+    class="PosterHero"
+    :class="`PosterHero--${useFirstCapital(themeColor?.theme)}`"
+  >
     <div
       class="PosterHero__Poster"
       :class="loaded && 'PosterHero__Poster--Loaded'"
@@ -38,66 +41,80 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import Hero from "@/api/hero";
 import { useMediaQuery } from "@/composables/device";
-
-import { db } from "@/utility/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
 
 import IconBase from "@/components/IconBase.vue";
 import IconPlay from "@/components/icons/IconPlay.vue";
 import useContinue from "@/composables/continue";
+import { useDeviceGesture } from "@/composables/motion";
+import { useFirstCapital } from "@/composables/formatter";
+
 import WannaSeeButton from "./WannaSeeButton.vue";
 
-const { logoUrl, posterUrl, themeColor, loaded, animeData } = Hero();
+const { logoUrl, posterUrl, themeColor, loaded, animeData, refresh } = Hero();
 
-const media = useMediaQuery("(min-width: 768px)");
+const media = useMediaQuery("(min-width: 690px)");
 const posterStyle = computed(() => ({
   backgroundImage: `${
     media.value
-      ? `linear-gradient(to right, ${themeColor.value} 70%, transparent),`
-      : `linear-gradient(to top, ${themeColor.value} 10%, transparent),`
+      ? `linear-gradient(to right, ${themeColor.value.color} 74%, transparent),`
+      : `linear-gradient(to top, ${themeColor.value.color} 10%, transparent),`
   } url(${posterUrl.value})`,
 }));
 
 const _animeData = computed(() => animeData.value?.name);
 const continueData = useContinue(_animeData);
 
-onMounted(async () => {
-  const docRef = doc(db, "anime", "패배 히로인이 너무 많아");
-  const docSnap = await getDoc(docRef);
-
-  // reupload in firestore with new Title "패배 히로인이 너무 많아"
-  await setDoc(doc(db, "anime", "패배 히로인이 너무 많아"), {
-    ...docSnap.data(),
-    name: "패배 히로인이 너무 많아",
-  });
+defineExpose({
+  refresh,
 });
+
+const { tilt } = useDeviceGesture(0.2);
+// const parallaxStyle = computed(() => ({
+//   transform: `rotateX(${tilt.beta}) rotateY(${tilt.gamma})`,
+//   transition: "transform 0.1s ease-out",
+// }));
 </script>
 
 <style lang="scss" scoped>
 .PosterHero {
   padding: calc(var(--header-height) + 1rem) 2rem 2rem;
   margin-bottom: -2rem;
-  background: linear-gradient(to bottom, v-bind(themeColor) 50%, transparent);
+  background: linear-gradient(
+    to bottom,
+    v-bind("themeColor.color") 50%,
+    transparent
+  );
+
+  &--Light {
+    --element-color: hsl(var(--poster-color-base-dark) / 0.1);
+  }
+  &--Dark {
+    --element-color: hsl(var(--poster-color-base-light) / 0.2);
+  }
+
   &__Poster {
     display: flex;
     align-items: flex-end;
     width: 100%;
     aspect-ratio: 3 / 4;
 
+    transform: perspective(500rem) rotateX(calc(v-bind("tilt.beta") * 1deg))
+      rotateY(calc(v-bind("tilt.gamma") * 1deg));
+
     box-shadow: 0.6rem 0.6rem 1.2rem hsl(var(--poster-color-base-dark) / 0.05),
       1.2rem 1.2rem 2.4rem hsl(var(--poster-color-base-dark) / 0.1),
       1.2rem 1.8rem 3.6rem hsl(var(--poster-color-base-dark) / 0.15),
       -0.6rem -0.6rem 1.2rem hsl(var(--poster-color-base-light) / 0.1),
       -1.2rem -1.2rem 2.4rem hsl(var(--poster-color-base-light) / 0.15),
-      -1.2rem -1.8rem 3.6rem hsl(var(--poster-color-base-light) / 0.15);
+      -1.2rem -1.8rem 3.6rem hsl(var(--poster-color-base-light) / 0.2);
     position: relative;
     overflow: hidden;
     background: linear-gradient(
       315deg,
-      v-bind(themeColor) 50%,
+      v-bind("themeColor.color") 50%,
       hsl(var(--poster-color-base-light) / 0.8)
     );
     border-radius: calc(var(--global-radius) * 2 + 2px);
@@ -108,6 +125,7 @@ onMounted(async () => {
     }
   }
   &__ToEpisodes {
+    background-position: center;
     background-size: cover;
     position: absolute;
     border-radius: calc(var(--global-radius) * 2);
@@ -121,6 +139,12 @@ onMounted(async () => {
     align-items: center;
     gap: 2rem;
     pointer-events: none;
+    transform: perspective(500rem)
+      translate3d(
+        calc(v-bind("tilt.gamma") * 0.1rem),
+        calc(v-bind("tilt.beta") * -0.1rem),
+        calc(v-bind("tilt.beta") * 0.1rem)
+      );
   }
   &__TitleHolder {
     color: #fff;
@@ -145,7 +169,7 @@ onMounted(async () => {
     gap: 0.8rem;
     align-items: center;
     justify-content: center;
-    background: hsl(var(--poster-color-base-light) / 0.2);
+    background: var(--element-color);
     backdrop-filter: blur(5px);
     border-radius: 9999px;
     color: #fff;
@@ -162,11 +186,11 @@ onMounted(async () => {
   }
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 690px) {
   .PosterHero {
     padding-top: calc(var(--header-height) + 2rem);
     &__Poster {
-      aspect-ratio: 21 / 9;
+      aspect-ratio: 21 / 10;
       // padding: 2rem;
       padding: 0.2rem;
       // align-items: center;
@@ -194,6 +218,14 @@ onMounted(async () => {
     }
     &__Button {
       padding: 0 2rem;
+    }
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .PosterHero {
+    &__Poster {
+      aspect-ratio: 21 / 8;
     }
   }
 }

@@ -149,11 +149,14 @@ const backbuttonBlank = computed(
   top: env(titlebar-area-y, 0);
   left: env(titlebar-area-x, 0);
   z-index: var(--z-index-2);
-  background-color: hsl(var(--bg-100) / calc(v-bind(scrollPercent)));
+  background: linear-gradient(hsl(var(--bg-900) / 0.2), transparent);
   padding: 0 var(--inner-padding);
   display: flex;
   align-items: center;
   height: var(--header-height);
+  &--Scrolled {
+    background: hsl(var(--bg-100) / calc(v-bind(scrollPercent)));
+  }
 
   &__Activity {
     font-size: 1.7rem;
@@ -246,10 +249,9 @@ const backbuttonBlank = computed(
 @media screen and (min-width: 1080px) {
   .VueflixHeader {
     transition: 150ms ease-out;
-    background-color: transparent;
     --elements-text-color: hsl(var(--text-800));
     &--Scrolled {
-      background-color: hsl(var(--bg-100));
+      background: hsl(var(--bg-100));
       --elements-color: hsl(var(--bg-200));
     }
 
@@ -292,6 +294,7 @@ const backbuttonBlank = computed(
     &__GNBLink {
       font-size: 1.6rem;
       transition: color 150ms ease-out;
+      color: v-bind(elementColor);
       &:focus-visible {
         color: hsl(var(--theme-500));
       }

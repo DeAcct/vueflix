@@ -30,6 +30,7 @@ const RAW_RUNTIME_STATE =
           ["@vitejs/plugin-vue", "virtual:b01a128426bcea89df1382a1327379bf42829e600e6bc202041256f3b9d423e37728c12e7d3ab55c1da310e182b6be0e38f02e9097b629f7ba864ce79fec02f7#npm:5.2.4"],\
           ["@vueuse/core", "virtual:b01a128426bcea89df1382a1327379bf42829e600e6bc202041256f3b9d423e37728c12e7d3ab55c1da310e182b6be0e38f02e9097b629f7ba864ce79fec02f7#npm:13.3.0"],\
           ["dayjs", "npm:1.11.13"],\
+          ["fast-average-color", "npm:9.5.0"],\
           ["firebase", "npm:11.8.1"],\
           ["firebase-tools", "npm:14.5.1"],\
           ["pinia", "virtual:b01a128426bcea89df1382a1327379bf42829e600e6bc202041256f3b9d423e37728c12e7d3ab55c1da310e182b6be0e38f02e9097b629f7ba864ce79fec02f7#npm:3.0.2"],\
@@ -8570,6 +8571,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["fast-average-color", [\
+      ["npm:9.5.0", {\
+        "packageLocation": "../.yarn/berry/cache/fast-average-color-npm-9.5.0-2df9bf6a03-10c0.zip/node_modules/fast-average-color/",\
+        "packageDependencies": [\
+          ["fast-average-color", "npm:9.5.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["fast-deep-equal", [\
       ["npm:3.1.3", {\
         "packageLocation": "../.yarn/berry/cache/fast-deep-equal-npm-3.1.3-790edcfcf5-10c0.zip/node_modules/fast-deep-equal/",\
@@ -14619,6 +14629,7 @@ const RAW_RUNTIME_STATE =
           ["@vitejs/plugin-vue", "virtual:b01a128426bcea89df1382a1327379bf42829e600e6bc202041256f3b9d423e37728c12e7d3ab55c1da310e182b6be0e38f02e9097b629f7ba864ce79fec02f7#npm:5.2.4"],\
           ["@vueuse/core", "virtual:b01a128426bcea89df1382a1327379bf42829e600e6bc202041256f3b9d423e37728c12e7d3ab55c1da310e182b6be0e38f02e9097b629f7ba864ce79fec02f7#npm:13.3.0"],\
           ["dayjs", "npm:1.11.13"],\
+          ["fast-average-color", "npm:9.5.0"],\
           ["firebase", "npm:11.8.1"],\
           ["firebase-tools", "npm:14.5.1"],\
           ["pinia", "virtual:b01a128426bcea89df1382a1327379bf42829e600e6bc202041256f3b9d423e37728c12e7d3ab55c1da310e182b6be0e38f02e9097b629f7ba864ce79fec02f7#npm:3.0.2"],\

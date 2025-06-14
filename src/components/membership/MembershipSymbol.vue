@@ -73,8 +73,8 @@ const { tilt } = useDeviceGesture(0.01);
   border-radius: 9999px;
   * {
     transform-origin: center;
-    transform: perspective(3px) rotateX(v-bind("tilt.beta"))
-      rotateY(v-bind("tilt.gamma"));
+    transform: perspective(3px) rotateX(calc(v-bind("tilt.beta") * 1deg))
+      rotateY(calc(v-bind("tilt.gamma") * 1deg));
     transition: transform 150ms ease-out;
   }
 

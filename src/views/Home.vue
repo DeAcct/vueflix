@@ -1,6 +1,6 @@
 <template>
   <main class="AppHome">
-    <PosterHero class="AppHome__PosterBack"> </PosterHero>
+    <PosterHero class="AppHome__PosterBack" ref="$PosterHero"> </PosterHero>
     <CurationGroup class="AppHome__Item" :list="selectedDailyAnime">
       <template #title>요일별 신작</template>
       <template #list-changer>
@@ -54,7 +54,7 @@
       class="AppHome__NewCuration"
       :class="listLoading && 'AppHome__NewCuration--Loading'"
       type="button"
-      @click="getCuratedList"
+      @click="refreshCuration"
       :disabled="listLoading"
     >
       <Transition name="curation-button-move" mode="out-in">
@@ -119,17 +119,13 @@
 
 <script setup>
 import { onMounted, ref, watch } from "vue";
-// import { useRouter } from "vue-router";
 import { doc, getDoc } from "firebase/firestore";
 
-import { useAuth } from "@/store/auth";
 import { db } from "@/utility/firebase";
 
 import { DAYS } from "@/enums/Days";
 import { useMaratonData } from "@/api/maraton";
-// import { useWannaSee } from "@/api/wannaSee";
 import { Read } from "@/api/curation";
-import { useCarouselList } from "@/composables/carousel";
 import { usePWA, useRandomPWAPromotionCopy } from "@/composables/pwa";
 
 import InputBoolean from "@/components/InputBoolean.vue";
@@ -181,9 +177,18 @@ async function getCuratedList() {
     curationButtonString.value = "새로운 추천";
   }, LOADED_ANIMATION_DURATION);
 }
-onMounted(() => {
-  getCuratedList();
+
+onMounted(async () => {
+  await getCuratedList();
 });
+
+const $PosterHero = ref(null);
+function refreshCuration() {
+  if ($PosterHero.value) {
+    $PosterHero.value.refresh();
+  }
+  getCuratedList();
+}
 
 const pwaCopy = ref("");
 const $PWAModal = ref(null);
@@ -191,7 +196,7 @@ const { postpone, install, hideModal, isDeviceIOS } = usePWA($PWAModal);
 
 const { latest, maraton } = useMaratonData();
 
-const { idArray: carouselList } = useCarouselList();
+// const { idArray: carouselList } = useCarouselList();
 
 // const auth = useAuth();
 // const user = computed(() => auth.user);

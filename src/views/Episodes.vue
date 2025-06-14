@@ -170,9 +170,9 @@ function clear() {
 
 <style lang="scss" scoped>
 .AnimeEpisodes {
-  padding-top: 2rem;
+  padding: 2rem 0 2rem;
   flex-grow: 1;
-  gap: 1.6rem;
+  gap: 1rem;
   display: flex;
   flex-direction: column;
 
@@ -219,6 +219,7 @@ function clear() {
       --episodes-z-index,
       calc(var(--z-index-overay-1) + 1)
     );
+    --accordion-title-padding: 1.4rem;
   }
   &__List {
     display: flex;

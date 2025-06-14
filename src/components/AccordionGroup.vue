@@ -38,10 +38,11 @@ const { $root, $summary, $content } = useAccordion(
     z-index: var(--accordion-z-index, var(--z-index-s1));
     background: var(
       --accordion-bg,
-      linear-gradient(150deg, hsl(var(--bg-200)), hsl(var(--bg-200)))
+      linear-gradient(hsl(var(--bg-100) / 0.8), hsl(var(--bg-100) / 0.2))
     );
     backdrop-filter: blur(10px);
     border-radius: var(--accordion-title-radius, var(--global-radius));
+    border: 1px solid hsl(var(--bg-200));
     padding: var(--accordion-title-padding, 2rem);
     width: 100%;
     display: flex;

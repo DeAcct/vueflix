@@ -75,6 +75,7 @@ defineExpose({
 .NativeDialog {
   min-height: 0;
   max-height: unset;
+  position: absolute;
 
   --dialog-calc-z-index: var(--dialog-z-index, var(--z-index-overay-1));
 

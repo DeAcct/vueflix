@@ -89,5 +89,8 @@ export function useFormatToSec(origin) {
 }
 
 export function useFirstCapital(origin) {
+  if (typeof origin !== "string" || origin.length === 0) {
+    return origin;
+  }
   return origin.charAt(0).toUpperCase() + origin.slice(1);
 }

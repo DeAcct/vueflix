@@ -157,3 +157,41 @@ export function useFanfare({ amount = 100, colors = [] }) {
 
   return { $canvas, start };
 }
+
+export function useRGB2HSL(r, g, b) {
+  // RGB 값을 0~1 범위로 변환
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  // 최대값과 최소값을 구함
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+
+  let h, s;
+  // 명도는 r,g,b중 최대값과 최소값의 평균
+  // 인간이 느끼는 밝기와 잘 맞음
+  let l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0; // 무채색
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    // 뒤에 더하는 숫자는 음수 보정용
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+
+  return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+}
