@@ -1,6 +1,6 @@
 <template>
   <TransitionGroup tag="nav" class="BottomTabMenu" name="bottom-tab">
-    <div class="BottomTabMenu__Items" key="items">
+    <div class="BottomTabMenu__Items" key="items" ref="$Items">
       <div v-for="({ to, name, icon }, index) in items" :key="index">
         <RouterLink
           class="BottomTabMenu__Item"
@@ -17,7 +17,7 @@
       </div>
     </div>
     <div v-if="scrollState !== 'top'" key="to-top">
-      <ToTop class="BottomTabMenu__ToTop" />
+      <ToTop class="BottomTabMenu__ToTop" ref="$root" />
     </div>
   </TransitionGroup>
 </template>
@@ -30,7 +30,9 @@ import ToTop from "@/components/ToTop.vue";
 import IconBase from "./IconBase.vue";
 import IconHome from "./icons/IconHome.vue";
 import IconBasket from "./icons/IconBasket.vue";
-import IconCocktail from "./icons/IconCocktail.vue";
+import { useLiquidGlass } from "@/composables/liquid-glass";
+
+const { $root: $Items } = useLiquidGlass();
 
 const items = [
   {
@@ -67,8 +69,11 @@ const { state: scrollState } = useScroll();
 
   &__Items {
     display: flex;
-    background-color: hsl(var(--bg-100) / 0.9);
-    backdrop-filter: blur(0.4rem);
+    // background-color: hsl(var(--bg-100) / 0.2);
+    // backdrop-filter: blur(0.4rem);
+    // box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.3),
+    //   inset -1px -1px 3px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
     border: 1px solid hsl(var(--bg-200));
     border-radius: 9999px;
   }

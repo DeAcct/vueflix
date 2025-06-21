@@ -1,6 +1,6 @@
 <template>
-  <details class="AccordionGroup" ref="$root">
-    <summary class="AccordionGroup__Title" data-pointer="true" ref="$summary">
+  <details class="AccordionGroup">
+    <summary class="AccordionGroup__Title" data-pointer="true" ref="$Sticky">
       <slot name="title"></slot>
       <i class="AccordionGroup__OpenIcon">
         <IconBase>
@@ -8,7 +8,7 @@
         </IconBase>
       </i>
     </summary>
-    <div class="AccordionGroup__Content" ref="$content">
+    <div class="AccordionGroup__Content">
       <slot name="content"></slot>
     </div>
   </details>
@@ -19,12 +19,15 @@ import useAccordion from "@/composables/progressive-polyfill";
 
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
+import { useLiquidGlass } from "../composables/liquid-glass";
 
 const ACCORDION_ANIMATION_DURATION = 300;
 
-const { $root, $summary, $content } = useAccordion(
-  ACCORDION_ANIMATION_DURATION
-);
+// const { $root, $summary, $content } = useAccordion(
+//   ACCORDION_ANIMATION_DURATION
+// );
+
+const { $root: $Sticky } = useLiquidGlass({ radius: 0 });
 </script>
 
 <style lang="scss" scoped>
@@ -40,7 +43,7 @@ const { $root, $summary, $content } = useAccordion(
       --accordion-bg,
       linear-gradient(hsl(var(--bg-100) / 0.8), hsl(var(--bg-100) / 0.2))
     );
-    backdrop-filter: blur(10px);
+    // backdrop-filter: blur(10px);
     border-radius: var(--accordion-title-radius, var(--global-radius));
     border: 1px solid hsl(var(--bg-200));
     padding: var(--accordion-title-padding, 2rem);
