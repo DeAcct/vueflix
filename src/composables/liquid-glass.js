@@ -168,11 +168,15 @@ export function useLiquidGlass(options = {}) {
     ctx = canvas.getContext("2d");
   }
 
+  function resolveRoot(el) {
+    return el?.$el ?? el;
+  }
   onMounted(() => {
     nextTick(() => {
-      if (!$root.value) return;
+      const element = resolveRoot($root.value);
+      if (!element) return;
 
-      const rect = $root.value.getBoundingClientRect();
+      const rect = element.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
 
       state.width = Math.floor(rect.width);
@@ -182,7 +186,7 @@ export function useLiquidGlass(options = {}) {
       updateShader();
 
       const bgFilter = `url(#${id}_filter) blur(1px) contrast(1.5) brightness(1.2) saturate(1.1)`;
-      Object.assign($root.value.style, {
+      Object.assign(element.style, {
         backdropFilter: bgFilter,
         webkitBackdropFilter: bgFilter,
         boxShadow: `inset -1px -1px 2px rgba(0, 0, 0, 0.1),
@@ -197,10 +201,6 @@ export function useLiquidGlass(options = {}) {
     if (animationFrame) cancelAnimationFrame(animationFrame);
     if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
     if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
-    if ($root.value) {
-      $root.value.style.backdropFilter = "";
-      $root.value.style.webkitBackdropFilter = "";
-    }
   });
 
   return {

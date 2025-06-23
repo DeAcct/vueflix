@@ -18,6 +18,7 @@
           :key="part"
           class="AnimeEpisodes__Accordion"
           :open="i === 0"
+          liquid
         >
           <template #title>
             {{ part }}

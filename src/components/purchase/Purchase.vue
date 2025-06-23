@@ -5,7 +5,7 @@
         <ProductCard />
       </section>
       <section class="Purchase__Bubble">
-        <AccordionGroup class="Purchase__Coupon" open>
+        <AccordionGroup class="Purchase__Coupon" open liquid>
           <template #title>
             <h2 class="Purchase__Title">쿠폰 & 이용권</h2>
             <span class="Purchase__EnuriCounter"

@@ -1,7 +1,12 @@
 <template>
   <details class="AccordionGroup">
     <summary class="AccordionGroup__Title" data-pointer="true" ref="$Sticky">
-      <slot name="title"></slot>
+      <span
+        class="AccordionGroup__TitleText"
+        :class="liquid ?? 'AccordionGroup__TitleText--Liquid'"
+      >
+        <slot name="title"></slot>
+      </span>
       <i class="AccordionGroup__OpenIcon">
         <IconBase>
           <IconArrowPrev />
@@ -15,8 +20,7 @@
 </template>
 
 <script setup>
-import useAccordion from "@/composables/progressive-polyfill";
-
+import { computed } from "vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
 import { useLiquidGlass } from "../composables/liquid-glass";
@@ -27,7 +31,17 @@ const ACCORDION_ANIMATION_DURATION = 300;
 //   ACCORDION_ANIMATION_DURATION
 // );
 
-const { $root: $Sticky } = useLiquidGlass({ radius: 0.3 });
+const props = defineProps({
+  liquid: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const _liquid = computed(() => props.liquid);
+const { $root: $Sticky } = _liquid.value
+  ? useLiquidGlass({ radius: 0.3 })
+  : { $root: null };
 </script>
 
 <style lang="scss" scoped>
@@ -39,17 +53,20 @@ const { $root: $Sticky } = useLiquidGlass({ radius: 0.3 });
     position: sticky;
     top: var(--accordion-sticky-top, 6rem);
     z-index: var(--accordion-z-index, var(--z-index-s1));
-    box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.1),
-      inset 1px 1px 2px rgba(255, 255, 255, 0.2);
-    // backdrop-filter: blur(10px);
-    border: 1px solid rgba(255 255 255 / 0.2);
     border-radius: 9999px;
     padding: var(--accordion-title-padding, 2rem);
     width: 100%;
     display: flex;
     align-items: center;
-    font-size: 1.4rem;
+    mix-blend-mode: luminosity;
+  }
+  &__TitleText {
     font-weight: var(--accordion-title-weight, 900);
+    font-size: 1.4rem;
+    &--Liquid {
+      color: hsl(var(--text-700));
+      filter: drop-shadow(0.1rem 0.1rem 0.1rem hsl(var(--text-900) / 0.1));
+    }
   }
   &__OpenIcon {
     display: flex;

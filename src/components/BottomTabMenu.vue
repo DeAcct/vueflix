@@ -88,35 +88,20 @@ const { state: scrollState } = useScroll();
   transition: 150ms ease-out;
   width: 100%;
   pointer-events: none;
-  --bottom-shade-opacity: 0;
-  &--Scrolled {
-    --bottom-shade-opacity: 1;
-  }
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      hsl(var(--bg-900) / 0.3)
-    );
-    opacity: var(--bottom-shade-opacity);
-    transition: opacity 150ms ease-out;
-  }
 
   &__Items {
     display: flex;
     pointer-events: initial;
   }
   &__Item {
-    mix-blend-mode: difference;
     // color: #fff;
+    mix-blend-mode: luminosity;
+    filter: drop-shadow(0.1rem 0.1rem 0.1rem hsl(var(--text-900) / 0.3));
     &--Active {
       mix-blend-mode: normal;
       color: hsl(var(--theme-500));
-      filter: drop-shadow(0 0 0.5rem hsl(var(--theme-500) / 0.5));
+      filter: drop-shadow(0 0 0.5rem hsl(var(--theme-500) / 0.5))
+        drop-shadow(0.1rem 0.1rem 0.1rem hsl(var(--theme-500) / 0.3));
     }
   }
   &__Icon {

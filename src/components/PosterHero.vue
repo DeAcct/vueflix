@@ -72,10 +72,6 @@ defineExpose({
 });
 
 const { tilt } = useDeviceGesture(0.2);
-// const parallaxStyle = computed(() => ({
-//   transform: `rotateX(${tilt.beta}) rotateY(${tilt.gamma})`,
-//   transition: "transform 0.1s ease-out",
-// }));
 </script>
 
 <style lang="scss" scoped>
