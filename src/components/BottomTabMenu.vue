@@ -1,5 +1,10 @@
 <template>
-  <TransitionGroup tag="nav" class="BottomTabMenu" name="bottom-tab">
+  <TransitionGroup
+    tag="nav"
+    class="BottomTabMenu"
+    :class="scrollState !== 'top' && 'BottomTabMenu--Scrolled'"
+    name="bottom-tab"
+  >
     <div class="BottomTabMenu__Items" key="items" ref="$Items">
       <div v-for="({ to, name, icon }, index) in items" :key="index">
         <RouterLink
@@ -17,7 +22,7 @@
       </div>
     </div>
     <div v-if="scrollState !== 'top'" key="to-top">
-      <ToTop class="BottomTabMenu__ToTop" ref="$root" />
+      <ToTop class="BottomTabMenu__ToTop" ref="$ToTop" />
     </div>
   </TransitionGroup>
 </template>
@@ -32,8 +37,9 @@ import IconHome from "./icons/IconHome.vue";
 import IconBasket from "./icons/IconBasket.vue";
 import { useLiquidGlass } from "@/composables/liquid-glass";
 
-const { $root: $Items } = useLiquidGlass();
+const { $root: $Items } = useLiquidGlass({ radius: 0.6 });
 
+// 탭 메뉴 아이템 정의
 const items = [
   {
     to: "home",
@@ -45,6 +51,7 @@ const items = [
     name: "보관함",
     icon: IconBasket,
   },
+  // 주석 처리된 칵테일 아이템 (필요시 활성화)
   // {
   //   to: "cocktail",
   //   name: "칵테일",
@@ -52,34 +59,64 @@ const items = [
   // },
 ];
 
+// 스크롤 상태 가져오기
 const { state: scrollState } = useScroll();
 </script>
 
 <style lang="scss" scoped>
+@supports not (backdrop-filter: blur) {
+  .BottomTabMenu {
+    &__Items {
+      background: linear-gradient(
+        to bottom,
+        hsl(var(--bg-100) / 0.2),
+        hsl(var(--bg-100) / 0.1)
+      );
+    }
+  }
+}
+
 .BottomTabMenu {
   position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: var(--z-index-1);
-  bottom: var(--bottom-tab-safe-margin);
+  // bottom: var(--bottom-tab-safe-margin);
+  bottom: 0;
+  padding: 2rem 0 var(--bottom-tab-safe-margin);
   transition: 150ms ease-out;
-  border-radius: 9999px;
   width: 100%;
+  pointer-events: none;
+  --bottom-shade-opacity: 0;
+  &--Scrolled {
+    --bottom-shade-opacity: 1;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      hsl(var(--bg-900) / 0.3)
+    );
+    opacity: var(--bottom-shade-opacity);
+    transition: opacity 150ms ease-out;
+  }
 
   &__Items {
     display: flex;
-    // background-color: hsl(var(--bg-100) / 0.2);
-    // backdrop-filter: blur(0.4rem);
-    // box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.3),
-    //   inset -1px -1px 3px rgba(0, 0, 0, 0.2);
-    border-radius: 20px;
-    border: 1px solid hsl(var(--bg-200));
-    border-radius: 9999px;
+    pointer-events: initial;
   }
   &__Item {
+    mix-blend-mode: difference;
+    // color: #fff;
     &--Active {
+      mix-blend-mode: normal;
       color: hsl(var(--theme-500));
+      filter: drop-shadow(0 0 0.5rem hsl(var(--theme-500) / 0.5));
     }
   }
   &__Icon {
@@ -91,10 +128,13 @@ const { state: scrollState } = useScroll();
     color: inherit;
   }
   &__ToTop {
-    width: 4.6rem;
-    height: 4.6rem;
-    background-color: hsl(var(--theme-500));
+    width: 4.8rem;
+    height: 4.8rem;
+    background-color: hsl(var(--theme-500) / 0.8);
+    backdrop-filter: blur(10px);
     flex-shrink: 0;
+    color: hsl(var(--bg-100) / 0.9);
+    pointer-events: initial;
   }
 }
 

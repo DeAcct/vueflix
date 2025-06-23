@@ -27,7 +27,7 @@ const ACCORDION_ANIMATION_DURATION = 300;
 //   ACCORDION_ANIMATION_DURATION
 // );
 
-const { $root: $Sticky } = useLiquidGlass({ radius: 0 });
+const { $root: $Sticky } = useLiquidGlass({ radius: 0.3 });
 </script>
 
 <style lang="scss" scoped>
@@ -39,13 +39,11 @@ const { $root: $Sticky } = useLiquidGlass({ radius: 0 });
     position: sticky;
     top: var(--accordion-sticky-top, 6rem);
     z-index: var(--accordion-z-index, var(--z-index-s1));
-    background: var(
-      --accordion-bg,
-      linear-gradient(hsl(var(--bg-100) / 0.8), hsl(var(--bg-100) / 0.2))
-    );
+    box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.1),
+      inset 1px 1px 2px rgba(255, 255, 255, 0.2);
     // backdrop-filter: blur(10px);
-    border-radius: var(--accordion-title-radius, var(--global-radius));
-    border: 1px solid hsl(var(--bg-200));
+    border: 1px solid rgba(255 255 255 / 0.2);
+    border-radius: 9999px;
     padding: var(--accordion-title-padding, 2rem);
     width: 100%;
     display: flex;

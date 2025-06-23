@@ -22,8 +22,10 @@ export function useLiquidGlass(options = {}) {
 
   let svg, canvas, ctx;
   let feImage, feDisplacementMap;
+  let animationFrame;
+  let lastUpdateTime = 0;
+  const frameInterval = 1000 / 12;
 
-  // util 함수 (원본 그대로)
   function smoothStep(a, b, t) {
     t = Math.max(0, Math.min(1, (t - a) / (b - a)));
     return t * t * (3 - 2 * t);
@@ -47,18 +49,22 @@ export function useLiquidGlass(options = {}) {
     return { type: "t", x, y };
   }
 
-  // 쉐이더 역할 함수
-  function fragment(uv) {
+  function fragment(uv, time = 0) {
     const ix = uv.x - 0.5;
     const iy = uv.y - 0.5;
+    const wave = Math.sin(10 * (ix + iy) + time * 0.0025) * 0.01;
     const distanceToEdge = roundedRectSDF(ix, iy, 0.3, 0.2, radius);
     const displacement = smoothStep(0.8, 0, distanceToEdge - 0.15);
     const scaled = smoothStep(0, 1, displacement);
-    return texture(ix * scaled + 0.5, iy * scaled + 0.5);
+    return texture(ix * scaled + 0.5 + wave, iy * scaled + 0.5 + wave);
   }
 
-  // 변위맵 업데이트
-  function updateShader() {
+  function updateShader(timestamp = 0) {
+    animationFrame = requestAnimationFrame(updateShader);
+
+    if (timestamp - lastUpdateTime < frameInterval) return;
+    lastUpdateTime = timestamp;
+
     if (state.width <= 0 || state.height <= 0) return;
 
     const w = state.width;
@@ -67,26 +73,20 @@ export function useLiquidGlass(options = {}) {
 
     let maxScale = 0;
     const rawValues = [];
+    // let totalLuminance = 0;
 
     for (let i = 0; i < data.length; i += 4) {
       const x = (i / 4) % w;
       const y = Math.floor(i / 4 / w);
 
       const uv = { x: x / w, y: y / h };
-      const pos = fragment(uv);
+      const pos = fragment(uv, timestamp);
 
-      // 노이즈 생성 (간단 랜덤 노이즈)
-      const noise = (Math.random() - 0.5) * 0.05; // -0.025 ~ +0.025 정도 미세 변위
-
-      const dx = -(pos.x * w - x) + noise * w;
-      const dy = -(pos.y * h - y) + noise * h;
+      const dx = -(pos.x * w - x);
+      const dy = -(pos.y * h - y);
 
       maxScale = Math.max(maxScale, Math.abs(dx), Math.abs(dy));
       rawValues.push(dx, dy);
-
-      // 입체감 밝기는 이전처럼
-      const lightFactor = 0.8 * (1 - uv.x) + 0.2 * (1 - uv.y);
-      const brightness = Math.floor(lightFactor * 255);
     }
 
     maxScale *= 0.5;
@@ -105,8 +105,10 @@ export function useLiquidGlass(options = {}) {
 
       data[i] = r * 255;
       data[i + 1] = g * 255;
-      data[i + 2] = brightness; // B 채널에 입체감 밝기 넣기
+      data[i + 2] = brightness;
       data[i + 3] = 255;
+
+      // totalLuminance += brightness;
     }
 
     ctx.putImageData(new ImageData(data, w, h), 0, 0);
@@ -116,6 +118,10 @@ export function useLiquidGlass(options = {}) {
       canvas.toDataURL()
     );
     feDisplacementMap.setAttribute("scale", maxScale.toString());
+
+    // const avgLuminance = totalLuminance / (w * h);
+    // console.log(avgLuminance);
+    // state.isDark = avgLuminance < 128;
   }
 
   function createSVGElement(name, attrs = {}) {
@@ -151,11 +157,9 @@ export function useLiquidGlass(options = {}) {
     container.innerHTML = svgMarkup;
     document.body.appendChild(container);
 
-    // 2. 주요 엘리먼트 변수에 할당 (참조 유지)
     feImage = container.querySelector(`#${id}_map`);
     feDisplacementMap = container.querySelector("feDisplacementMap");
 
-    // canvas 생성 부분은 그대로
     canvas = document.createElement("canvas");
     canvas.width = state.width;
     canvas.height = state.height;
@@ -177,14 +181,20 @@ export function useLiquidGlass(options = {}) {
       createElements();
       updateShader();
 
-      // 타깃 엘리먼트에 필터 적용
-      const bgFilter = `url(#${id}_filter) blur(1px) contrast(1.5) brightness(1.05) saturate(1.1)`;
-      $root.value.style.webkitBackdropFilter = bgFilter;
-      $root.value.style.backdropFilter = bgFilter;
+      const bgFilter = `url(#${id}_filter) blur(1px) contrast(1.5) brightness(1.2) saturate(1.1)`;
+      Object.assign($root.value.style, {
+        backdropFilter: bgFilter,
+        webkitBackdropFilter: bgFilter,
+        boxShadow: `inset -1px -1px 2px rgba(0, 0, 0, 0.1),
+      inset 1px 1px 2px rgba(255, 255, 255, 0.2)`,
+        border: `1px solid rgba(255 255 255 / 0.5)`,
+        borderRadius: "9999px",
+      });
     });
   });
 
   onBeforeUnmount(() => {
+    if (animationFrame) cancelAnimationFrame(animationFrame);
     if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
     if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
     if ($root.value) {
@@ -196,6 +206,6 @@ export function useLiquidGlass(options = {}) {
   return {
     $root,
     state,
-    updateShader, // 필요 시 외부에서 수동 호출 가능
+    updateShader,
   };
 }

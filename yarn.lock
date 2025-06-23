@@ -571,14 +571,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.27.2":
-  version: 7.27.4
-  resolution: "@babel/parser@npm:7.27.4"
+"@babel/parser@npm:^7.27.5":
+  version: 7.27.5
+  resolution: "@babel/parser@npm:7.27.5"
   dependencies:
     "@babel/types": "npm:^7.27.3"
   bin:
     parser: ./bin/babel-parser.js
-  checksum: 10c0/d1bf17e7508585235e2a76594ba81828e48851877112bb8abbecd7161a31fb66654e993e458ddaedb18a3d5fa31970e5f3feca5ae2900f51e6d8d3d35da70dbf
+  checksum: 10c0/f7faaebf21cc1f25d9ca8ac02c447ed38ef3460ea95be7ea760916dcf529476340d72a5a6010c6641d9ed9d12ad827c8424840277ec2295c5b082ba0f291220a
   languageName: node
   linkType: hard
 
@@ -1700,10 +1700,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electric-sql/pglite@npm:^0.2.16":
-  version: 0.2.17
-  resolution: "@electric-sql/pglite@npm:0.2.17"
-  checksum: 10c0/4358eccb2a3de5148b8995c7dbf3cad2d80a2a193885838ec19e0381ca204c0e37f721d006ad23fcad0b694ec6089a6786b82f2ad87f18344c82e059ff37017f
+"@electric-sql/pglite-tools@npm:^0.2.8":
+  version: 0.2.8
+  resolution: "@electric-sql/pglite-tools@npm:0.2.8"
+  peerDependencies:
+    "@electric-sql/pglite": 0.3.3
+  checksum: 10c0/43ea1a3d6606304dbd1d9519b70586f59ca7658dfb056ea3a72aa0e94ad2e3233e68dfd43e87945fb864dfd4715331c41cb1d73ec2422bca5e67013e5e291192
+  languageName: node
+  linkType: hard
+
+"@electric-sql/pglite@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "@electric-sql/pglite@npm:0.3.3"
+  checksum: 10c0/40bb132cdcb55442c69d735e7b3e6c5413358f17dce37661c1f214e5e6d19ebad666dc7cb963158781affad08c46d05d5bded4e63d9c322de5cc9b0c339d2597
   languageName: node
   linkType: hard
 
@@ -1882,9 +1891,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/ai@npm:1.3.0":
-  version: 1.3.0
-  resolution: "@firebase/ai@npm:1.3.0"
+"@firebase/ai@npm:1.4.0":
+  version: 1.4.0
+  resolution: "@firebase/ai@npm:1.4.0"
   dependencies:
     "@firebase/app-check-interop-types": "npm:0.3.3"
     "@firebase/component": "npm:0.6.17"
@@ -1894,7 +1903,7 @@ __metadata:
   peerDependencies:
     "@firebase/app": 0.x
     "@firebase/app-types": 0.x
-  checksum: 10c0/0bda765c7e3a2ccf8f850949897c100c02e80e9273dd623a6f8a280e7056c82cbea668d0b20c1be892872898d97e8dd9ddf1b91b2c5f31a00f88ddbe3a69cca9
+  checksum: 10c0/b95dc3640373a487847aef58c57d690d76b0e65c4f389c9d293888a0a8d0f1cfe2a25a4313bf724dff7140dd237e3c9287b91db937e5638464887c151727f899
   languageName: node
   linkType: hard
 
@@ -1979,16 +1988,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/app-compat@npm:0.4.0":
-  version: 0.4.0
-  resolution: "@firebase/app-compat@npm:0.4.0"
+"@firebase/app-compat@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@firebase/app-compat@npm:0.4.1"
   dependencies:
-    "@firebase/app": "npm:0.13.0"
+    "@firebase/app": "npm:0.13.1"
     "@firebase/component": "npm:0.6.17"
     "@firebase/logger": "npm:0.4.4"
     "@firebase/util": "npm:1.12.0"
     tslib: "npm:^2.1.0"
-  checksum: 10c0/e3f69aef24812f50411ead88a114062130c2637db62a2e7c82823824e2d75686f88c24200f639cde196061521e976986ace41d0ee95b7bef81dae2b1fc597bdc
+  checksum: 10c0/018df626ff29905ed9d8c0b690f4e83af045678e07f63025fb9cf8c96b9cc08c890073b3c756c09a2eeff88e126250de6c011b70e2c9934577a7ffc309f23cbe
   languageName: node
   linkType: hard
 
@@ -1999,31 +2008,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/app@npm:0.13.0":
-  version: 0.13.0
-  resolution: "@firebase/app@npm:0.13.0"
+"@firebase/app@npm:0.13.1":
+  version: 0.13.1
+  resolution: "@firebase/app@npm:0.13.1"
   dependencies:
     "@firebase/component": "npm:0.6.17"
     "@firebase/logger": "npm:0.4.4"
     "@firebase/util": "npm:1.12.0"
     idb: "npm:7.1.1"
     tslib: "npm:^2.1.0"
-  checksum: 10c0/373fedeb440dd916835316c7cc033222d98527c137d5d932b4b001a7688aa9f82c07d4b33e05a3c5d6145e7368ba2717c4bd5862a812dbbd75046ce430e2b0bc
+  checksum: 10c0/e39ab1f79344110ebde24ff2b71a09e756a23d0a8fb72cda31e73756ff88d6c200656876c534c790647b8715580c91242930804e1cbe2591b63604130587c267
   languageName: node
   linkType: hard
 
-"@firebase/auth-compat@npm:0.5.26":
-  version: 0.5.26
-  resolution: "@firebase/auth-compat@npm:0.5.26"
+"@firebase/auth-compat@npm:0.5.27":
+  version: 0.5.27
+  resolution: "@firebase/auth-compat@npm:0.5.27"
   dependencies:
-    "@firebase/auth": "npm:1.10.6"
+    "@firebase/auth": "npm:1.10.7"
     "@firebase/auth-types": "npm:0.13.0"
     "@firebase/component": "npm:0.6.17"
     "@firebase/util": "npm:1.12.0"
     tslib: "npm:^2.1.0"
   peerDependencies:
     "@firebase/app-compat": 0.x
-  checksum: 10c0/ef9fa4b559f0261c3b7604866dbc3a849d7ebb243685b197fb53b22a58a9ff712eb7e97a1e5eec17c11d5d08d2697745e15bf209ac331acad840f392c4daace6
+  checksum: 10c0/892230c754c152946a8237ee034fae9105a0cdddc705d0e85f93f5417e9906c591530f5acc4a0b08af54d98ea4058be818b845433e9f0d06e48d3da72838aa95
   languageName: node
   linkType: hard
 
@@ -2044,9 +2053,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/auth@npm:1.10.6":
-  version: 1.10.6
-  resolution: "@firebase/auth@npm:1.10.6"
+"@firebase/auth@npm:1.10.7":
+  version: 1.10.7
+  resolution: "@firebase/auth@npm:1.10.7"
   dependencies:
     "@firebase/component": "npm:0.6.17"
     "@firebase/logger": "npm:0.4.4"
@@ -2058,7 +2067,7 @@ __metadata:
   peerDependenciesMeta:
     "@react-native-async-storage/async-storage":
       optional: true
-  checksum: 10c0/216f63f0f14ee8ddbb6db19460b0d22900d86956c747c174978b7586f7960796c6b125b4e865ea9e4b2678a359f672549fd74332f3259886d8e7b60e24745e44
+  checksum: 10c0/2d0e47ac9711fcf79399feaa0b262681bf05791149def5ea31eaf6030df463ebf8d5475ff1bb1d6437f4ac240f781cf0d79f0520a6df752f40ae754370215d08
   languageName: node
   linkType: hard
 
@@ -2126,18 +2135,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/firestore-compat@npm:0.3.51":
-  version: 0.3.51
-  resolution: "@firebase/firestore-compat@npm:0.3.51"
+"@firebase/firestore-compat@npm:0.3.52":
+  version: 0.3.52
+  resolution: "@firebase/firestore-compat@npm:0.3.52"
   dependencies:
     "@firebase/component": "npm:0.6.17"
-    "@firebase/firestore": "npm:4.7.16"
+    "@firebase/firestore": "npm:4.7.17"
     "@firebase/firestore-types": "npm:3.0.3"
     "@firebase/util": "npm:1.12.0"
     tslib: "npm:^2.1.0"
   peerDependencies:
     "@firebase/app-compat": 0.x
-  checksum: 10c0/93a148e552c829197752ae1f23f09cf5cefe6b7d5ed52e7eb6df6d05aa207ea6bec98bd1aeb95aa367960126de990f630547cefee084b49d2f4afce8f2231d03
+  checksum: 10c0/3ca51acb87902b113035725b5a9f30d6751fa699a5f94ca625c8102d9ba96ebc024d9db6f0bdd9edc901ab172686eb8c5b895ecb7d86353bb7d6a870a4c4d530
   languageName: node
   linkType: hard
 
@@ -2151,9 +2160,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/firestore@npm:4.7.16":
-  version: 4.7.16
-  resolution: "@firebase/firestore@npm:4.7.16"
+"@firebase/firestore@npm:4.7.17":
+  version: 4.7.17
+  resolution: "@firebase/firestore@npm:4.7.17"
   dependencies:
     "@firebase/component": "npm:0.6.17"
     "@firebase/logger": "npm:0.4.4"
@@ -2164,7 +2173,7 @@ __metadata:
     tslib: "npm:^2.1.0"
   peerDependencies:
     "@firebase/app": 0.x
-  checksum: 10c0/385f2b4c9d0b8f2365dc2e647a332d1844e9b77bf2910b71595512ded4ba9818e0e13899f5049822ff9f8ab970c5ef63e5e004b034aa6946d39eef41d17cd6b7
+  checksum: 10c0/22eaf5bf64621a67abc696d9424ad9084937b5ca873e456b31122b9a5828c023d0048cd9cbc64f21930557252cce914b2c286217764dd1e0404c042d440b865c
   languageName: node
   linkType: hard
 
@@ -2367,18 +2376,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/storage-compat@npm:0.3.22":
-  version: 0.3.22
-  resolution: "@firebase/storage-compat@npm:0.3.22"
+"@firebase/storage-compat@npm:0.3.23":
+  version: 0.3.23
+  resolution: "@firebase/storage-compat@npm:0.3.23"
   dependencies:
     "@firebase/component": "npm:0.6.17"
-    "@firebase/storage": "npm:0.13.12"
+    "@firebase/storage": "npm:0.13.13"
     "@firebase/storage-types": "npm:0.8.3"
     "@firebase/util": "npm:1.12.0"
     tslib: "npm:^2.1.0"
   peerDependencies:
     "@firebase/app-compat": 0.x
-  checksum: 10c0/74fb0e75b02eeef45d488eb76c99f4bbe97dd00da919442c03f5af5dac1929c82de4b4d4ce32d0d556f08133c6ba9494975d0d466092eedd638ee5a5eb8d61d3
+  checksum: 10c0/93641904d52e6bd12156b3dd9c92a008d27d1a950fbb45bf313db9664867ad434498338c27599afebe6d946901691a4f07f808736aa61e67c3ea5e48ecf6424e
   languageName: node
   linkType: hard
 
@@ -2392,16 +2401,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/storage@npm:0.13.12":
-  version: 0.13.12
-  resolution: "@firebase/storage@npm:0.13.12"
+"@firebase/storage@npm:0.13.13":
+  version: 0.13.13
+  resolution: "@firebase/storage@npm:0.13.13"
   dependencies:
     "@firebase/component": "npm:0.6.17"
     "@firebase/util": "npm:1.12.0"
     tslib: "npm:^2.1.0"
   peerDependencies:
     "@firebase/app": 0.x
-  checksum: 10c0/b2c67e4faa7deb145fca3ae977a26f60349aaffe41b1207355b0fef1b963431aa044dc9ccea289c744ac8b06d917314d05c12635801dee771b1524bbd041314e
+  checksum: 10c0/cd40febba164f2c5c8095f5c4ab4c646208dfc5059b00f3727c3c9ea12cdc55f9507a29e07bcede29efb942d89180e04c5c9d4c05922a1e7b6a46020e407b9fb
   languageName: node
   linkType: hard
 
@@ -3659,16 +3668,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-core@npm:3.5.16":
-  version: 3.5.16
-  resolution: "@vue/compiler-core@npm:3.5.16"
+"@vue/compiler-core@npm:3.5.17":
+  version: 3.5.17
+  resolution: "@vue/compiler-core@npm:3.5.17"
   dependencies:
-    "@babel/parser": "npm:^7.27.2"
-    "@vue/shared": "npm:3.5.16"
+    "@babel/parser": "npm:^7.27.5"
+    "@vue/shared": "npm:3.5.17"
     entities: "npm:^4.5.0"
     estree-walker: "npm:^2.0.2"
     source-map-js: "npm:^1.2.1"
-  checksum: 10c0/1a6f1446320467eac382c9ee567bd6017a61d374eebe48cbf948badb13e14beb0f96645e2cb8c4bfff565aa4948f1d836352bea511e5f3322c51cc5921caf42a
+  checksum: 10c0/d6b50f6f0a71a77a04452877c601cfd6ea13ec07aa68a061523166c1150e159f64230eee28e1042e6113e334a11c25c306bae5d463931a9e7f96261a29a0042d
   languageName: node
   linkType: hard
 
@@ -3682,30 +3691,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-dom@npm:3.5.16":
-  version: 3.5.16
-  resolution: "@vue/compiler-dom@npm:3.5.16"
+"@vue/compiler-dom@npm:3.5.17":
+  version: 3.5.17
+  resolution: "@vue/compiler-dom@npm:3.5.17"
   dependencies:
-    "@vue/compiler-core": "npm:3.5.16"
-    "@vue/shared": "npm:3.5.16"
-  checksum: 10c0/e3ed5b50977cbb240abc2b8a71497254810e433a2e4a5eb254900c46abc6494b99df7e69ae79d7122c29c2e1cc4605c5b4925bf280e83e4f918098194b2894cf
+    "@vue/compiler-core": "npm:3.5.17"
+    "@vue/shared": "npm:3.5.17"
+  checksum: 10c0/27e4c201522abcb2755318fc502a4cf8a752fb90441bbd954c018990e80bb30e4075dadefa7f36671028779d9c21d34d76330f6b441921e317cf1c102a5411b6
   languageName: node
   linkType: hard
 
-"@vue/compiler-sfc@npm:3.5.16":
-  version: 3.5.16
-  resolution: "@vue/compiler-sfc@npm:3.5.16"
+"@vue/compiler-sfc@npm:3.5.17":
+  version: 3.5.17
+  resolution: "@vue/compiler-sfc@npm:3.5.17"
   dependencies:
-    "@babel/parser": "npm:^7.27.2"
-    "@vue/compiler-core": "npm:3.5.16"
-    "@vue/compiler-dom": "npm:3.5.16"
-    "@vue/compiler-ssr": "npm:3.5.16"
-    "@vue/shared": "npm:3.5.16"
+    "@babel/parser": "npm:^7.27.5"
+    "@vue/compiler-core": "npm:3.5.17"
+    "@vue/compiler-dom": "npm:3.5.17"
+    "@vue/compiler-ssr": "npm:3.5.17"
+    "@vue/shared": "npm:3.5.17"
     estree-walker: "npm:^2.0.2"
     magic-string: "npm:^0.30.17"
-    postcss: "npm:^8.5.3"
+    postcss: "npm:^8.5.6"
     source-map-js: "npm:^1.2.1"
-  checksum: 10c0/b9614aadde2c85f87fac3ee6f6b31209cec294c9b7c7aeb23d0dc92bdb7a0ee7ec6dc6d11f2bbc7403c19b4eb8df5d3dc9ae915e8cd74d77c50024608cabc02b
+  checksum: 10c0/63c9b4cac42291c5c7edaaa26a6b052fd47b7b7dda2c40ad7b344c4195b8add97e4a89e73e50bf94ee33b402cc075d69602c76cbd4627eedcf6061c9df91c8e7
   languageName: node
   linkType: hard
 
@@ -3736,13 +3745,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-ssr@npm:3.5.16":
-  version: 3.5.16
-  resolution: "@vue/compiler-ssr@npm:3.5.16"
+"@vue/compiler-ssr@npm:3.5.17":
+  version: 3.5.17
+  resolution: "@vue/compiler-ssr@npm:3.5.17"
   dependencies:
-    "@vue/compiler-dom": "npm:3.5.16"
-    "@vue/shared": "npm:3.5.16"
-  checksum: 10c0/e2f0e652981ded459f7bf1c9821d34332207e01b43db819281f632bdc0e7b8518c485019e65e010724f86acf520c715ae4b35cb717d2c0ad0f7cfacf83933df6
+    "@vue/compiler-dom": "npm:3.5.17"
+    "@vue/shared": "npm:3.5.17"
+  checksum: 10c0/80f0ccb05e8c6b3c72d4ea50ec87a1f89704483608053b1fcc88669886069edcd21cabc6608816c09d99fc6cab1985d676bf3725175f80482f2b3aaf51a15416
   languageName: node
   linkType: hard
 
@@ -3762,19 +3771,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/devtools-core@npm:^7.7.6":
-  version: 7.7.6
-  resolution: "@vue/devtools-core@npm:7.7.6"
+"@vue/devtools-core@npm:^7.7.7":
+  version: 7.7.7
+  resolution: "@vue/devtools-core@npm:7.7.7"
   dependencies:
-    "@vue/devtools-kit": "npm:^7.7.6"
-    "@vue/devtools-shared": "npm:^7.7.6"
+    "@vue/devtools-kit": "npm:^7.7.7"
+    "@vue/devtools-shared": "npm:^7.7.7"
     mitt: "npm:^3.0.1"
     nanoid: "npm:^5.1.0"
     pathe: "npm:^2.0.3"
     vite-hot-client: "npm:^2.0.4"
   peerDependencies:
     vue: ^3.0.0
-  checksum: 10c0/7d36f8a179b80c55fe25baf8924edd464000d0bdb55a50405b639588b47a6a8c1ccca503346cc23d6d51241c5fbbb792fe07a5a9b3deec90e7f294f55dacdca5
+  checksum: 10c0/b66dd8ad5a881feca35ed73a9b18486d2e84f14a175d8eddc4b52152a38b0712b134992395f7b6ea505a360dfb71290df3f7b9300f851d8cb246bb8df80198db
   languageName: node
   linkType: hard
 
@@ -3793,18 +3802,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/devtools-kit@npm:^7.7.6":
-  version: 7.7.6
-  resolution: "@vue/devtools-kit@npm:7.7.6"
+"@vue/devtools-kit@npm:^7.7.7":
+  version: 7.7.7
+  resolution: "@vue/devtools-kit@npm:7.7.7"
   dependencies:
-    "@vue/devtools-shared": "npm:^7.7.6"
+    "@vue/devtools-shared": "npm:^7.7.7"
     birpc: "npm:^2.3.0"
     hookable: "npm:^5.5.3"
     mitt: "npm:^3.0.1"
     perfect-debounce: "npm:^1.0.0"
     speakingurl: "npm:^14.0.1"
     superjson: "npm:^2.2.2"
-  checksum: 10c0/8025e894207ae0d8a4e82965a9a0ca7c5a3e98b3540616dc7f5de19af7fbfedc2398913786cf129f89509a7be2b0a18f8913682fa9a15669e748834ea2843546
+  checksum: 10c0/78a6048af4b6b5f9c42ac2e415f3455792e20467ff9a96b3db02b6df108740e3f90c89bdf607f1bb44e13dd77ba007e6bc1f6ce44cb53b26286635a2706ecdcf
   languageName: node
   linkType: hard
 
@@ -3817,55 +3826,55 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/devtools-shared@npm:^7.7.6":
-  version: 7.7.6
-  resolution: "@vue/devtools-shared@npm:7.7.6"
+"@vue/devtools-shared@npm:^7.7.7":
+  version: 7.7.7
+  resolution: "@vue/devtools-shared@npm:7.7.7"
   dependencies:
     rfdc: "npm:^1.4.1"
-  checksum: 10c0/4087bb9fbdb265c489e73452238062815a98f3cdc1c8816ed7a7a3a0c8f904802906a84fc9c6deccec3cec3a2f577ee871d24c2496b7b7e950fec6f5650e9117
+  checksum: 10c0/f29df17a6f5e92f6c33477279e0a22cb986fc413504918b58cf7d9fb4d541ea9e3163a947cf63212dfc19dd30351abfe1de39a8907bfef446ed02f03c06a24c9
   languageName: node
   linkType: hard
 
-"@vue/reactivity@npm:3.5.16":
-  version: 3.5.16
-  resolution: "@vue/reactivity@npm:3.5.16"
+"@vue/reactivity@npm:3.5.17":
+  version: 3.5.17
+  resolution: "@vue/reactivity@npm:3.5.17"
   dependencies:
-    "@vue/shared": "npm:3.5.16"
-  checksum: 10c0/88e8ff0b62518dac6db5adf7b130ec7e389ef5133c861223aa7ec89d310ee4fbc4cde42a53873187d98a8a113c507e41c366c3a3249c6714dfb5d1b47d409402
+    "@vue/shared": "npm:3.5.17"
+  checksum: 10c0/60ef16300b3819323df52eb243a9b6eabfd877ff0a97a2ee9e12537cbf855b52b78d57abb3cabf79c434e1afa4cbae738225bb2fdf8872d237ae6513f03f03e1
   languageName: node
   linkType: hard
 
-"@vue/runtime-core@npm:3.5.16":
-  version: 3.5.16
-  resolution: "@vue/runtime-core@npm:3.5.16"
+"@vue/runtime-core@npm:3.5.17":
+  version: 3.5.17
+  resolution: "@vue/runtime-core@npm:3.5.17"
   dependencies:
-    "@vue/reactivity": "npm:3.5.16"
-    "@vue/shared": "npm:3.5.16"
-  checksum: 10c0/8695a37049020a789b77c3ada3f4bb595b1149644d8c98e42c37889c863fa4bad5a2c8afa105ce1adf767d0e5f7e7869def7a9864dc18bce1c79877f3006246a
+    "@vue/reactivity": "npm:3.5.17"
+    "@vue/shared": "npm:3.5.17"
+  checksum: 10c0/dd6cc5e451cce2d979ce53f0c9dc100d47f38fe70398f061eed111d51a904199f984429b6243e2044272018375da5fd9ce469d1e72b7fb316a1160f700fa9950
   languageName: node
   linkType: hard
 
-"@vue/runtime-dom@npm:3.5.16":
-  version: 3.5.16
-  resolution: "@vue/runtime-dom@npm:3.5.16"
+"@vue/runtime-dom@npm:3.5.17":
+  version: 3.5.17
+  resolution: "@vue/runtime-dom@npm:3.5.17"
   dependencies:
-    "@vue/reactivity": "npm:3.5.16"
-    "@vue/runtime-core": "npm:3.5.16"
-    "@vue/shared": "npm:3.5.16"
+    "@vue/reactivity": "npm:3.5.17"
+    "@vue/runtime-core": "npm:3.5.17"
+    "@vue/shared": "npm:3.5.17"
     csstype: "npm:^3.1.3"
-  checksum: 10c0/3e18a6c80b51fde47efa65b8da4cd3876ac49a295bf8e2f26755db97fde413248d72697e288085e90f882c9e14731f6aa0eb2b8f85e7e169e4cfe519c2df4e76
+  checksum: 10c0/963d9b901e465621f24db745988f2f63c07fd7aa2a552e77d9dbd2a70f2c3f002f340866f085fa2fd791b62f7cd3e8a37f701351a49b839b4bbe5649fe9acc43
   languageName: node
   linkType: hard
 
-"@vue/server-renderer@npm:3.5.16":
-  version: 3.5.16
-  resolution: "@vue/server-renderer@npm:3.5.16"
+"@vue/server-renderer@npm:3.5.17":
+  version: 3.5.17
+  resolution: "@vue/server-renderer@npm:3.5.17"
   dependencies:
-    "@vue/compiler-ssr": "npm:3.5.16"
-    "@vue/shared": "npm:3.5.16"
+    "@vue/compiler-ssr": "npm:3.5.17"
+    "@vue/shared": "npm:3.5.17"
   peerDependencies:
-    vue: 3.5.16
-  checksum: 10c0/c6adccf54caf8bac495cf53cd41ae804eeee8257b5f30c611ff5bcb7741c2488b7c9126fe5857b93753742cba62be43fbe8db1be155b8f3f90b256d2f7a39236
+    vue: 3.5.17
+  checksum: 10c0/34c6bcf909fe64820dc28d97fdcb4752346b923b5bd4a09521228988dc86e3b70c1edfd4f0daf8d6b5f4d74cc56c9bdac2ec9c17e7ef0e616e575d8f7b910d3a
   languageName: node
   linkType: hard
 
@@ -3876,39 +3885,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/shared@npm:3.5.16":
-  version: 3.5.16
-  resolution: "@vue/shared@npm:3.5.16"
-  checksum: 10c0/242ecc41f4c4e8f7f5d8714d715f4a78e31ead988da47cb369b88bd2f53aacc0f1db8c15dfac726e2a3ebe1104689bddd65c5c349ca5097e6657b2af2098c2f7
+"@vue/shared@npm:3.5.17":
+  version: 3.5.17
+  resolution: "@vue/shared@npm:3.5.17"
+  checksum: 10c0/915d8f80d863826531cf6ddefeb52455cbffcbca4d14717472b7765b3142d2ad9900dfce351e90a22e1fe9e2f8fca588421de6e751e1c816ab9e1fdefa3e8a0d
   languageName: node
   linkType: hard
 
-"@vueuse/core@npm:^13.3.0":
-  version: 13.3.0
-  resolution: "@vueuse/core@npm:13.3.0"
+"@vueuse/core@npm:^13.4.0":
+  version: 13.4.0
+  resolution: "@vueuse/core@npm:13.4.0"
   dependencies:
     "@types/web-bluetooth": "npm:^0.0.21"
-    "@vueuse/metadata": "npm:13.3.0"
-    "@vueuse/shared": "npm:13.3.0"
+    "@vueuse/metadata": "npm:13.4.0"
+    "@vueuse/shared": "npm:13.4.0"
   peerDependencies:
     vue: ^3.5.0
-  checksum: 10c0/3e62bf0a4f6bb175eebb065df73b1e09bb62ecc02986fc1a07c9a7e212ca9388f09d01fd1d02a5149ec43e6cc1f51161e4f27ccb186a8a0d17f11d63bd8e7a51
+  checksum: 10c0/a4ec26881cba3cefb8cb7eddb2148d80508c10c3d3efb07069c39119cec3f99a0dee578d776c4f440d57e4a23b07b0b65e66de0a66fecced28191ec4c6380805
   languageName: node
   linkType: hard
 
-"@vueuse/metadata@npm:13.3.0":
-  version: 13.3.0
-  resolution: "@vueuse/metadata@npm:13.3.0"
-  checksum: 10c0/a4392f75088c0f15a56969602c019dd47101d8e2fe91061d40a90b10c9a9188df97b1cb69c15750ccd987e3f7878c99f0f76d0b3d3d7def83a21210c2b60117d
+"@vueuse/metadata@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@vueuse/metadata@npm:13.4.0"
+  checksum: 10c0/223b3ec56c9b82586e3940a79f9f3d350986a3ee9f39b3b3bed74055e44fd1d947528c8b78574f2b0afcc4f8d48f6f56abccf1b5919782fc4aee858c0a12f3bb
   languageName: node
   linkType: hard
 
-"@vueuse/shared@npm:13.3.0":
-  version: 13.3.0
-  resolution: "@vueuse/shared@npm:13.3.0"
+"@vueuse/shared@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@vueuse/shared@npm:13.4.0"
   peerDependencies:
     vue: ^3.5.0
-  checksum: 10c0/3dd3186a8784f26f13f37f78144aaf9586bb12138a5cc84f0779a5e9f5dd20d317e0ca5377d1091dd51f159e1e6ae64a18f8967bf42aabace96e03cafe4e272b
+  checksum: 10c0/6a32f8bf1f655b42374f3f07efd370e1f5b2f2ab9ff7d67f544f8660a48dbf4cb21f206991be6b12fc20a0983e3c82117676583c636f435e369a91dfd5455d78
   languageName: node
   linkType: hard
 
@@ -6304,11 +6313,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase-tools@npm:^14.5.1":
-  version: 14.5.1
-  resolution: "firebase-tools@npm:14.5.1"
+"firebase-tools@npm:^14.8.0":
+  version: 14.8.0
+  resolution: "firebase-tools@npm:14.8.0"
   dependencies:
-    "@electric-sql/pglite": "npm:^0.2.16"
+    "@electric-sql/pglite": "npm:^0.3.3"
+    "@electric-sql/pglite-tools": "npm:^0.2.8"
     "@google-cloud/cloud-sql-connector": "npm:^1.3.3"
     "@google-cloud/pubsub": "npm:^4.5.0"
     "@inquirer/prompts": "npm:^7.4.0"
@@ -6357,6 +6367,8 @@ __metadata:
     ora: "npm:^5.4.1"
     p-limit: "npm:^3.0.1"
     pg: "npm:^8.11.3"
+    pg-gateway: "npm:^0.3.0-beta.4"
+    pglite-2: "npm:@electric-sql/pglite@0.2.17"
     portfinder: "npm:^1.0.32"
     progress: "npm:^2.0.3"
     proxy-agent: "npm:^6.3.0"
@@ -6381,29 +6393,29 @@ __metadata:
     zod-to-json-schema: "npm:^3.24.5"
   bin:
     firebase: lib/bin/firebase.js
-  checksum: 10c0/be50de4cc9eb061de137c755cb3ce37b41f1638b87573360f43de0812106016f6c5f56fdea5adab7370ea76689eb85864a86e22801a8a66cb23510146d3e98b0
+  checksum: 10c0/08340b4986943c461cf0b6d4d7120421efb4ce8bbdc7c6b87bc43338f9b34a883b5f02b95ec22016a317420457869b28caa09f9c20fe4867cb38e33ac48fe6af
   languageName: node
   linkType: hard
 
-"firebase@npm:^11.8.1":
-  version: 11.8.1
-  resolution: "firebase@npm:11.8.1"
+"firebase@npm:^11.9.1":
+  version: 11.9.1
+  resolution: "firebase@npm:11.9.1"
   dependencies:
-    "@firebase/ai": "npm:1.3.0"
+    "@firebase/ai": "npm:1.4.0"
     "@firebase/analytics": "npm:0.10.16"
     "@firebase/analytics-compat": "npm:0.2.22"
-    "@firebase/app": "npm:0.13.0"
+    "@firebase/app": "npm:0.13.1"
     "@firebase/app-check": "npm:0.10.0"
     "@firebase/app-check-compat": "npm:0.3.25"
-    "@firebase/app-compat": "npm:0.4.0"
+    "@firebase/app-compat": "npm:0.4.1"
     "@firebase/app-types": "npm:0.9.3"
-    "@firebase/auth": "npm:1.10.6"
-    "@firebase/auth-compat": "npm:0.5.26"
+    "@firebase/auth": "npm:1.10.7"
+    "@firebase/auth-compat": "npm:0.5.27"
     "@firebase/data-connect": "npm:0.3.9"
     "@firebase/database": "npm:1.0.19"
     "@firebase/database-compat": "npm:2.0.10"
-    "@firebase/firestore": "npm:4.7.16"
-    "@firebase/firestore-compat": "npm:0.3.51"
+    "@firebase/firestore": "npm:4.7.17"
+    "@firebase/firestore-compat": "npm:0.3.52"
     "@firebase/functions": "npm:0.12.8"
     "@firebase/functions-compat": "npm:0.3.25"
     "@firebase/installations": "npm:0.6.17"
@@ -6414,10 +6426,10 @@ __metadata:
     "@firebase/performance-compat": "npm:0.2.19"
     "@firebase/remote-config": "npm:0.6.4"
     "@firebase/remote-config-compat": "npm:0.2.17"
-    "@firebase/storage": "npm:0.13.12"
-    "@firebase/storage-compat": "npm:0.3.22"
+    "@firebase/storage": "npm:0.13.13"
+    "@firebase/storage-compat": "npm:0.3.23"
     "@firebase/util": "npm:1.12.0"
-  checksum: 10c0/32c150355669a31fa7058330a975e6f7f718b012a9ec497018e473cf69a5a5a3afa7e5cc6402d378fc49176bb87954bb94c7a330e91f2c7a5ff3a711aa35f09a
+  checksum: 10c0/510ff33163e173457947eb2074cac478929890a88a805742ff212f5f440775ffed3037a4859143fe4ef8aa5e5ee7ea8cf891adccc55e3233964983e1fbe9f89d
   languageName: node
   linkType: hard
 
@@ -8686,6 +8698,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nanoid@npm:^3.3.11":
+  version: 3.3.11
+  resolution: "nanoid@npm:3.3.11"
+  bin:
+    nanoid: bin/nanoid.cjs
+  checksum: 10c0/40e7f70b3d15f725ca072dfc4f74e81fcf1fbb02e491cf58ac0c79093adc9b0a73b152bcde57df4b79cd097e13023d7504acb38404a4da7bc1cd8e887b82fe0b
+  languageName: node
+  linkType: hard
+
 "nanoid@npm:^3.3.7":
   version: 3.3.7
   resolution: "nanoid@npm:3.3.7"
@@ -9196,6 +9217,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pg-gateway@npm:^0.3.0-beta.4":
+  version: 0.3.0-beta.4
+  resolution: "pg-gateway@npm:0.3.0-beta.4"
+  checksum: 10c0/28c5dd9b6f56de97c84d9e69418106ca60ee23dada4fd1cc61d6db43add118008f1c7aed50167b60b71c0e546d35c794cbd7e465bfc3d3e6f709dd04f3018103
+  languageName: node
+  linkType: hard
+
 "pg-int8@npm:1.0.1":
   version: 1.0.1
   resolution: "pg-int8@npm:1.0.1"
@@ -9254,6 +9282,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pglite-2@npm:@electric-sql/pglite@0.2.17":
+  version: 0.2.17
+  resolution: "@electric-sql/pglite@npm:0.2.17"
+  checksum: 10c0/4358eccb2a3de5148b8995c7dbf3cad2d80a2a193885838ec19e0381ca204c0e37f721d006ad23fcad0b694ec6089a6786b82f2ad87f18344c82e059ff37017f
+  languageName: node
+  linkType: hard
+
 "pgpass@npm:1.x":
   version: 1.0.5
   resolution: "pgpass@npm:1.0.5"
@@ -9291,9 +9326,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pinia@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "pinia@npm:3.0.2"
+"pinia@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "pinia@npm:3.0.3"
   dependencies:
     "@vue/devtools-api": "npm:^7.7.2"
   peerDependencies:
@@ -9302,7 +9337,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/4c21412ddb32c48c1d9fb9fb47a2cd40bc4af9198e65392423ab97f6a9da31d0b880bc59b008967058643a988cb574025f885a1d0e4faf47bec25521933bb27f
+  checksum: 10c0/486f464ce402e33c502caf564bebcd00c364e7d57432373f64201da0cdbbc96a6357fecb5ee09882228d3c17d400af1f0c9550ddf2d19f2ef2931860a427cc23
   languageName: node
   linkType: hard
 
@@ -9343,6 +9378,17 @@ __metadata:
     picocolors: "npm:^1.1.1"
     source-map-js: "npm:^1.2.1"
   checksum: 10c0/b75510d7b28c3ab728c8733dd01538314a18c52af426f199a3c9177e63eb08602a3938bfb66b62dc01350b9aed62087eabbf229af97a1659eb8d3513cec823b3
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.5.6":
+  version: 8.5.6
+  resolution: "postcss@npm:8.5.6"
+  dependencies:
+    nanoid: "npm:^3.3.11"
+    picocolors: "npm:^1.1.1"
+    source-map-js: "npm:^1.2.1"
+  checksum: 10c0/5127cc7c91ed7a133a1b7318012d8bfa112da9ef092dddf369ae699a1f10ebbd89b1b9f25f3228795b84585c72aabd5ced5fc11f2ba467eedf7b081a66fad024
   languageName: node
   linkType: hard
 
@@ -10106,9 +10152,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.89.1":
-  version: 1.89.1
-  resolution: "sass@npm:1.89.1"
+"sass@npm:^1.89.2":
+  version: 1.89.2
+  resolution: "sass@npm:1.89.2"
   dependencies:
     "@parcel/watcher": "npm:^2.4.1"
     chokidar: "npm:^4.0.0"
@@ -10119,7 +10165,7 @@ __metadata:
       optional: true
   bin:
     sass: sass.js
-  checksum: 10c0/4406c441f71f5e0ec056345e6091cef51fd1786dac6e5b3eb1e87df464c40b3278219cc51df98309c36794503787ab0fe88fd45f2b0464f22000b68e755883ee
+  checksum: 10c0/752ccc7581b0c6395f63918116c20924e99943a86d79e94f5c4a0d41b1e981fe1f0ecd1ee82fff21496f81dbc91f68fb35a498166562ec8ec53e7aad7c3dbd9d
   languageName: node
   linkType: hard
 
@@ -11483,20 +11529,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-vue-devtools@npm:^7.7.6":
-  version: 7.7.6
-  resolution: "vite-plugin-vue-devtools@npm:7.7.6"
+"vite-plugin-vue-devtools@npm:^7.7.7":
+  version: 7.7.7
+  resolution: "vite-plugin-vue-devtools@npm:7.7.7"
   dependencies:
-    "@vue/devtools-core": "npm:^7.7.6"
-    "@vue/devtools-kit": "npm:^7.7.6"
-    "@vue/devtools-shared": "npm:^7.7.6"
+    "@vue/devtools-core": "npm:^7.7.7"
+    "@vue/devtools-kit": "npm:^7.7.7"
+    "@vue/devtools-shared": "npm:^7.7.7"
     execa: "npm:^9.5.2"
     sirv: "npm:^3.0.1"
     vite-plugin-inspect: "npm:0.8.9"
     vite-plugin-vue-inspector: "npm:^5.3.1"
   peerDependencies:
-    vite: ^3.1.0 || ^4.0.0-0 || ^5.0.0-0 || ^6.0.0-0
-  checksum: 10c0/6e35b207f88a96e22f827ab6722b36aa3c3b4302310c410414dbbd445e68af48ada16bd25779baf1afb6e4a776e9e7539cf48ea3673a2c5080cfc0c7105ce37c
+    vite: ^3.1.0 || ^4.0.0-0 || ^5.0.0-0 || ^6.0.0-0 || ^7.0.0-0
+  checksum: 10c0/eb6f8c73f4fb2542d715c4755cbe07dc28e0f63776bf545ab2d037f2b54e9b618775339835b328dcbab913b72b512a5fa98adbf761bcb329b6ce80e963f29986
   languageName: node
   linkType: hard
 
@@ -11585,21 +11631,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue@npm:^3.5.16":
-  version: 3.5.16
-  resolution: "vue@npm:3.5.16"
+"vue@npm:^3.5.17":
+  version: 3.5.17
+  resolution: "vue@npm:3.5.17"
   dependencies:
-    "@vue/compiler-dom": "npm:3.5.16"
-    "@vue/compiler-sfc": "npm:3.5.16"
-    "@vue/runtime-dom": "npm:3.5.16"
-    "@vue/server-renderer": "npm:3.5.16"
-    "@vue/shared": "npm:3.5.16"
+    "@vue/compiler-dom": "npm:3.5.17"
+    "@vue/compiler-sfc": "npm:3.5.17"
+    "@vue/runtime-dom": "npm:3.5.17"
+    "@vue/server-renderer": "npm:3.5.17"
+    "@vue/shared": "npm:3.5.17"
   peerDependencies:
     typescript: "*"
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/dbc2edacd5fd1eaa6683579e9561960cdc735a0210238e2ce3a2570efbfe24b8a242592fe4c1d2e8e167650077592f36b5056711e70584d9339ff5cb6ef724f6
+  checksum: 10c0/271e7aeca24495145e0e00e8553c681ae4feb08309207aa7bf6e13d0603ca8e1b6a8091d62542041aef2f4874940ee3f0a186a7753f0729fa5a12576861b34a8
   languageName: node
   linkType: hard
 
@@ -11608,17 +11654,17 @@ __metadata:
   resolution: "vueflix@workspace:."
   dependencies:
     "@vitejs/plugin-vue": "npm:^5.2.4"
-    "@vueuse/core": "npm:^13.3.0"
+    "@vueuse/core": "npm:^13.4.0"
     dayjs: "npm:^1.11.13"
     fast-average-color: "npm:^9.5.0"
-    firebase: "npm:^11.8.1"
-    firebase-tools: "npm:^14.5.1"
-    pinia: "npm:^3.0.2"
-    sass: "npm:^1.89.1"
+    firebase: "npm:^11.9.1"
+    firebase-tools: "npm:^14.8.0"
+    pinia: "npm:^3.0.3"
+    sass: "npm:^1.89.2"
     vite: "npm:^6.3.5"
     vite-plugin-pwa: "npm:^1.0.0"
-    vite-plugin-vue-devtools: "npm:^7.7.6"
-    vue: "npm:^3.5.16"
+    vite-plugin-vue-devtools: "npm:^7.7.7"
+    vue: "npm:^3.5.17"
     vue-router: "npm:^4.5.1"
   languageName: unknown
   linkType: soft

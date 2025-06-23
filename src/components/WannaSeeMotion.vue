@@ -6,7 +6,6 @@
     <IconBase class="WannaSeeMotion__Icon WannaSeeMotion__Icon--Add">
       <IconWannaSeeAdd />
     </IconBase>
-    {{ wannaSee }}
   </i>
 </template>
 
