@@ -5,7 +5,7 @@
     :class="scrollState !== 'top' && 'BottomTabMenu--Scrolled'"
     name="bottom-tab"
   >
-    <div class="BottomTabMenu__Items" key="items" ref="$Items">
+    <LiquidGlass class="BottomTabMenu__Items" key="items" tag="div" radius="24">
       <div v-for="({ to, name, icon }, index) in items" :key="index">
         <RouterLink
           class="BottomTabMenu__Item"
@@ -20,10 +20,17 @@
           <span class="blind">{{ name }}</span>
         </RouterLink>
       </div>
-    </div>
-    <div v-if="scrollState !== 'top'" key="to-top">
+    </LiquidGlass>
+    <LiquidGlass
+      v-if="scrollState !== 'top'"
+      key="to-top"
+      tag="div"
+      radius="24"
+      depth="4"
+      class="BottomTabMenu__ToTopWrap"
+    >
       <ToTop class="BottomTabMenu__ToTop" ref="$ToTop" />
-    </div>
+    </LiquidGlass>
   </TransitionGroup>
 </template>
 
@@ -35,9 +42,10 @@ import ToTop from "@/components/ToTop.vue";
 import IconBase from "./IconBase.vue";
 import IconHome from "./icons/IconHome.vue";
 import IconBasket from "./icons/IconBasket.vue";
-import { useLiquidGlass } from "@/composables/liquid-glass";
+import LiquidGlass from "./LiquidGlass.vue";
+// import { useLiquidGlass } from "@/composables/liquid-glass";
 
-const { $root: $Items } = useLiquidGlass({ radius: 0.6 });
+// const { $root: $Items } = useLiquidGlass({ radius: 0.6 });
 
 // 탭 메뉴 아이템 정의
 const items = [
@@ -92,6 +100,8 @@ const { state: scrollState } = useScroll();
   &__Items {
     display: flex;
     pointer-events: initial;
+    border-radius: 9999px;
+    box-shadow: inset -1px -1px 4px hsl(var(--text-900) / 0.1);
   }
   &__Item {
     // color: #fff;
@@ -112,11 +122,13 @@ const { state: scrollState } = useScroll();
     align-content: center;
     color: inherit;
   }
+  &__ToTopWrap {
+    border-radius: 9999px;
+    background-color: hsl(var(--theme-500) / 0.8);
+  }
   &__ToTop {
     width: 4.8rem;
     height: 4.8rem;
-    background-color: hsl(var(--theme-500) / 0.8);
-    backdrop-filter: blur(10px);
     flex-shrink: 0;
     color: hsl(var(--bg-100) / 0.9);
     pointer-events: initial;

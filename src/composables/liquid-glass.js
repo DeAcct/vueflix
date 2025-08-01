@@ -1,211 +1,265 @@
-import {
-  ref,
-  reactive,
-  onMounted,
-  onBeforeUnmount,
-  watch,
-  nextTick,
-} from "vue";
+import { ref, unref, onMounted, onBeforeUnmount, watchEffect } from "vue";
 
-export function useLiquidGlass(options = {}) {
-  const $root = ref(null);
-  const radius = options.radius ?? 0.6;
+/**
+ * displacement map SVG를 data URL로 생성
+ * @param {Object} opts
+ * @param {number} opts.height
+ * @param {number} opts.width
+ * @param {number} opts.radius
+ * @param {number} opts.depth
+ * @returns {string}
+ */
+export const getDisplacementMap = ({ height, width, radius, depth }) =>
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg
+  height="${height}"
+  width="${width}"
+  viewBox="0 0 ${width} ${height}"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <style>
+    .mix { mix-blend-mode: screen; }
+  </style>
 
-  const state = reactive({
-    width: 0,
-    height: 0,
-    mouse: { x: 0.5, y: 0.5 },
-    mouseUsed: false,
-  });
-
-  const id = "liquid-glass-" + Math.random().toString(36).substr(2, 9);
-
-  let svg, canvas, ctx;
-  let feImage, feDisplacementMap;
-  let animationFrame;
-  let lastUpdateTime = 0;
-  const frameInterval = 1000 / 12;
-
-  function smoothStep(a, b, t) {
-    t = Math.max(0, Math.min(1, (t - a) / (b - a)));
-    return t * t * (3 - 2 * t);
-  }
-
-  function length(x, y) {
-    return Math.sqrt(x * x + y * y);
-  }
-
-  function roundedRectSDF(x, y, width, height, radius) {
-    const qx = Math.abs(x) - width + radius;
-    const qy = Math.abs(y) - height + radius;
-    return (
-      Math.min(Math.max(qx, qy), 0) +
-      length(Math.max(qx, 0), Math.max(qy, 0)) -
-      radius
-    );
-  }
-
-  function texture(x, y) {
-    return { type: "t", x, y };
-  }
-
-  function fragment(uv, time = 0) {
-    const ix = uv.x - 0.5;
-    const iy = uv.y - 0.5;
-    const wave = Math.sin(10 * (ix + iy) + time * 0.0025) * 0.01;
-    const distanceToEdge = roundedRectSDF(ix, iy, 0.3, 0.2, radius);
-    const displacement = smoothStep(0.8, 0, distanceToEdge - 0.15);
-    const scaled = smoothStep(0, 1, displacement);
-    return texture(ix * scaled + 0.5 + wave, iy * scaled + 0.5 + wave);
-  }
-
-  function updateShader(timestamp = 0) {
-    animationFrame = requestAnimationFrame(updateShader);
-
-    if (timestamp - lastUpdateTime < frameInterval) return;
-    lastUpdateTime = timestamp;
-
-    if (state.width <= 0 || state.height <= 0) return;
-
-    const w = state.width;
-    const h = state.height;
-    const data = new Uint8ClampedArray(w * h * 4);
-
-    let maxScale = 0;
-    const rawValues = [];
-    // let totalLuminance = 0;
-
-    for (let i = 0; i < data.length; i += 4) {
-      const x = (i / 4) % w;
-      const y = Math.floor(i / 4 / w);
-
-      const uv = { x: x / w, y: y / h };
-      const pos = fragment(uv, timestamp);
-
-      const dx = -(pos.x * w - x);
-      const dy = -(pos.y * h - y);
-
-      maxScale = Math.max(maxScale, Math.abs(dx), Math.abs(dy));
-      rawValues.push(dx, dy);
-    }
-
-    maxScale *= 0.5;
-
-    let index = 0;
-    for (let i = 0; i < data.length; i += 4) {
-      const r = rawValues[index++] / maxScale + 0.5;
-      const g = rawValues[index++] / maxScale + 0.5;
-
-      const pixelIndex = i / 4;
-      const py = Math.floor(pixelIndex / w);
-      const px = pixelIndex % w;
-      const uv = { x: px / w, y: py / h };
-      const lightFactor = 0.8 * (1 - uv.x) + 0.2 * (1 - uv.y);
-      const brightness = Math.floor(lightFactor * 255);
-
-      data[i] = r * 255;
-      data[i + 1] = g * 255;
-      data[i + 2] = brightness;
-      data[i + 3] = 255;
-
-      // totalLuminance += brightness;
-    }
-
-    ctx.putImageData(new ImageData(data, w, h), 0, 0);
-    feImage.setAttributeNS(
-      "http://www.w3.org/1999/xlink",
-      "href",
-      canvas.toDataURL()
-    );
-    feDisplacementMap.setAttribute("scale", maxScale.toString());
-
-    // const avgLuminance = totalLuminance / (w * h);
-    // console.log(avgLuminance);
-    // state.isDark = avgLuminance < 128;
-  }
-
-  function createSVGElement(name, attrs = {}) {
-    const el = document.createElementNS("http://www.w3.org/2000/svg", name);
-    Object.entries(attrs).forEach(([key, value]) => {
-      el.setAttribute(key, value);
-    });
-    return el;
-  }
-
-  function createElements() {
-    const svgMarkup = `
-<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0"
-     style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;">
   <defs>
-    <filter id="${id}_filter" filterUnits="userSpaceOnUse" x="0" y="0" width="${state.width}" height="${state.height}" color-interpolation-filters="sRGB">
-      <feImage id="${id}_map" width="${state.width}" height="${state.height}" />
-      <feDisplacementMap in="SourceGraphic" in2="${id}_map" xChannelSelector="R" yChannelSelector="G" />
+    <linearGradient
+      id="Y"
+      x1="0"
+      x2="0"
+      y1="${Math.ceil((radius / height) * 15)}%"
+      y2="${Math.floor(100 - (radius / height) * 15)}%"
+    >
+      <stop offset="0%" stop-color="#0F0" />
+      <stop offset="100%" stop-color="#000" />
+    </linearGradient>
+
+    <linearGradient
+      id="X"
+      x1="${Math.ceil((radius / width) * 15)}%"
+      x2="${Math.floor(100 - (radius / width) * 15)}%"
+      y1="0"
+      y2="0"
+    >
+      <stop offset="0%" stop-color="#F00" />
+      <stop offset="100%" stop-color="#000" />
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" height="${height}" width="${width}" fill="#808080" />
+
+  <g filter="blur(2px)">
+    <rect x="0" y="0" height="${height}" width="${width}" fill="#000080" />
+
+    <rect
+      x="0"
+      y="0"
+      height="${height}"
+      width="${width}"
+      fill="url(#Y)"
+      class="mix"
+    />
+
+    <rect
+      x="0"
+      y="0"
+      height="${height}"
+      width="${width}"
+      fill="url(#X)"
+      class="mix"
+    />
+
+    <rect
+      x="${depth}"
+      y="${depth}"
+      height="${height - 2 * depth}"
+      width="${width - 2 * depth}"
+      fill="#808080"
+      rx="${radius}"
+      ry="${radius}"
+      filter="blur(${depth}px)"
+    />
+  </g>
+</svg>`
+  );
+
+/**
+ * DOM 요소(el 또는 ref)를 기반으로 displacement filter를 실시간 계산해서 반환한다.
+ * 반환값: { filter: Ref<string> } – 적용할 SVG filter URL.
+ * 입력 파라미터:
+ *   el: HTMLElement | Ref<HTMLElement|null>
+ *   radius: (optional) override border-radius 계산
+ *   depth: (optional) override depth
+ *   strength: number
+ *   chromaticAberration: number
+ */
+export function getDisplacementFilter({
+  el,
+  radius: overrideRadius,
+  depth: overrideDepth,
+  strength = 100,
+  chromaticAberration = 0,
+}) {
+  const filter = ref("");
+  let resizeObs = null;
+  let styleObserver = null;
+
+  const parsePx = (v) => {
+    const m = /^([\d.]+)px$/.exec(v);
+    return m ? parseFloat(m[1]) : 0;
+  };
+
+  const rebuild = () => {
+    console.log("rebuild : ", el.value);
+    const _el = unref(el);
+    if (!(_el instanceof HTMLElement)) {
+      filter.value = "";
+      return;
+    }
+
+    const rect = _el.getBoundingClientRect();
+    const computed = getComputedStyle(_el);
+
+    const width = rect.width || parsePx(computed.width) || 0;
+    const height = rect.height || parsePx(computed.height) || 0;
+
+    // radius 계산: override가 없으면 borderRadius 중 최대값
+    let radius = 0;
+    if (overrideRadius != null) {
+      radius = overrideRadius;
+    } else if (computed.borderRadius) {
+      const parts = computed.borderRadius
+        .split(/\s+/)
+        .map((v) => parsePx(v))
+        .filter((n) => !isNaN(n));
+      if (parts.length) radius = Math.max(...parts);
+    }
+
+    // depth 기본값: 요소 크기의 5%, 최소 1
+    const defaultDepth = Math.max(1, Math.min(width, height) * 0.05);
+    const depth = overrideDepth != null ? overrideDepth : defaultDepth;
+
+    if (width <= 0 || height <= 0) {
+      filter.value = "";
+      return;
+    }
+
+    const displacementMapHref = getDisplacementMap({
+      height,
+      width,
+      radius,
+      depth,
+    });
+
+    const svgFilter = `<svg height="${height}" width="${width}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="displace" color-interpolation-filters="sRGB">
+      <feImage
+        x="0"
+        y="0"
+        height="${height}"
+        width="${width}"
+        href="${displacementMapHref}"
+        result="displacementMap"
+      />
+
+      <feDisplacementMap
+        transform-origin="center"
+        in="SourceGraphic"
+        in2="displacementMap"
+        scale="${strength + chromaticAberration * 2}"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      />
+      <feColorMatrix
+        type="matrix"
+        values="1 0 0 0 0
+                0 0 0 0 0
+                0 0 0 0 0
+                0 0 0 1 0"
+        result="displacedR"
+      />
+
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="displacementMap"
+        scale="${strength + chromaticAberration}"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      />
+      <feColorMatrix
+        type="matrix"
+        values="0 0 0 0 0
+                0 1 0 0 0
+                0 0 0 0 0
+                0 0 0 1 0"
+        result="displacedG"
+      />
+
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="displacementMap"
+        scale="${strength}"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      />
+      <feColorMatrix
+        type="matrix"
+        values="0 0 0 0 0
+                0 0 0 0 0
+                0 0 1 0 0
+                0 0 0 1 0"
+        result="displacedB"
+      />
+
+      <feBlend in="displacedR" in2="displacedG" mode="screen" />
+      <feBlend in2="displacedB" mode="screen" />
     </filter>
   </defs>
-</svg>
-`;
+</svg>`;
 
-    const container = document.createElement("div");
-    container.style.position = "fixed";
-    container.style.top = "0";
-    container.style.left = "0";
-    container.style.width = "0";
-    container.style.height = "0";
-    container.style.pointerEvents = "none";
-    container.style.zIndex = "9999";
+    filter.value =
+      "data:image/svg+xml;utf8," + encodeURIComponent(svgFilter) + "#displace";
+    console.log(filter.value);
+  };
 
-    container.innerHTML = svgMarkup;
-    document.body.appendChild(container);
-
-    feImage = container.querySelector(`#${id}_map`);
-    feDisplacementMap = container.querySelector("feDisplacementMap");
-
-    canvas = document.createElement("canvas");
-    canvas.width = state.width;
-    canvas.height = state.height;
-    canvas.style.display = "none";
-
-    ctx = canvas.getContext("2d");
-  }
-
-  function resolveRoot(el) {
-    return el?.$el ?? el;
-  }
   onMounted(() => {
-    nextTick(() => {
-      const element = resolveRoot($root.value);
-      if (!element) return;
+    watchEffect(() => {
+      rebuild();
+    });
 
-      const rect = element.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) return;
+    const _el = unref(el);
+    if (!(_el instanceof HTMLElement)) return;
 
-      state.width = Math.floor(rect.width);
-      state.height = Math.floor(rect.height);
-
-      createElements();
-      updateShader();
-
-      const bgFilter = `url(#${id}_filter) blur(1px) contrast(1.5) brightness(1.2) saturate(1.1)`;
-      Object.assign(element.style, {
-        backdropFilter: bgFilter,
-        webkitBackdropFilter: bgFilter,
-        boxShadow: `inset -1px -1px 2px rgba(0, 0, 0, 0.1),
-      inset 1px 1px 2px rgba(255, 255, 255, 0.2)`,
-        border: `1px solid rgba(255 255 255 / 0.5)`,
-        borderRadius: "9999px",
+    if (window.ResizeObserver) {
+      resizeObs = new ResizeObserver(() => {
+        rebuild();
       });
+      resizeObs.observe(_el);
+    }
+
+    styleObserver = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (
+          m.type === "attributes" &&
+          (m.attributeName === "style" || m.attributeName === "class")
+        ) {
+          rebuild();
+
+          break;
+        }
+      }
+    });
+    styleObserver.observe(_el, {
+      attributes: true,
+      attributeFilter: ["style", "class"],
     });
   });
 
   onBeforeUnmount(() => {
-    if (animationFrame) cancelAnimationFrame(animationFrame);
-    if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
-    if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
+    if (resizeObs && resizeObs.disconnect) resizeObs.disconnect();
+    if (styleObserver && styleObserver.disconnect) styleObserver.disconnect();
   });
 
-  return {
-    $root,
-    state,
-    updateShader,
-  };
+  return filter;
 }

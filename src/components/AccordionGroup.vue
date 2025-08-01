@@ -1,6 +1,11 @@
 <template>
   <details class="AccordionGroup">
-    <summary class="AccordionGroup__Title" data-pointer="true" ref="$Sticky">
+    <LiquidGlass
+      class="AccordionGroup__Title"
+      data-pointer="true"
+      tag="summary"
+      radius="24"
+    >
       <span
         class="AccordionGroup__TitleText"
         :class="liquid ?? 'AccordionGroup__TitleText--Liquid'"
@@ -12,7 +17,7 @@
           <IconArrowPrev />
         </IconBase>
       </i>
-    </summary>
+    </LiquidGlass>
     <div class="AccordionGroup__Content">
       <slot name="content"></slot>
     </div>
@@ -23,7 +28,8 @@
 import { computed } from "vue";
 import IconBase from "./IconBase.vue";
 import IconArrowPrev from "./icons/IconArrowPrev.vue";
-import { useLiquidGlass } from "../composables/liquid-glass";
+import LiquidGlass from "./LiquidGlass.vue";
+// import { useLiquidGlass } from "../composables/liquid-glass";
 
 const ACCORDION_ANIMATION_DURATION = 300;
 
@@ -39,9 +45,9 @@ const props = defineProps({
 });
 
 const _liquid = computed(() => props.liquid);
-const { $root: $Sticky } = _liquid.value
-  ? useLiquidGlass({ radius: 0.3 })
-  : { $root: null };
+// const { $root: $Sticky } = _liquid.value
+//   ? useLiquidGlass({ radius: 0.3 })
+//   : { $root: null };
 </script>
 
 <style lang="scss" scoped>
@@ -59,6 +65,7 @@ const { $root: $Sticky } = _liquid.value
     display: flex;
     align-items: center;
     mix-blend-mode: luminosity;
+    box-shadow: inset -1px -1px 4px hsl(var(--text-900) / 0.1);
   }
   &__TitleText {
     font-weight: var(--accordion-title-weight, 900);

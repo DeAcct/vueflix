@@ -8,7 +8,7 @@
       :class="loaded && 'PosterHero__Poster--Loaded'"
     >
       <RouterLink
-        :to="`/?modal=${_animeData}&route=episodes`"
+        :to="`/?modal=${_aniTitle}&route=episodes`"
         class="PosterHero__ToEpisodes"
         :style="posterStyle"
         v-if="posterUrl"
@@ -16,7 +16,7 @@
       >
       <div class="PosterHero__Floats">
         <strong class="PosterHero__TitleHolder">
-          <img :src="logoUrl" :alt="_animeData" class="PosterHero__Title" />
+          <img :src="logoUrl" :alt="_aniTitle" class="PosterHero__Title" />
         </strong>
         <div class="PosterHero__Buttons">
           <RouterLink
@@ -64,8 +64,8 @@ const posterStyle = computed(() => ({
   } url(${posterUrl.value})`,
 }));
 
-const _animeData = computed(() => animeData.value?.name);
-const continueData = useContinue(_animeData);
+const _aniTitle = computed(() => animeData.value?.name);
+const continueData = useContinue(_aniTitle);
 
 defineExpose({
   refresh,
@@ -133,7 +133,6 @@ const { tilt } = useDeviceGesture(0.2);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
     pointer-events: none;
     transform: perspective(500rem)
       translate3d(
@@ -149,7 +148,9 @@ const { tilt } = useDeviceGesture(0.2);
   &__Title {
     width: 100%;
     filter: drop-shadow(0 0.1rem 0.3rem rgba(0, 0, 0, 0.3));
+    margin-bottom: 3rem;
   }
+
   &__Buttons {
     width: 100%;
     display: flex;
