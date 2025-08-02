@@ -2,7 +2,10 @@
   <component
     :is="tag"
     ref="$root"
-    :style="{ backdropFilter: `url('${filter}') blur(0.5px)` }"
+    :style="{
+      backdropFilter: `url('${filter}') blur(0.5px) saturate(1.5) brightness(1.2)`,
+      backgroundColor
+    }"
   >
     <slot></slot>
   </component>
@@ -24,6 +27,10 @@ const props = defineProps({
   depth: {
     type: [Number, String],
     default: 4,
+  },
+  backgroundColor: {
+    type: String,
+    default: "hsl(var(--bg-100) / 0.3)",
   },
 });
 

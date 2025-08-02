@@ -28,6 +28,7 @@
       radius="24"
       depth="4"
       class="BottomTabMenu__ToTopWrap"
+      background-color="hsl(var(--theme-500) / 0.85)"
     >
       <ToTop class="BottomTabMenu__ToTop" ref="$ToTop" />
     </LiquidGlass>
@@ -89,6 +90,7 @@ const { state: scrollState } = useScroll();
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.8rem;
   z-index: var(--z-index-1);
   // bottom: var(--bottom-tab-safe-margin);
   bottom: 0;
